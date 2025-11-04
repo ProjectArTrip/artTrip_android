@@ -1,2 +1,2 @@
-# artrip_android
+# artTrip_android
 ArtTrip Android Project
