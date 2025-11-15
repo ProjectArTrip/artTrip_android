@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     id("org.jlleitschuh.gradle.ktlint")
+
+    alias { libs.plugins.hilt }
+    kotlin("kapt")
 }
 
 android {
@@ -60,8 +63,17 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    // Retrofit2
     implementation(libs.retrofit)
+
+    // Gson
     implementation(libs.retrofit.converter.gson)
+
+    // OkHttp3
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
