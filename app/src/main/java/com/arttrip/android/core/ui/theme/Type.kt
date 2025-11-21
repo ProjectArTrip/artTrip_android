@@ -63,7 +63,7 @@ object AppTextStyle {
     val Body01Regular =
         TextStyle(
             fontSize = 14.sp,
-            lineHeight = 16.sp,
+            lineHeight = 20.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(400),
             letterSpacing = (-2f / 14f).em,
