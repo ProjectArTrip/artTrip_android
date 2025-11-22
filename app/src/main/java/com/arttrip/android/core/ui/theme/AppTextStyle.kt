@@ -12,7 +12,7 @@ object AppTextStyle {
             lineHeight = 28.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(700),
-            letterSpacing = (-2f / 20f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Title01Bold =
@@ -21,7 +21,7 @@ object AppTextStyle {
             lineHeight = 20.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(700),
-            letterSpacing = (-2f / 18f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Title01Light =
@@ -30,7 +30,7 @@ object AppTextStyle {
             lineHeight = 20.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(300),
-            letterSpacing = (-2f / 18f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Title02Bold =
@@ -39,7 +39,7 @@ object AppTextStyle {
             lineHeight = 18.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(700),
-            letterSpacing = (-2f / 16f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Title02Light =
@@ -48,7 +48,7 @@ object AppTextStyle {
             lineHeight = 18.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(300),
-            letterSpacing = (-2f / 16f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Body01Bold =
@@ -57,7 +57,7 @@ object AppTextStyle {
             lineHeight = 16.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(700),
-            letterSpacing = (-2f / 14f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Body01Regular =
@@ -66,7 +66,7 @@ object AppTextStyle {
             lineHeight = 20.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(400),
-            letterSpacing = (-2f / 14f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Body01Light =
@@ -75,7 +75,7 @@ object AppTextStyle {
             lineHeight = 16.sp,
             fontFamily = Pretendard,
             fontWeight = FontWeight(300),
-            letterSpacing = (-2f / 14f).em,
+            letterSpacing = (-0.02).em,
         )
 
     val Body02Bold =
