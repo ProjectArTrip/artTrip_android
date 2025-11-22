@@ -426,16 +426,16 @@ internal object AppTabRowDefaults {
         }
 }
 
-
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 private fun Preview_AppTabRow_AllCases() {
     ArtTripTheme {
         Surface {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 // Case01
