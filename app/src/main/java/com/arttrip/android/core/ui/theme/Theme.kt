@@ -11,13 +11,13 @@ import androidx.compose.ui.platform.LocalContext
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = AppPalette.Primary300,
-        onPrimary = AppPalette.TextWhite,
-        background = AppPalette.Gray0,
-        onBackground = AppPalette.TextPrimary,
-        surface = AppPalette.Gray0,
-        onSurface = AppPalette.TextPrimary,
-        error = AppPalette.SubRed,
+        primary = AppColor.Primary300,
+        onPrimary = AppColor.TextWhite,
+        background = AppColor.Gray0,
+        onBackground = AppColor.TextPrimary,
+        surface = AppColor.Gray0,
+        onSurface = AppColor.TextPrimary,
+        error = AppColor.SubRed,
     )
 
 @Composable
