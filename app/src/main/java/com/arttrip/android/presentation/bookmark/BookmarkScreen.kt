@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.home
+package com.arttrip.android.presentation.bookmark
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen(
+fun BookmarkScreen(
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -16,7 +16,7 @@ fun HomeScreen(
         modifier = modifier.padding(innerPadding),
     ) {
         Text(
-            text = "Home",
+            text = "Bookmark",
         )
     }
 }
