@@ -7,6 +7,7 @@ plugins {
 
     alias { libs.plugins.hilt }
     kotlin("kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -76,4 +77,6 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    // Kotlin Serialization
+    implementation(libs.kotlinx.serialization.json)
 }
