@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Surface
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
-import com.arttrip.android.core.ui.theme.AppPalette
+import com.arttrip.android.core.ui.theme.AppColor
 
 @Composable
 fun AppBottomNavBar(
@@ -62,7 +61,7 @@ fun AppBottomNavBar(
     ) {
         // --- main bar surface ---
         Surface(
-            color = AppPalette.Gray0,
+            color = AppColor.Gray0,
             shape = BottomNavOuterShape,
             tonalElevation = 0.dp,
             shadowElevation = 5.dp,

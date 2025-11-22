@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
-import com.arttrip.android.core.ui.theme.AppPalette
+import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 
@@ -107,7 +107,7 @@ fun AppBottomNavCenterItem(
                 Icon(
                     painter = painterResource(id = item.iconRes),
                     contentDescription = item.label,
-                    tint = AppPalette.Gray0, // 스탬프는 흰색 고정
+                    tint = AppColor.Gray0, // 스탬프는 흰색 고정
                 )
             }
         }
@@ -159,7 +159,7 @@ private data class NavItemVisuals(
 
 @Composable
 private fun rememberNavItemVisuals(selected: Boolean): NavItemVisuals {
-    val contentColor = if (selected) AppPalette.Primary300 else AppPalette.Gray900
+    val contentColor = if (selected) AppColor.Primary300 else AppColor.Gray900
     val textStyle = if (selected) AppTextStyle.Body02Bold else AppTextStyle.Body02Regular
     return NavItemVisuals(contentColor, textStyle)
 }

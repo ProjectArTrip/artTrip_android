@@ -2,7 +2,7 @@ package com.arttrip.android.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-object AppPalette {
+object AppColor {
     val Primary100 = Color(0xFFDBD5FC)
     val Primary200 = Color(0xFFAA97FF)
     val Primary300 = Color(0xFF8063FF)
