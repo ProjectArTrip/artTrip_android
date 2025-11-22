@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.arttrip.android.ui.theme.ArtTrip_androidTheme
+import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.android.core.navigation.AppNavHost
@@ -20,6 +22,7 @@ import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBar
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

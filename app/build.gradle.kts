@@ -2,7 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
     id("org.jlleitschuh.gradle.ktlint")
+
+    alias { libs.plugins.hilt }
+    kotlin("kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -34,8 +39,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
@@ -59,4 +66,22 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Retrofit2
+    implementation(libs.retrofit)
+
+    // Gson
+    implementation(libs.retrofit.converter.gson)
+
+    // OkHttp3
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // Kotlin Serialization
+    implementation(libs.kotlinx.serialization.json)
 }
