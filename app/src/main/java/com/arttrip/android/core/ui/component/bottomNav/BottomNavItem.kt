@@ -1,7 +1,5 @@
 package com.arttrip.android.core.ui.component.bottomNav
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +15,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -34,6 +31,7 @@ import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
+import com.arttrip.android.core.util.noRippleClickable
 
 /** 일반 네비 탭 아이템 */
 @Composable
@@ -48,11 +46,8 @@ fun AppBottomNavItem(
     Column(
         modifier =
             modifier
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onClick,
-                ).width(46.dp)
+                .noRippleClickable { onClick() }
+                .width(46.dp)
                 .height(50.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,11 +81,7 @@ fun AppBottomNavCenterItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(labelGap),
         modifier =
-            modifier.clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = onClick,
-            ),
+            modifier.noRippleClickable { onClick() },
     ) {
         Surface(
             shape = CircleShape,

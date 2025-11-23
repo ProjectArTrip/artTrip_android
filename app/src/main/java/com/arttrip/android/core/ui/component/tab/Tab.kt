@@ -1,8 +1,6 @@
 package com.arttrip.android.core.ui.component.tab
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
+import com.arttrip.android.core.util.noRippleClickable
 
 // ============================================================
 // Public API
@@ -228,16 +227,10 @@ private fun DefaultAppTab(
     textColor: Color,
     onClick: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Box(
         modifier =
             modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick,
-                ),
+                .noRippleClickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -312,7 +305,7 @@ private fun Case03Tab(
         modifier =
             Modifier
                 .width(IntrinsicSize.Max)
-                .clickable(onClick = onClick),
+                .noRippleClickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
