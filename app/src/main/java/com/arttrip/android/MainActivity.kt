@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.android.core.navigation.AppNavHost
 import com.arttrip.android.core.navigation.bottomNavItems
-import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBar
+import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,10 +48,9 @@ fun MainScaffold(modifier: Modifier = Modifier) {
                 modifier =
                     Modifier
                         .fillMaxWidth(),
-                //     .navigationBarsPadding()
                 contentAlignment = Alignment.TopCenter,
             ) {
-                AppBottomNavBar(
+                AppBottomNavBarWithInset(
                     items = bottomNavItems,
                     selectedRoute = currentRoute,
                     onItemSelected = { item ->

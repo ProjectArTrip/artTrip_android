@@ -48,7 +48,7 @@ fun AppBottomNavItem(
             modifier
                 .noRippleClickable { onClick() }
                 .width(46.dp)
-                .height(50.dp),
+                .height(48.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -165,7 +165,7 @@ private fun Preview_BottomNavItems_NormalAndCenter() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AppBottomNavItem(
-                item = bottomNavItems[0],
+                item = bottomNavItems[3],
                 selected = true,
                 onClick = {},
             )

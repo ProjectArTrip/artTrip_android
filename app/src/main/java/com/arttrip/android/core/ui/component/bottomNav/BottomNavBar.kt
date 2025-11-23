@@ -1,16 +1,22 @@
 package com.arttrip.android.core.ui.component.bottomNav
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,13 +30,44 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.theme.AppColor
+
+@Composable
+fun AppBottomNavBarWithInset(
+    items: List<BottomNavItem>,
+    selectedRoute: String?,
+    onItemSelected: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val bottomInset =
+        WindowInsets.navigationBars
+            .asPaddingValues()
+            .calculateBottomPadding()
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        AppBottomNavBar(
+            items = items,
+            selectedRoute = selectedRoute,
+            onItemSelected = onItemSelected,
+        )
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(bottomInset)
+                    .background(AppColor.Gray0),
+        )
+    }
+}
 
 @Composable
 fun AppBottomNavBar(
@@ -41,7 +78,7 @@ fun AppBottomNavBar(
 ) {
     val stampIndex = 2
     val barHeight = 86.dp
-    val totalHeight = 110.dp // gradient 포함 전체 영역(시안 기준)
+    val totalHeight = 86.dp
     val contentBottomPadding = 30.dp
     val contentTopPadding = 8.dp
     val horizontalPadding = 16.dp
@@ -202,7 +239,7 @@ private object BottomNavOuterShape : Shape {
     name = "BottomNavBar Only",
     showBackground = true,
     widthDp = 360,
-    heightDp = 110,
+    heightDp = 200,
 )
 @Composable
 private fun Preview_AppBottomNavBar_Interactive() {
@@ -213,4 +250,13 @@ private fun Preview_AppBottomNavBar_Interactive() {
         selectedRoute = selectedRoute,
         onItemSelected = { item -> selectedRoute = item.route },
     )
+}
+
+@Preview
+@Composable
+fun CheckFontPx() {
+    val density = LocalDensity.current
+    val px = with(density) { 12.sp.toPx() }
+
+    Text("12sp = ${px}px")
 }
