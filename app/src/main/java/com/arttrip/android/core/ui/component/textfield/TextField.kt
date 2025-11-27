@@ -41,14 +41,14 @@ import com.arttrip.android.core.util.noRippleClickable
 /**
  * [Default] : 힌트 표시
  *
- * [Clicked] : 선택 대기(포커스)
+ * [Focused] : 포커스 상태
  *
  * [Filled] : 날짜 값 표시 + 삭제(X) 노출
  */
 
 enum class DateFieldChipState {
     Default,
-    Clicked,
+    Focused,
     Filled,
 }
 
@@ -64,7 +64,7 @@ enum class DateFieldChipState {
  *
  * @param value 선택/표시할 날짜 텍스트. [Filled][DateFieldChipState.Filled]상태에서 필수.
  * @param placeholder value가 비어 있고
- * [Default][DateFieldChipState.Default]/[Clicked][DateFieldChipState.Clicked] 상태에서 필수.
+ * [Default][DateFieldChipState.Default]/[Focused][DateFieldChipState.Focused] 상태에서 필수.
  * @param state 칩 상태(Default/Clicked/Filled).
  * @param modifier 외부에서 전달받는 Modifier.
  * @param onChipClick 칩 전체 클릭 시 호출. 일반적으로 날짜 선택 UI를 연다.
@@ -82,7 +82,7 @@ fun DateFieldChip(
 ) {
     when (state) {
         DateFieldChipState.Default,
-        DateFieldChipState.Clicked,
+        DateFieldChipState.Focused,
         ->
             require(placeholder.isNotBlank()) {
                 "DateFieldChip: state=$state 에서는 placeholder가 필요합니다. placeholder=\"$placeholder\""
@@ -166,7 +166,7 @@ private fun resolveDateFieldChipStyle(
     val borderColor =
         when (state) {
             DateFieldChipState.Default -> DateFieldChipDefaults.BorderDefault
-            DateFieldChipState.Clicked,
+            DateFieldChipState.Focused,
             DateFieldChipState.Filled,
             -> DateFieldChipDefaults.BorderActive
         }
@@ -203,8 +203,8 @@ fun PreviewDateFieldChip_Interaction() {
                     interactionSource = remember { MutableInteractionSource() },
                 ) {
                     // Clicked이면 Default로 복귀
-                    if (leftState == DateFieldChipState.Clicked) leftState = DateFieldChipState.Default
-                    if (rightState == DateFieldChipState.Clicked) rightState = DateFieldChipState.Default
+                    if (leftState == DateFieldChipState.Focused) leftState = DateFieldChipState.Default
+                    if (rightState == DateFieldChipState.Focused) rightState = DateFieldChipState.Default
                 },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -219,7 +219,7 @@ fun PreviewDateFieldChip_Interaction() {
                 state = leftState,
                 onChipClick = {
                     if (leftState == DateFieldChipState.Default) {
-                        leftState = DateFieldChipState.Clicked
+                        leftState = DateFieldChipState.Focused
                     }
                 },
                 onDismissClick = {
@@ -235,7 +235,7 @@ fun PreviewDateFieldChip_Interaction() {
                 state = rightState,
                 onChipClick = {
                     if (rightState == DateFieldChipState.Default) {
-                        rightState = DateFieldChipState.Clicked
+                        rightState = DateFieldChipState.Focused
                     }
                 },
                 onDismissClick = {
@@ -247,11 +247,11 @@ fun PreviewDateFieldChip_Interaction() {
 
         Button(
             onClick = {
-                if (leftState == DateFieldChipState.Clicked) {
+                if (leftState == DateFieldChipState.Focused) {
                     leftState = DateFieldChipState.Filled
                     leftText = "11월 25일 화"
                 }
-                if (rightState == DateFieldChipState.Clicked) {
+                if (rightState == DateFieldChipState.Focused) {
                     rightState = DateFieldChipState.Filled
                     rightText = "2월 1일 월"
                 }
