@@ -1,7 +1,9 @@
 package com.arttrip.android.core.di
 
+import com.arttrip.android.data.repository.AuthRepositoryImpl
 import com.arttrip.android.data.repository.ExhibitRepositoryImpl
 import com.arttrip.android.data.repository.UserRepositoryImpl
+import com.arttrip.android.domain.repository.AuthRepository
 import com.arttrip.android.domain.repository.ExhibitRepository
 import com.arttrip.android.domain.repository.UserRepository
 import dagger.Binds
@@ -20,4 +22,10 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun exhibitRepository(exhibitRepositoryImpl: ExhibitRepositoryImpl): ExhibitRepository
+
+    @Binds
+    @Singleton
+    abstract fun authRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }
