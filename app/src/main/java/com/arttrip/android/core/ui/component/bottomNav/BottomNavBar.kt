@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,12 +29,10 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.theme.AppColor
@@ -250,13 +247,4 @@ private fun Preview_AppBottomNavBar_Interactive() {
         selectedRoute = selectedRoute,
         onItemSelected = { item -> selectedRoute = item.route },
     )
-}
-
-@Preview
-@Composable
-fun CheckFontPx() {
-    val density = LocalDensity.current
-    val px = with(density) { 12.sp.toPx() }
-
-    Text("12sp = ${px}px")
 }
