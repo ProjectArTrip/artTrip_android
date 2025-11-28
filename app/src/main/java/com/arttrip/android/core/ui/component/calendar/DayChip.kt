@@ -1,8 +1,6 @@
 package com.arttrip.android.core.ui.component.calendar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
 import java.time.DayOfWeek
 import java.util.Locale
 import java.time.format.TextStyle as JTextStyle
@@ -70,8 +69,6 @@ fun DayChipCase01(
     val typography = DayChipDefaults.typography(state)
     val metrics = DayChipDefaults.metrics(state)
 
-    val interactionSource = remember { MutableInteractionSource() }
-
     val dayText = dayOfMonth.toString()
     val weekdayText = dayOfWeek.getDisplayName(JTextStyle.NARROW, Locale.KOREAN)
 
@@ -80,11 +77,7 @@ fun DayChipCase01(
             modifier
                 .width(metrics.width)
                 .height(metrics.height)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick,
-                ),
+                .noRippleClickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -152,8 +145,6 @@ fun DayChipCase02(
     val typography = DayChipDefaults.typography(state)
     val metrics = DayChipDefaults.metrics(state)
 
-    val interactionSource = remember { MutableInteractionSource() }
-
     val dayText = dayOfMonth.toString()
 
     Box(
@@ -162,11 +153,7 @@ fun DayChipCase02(
                 .width(metrics.width)
                 .height(metrics.height)
                 .background(colors.backgroundColor, shape = CircleShape)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick,
-                ),
+                .noRippleClickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Text(
