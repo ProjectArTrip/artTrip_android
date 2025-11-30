@@ -1,47 +1,584 @@
 package com.arttrip.android.presentation.home
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.arttrip.android.core.ui.component.button.AppButton
-import com.arttrip.android.core.ui.component.button.ReviewButton
-import com.arttrip.android.core.ui.component.button.UploadButton
+import coil.compose.AsyncImage
+import com.arttrip.android.R
+import com.arttrip.android.core.ui.component.button.AppFilterChip
+import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.tab.AppTabCase
+import com.arttrip.android.core.ui.component.tab.AppTabRow
+import com.arttrip.android.core.ui.component.tag.AppTag
+import com.arttrip.android.core.ui.component.tag.AppTagType
+import com.arttrip.android.core.ui.theme.AppColor
+import com.arttrip.android.core.ui.theme.AppTextStyle
+
+enum class ExhibitionTab {
+    International, // 해외전시
+    Domestic   // 국내전시
+}
 
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        containerColor = Color.White,
+        topBar = {
+            LogoAppBar()
+        },
+    ) { contentPadding ->
+        HomeContainer(contentPadding = contentPadding)
+    }
+}
+
+@Composable
+fun LogoAppBar() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(top = 100.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
-        var appBtnEnabled by remember { mutableStateOf(true) }
-
-        // 1) AppButton: 클릭하면 enabled/disabled 토글
-        AppButton(
-            text = if (appBtnEnabled) "Btn (Enabled)" else "Btn (Disabled)",
-            enabled = appBtnEnabled,
-            onClick = { appBtnEnabled = !appBtnEnabled },
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
         )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 18.dp, top = 8.dp, bottom =8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_logo_black),
+                contentDescription = "로고",
+                modifier = Modifier
+                    .width(88.dp)
+                    .height(28.dp)
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AppBarIconButton(
+                    iconRes = R.drawable.ic_alert_24,
+                    contentDescription = "알림",
+                    onClick = {}
+                )
+                AppBarIconButton(
+                    iconRes = R.drawable.ic_calendar_24,
+                    contentDescription = "달력",
+                    onClick = {}
+                )
+                AppBarIconButton(
+                    iconRes = R.drawable.ic_search_24,
+                    contentDescription = "검색",
+                    onClick = {}
+                )
+            }
+        }
+    }
+}
 
-        // 2) ReviewButton
-        ReviewButton(
-            text = "Btn",
-            onClick = { },
-        )
-
-        // 3) UploadButton
-        UploadButton(
-            onClick = { },
+@Composable
+fun AppBarIconButton(
+    @DrawableRes iconRes: Int,
+    contentDescription: String?,
+    onClick: () -> Unit,
+) {
+    IconButton(
+        modifier = Modifier.size(36.dp),
+        onClick = onClick,
+    ) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = contentDescription,
         )
     }
+}
+
+@Composable
+fun HomeContainer(contentPadding: PaddingValues) {
+    var selectedTab by remember { mutableStateOf(ExhibitionTab.International) }
+    val tabs = remember { ExhibitionTab.entries }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = contentPadding)
+    ) {
+        Column {
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            AppTabRow(
+                case = AppTabCase.Case03,
+                tabs = tabs.map {
+                    when (it) {
+                        ExhibitionTab.International -> "해외전시"
+                        ExhibitionTab.Domestic -> "국내전시"
+                    }
+                },
+                selectedIndex = tabs.indexOf(selectedTab),
+                onTabSelected = { index ->
+                    selectedTab = tabs[index]
+                },
+                modifier = Modifier.padding(start = 24.dp)
+            )
+
+            when (selectedTab) {
+                ExhibitionTab.International -> InternationalExhibitionSection()
+                ExhibitionTab.Domestic -> DomesticExhibitionSection()
+            }
+        }
+    }
+}
+
+@Composable
+fun InternationalExhibitionSection() {
+    var countryList by remember { mutableStateOf(listOf<String>("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
+    var selectedCountry by remember { mutableStateOf("전체") }
+
+    Column {
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(16.dp)
+            )
+            repeat(countryList.size) { index ->
+                val isSelected = if (countryList[index] == selectedCountry) true else false
+                AppFilterChip(
+                    modifier = Modifier,
+                    case = AppFilterChipCase.Case02,
+                    text = countryList[index],
+                    selected = isSelected
+                ) {
+                    selectedCountry = countryList[index]
+                }
+
+                if (index == countryList.size - 1) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(16.dp)
+            )
+            repeat(10) { index ->
+                val exhibit = ExhibitInfoModel(
+                    url = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
+                    title = "귀여운 쿼카 전시회",
+                    place = "쿼카 공원",
+                    date = "2025.07.29 - 2025.08.10",
+                    country = "한국"
+                )
+                ExhibitItemCase1(exhibit = exhibit)
+                if (index == 9) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+enum class ExhibitImageCase {
+    CASE1,
+    CASE2,
+    CASE3,
+    CASE4
+}
+
+data class ExhibitInfoModel (
+    val url: String,
+    val title: String,
+    val place: String,
+    val date: String,
+    val country: String
+)
+
+@Composable
+fun ExhibitImage(
+    url: String,
+    case: ExhibitImageCase,
+    content: (@Composable BoxScope.() -> Unit)? = null
+) {
+    val imageWidth = when (case) {
+        ExhibitImageCase.CASE1 -> 180.dp
+        ExhibitImageCase.CASE2 -> 120.dp
+        ExhibitImageCase.CASE3 -> 100.dp
+        ExhibitImageCase.CASE4 -> 120.dp
+    }
+
+    val imageHeight = when (case) {
+        ExhibitImageCase.CASE1 -> 240.dp
+        ExhibitImageCase.CASE2 -> 150.dp
+        ExhibitImageCase.CASE3 -> 100.dp
+        ExhibitImageCase.CASE4 -> 150.dp
+    }
+
+    val borderModifier = when (case) {
+        ExhibitImageCase.CASE1 -> Modifier.border(
+            width = 1.dp,
+            color = AppColor.Gray50,
+            shape = RoundedCornerShape(8.dp)
+        )
+        ExhibitImageCase.CASE2, ExhibitImageCase.CASE3, ExhibitImageCase.CASE4 -> Modifier
+    }
+
+    Box(
+        modifier = Modifier
+            .width(imageWidth)
+            .height(imageHeight)
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(8.dp))
+                .then(borderModifier),
+            model = url,
+            contentDescription = "Exhibit Image",
+            contentScale = ContentScale.Crop
+        )
+
+        content?.let { slot ->
+            slot()
+        }
+    }
+}
+
+@Composable
+fun ExhibitItemCase1(exhibit: ExhibitInfoModel) {
+    ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE1) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(100.dp)
+                .clip(shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.7f)
+                        )
+                    )
+                )
+        )
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = exhibit.title,
+                style = AppTextStyle.Title02Bold,
+                color = AppColor.TextWhite
+            )
+            Text(text = exhibit.place,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextWhite
+            )
+            Text(text = exhibit.date,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextWhite
+            )
+        }
+    }
+}
+
+@Composable
+fun ExhibitItemCase2(exhibit: ExhibitInfoModel) {
+    Column {
+        ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE2)
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+        Text(
+            text = exhibit.title,
+            style = AppTextStyle.Body01Bold,
+            color = AppColor.TextPrimary
+        )
+    }
+}
+
+@Composable
+fun ExhibitItemCase3(exhibit: ExhibitInfoModel) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ExhibitImage(
+            url = exhibit.url,
+            case = ExhibitImageCase.CASE3
+        ) {
+            AppTag(
+                type = AppTagType.Ongoing,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .width(12.dp)
+        )
+        Column {
+            Text(
+                text = exhibit.country,
+                style = AppTextStyle.Body01Regular,
+                color = AppColor.TextPoint
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(4.dp)
+            )
+            Text(
+                text = exhibit.title,
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextPrimary
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(4.dp)
+            )
+            Text(
+                text = exhibit.place,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextTertiary
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(2.dp)
+            )
+            Text(
+                text = exhibit.date,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextTertiary
+            )
+        }
+    }
+}
+
+@Composable
+fun ExhibitItemCase4(exhibit: ExhibitInfoModel) {
+    Column {
+        ExhibitImage(
+            url = exhibit.url,
+            case = ExhibitImageCase.CASE4
+        )
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
+        Text(
+            text = exhibit.title,
+            style = AppTextStyle.Body01Bold,
+            color = AppColor.TextPrimary
+        )
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
+        Text(
+            text = exhibit.place,
+            style = AppTextStyle.Body02Regular,
+            color = AppColor.TextTertiary
+        )
+        Spacer(
+            modifier = Modifier
+                .height(2.dp)
+        )
+        Text(
+            text = exhibit.date,
+            style = AppTextStyle.Body03Regular,
+            color = AppColor.TextTertiary
+        )
+    }
+}
+
+@Composable
+fun PersonalRecommendedSection(name: String, exhibitList: List<ExhibitInfoModel>) {
+    Column {
+        Row {
+            Spacer(
+                modifier = Modifier
+                    .width(24.dp)
+            )
+            Text(
+                text = "${name}님을 위한 추천",
+                style = AppTextStyle.Title01Bold,
+                color = AppColor.TextPrimary
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+        Row(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            exhibitList.forEachIndexed { index, exhibit ->
+                ExhibitItemCase2(exhibit = exhibit)
+                if (exhibitList.lastIndex == index) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun WeeklyExhibitSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "이번주 전시 일정",
+                style = AppTextStyle.Title01Bold,
+                color = AppColor.TextPrimary
+                )
+            Icon(
+                painter = painterResource(R.drawable.ic_more_24),
+                contentDescription = "이번주 전시 일정 더보기 버튼"
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+
+    }
+}
+
+@Composable
+fun ExhibitImageCase2(url: String) {
+    Box(
+        modifier = Modifier
+            .width(180.dp)
+            .height(240.dp)
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(8.dp)),
+            model = url,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(100.dp)
+                .clip(shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.7f)
+                        )
+                    )
+                )
+        )
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "귀여운 쿼카 전시회",
+                style = AppTextStyle.Title02Bold,
+                color = AppColor.TextWhite
+            )
+            Text(text = "쿼카 동산",
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextWhite
+            )
+            Text(text = "2025.07.29 - 2025.08.10",
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextWhite
+            )
+        }
+    }
+}
+
+@Composable
+fun DomesticExhibitionSection() {
+    Text("국내전시")
 }
