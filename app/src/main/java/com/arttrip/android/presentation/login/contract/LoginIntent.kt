@@ -1,7 +1,6 @@
 package com.arttrip.android.presentation.login.contract
 
 sealed interface LoginIntent {
-
     /**
      * 카카오 로그인 버튼 클릭
      */

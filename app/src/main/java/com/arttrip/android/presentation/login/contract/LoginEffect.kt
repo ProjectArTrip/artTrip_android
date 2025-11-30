@@ -1,8 +1,6 @@
 package com.arttrip.android.presentation.login.contract
 
-
 sealed interface LoginEffect {
-
     /**
      * Intro 화면으로 이동
      */

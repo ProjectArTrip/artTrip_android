@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,17 +21,23 @@ import com.arttrip.android.core.ui.component.button.SocialLoginButton
 import com.arttrip.android.core.ui.component.button.SocialLoginProvider
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.ArtTripTheme
+import com.arttrip.android.presentation.login.contract.LoginState
 
 @Composable
 fun LoginScreen(
     innerPadding: PaddingValues,
-    onLoginSuccess: () -> Unit,
+    state: LoginState,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding).background(color = AppColor.Primary300).padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(color = AppColor.Primary300)
+                .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Spacer(modifier = Modifier.height(50.dp))
 
         Icon(
@@ -51,24 +55,22 @@ fun LoginScreen(
         SocialLoginButton(
             provider = SocialLoginProvider.Google,
             onClick = {},
-            enabled = false
+            enabled = false,
         )
-
-
     }
 }
 
 @Preview(
     showBackground = true,
     showSystemUi = true,
-    name = "LoginScreen Preview"
+    name = "LoginScreen Preview",
 )
 @Composable
 fun PreviewLoginScreen() {
     ArtTripTheme {
         LoginScreen(
+            state = LoginState(false),
             innerPadding = PaddingValues(0.dp),
-            onLoginSuccess = {},
         )
     }
 }

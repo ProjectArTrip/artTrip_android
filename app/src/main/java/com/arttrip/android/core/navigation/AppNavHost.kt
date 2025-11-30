@@ -6,9 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.arttrip.android.presentation.login.LoginRoute
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.home.HomeRoute
+import com.arttrip.android.presentation.login.LoginRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.stamp.StampRoute
@@ -19,7 +19,7 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
     startDestination: String,
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (Boolean) -> Unit,
 ) {
     NavHost(
         navController = navController,

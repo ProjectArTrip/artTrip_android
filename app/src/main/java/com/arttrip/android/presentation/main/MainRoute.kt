@@ -17,10 +17,12 @@ fun MainRoute(
     val navController = rememberNavController()
     val uiState by mainViewModel.state.collectAsStateWithLifecycle()
 
-    val onLoginSuccess: () -> Unit = {
+    val onLoginSuccess: (Boolean) -> Unit = { isFirstLogin ->
         mainViewModel.dispatch(MainIntent.OnLoginSuccess)
+        val route =
+            if (isFirstLogin) "intro" else BottomNavItem.Home.route
 
-        navController.navigate(BottomNavItem.Home.route) {
+        navController.navigate(route) {
             popUpTo("login") { inclusive = true }
         }
     }

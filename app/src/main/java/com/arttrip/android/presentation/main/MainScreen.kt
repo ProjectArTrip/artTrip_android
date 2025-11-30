@@ -26,7 +26,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     uiState: MainState,
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (Boolean) -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
