@@ -25,7 +25,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun authRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
+    abstract fun authRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

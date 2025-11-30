@@ -1,14 +1,15 @@
 package com.arttrip.android.data.remote.api
 
-import com.arttrip.android.data.remote.model.auth.LoginRequest
-import com.arttrip.android.data.remote.model.auth.LoginResponse
+import com.arttrip.android.data.remote.api.ApiConstants.AUTH_PATH
+import com.arttrip.android.data.remote.model.auth.LoginRequestDto
+import com.arttrip.android.data.remote.model.auth.LoginResponseDto
+import com.arttrip.android.data.remote.model.network.BaseResponseDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthApi {
-
-    @POST("auth/login/kakao")
-    suspend fun loginWithKakao(
-        @Body body: LoginRequest
-    ): LoginResponse
+    @POST("${AUTH_PATH}/social")
+    suspend fun postLogin(
+        @Body body: LoginRequestDto,
+    ): BaseResponseDto<LoginResponseDto>
 }
