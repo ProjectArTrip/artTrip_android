@@ -1,5 +1,6 @@
 package com.arttrip.android.core.di
 
+import com.arttrip.android.data.remote.api.HomeApi
 import com.arttrip.android.data.remote.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -40,4 +41,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideHomeApi(retrofit: Retrofit): HomeApi = retrofit.create(HomeApi::class.java)
 }
