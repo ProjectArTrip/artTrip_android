@@ -21,12 +21,14 @@ import com.arttrip.android.core.ui.component.button.SocialLoginButton
 import com.arttrip.android.core.ui.component.button.SocialLoginProvider
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.ArtTripTheme
+import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.arttrip.android.presentation.login.contract.LoginState
 
 @Composable
 fun LoginScreen(
     innerPadding: PaddingValues,
     state: LoginState,
+    onIntent: (LoginIntent) -> Unit,
 ) {
     Column(
         modifier =
@@ -49,12 +51,13 @@ fun LoginScreen(
 
         SocialLoginButton(
             provider = SocialLoginProvider.Kakao,
-            onClick = {},
+            onClick = { onIntent(LoginIntent.ClickKakaoLogin) },
+            enabled = !state.isLoading,
         )
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             provider = SocialLoginProvider.Google,
-            onClick = {},
+            onClick = { onIntent(LoginIntent.ClickGoogleLogin) },
             enabled = false,
         )
     }
@@ -69,8 +72,13 @@ fun LoginScreen(
 fun PreviewLoginScreen() {
     ArtTripTheme {
         LoginScreen(
-            state = LoginState(false),
             innerPadding = PaddingValues(0.dp),
+            state =
+                LoginState(
+                    isLoading = false,
+                    errorMessage = null,
+                ),
+            onIntent = { /* no-op for preview */ },
         )
     }
 }

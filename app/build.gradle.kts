@@ -5,7 +5,7 @@ plugins {
 
     id("org.jlleitschuh.gradle.ktlint")
 
-    alias (libs.plugins.hilt )
+    alias(libs.plugins.hilt)
     kotlin("kapt")
     alias(libs.plugins.kotlin.serialization)
 }

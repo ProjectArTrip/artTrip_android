@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.auth.LoginProvider
@@ -23,6 +24,10 @@ class LoginViewModel
     constructor(
         private val socialLoginUseCase: SocialLoginUseCase,
     ) : ViewModel() {
+        companion object {
+            private const val TAG = "LoginViewModel"
+        }
+
         private val _state = MutableStateFlow(LoginState())
         val state: StateFlow<LoginState> = _state
 
@@ -32,9 +37,10 @@ class LoginViewModel
         fun onIntent(intent: LoginIntent) {
             when (intent) {
                 LoginIntent.ClickKakaoLogin -> {
-                    // 여기서는 그냥 "카카오 SDK 로그인 시작" 신호만 주고
-                    // 실제 SDK 호출은 Activity/Composable 쪽에서 하는 패턴도 많음
-                    // ex) _effect.emit(LoginEffect.LaunchKakaoLogin) 형태로도 가능
+                    _state.update { state -> reduce(state, intent) }
+                    viewModelScope.launch {
+                        _effect.emit(LoginEffect.LaunchKakaoLogin)
+                    }
                 }
 
                 is LoginIntent.KakaoLoginSuccess -> {
@@ -42,30 +48,47 @@ class LoginViewModel
                 }
 
                 is LoginIntent.KakaoLoginFailure -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "카카오 로그인에 실패했어요. 다시 시도해 주세요.",
-                        )
-                    }
+                    intent.throwable?.let { Log.e(TAG, "Kakao login failed", it) }
+                    _state.update { state -> reduce(state, intent) }
                     viewModelScope.launch {
-                        _effect.emit(
-                            LoginEffect.ShowError("카카오 로그인에 실패했어요."),
-                        )
+                        _effect.emit(LoginEffect.ShowError("카카오 로그인에 실패했어요. 다시 시도해 주세요."))
                     }
                 }
 
                 LoginIntent.DismissError -> {
-                    _state.update {
-                        it.copy(errorMessage = null)
-                    }
+                    _state.update { state -> reduce(state, intent) }
                 }
 
-                LoginIntent.ClickGoogleLogin -> {
-                    // TODO: 나중에 구현
-                }
+                LoginIntent.ClickGoogleLogin -> { /* ... */ }
             }
         }
+
+        private fun reduce(
+            state: LoginState,
+            intent: LoginIntent,
+        ): LoginState =
+            when (intent) {
+                LoginIntent.ClickKakaoLogin ->
+                    state.copy(
+                        isLoading = true,
+                        errorMessage = null,
+                    )
+
+                is LoginIntent.KakaoLoginFailure ->
+                    state.copy(
+                        isLoading = false,
+                        errorMessage = "카카오 로그인에 실패했어요. 다시 시도해 주세요.",
+                    )
+
+                LoginIntent.DismissError ->
+                    state.copy(
+                        errorMessage = null,
+                    )
+
+                is LoginIntent.KakaoLoginSuccess,
+                LoginIntent.ClickGoogleLogin,
+                -> state
+            }
 
         private fun loginWithIdToken(
             provider: LoginProvider,

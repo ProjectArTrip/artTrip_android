@@ -1,14 +1,10 @@
 package com.arttrip.android.presentation.login.contract
 
 sealed interface LoginEffect {
-    /**
-     * Intro 화면으로 이동
-     */
+    data object LaunchKakaoLogin : LoginEffect
+
     data object NavigateToIntro : LoginEffect
 
-    /**
-     * Home 화면으로 이동
-     */
     data object NavigateToHome : LoginEffect
 
     /**
