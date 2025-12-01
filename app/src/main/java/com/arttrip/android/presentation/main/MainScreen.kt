@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.android.core.navigation.AppNavHost
+import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
@@ -26,7 +27,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     uiState: MainState,
-    onLoginSuccess: (Boolean) -> Unit,
+    onLoginSuccess: (String) -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -53,7 +54,7 @@ fun MainScreen(
                 if (uiState.authState == AuthState.LOGGED_IN) {
                     BottomNavItem.Home.route
                 } else {
-                    "login"
+                    AppRoute.LOGIN
                 }
 
             Scaffold(

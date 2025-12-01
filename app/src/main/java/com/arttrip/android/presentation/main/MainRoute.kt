@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.arttrip.android.core.navigation.BottomNavItem
+import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.presentation.main.contract.MainIntent
 
 @Composable
@@ -17,13 +17,10 @@ fun MainRoute(
     val navController = rememberNavController()
     val uiState by mainViewModel.state.collectAsStateWithLifecycle()
 
-    val onLoginSuccess: (Boolean) -> Unit = { isFirstLogin ->
+    val onLoginSuccess: (String) -> Unit = { route ->
         mainViewModel.dispatch(MainIntent.OnLoginSuccess)
-        val route =
-            if (isFirstLogin) "intro" else BottomNavItem.Home.route
-
         navController.navigate(route) {
-            popUpTo("login") { inclusive = true }
+            popUpTo(AppRoute.LOGIN) { inclusive = true }
         }
     }
 

@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arttrip.android.core.navigation.AppRoute
+import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.presentation.login.contract.LoginEffect
 import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.kakao.sdk.user.UserApiClient
@@ -15,7 +17,7 @@ import com.kakao.sdk.user.UserApiClient
 @Composable
 fun LoginRoute(
     innerPadding: PaddingValues,
-    onLoginSuccess: (Boolean) -> Unit,
+    onLoginSuccess: (String) -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,10 +60,10 @@ fun LoginRoute(
                 }
 
                 LoginEffect.NavigateToIntro -> {
-                    onLoginSuccess(true)
+                    onLoginSuccess(AppRoute.INTRO)
                 }
                 LoginEffect.NavigateToHome -> {
-                    onLoginSuccess(false)
+                    onLoginSuccess(BottomNavItem.Home.route)
                 }
                 is LoginEffect.ShowError -> {
                     // 토스트/스낵바 등 표시

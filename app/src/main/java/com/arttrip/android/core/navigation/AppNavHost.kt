@@ -19,15 +19,14 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
     startDestination: String,
-    onLoginSuccess: (Boolean) -> Unit,
+    onLoginSuccess: (String) -> Unit,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        // 로그인
-        composable("login") {
+        composable(AppRoute.LOGIN) {
             LoginRoute(
                 innerPadding = innerPadding,
                 onLoginSuccess = onLoginSuccess,

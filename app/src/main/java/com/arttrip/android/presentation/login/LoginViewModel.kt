@@ -112,7 +112,7 @@ class LoginViewModel
                                     isLoading = false,
                                 )
                             }
-                            val login = result.data // LoginModel
+                            val login = result.data // TODO token 저장
 
                             val effect =
                                 if (login.isFirstLogin) {
