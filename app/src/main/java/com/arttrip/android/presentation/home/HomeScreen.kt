@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,13 +42,16 @@ import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
-import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.calendar.DayChipCase01
+import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.component.tag.AppTagType
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 enum class ExhibitionTab {
     International, // 해외전시
@@ -86,7 +88,7 @@ fun LogoAppBar() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 18.dp, top = 8.dp, bottom =8.dp),
+                .padding(start = 24.dp, end = 18.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -179,7 +181,16 @@ fun InternationalExhibitionSection() {
     var countryList by remember { mutableStateOf(listOf<String>("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
     var selectedCountry by remember { mutableStateOf("전체") }
 
-    Column {
+    val internalExhibits = getDummyExhibitList(10)
+    val recommendationExhibits = getDummyExhibitList(10)
+    val weeklyExhibits = getDummyExhibitList(3)
+    val genreExhibit = getDummyExhibitList(8)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
         Spacer(
             modifier = Modifier.height(16.dp)
         )
@@ -224,16 +235,74 @@ fun InternationalExhibitionSection() {
                 modifier = Modifier
                     .width(16.dp)
             )
-            repeat(10) { index ->
-                val exhibit = ExhibitInfoModel(
-                    url = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                    title = "귀여운 쿼카 전시회",
-                    place = "쿼카 공원",
-                    date = "2025.07.29 - 2025.08.10",
-                    country = "한국"
-                )
+            internalExhibits.forEachIndexed { index, exhibit ->
                 ExhibitItemCase1(exhibit = exhibit)
                 if (index == 9) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        PersonalRecommendedSection(
+            name = "손현준",
+            exhibitList = recommendationExhibits
+        )
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        ExhibitionByGenreSection(exhibitList = genreExhibit)
+    }
+}
+
+@Composable
+fun DomesticExhibitionSection() {
+    Text("국내전시")
+}
+
+@Composable
+fun PersonalRecommendedSection(name: String, exhibitList: List<ExhibitInfoModel>) {
+    Column {
+        Row {
+            Spacer(
+                modifier = Modifier
+                    .width(24.dp)
+            )
+            Text(
+                text = "${name}님을 위한 추천",
+                style = AppTextStyle.Title01Bold,
+                color = AppColor.TextPrimary
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            exhibitList.forEachIndexed { index, exhibit ->
+                if (index == 0) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+                ExhibitItemCase2(exhibit = exhibit)
+                if (index == exhibitList.lastIndex) {
                     Spacer(
                         modifier = Modifier
                             .width(16.dp)
@@ -244,67 +313,159 @@ fun InternationalExhibitionSection() {
     }
 }
 
-enum class ExhibitImageCase {
-    CASE1,
-    CASE2,
-    CASE3,
-    CASE4
+@Composable
+fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
+    val weekDates = remember { getThisWeekDates() }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+    ) {
+        GenreTitle(title = "이번주 전시 일정")
+
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            weekDates.forEach { date ->
+                DayChipCase01(
+                    dayOfMonth = date.dayOfMonth,
+                    dayOfWeek = date.dayOfWeek,
+                    state = if (date == selectedDate) DayChipStateCase01.Selected else DayChipStateCase01.Unselected
+                ) {
+                    selectedDate = date
+                }
+            }
+        }
+
+        Spacer(
+            modifier = Modifier
+                .height(20.dp)
+        )
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ){
+            exhibitList.forEach { exhibit ->
+                ExhibitItemCase3(exhibit = exhibit)
+            }
+        }
+    }
 }
 
-data class ExhibitInfoModel (
-    val url: String,
-    val title: String,
-    val place: String,
-    val date: String,
-    val country: String
-)
+@Composable
+fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
+    val genreList by remember { mutableStateOf(listOf<String>("팝아트", "현대미술", "사진전", "타이틀")) }
+    var selectedGenre by remember { mutableStateOf("팝아트") }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        GenreTitle(
+            modifier = Modifier
+                .padding(horizontal = 24.dp),
+            title = "장르별 전시 추천")
+
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            genreList.forEachIndexed { index, genre ->
+                if (index == 0) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+                AppFilterChip(
+                    case = AppFilterChipCase.Case02,
+                    text = genre,
+                    selected = selectedGenre == genre
+                ) {
+                    selectedGenre = genre
+                }
+                if (index == genreList.lastIndex) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            exhibitList.forEachIndexed { index, exhibit ->
+                if (index == 0) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+                ExhibitItemCase4(exhibit = exhibit)
+                if (index == exhibitList.lastIndex) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun getThisWeekDates(): List<LocalDate> {
+    val today = LocalDate.now()
+
+    val monday = today.with(DayOfWeek.MONDAY)
+
+    return (0..6).map { offset ->
+        monday.plusDays(offset.toLong())
+    }
+}
 
 @Composable
-fun ExhibitImage(
-    url: String,
-    case: ExhibitImageCase,
-    content: (@Composable BoxScope.() -> Unit)? = null
-) {
-    val imageWidth = when (case) {
-        ExhibitImageCase.CASE1 -> 180.dp
-        ExhibitImageCase.CASE2 -> 120.dp
-        ExhibitImageCase.CASE3 -> 100.dp
-        ExhibitImageCase.CASE4 -> 120.dp
-    }
-
-    val imageHeight = when (case) {
-        ExhibitImageCase.CASE1 -> 240.dp
-        ExhibitImageCase.CASE2 -> 150.dp
-        ExhibitImageCase.CASE3 -> 100.dp
-        ExhibitImageCase.CASE4 -> 150.dp
-    }
-
-    val borderModifier = when (case) {
-        ExhibitImageCase.CASE1 -> Modifier.border(
-            width = 1.dp,
-            color = AppColor.Gray50,
-            shape = RoundedCornerShape(8.dp)
-        )
-        ExhibitImageCase.CASE2, ExhibitImageCase.CASE3, ExhibitImageCase.CASE4 -> Modifier
-    }
-
-    Box(
-        modifier = Modifier
-            .width(imageWidth)
-            .height(imageHeight)
+fun GenreTitle(
+    modifier: Modifier = Modifier,
+    title: String) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            modifier = Modifier
-                .matchParentSize()
-                .clip(RoundedCornerShape(8.dp))
-                .then(borderModifier),
-            model = url,
-            contentDescription = "Exhibit Image",
-            contentScale = ContentScale.Crop
+        Text(
+            text = title,
+            style = AppTextStyle.Title01Bold,
+            color = AppColor.TextPrimary
         )
-
-        content?.let { slot ->
-            slot()
+        AppBarIconButton(
+            iconRes = R.drawable.ic_more_24,
+            contentDescription = "more button"
+        ) {
         }
     }
 }
@@ -460,125 +621,79 @@ fun ExhibitItemCase4(exhibit: ExhibitInfoModel) {
     }
 }
 
-@Composable
-fun PersonalRecommendedSection(name: String, exhibitList: List<ExhibitInfoModel>) {
-    Column {
-        Row {
-            Spacer(
-                modifier = Modifier
-                    .width(24.dp)
-            )
-            Text(
-                text = "${name}님을 위한 추천",
-                style = AppTextStyle.Title01Bold,
-                color = AppColor.TextPrimary
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .height(12.dp)
-        )
-        Row(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            exhibitList.forEachIndexed { index, exhibit ->
-                ExhibitItemCase2(exhibit = exhibit)
-                if (exhibitList.lastIndex == index) {
-                    Spacer(
-                        modifier = Modifier
-                            .width(16.dp)
-                    )
-                }
-            }
-        }
-    }
+enum class ExhibitImageCase {
+    CASE1,
+    CASE2,
+    CASE3,
+    CASE4
 }
 
-@Composable
-fun WeeklyExhibitSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "이번주 전시 일정",
-                style = AppTextStyle.Title01Bold,
-                color = AppColor.TextPrimary
-                )
-            Icon(
-                painter = painterResource(R.drawable.ic_more_24),
-                contentDescription = "이번주 전시 일정 더보기 버튼"
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .height(12.dp)
-        )
+data class ExhibitInfoModel (
+    val url: String,
+    val title: String,
+    val place: String,
+    val date: String,
+    val country: String
+)
 
+@Composable
+fun ExhibitImage(
+    url: String,
+    case: ExhibitImageCase,
+    content: (@Composable BoxScope.() -> Unit)? = null
+) {
+    val imageWidth = when (case) {
+        ExhibitImageCase.CASE1 -> 180.dp
+        ExhibitImageCase.CASE2 -> 120.dp
+        ExhibitImageCase.CASE3 -> 100.dp
+        ExhibitImageCase.CASE4 -> 120.dp
     }
-}
 
-@Composable
-fun ExhibitImageCase2(url: String) {
+    val imageHeight = when (case) {
+        ExhibitImageCase.CASE1 -> 240.dp
+        ExhibitImageCase.CASE2 -> 150.dp
+        ExhibitImageCase.CASE3 -> 100.dp
+        ExhibitImageCase.CASE4 -> 150.dp
+    }
+
+    val borderModifier = when (case) {
+        ExhibitImageCase.CASE1 -> Modifier.border(
+            width = 1.dp,
+            color = AppColor.Gray50,
+            shape = RoundedCornerShape(8.dp)
+        )
+        ExhibitImageCase.CASE2, ExhibitImageCase.CASE3, ExhibitImageCase.CASE4 -> Modifier
+    }
+
     Box(
         modifier = Modifier
-            .width(180.dp)
-            .height(240.dp)
+            .width(imageWidth)
+            .height(imageHeight)
     ) {
         AsyncImage(
             modifier = Modifier
                 .matchParentSize()
-                .clip(RoundedCornerShape(8.dp)),
+                .clip(RoundedCornerShape(8.dp))
+                .then(borderModifier),
             model = url,
-            contentDescription = null,
+            contentDescription = "Exhibit Image",
             contentScale = ContentScale.Crop
         )
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(100.dp)
-                .clip(shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.7f)
-                        )
-                    )
-                )
-        )
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                text = "귀여운 쿼카 전시회",
-                style = AppTextStyle.Title02Bold,
-                color = AppColor.TextWhite
-            )
-            Text(text = "쿼카 동산",
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextWhite
-            )
-            Text(text = "2025.07.29 - 2025.08.10",
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextWhite
-            )
+
+        content?.let { slot ->
+            slot()
         }
     }
 }
 
-@Composable
-fun DomesticExhibitionSection() {
-    Text("국내전시")
+private fun getDummyExhibitList(size: Int): List<ExhibitInfoModel> {
+    return List(size) { index ->
+        ExhibitInfoModel(
+            url = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
+            title = "귀여운 쿼카 전시회 #$index",
+            place = "쿼카 공원",
+            date = "2025.07.29 - 2025.08.10",
+            country = "한국"
+        )
+    }
 }
