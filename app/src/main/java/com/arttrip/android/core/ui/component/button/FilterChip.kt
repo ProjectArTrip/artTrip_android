@@ -45,7 +45,7 @@ fun AppFilterChip(
         color = chipContainer(selected),
         contentColor = chipContent(selected),
         border = chipBorder(selected),
-        modifier = modifier.wrapContentSize().noRippleClickable{onClick()},
+        modifier = modifier.wrapContentSize().noRippleClickable { onClick() },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.home.HomeRoute
+import com.arttrip.android.presentation.intro.IntroRoute
 import com.arttrip.android.presentation.login.LoginRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.MyPageRoute
@@ -33,7 +34,13 @@ fun AppNavHost(
             )
         }
 
-        // 탭들
+        composable(AppRoute.INTRO) {
+            IntroRoute(
+                innerPadding = innerPadding,
+            )
+        }
+
+        // 바텀네비
         composable(BottomNavItem.Home.route) { HomeRoute(innerPadding) }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
