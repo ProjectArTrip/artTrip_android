@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -178,9 +179,6 @@ fun HomeContainer(contentPadding: PaddingValues) {
 
 @Composable
 fun InternationalExhibitionSection() {
-    var countryList by remember { mutableStateOf(listOf<String>("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
-    var selectedCountry by remember { mutableStateOf("전체") }
-
     val internalExhibits = getDummyExhibitList(10)
     val recommendationExhibits = getDummyExhibitList(10)
     val weeklyExhibits = getDummyExhibitList(3)
@@ -194,34 +192,7 @@ fun InternationalExhibitionSection() {
         Spacer(
             modifier = Modifier.height(16.dp)
         )
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .width(16.dp)
-            )
-            repeat(countryList.size) { index ->
-                val isSelected = if (countryList[index] == selectedCountry) true else false
-                AppFilterChip(
-                    modifier = Modifier,
-                    case = AppFilterChipCase.Case02,
-                    text = countryList[index],
-                    selected = isSelected
-                ) {
-                    selectedCountry = countryList[index]
-                }
-
-                if (index == countryList.size - 1) {
-                    Spacer(
-                        modifier = Modifier
-                            .width(16.dp)
-                    )
-                }
-            }
-        }
+        CountryChipList()
         Spacer(
             modifier = Modifier
                 .height(16.dp)
@@ -263,6 +234,39 @@ fun InternationalExhibitionSection() {
                 .height(32.dp)
         )
         ExhibitionByGenreSection(exhibitList = genreExhibit)
+    }
+}
+
+@Composable
+fun CountryChipList() {
+    val countryList by remember { mutableStateOf(listOf("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
+    var selectedCountry by remember { mutableStateOf("전체") }
+
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Spacer(
+            modifier = Modifier
+                .width(16.dp)
+        )
+
+        countryList.forEach { country ->
+            AppFilterChip(
+                modifier = Modifier,
+                case = AppFilterChipCase.Case02,
+                text = country,
+                selected = selectedCountry == country
+            ) {
+                selectedCountry = country
+            }
+        }
+
+        Spacer(
+            modifier = Modifier
+                .width(16.dp)
+        )
     }
 }
 
@@ -462,17 +466,22 @@ fun GenreTitle(
             style = AppTextStyle.Title01Bold,
             color = AppColor.TextPrimary
         )
-        AppBarIconButton(
-            iconRes = R.drawable.ic_more_24,
+        Icon(
+            painter = painterResource(R.drawable.ic_more_24),
             contentDescription = "more button"
-        ) {
-        }
+        )
     }
 }
 
 @Composable
-fun ExhibitItemCase1(exhibit: ExhibitInfoModel) {
-    ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE1) {
+fun ExhibitItemCase1(exhibit: ExhibitInfoModel, onItemClick: () -> Unit = {}) {
+    ExhibitImage(
+        modifier = Modifier
+            .clickable {
+                onItemClick()
+            },
+        url = exhibit.url,
+        case = ExhibitImageCase.CASE1) {
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -513,8 +522,14 @@ fun ExhibitItemCase1(exhibit: ExhibitInfoModel) {
 }
 
 @Composable
-fun ExhibitItemCase2(exhibit: ExhibitInfoModel) {
-    Column {
+fun ExhibitItemCase2(exhibit: ExhibitInfoModel, onItemClick: () -> Unit = {}) {
+    Column(
+        modifier = Modifier
+            .width(120.dp)
+            .clickable {
+                onItemClick()
+            }
+    ) {
         ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE2)
         Spacer(
             modifier = Modifier
@@ -529,8 +544,11 @@ fun ExhibitItemCase2(exhibit: ExhibitInfoModel) {
 }
 
 @Composable
-fun ExhibitItemCase3(exhibit: ExhibitInfoModel) {
-    Row(
+fun ExhibitItemCase3(exhibit: ExhibitInfoModel, onItemClick: () -> Unit = {}) {
+    Row(modifier = Modifier
+        .clickable {
+            onItemClick()
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         ExhibitImage(
@@ -585,8 +603,14 @@ fun ExhibitItemCase3(exhibit: ExhibitInfoModel) {
 }
 
 @Composable
-fun ExhibitItemCase4(exhibit: ExhibitInfoModel) {
-    Column {
+fun ExhibitItemCase4(exhibit: ExhibitInfoModel, onItemClick: () -> Unit = {}) {
+    Column(
+        modifier = Modifier
+            .width(120.dp)
+            .clickable {
+                onItemClick()
+            }
+    ) {
         ExhibitImage(
             url = exhibit.url,
             case = ExhibitImageCase.CASE4
@@ -638,6 +662,7 @@ data class ExhibitInfoModel (
 
 @Composable
 fun ExhibitImage(
+    modifier: Modifier = Modifier,
     url: String,
     case: ExhibitImageCase,
     content: (@Composable BoxScope.() -> Unit)? = null
@@ -666,7 +691,7 @@ fun ExhibitImage(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .width(imageWidth)
             .height(imageHeight)
     ) {
@@ -690,7 +715,7 @@ private fun getDummyExhibitList(size: Int): List<ExhibitInfoModel> {
     return List(size) { index ->
         ExhibitInfoModel(
             url = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-            title = "귀여운 쿼카 전시회 #$index",
+            title = "초대박 귀여운 쿼카 전시회 skrr~ #$index",
             place = "쿼카 공원",
             date = "2025.07.29 - 2025.08.10",
             country = "한국"
