@@ -34,8 +34,8 @@ fun LoginScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
                 .background(color = AppColor.Primary300)
+                .padding(innerPadding)
                 .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,8 +57,10 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             provider = SocialLoginProvider.Google,
-            onClick = { onIntent(LoginIntent.ClickGoogleLogin) },
-            enabled = false,
+            onClick = {
+//                onIntent(LoginIntent.ClickGoogleLogin)
+            },
+            enabled = true,
         )
     }
 }
