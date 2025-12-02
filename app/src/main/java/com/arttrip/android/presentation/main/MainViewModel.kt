@@ -2,7 +2,7 @@ package com.arttrip.android.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arttrip.android.data.remote.auth.TokenManager
+import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.presentation.main.contract.AuthState
 import com.arttrip.android.presentation.main.contract.MainIntent
 import com.arttrip.android.presentation.main.contract.MainState

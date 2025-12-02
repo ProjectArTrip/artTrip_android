@@ -1,6 +1,6 @@
 package com.arttrip.android.data.remote.interceptor
 
-import com.arttrip.android.data.remote.auth.TokenManager
+import com.arttrip.android.data.local.auth.TokenManager
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

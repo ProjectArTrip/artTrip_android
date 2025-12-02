@@ -1,10 +1,9 @@
 package com.arttrip.android.data.repository
 
-import com.arttrip.android.data.remote.auth.TokenManager
+import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.data.remote.datasource.AuthDataSource
 import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
-import com.arttrip.android.data.remote.mapper.exhibit.toDomain
 import com.arttrip.android.data.remote.model.auth.LoginRequestDto
 import com.arttrip.android.domain.model.auth.AuthTokens
 import com.arttrip.android.domain.model.auth.LoginModel

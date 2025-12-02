@@ -1,9 +1,10 @@
-package com.arttrip.android.data.remote.auth
+package com.arttrip.android.data.local.auth
 
 import android.content.SharedPreferences
 import com.arttrip.android.domain.model.auth.AuthTokens
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 class TokenManager
@@ -39,19 +40,19 @@ class TokenManager
         fun saveTokens(tokens: AuthTokens) {
             cachedTokens = tokens
             prefs
-                .edit()
-                .putString(KEY_ACCESS, tokens.accessToken)
-                .putString(KEY_REFRESH, tokens.refreshToken)
-                .apply()
+                .edit {
+                    putString(KEY_ACCESS, tokens.accessToken)
+                        .putString(KEY_REFRESH, tokens.refreshToken)
+                }
         }
 
         fun clear() {
             cachedTokens = null
             prefs
-                .edit()
-                .remove(KEY_ACCESS)
-                .remove(KEY_REFRESH)
-                .apply()
+                .edit {
+                    remove(KEY_ACCESS)
+                        .remove(KEY_REFRESH)
+                }
         }
 
         fun hasTokens(): Boolean {
