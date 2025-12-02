@@ -5,8 +5,10 @@ import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetCountryListUseCase @Inject constructor(
-    private val homeRepository: HomeRepository
-) {
-    operator fun invoke() : Flow<ApiResult<List<String>>> = homeRepository.getCountryList()
-}
+class GetCountryListUseCase
+    @Inject
+    constructor(
+        private val homeRepository: HomeRepository,
+    ) {
+        operator fun invoke(): Flow<ApiResult<List<String>>> = homeRepository.getCountryList()
+    }

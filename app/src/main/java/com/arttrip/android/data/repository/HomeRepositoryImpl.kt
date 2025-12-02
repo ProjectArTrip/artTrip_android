@@ -9,34 +9,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class HomeRepositoryImpl @Inject constructor(
-    private val dataSource: HomeDataSource
-) : HomeRepository{
-    override fun getCountryList(): Flow<ApiResult<List<String>>> =
-        flow {
-            emit(ApiResult.Loading)
+class HomeRepositoryImpl
+    @Inject
+    constructor(
+        private val dataSource: HomeDataSource,
+    ) : HomeRepository {
+        override fun getCountryList(): Flow<ApiResult<List<String>>> =
+            flow {
+                emit(ApiResult.Loading)
 
-            try {
-                val baseResponse = dataSource.getCountryList()
+                try {
+                    val baseResponse = dataSource.getCountryList()
 
-                val dto = baseResponse.result
-                if (dto == null) {
-                    emit(
-                        ApiResult.Error(
-                            ApiError.HttpError(
-                                statusCode = -1,
-                                serverCode = "EMPTY_RESULT",
-                                serverMessage = "empty result",
+                    val dto = baseResponse.result
+                    if (dto == null) {
+                        emit(
+                            ApiResult.Error(
+                                ApiError.HttpError(
+                                    statusCode = -1,
+                                    serverCode = "EMPTY_RESULT",
+                                    serverMessage = "empty result",
+                                ),
                             ),
-                        ),
-                    )
-                    return@flow
-                }
+                        )
+                        return@flow
+                    }
 
-                emit(ApiResult.Success(dto))
-            } catch (e: Exception) {
-                val error = e.toAppError()
-                emit(ApiResult.Error(error))
+                    emit(ApiResult.Success(dto))
+                } catch (e: Exception) {
+                    val error = e.toAppError()
+                    emit(ApiResult.Error(error))
+                }
             }
-        }
-}
+    }

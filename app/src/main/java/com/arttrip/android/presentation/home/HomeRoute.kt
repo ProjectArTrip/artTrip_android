@@ -9,13 +9,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun HomeRoute(
     innerPadding: PaddingValues,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val homeState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         innerPadding = innerPadding,
         uiState = homeState,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
     )
 }

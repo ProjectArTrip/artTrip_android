@@ -14,64 +14,64 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val getCountryListUseCase: GetCountryListUseCase,
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        private val getCountryListUseCase: GetCountryListUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(HomeState())
+        val uiState: StateFlow<HomeState> = _uiState
 
-    private val _uiState = MutableStateFlow(HomeState())
-    val uiState: StateFlow<HomeState> = _uiState
+        init {
+            // 화면 진입 시 자동 로딩
+            onIntent(HomeIntent.LoadCountries)
+        }
 
-    init {
-        // 화면 진입 시 자동 로딩
-        onIntent(HomeIntent.LoadCountries)
-    }
+        fun onIntent(intent: HomeIntent) {
+            when (intent) {
+                HomeIntent.LoadCountries,
+                HomeIntent.Retry,
+                -> loadCountries()
 
-    fun onIntent(intent: HomeIntent) {
-        when (intent) {
-            HomeIntent.LoadCountries,
-            HomeIntent.Retry -> loadCountries()
-
-            is HomeIntent.CountryClicked -> {
-                // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
+                is HomeIntent.CountryClicked -> {
+                    // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
+                }
             }
         }
-    }
 
-    private fun loadCountries() {
-        viewModelScope.launch {
-            getCountryListUseCase()
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                            updateState { it.copy(isLoading = true, errorMessage = null) }
-                        }
-
-                        is ApiResult.Success -> {
-                            updateState {
-                                it.copy(
-                                    isLoading = false,
-                                    countries = result.data,
-                                    errorMessage = null,
-                                )
+        private fun loadCountries() {
+            viewModelScope.launch {
+                getCountryListUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                                updateState { it.copy(isLoading = true, errorMessage = null) }
                             }
-                        }
 
-                        is ApiResult.Error -> {
-                            updateState {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessage = "알 수 없는 오류가 발생했어요",
-                                )
+                            is ApiResult.Success -> {
+                                updateState {
+                                    it.copy(
+                                        isLoading = false,
+                                        countries = result.data,
+                                        errorMessage = null,
+                                    )
+                                }
+                            }
+
+                            is ApiResult.Error -> {
+                                updateState {
+                                    it.copy(
+                                        isLoading = false,
+                                        errorMessage = "알 수 없는 오류가 발생했어요",
+                                    )
+                                }
                             }
                         }
                     }
-                }
+            }
+        }
+
+        private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {
+            _uiState.update { current -> reducer(current) }
         }
     }
-
-    private inline fun updateState(
-        crossinline reducer: (HomeState) -> HomeState,
-    ) {
-        _uiState.update { current -> reducer(current) }
-    }
-}
