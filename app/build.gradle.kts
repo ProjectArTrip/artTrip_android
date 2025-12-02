@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -24,8 +26,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val kakaoNativeAppKey =
-            project.findProperty("KAKAO_NATIVE_APP_KEY") as String? ?: ""
+        val localProperties =
+            Properties().apply {
+                val file = rootProject.file("local.properties")
+                if (file.exists()) {
+                    load(file.inputStream())
+                }
+            }
+
+        val kakaoNativeAppKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY") ?: ""
 
         buildConfigField(
             "String",
