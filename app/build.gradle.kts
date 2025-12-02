@@ -96,4 +96,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.kakao.sdk.user)
+
+    implementation(libs.security.crypto)
 }
