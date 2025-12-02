@@ -1,6 +1,7 @@
 package com.arttrip.android.presentation.main
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -21,6 +22,14 @@ fun MainRoute(
         mainViewModel.dispatch(MainIntent.OnLoginSuccess)
         navController.navigate(route) {
             popUpTo(AppRoute.LOGIN) { inclusive = true }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        mainViewModel.logoutEvents.collect {
+            navController.navigate(AppRoute.LOGIN) {
+                popUpTo(0) { inclusive = true }
+            }
         }
     }
 

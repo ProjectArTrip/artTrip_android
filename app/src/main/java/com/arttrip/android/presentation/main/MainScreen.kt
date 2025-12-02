@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,7 @@ fun MainScreen(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val bottomNavRoutes = bottomNavItems.map { it.route }.toSet()
+    val bottomNavRoutes = remember { bottomNavItems.map { it.route }.toSet() }
     val shouldShowBottomNav =
         uiState.authState == AuthState.LOGGED_IN && currentRoute in bottomNavRoutes
 
