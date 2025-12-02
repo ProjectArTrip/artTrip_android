@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,16 +70,14 @@ fun LikeButton(
     state: LikeButtonState,
     onClick: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Surface(
         modifier =
             Modifier
                 .size(24.dp)
                 .clip(CircleShape)
                 .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
+                    indication = ripple(bounded = true),
+                    interactionSource = remember { MutableInteractionSource() },
                     onClick = onClick,
                 ),
         shape = CircleShape,
@@ -118,15 +117,15 @@ fun HeartButton(
     state: HeartButtonState,
     onClick: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Icon(
         modifier =
-            Modifier.clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick,
-            ),
+            Modifier
+                .clip(CircleShape)
+                .clickable(
+                    indication = ripple(bounded = true),
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = onClick,
+                ),
         painter =
             painterResource(
                 id =
