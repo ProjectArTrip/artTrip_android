@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -51,6 +52,8 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.component.tag.AppTagType
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.presentation.home.contract.HomeIntent
+import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -62,10 +65,11 @@ enum class ExhibitionTab {
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
-    modifier: Modifier = Modifier,
+    uiState: HomeState,
+    onIntent: (HomeIntent) -> Unit,
 ) {
     Scaffold(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding),
         containerColor = Color.White,
@@ -73,7 +77,11 @@ fun HomeScreen(
             LogoAppBar()
         },
     ) { contentPadding ->
-        HomeContainer(contentPadding = contentPadding)
+        HomeContainer(
+            contentPadding = contentPadding,
+            uiState = uiState,
+            onIntent = onIntent
+        )
     }
 }
 
@@ -141,7 +149,10 @@ fun AppBarIconButton(
 }
 
 @Composable
-fun HomeContainer(contentPadding: PaddingValues) {
+fun HomeContainer(
+    contentPadding: PaddingValues,
+    uiState: HomeState,
+    onIntent: (HomeIntent) -> Unit) {
     var selectedTab by remember { mutableStateOf(ExhibitionTab.International) }
     val tabs = remember { ExhibitionTab.entries }
     Box(
@@ -179,10 +190,10 @@ fun HomeContainer(contentPadding: PaddingValues) {
 
 @Composable
 fun InternationalExhibitionSection() {
-    val internalExhibits = getDummyExhibitList(10)
-    val recommendationExhibits = getDummyExhibitList(10)
-    val weeklyExhibits = getDummyExhibitList(3)
-    val genreExhibit = getDummyExhibitList(8)
+    val internalExhibits = getDummyExhibitList(10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+    val recommendationExhibits = getDummyExhibitList(10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+    val weeklyExhibits = getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+    val genreExhibit = getDummyExhibitList(8, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
 
     Column(
         modifier = Modifier
@@ -272,7 +283,135 @@ fun CountryChipList() {
 
 @Composable
 fun DomesticExhibitionSection() {
-    Text("국내전시")
+    val internalExhibits = getDummyExhibitList(10, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+    val recommendationExhibits = getDummyExhibitList(10, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+    val weeklyExhibits = getDummyExhibitList(3, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+    val genreExhibit = getDummyExhibitList(8, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Spacer(
+            modifier = Modifier
+                .height(24.dp)
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(16.dp)
+            )
+            internalExhibits.forEachIndexed { index, exhibit ->
+                ExhibitItemCase1(exhibit = exhibit)
+                if (index == 9) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        ExhibitByLocationSection()
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        PersonalRecommendedSection(
+            name = "손현준",
+            exhibitList = recommendationExhibits
+        )
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+        Spacer(
+            modifier = Modifier
+                .height(32.dp)
+        )
+        ExhibitionByGenreSection(exhibitList = genreExhibit)
+    }
+}
+
+@Composable
+fun ExhibitByLocationSection() {
+    val locationList by remember { mutableStateOf(listOf("수도권", "강원권", "충청북부권", "충청남부권", "전라북부권", "전라남부권", "경상북부권", "경상남부권", "제주권")) }
+
+    Column {
+        Row {
+            Spacer(
+                modifier = Modifier
+                    .width(24.dp)
+            )
+            Text(
+                text = "지역별 전시",
+                style = AppTextStyle.Title01Bold,
+                color = AppColor.TextPrimary
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            locationList.forEachIndexed { index, location ->
+                if (index == 0) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+                LocationItem(
+                    url = "https://img1.yna.co.kr/photo/yna/YH/2011/11/12/PYH2011111201190005600_P4.jpg",
+                    name = location
+                )
+                if (index == locationList.lastIndex) {
+                    Spacer(
+                        modifier = Modifier
+                            .width(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LocationItem(url: String, name: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = url,
+            contentDescription = "Locaiton Image",
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+        Text(
+            text = name,
+            style = AppTextStyle.Body02Bold,
+            color = AppColor.TextPrimary
+        )
+    }
 }
 
 @Composable
@@ -711,10 +850,10 @@ fun ExhibitImage(
     }
 }
 
-private fun getDummyExhibitList(size: Int): List<ExhibitInfoModel> {
+private fun getDummyExhibitList(size: Int, url: String): List<ExhibitInfoModel> {
     return List(size) { index ->
         ExhibitInfoModel(
-            url = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
+            url = url,
             title = "초대박 귀여운 쿼카 전시회 skrr~ #$index",
             place = "쿼카 공원",
             date = "2025.07.29 - 2025.08.10",
