@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
 
 /**
  * - 상태: selected(on) / unselected(off)
@@ -40,12 +41,11 @@ fun AppFilterChip(
     onClick: () -> Unit,
 ) {
     Surface(
-        onClick = onClick,
         shape = CircleShape,
         color = chipContainer(selected),
         contentColor = chipContent(selected),
         border = chipBorder(selected),
-        modifier = modifier.wrapContentSize(),
+        modifier = modifier.wrapContentSize().noRippleClickable { onClick() },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

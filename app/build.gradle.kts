@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,7 +7,7 @@ plugins {
 
     id("org.jlleitschuh.gradle.ktlint")
 
-    alias { libs.plugins.hilt }
+    alias(libs.plugins.hilt)
     kotlin("kapt")
     alias(libs.plugins.kotlin.serialization)
 }
@@ -15,7 +17,6 @@ android {
     compileSdk {
         version = release(36)
     }
-
     defaultConfig {
         applicationId = "com.arttrip.android"
         minSdk = 29
@@ -24,8 +25,25 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
+        val localProperties =
+            Properties().apply {
+                val file = rootProject.file("local.properties")
+                if (file.exists()) {
+                    load(file.inputStream())
+                }
+            }
+
+        val kakaoNativeAppKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY") ?: ""
+
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            "\"$kakaoNativeAppKey\"",
+        )
+
+        manifestPlaceholders["kakaoNativeAppKey"] = kakaoNativeAppKey
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -46,6 +64,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -85,6 +104,9 @@ dependencies {
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.kakao.sdk.user)
+
+    implementation(libs.security.crypto)
     // Coil
     implementation(libs.coil.compose)
 }
