@@ -74,11 +74,11 @@ enum class AppTabCase {
  */
 @Composable
 fun AppTabRow(
+    modifier: Modifier = Modifier,
     case: AppTabCase,
     tabs: List<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val colors: AppTabRowColors = AppTabRowDefaults.colors()
     val typography: AppTabRowTypography = AppTabRowDefaults.typography(case)
@@ -102,11 +102,11 @@ fun AppTabRow(
 
 @Composable
 internal fun AppTabRowImpl(
+    modifier: Modifier = Modifier,
     case: AppTabCase,
     tabs: List<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier,
     colors: AppTabRowColors,
     typography: AppTabRowTypography,
     metrics: AppTabRowMetrics,
@@ -158,13 +158,13 @@ internal fun AppTabRowImpl(
 
 @Composable
 private fun DefaultTabRow(
+    modifier: Modifier = Modifier,
     tabs: List<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
     colors: AppTabRowColors,
     typography: AppTabRowTypography,
     metrics: AppTabRowMetrics,
-    modifier: Modifier = Modifier,
 ) {
     SecondaryTabRow(
         selectedTabIndex = selectedIndex,
@@ -221,8 +221,8 @@ private fun TabIndicatorScope.DefaultTabIndicator(
 
 @Composable
 private fun DefaultAppTab(
-    title: String,
     modifier: Modifier = Modifier,
+    title: String,
     textStyle: TextStyle,
     textColor: Color,
     onClick: () -> Unit,
@@ -250,13 +250,13 @@ private val CASE03_TAB_SPACING = 24.dp
 
 @Composable
 private fun Case03TabRow(
+    modifier: Modifier = Modifier,
     titles: List<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
     colors: AppTabRowColors,
     typography: AppTabRowTypography,
     metrics: AppTabRowMetrics,
-    modifier: Modifier = Modifier,
 ) {
     require(titles.size == 2) { "Case03TabRow는 2탭 전용입니다." }
 

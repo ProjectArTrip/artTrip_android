@@ -32,8 +32,8 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
  */
 @Composable
 fun AppTag(
-    type: AppTagType,
     modifier: Modifier = Modifier,
+    type: AppTagType,
 ) {
     val colors = AppTagDefaults.colors(type)
     val style = AppTagDefaults.textStyle

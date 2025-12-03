@@ -39,10 +39,10 @@ import com.arttrip.android.core.ui.theme.AppColor
 
 @Composable
 fun AppBottomNavBarWithInset(
+    modifier: Modifier = Modifier,
     items: List<BottomNavItem>,
     selectedRoute: String?,
     onItemSelected: (BottomNavItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val bottomInset =
         WindowInsets.navigationBars
@@ -68,10 +68,10 @@ fun AppBottomNavBarWithInset(
 
 @Composable
 fun AppBottomNavBar(
+    modifier: Modifier = Modifier,
     items: List<BottomNavItem>,
     selectedRoute: String?,
     onItemSelected: (BottomNavItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val stampIndex = 2
     val barHeight = 86.dp
