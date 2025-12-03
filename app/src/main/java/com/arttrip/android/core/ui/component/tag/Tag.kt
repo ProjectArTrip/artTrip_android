@@ -154,7 +154,7 @@ fun SampleAppTag() {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        AppTag(AppTagType.Deadline)
-        AppTag(AppTagType.Ongoing)
+        AppTag(type = AppTagType.Deadline)
+        AppTag(type = AppTagType.Ongoing)
     }
 }
