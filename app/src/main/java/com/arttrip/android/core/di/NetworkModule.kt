@@ -1,6 +1,7 @@
 package com.arttrip.android.core.di
 
 import com.arttrip.android.data.remote.api.AuthApi
+import com.arttrip.android.data.remote.api.HomeApi
 import com.arttrip.android.data.remote.api.UserApi
 import com.arttrip.android.data.remote.interceptor.AuthInterceptor
 import com.arttrip.android.data.remote.interceptor.TokenAuthenticator
@@ -80,4 +81,5 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+    fun provideHomeApi(retrofit: Retrofit): HomeApi = retrofit.create(HomeApi::class.java)
 }

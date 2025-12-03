@@ -107,4 +107,6 @@ dependencies {
     implementation(libs.kakao.sdk.user)
 
     implementation(libs.security.crypto)
+    // Coil
+    implementation(libs.coil.compose)
 }

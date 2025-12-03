@@ -21,6 +21,7 @@ kotlinx-serialization = "1.9.0"
 kakao-sdk = "2.23.0"
 
 securityCrypto = "1.1.0"
+coil = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +54,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kakao-sdk-user   = { module = "com.kakao.sdk:v2-user",  version.ref = "kakao-sdk" }
 
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
