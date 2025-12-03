@@ -17,8 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +27,15 @@ import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.presentation.intro.contract.IntroIntent
+import com.arttrip.android.presentation.intro.contract.IntroState
 
 @Composable
-fun IntroScreen(innerPadding: PaddingValues) {
-    var selectedGenreIds by rememberSaveable { mutableStateOf(emptyList<Int>()) }
-    var selectedStyleIds by rememberSaveable { mutableStateOf(emptyList<Int>()) }
-
+fun IntroScreen(
+    innerPadding: PaddingValues,
+    state: IntroState,
+    onIntent: (IntroIntent) -> Unit,
+) {
     val buttonHeight = 52.dp
     val buttonBottomMargin = 16.dp
 
@@ -66,9 +67,9 @@ fun IntroScreen(innerPadding: PaddingValues) {
 
             IntroGenreSection(
                 modifier = Modifier.fillMaxWidth(),
-                selectedIds = selectedGenreIds,
+                selectedIds = state.selectedGenreIds,
                 onToggleGenre = { id ->
-                    selectedGenreIds = toggleId(selectedGenreIds, id)
+                    onIntent(IntroIntent.ToggleGenre(id))
                 },
             )
 
@@ -76,9 +77,9 @@ fun IntroScreen(innerPadding: PaddingValues) {
 
             IntroStyleSection(
                 modifier = Modifier.fillMaxWidth(),
-                selectedIds = selectedStyleIds,
+                selectedIds = state.selectedStyleIds,
                 onToggleStyle = { id ->
-                    selectedStyleIds = toggleId(selectedStyleIds, id)
+                    onIntent(IntroIntent.ToggleStyle(id))
                 },
             )
 
@@ -94,6 +95,7 @@ fun IntroScreen(innerPadding: PaddingValues) {
                         start = 24.dp,
                         end = 24.dp,
                     ),
+            onClick = { onIntent(IntroIntent.ClickNext) },
         )
     }
 }
@@ -127,7 +129,7 @@ private fun IntroGenreSection(
     modifier: Modifier = Modifier,
     selectedIds: List<Int>,
     genreList: List<Pair<Int, String>> =
-        listOf(
+        listOf( // TODO API로 변경
             1 to "현대미술",
             2 to "사진전",
             3 to "디지털아트",
@@ -226,11 +228,6 @@ private fun IntroBottomCta(
     )
 }
 
-private fun toggleId(
-    list: List<Int>,
-    id: Int,
-): List<Int> = if (id in list) list - id else list + id
-
 @Preview(
     name = "IntroScreen",
     showBackground = true,
@@ -240,5 +237,7 @@ private fun toggleId(
 fun PreviewIntroScreen() {
     IntroScreen(
         innerPadding = PaddingValues(0.dp),
+        state = IntroState(),
+        onIntent = {},
     )
 }
