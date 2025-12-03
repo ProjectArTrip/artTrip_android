@@ -1,5 +1,9 @@
 package com.arttrip.android.core.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,6 +30,18 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
+        enterTransition = {
+            slideInHorizontally { it } + fadeIn()
+        },
+        exitTransition = {
+            slideOutHorizontally { -it / 3 } + fadeOut()
+        },
+        popEnterTransition = {
+            slideInHorizontally { -it / 3 } + fadeIn()
+        },
+        popExitTransition = {
+            slideOutHorizontally { it } + fadeOut()
+        },
     ) {
         composable(AppRoute.LOGIN) {
             LoginRoute(
