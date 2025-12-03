@@ -37,10 +37,14 @@ class LoginViewModel
         fun onIntent(intent: LoginIntent) {
             when (intent) {
                 LoginIntent.ClickKakaoLogin -> {
-                    _state.update { state -> reduce(state, intent) }
                     viewModelScope.launch {
-                        _effect.emit(LoginEffect.LaunchKakaoLogin)
+                        _effect.emit(LoginEffect.NavigateToHome)
                     }
+                    // TODO: 서버 로그인 연동 복구되면 원래 Kakao 로그인 플로우로 되돌리기
+//                    _state.update { state -> reduce(state, intent) }
+//                    viewModelScope.launch {
+//                        _effect.emit(LoginEffect.LaunchKakaoLogin)
+//                    }
                 }
 
                 is LoginIntent.KakaoLoginSuccess -> {
@@ -59,7 +63,12 @@ class LoginViewModel
                     _state.update { state -> reduce(state, intent) }
                 }
 
-                LoginIntent.ClickGoogleLogin -> { /* ... */ }
+                LoginIntent.ClickGoogleLogin -> {
+                    // TODO: Google 로그인 연동 시 실제 로직으로 교체
+                    viewModelScope.launch {
+                        _effect.emit(LoginEffect.NavigateToIntro)
+                    }
+                }
             }
         }
 

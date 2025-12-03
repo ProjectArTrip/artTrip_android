@@ -58,7 +58,7 @@ fun LoginScreen(
         SocialLoginButton(
             provider = SocialLoginProvider.Google,
             onClick = {
-//                onIntent(LoginIntent.ClickGoogleLogin)
+                onIntent(LoginIntent.ClickGoogleLogin)
             },
             enabled = true,
         )
