@@ -19,10 +19,10 @@ fun MainRoute(
     val uiState by mainViewModel.state.collectAsStateWithLifecycle()
 
     val onLoginSuccess: (String) -> Unit = { route ->
-        mainViewModel.dispatch(MainIntent.OnLoginSuccess)
         navController.navigate(route) {
             popUpTo(AppRoute.LOGIN) { inclusive = true }
         }
+        mainViewModel.dispatch(MainIntent.OnLoginSuccess)
     }
 
     LaunchedEffect(Unit) {

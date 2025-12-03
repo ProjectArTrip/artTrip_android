@@ -52,12 +52,13 @@ fun MainScreen(
         AuthState.LOGGED_IN,
         -> {
             val startDestination =
-                if (uiState.authState == AuthState.LOGGED_IN) {
-                    BottomNavItem.Home.route
-                } else {
-                    AppRoute.LOGIN
+                remember {
+                    if (uiState.authState == AuthState.LOGGED_IN) {
+                        BottomNavItem.Home.route
+                    } else {
+                        AppRoute.LOGIN
+                    }
                 }
-
             Scaffold(
                 modifier = modifier,
                 containerColor = Color.White,
