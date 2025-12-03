@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,18 +67,15 @@ fun HomeScreen(
     uiState: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    Scaffold(
+    Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-        containerColor = Color.White,
-        topBar = {
-            LogoAppBar()
-        },
-    ) { contentPadding ->
+    ) {
+        HomeAppBar()
+
         HomeContainer(
-            contentPadding = contentPadding,
             uiState = uiState,
             onIntent = onIntent,
         )
@@ -87,13 +83,14 @@ fun HomeScreen(
 }
 
 @Composable
-fun LogoAppBar() {
+fun HomeAppBar() {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Spacer(
             modifier =
                 Modifier
+                    .fillMaxWidth()
                     .height(16.dp),
         )
         Row(
@@ -154,43 +151,40 @@ fun AppBarIconButton(
 
 @Composable
 fun HomeContainer(
-    contentPadding: PaddingValues,
     uiState: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
     var selectedTab by remember { mutableStateOf(ExhibitionTab.International) }
     val tabs = remember { ExhibitionTab.entries }
-    Box(
+
+    Column(
         modifier =
             Modifier
-                .fillMaxSize()
-                .padding(paddingValues = contentPadding),
+                .fillMaxSize(),
     ) {
-        Column {
-            Spacer(
-                modifier = Modifier.height(16.dp),
-            )
+        Spacer(
+            modifier = Modifier.height(16.dp),
+        )
 
-            AppTabRow(
-                case = AppTabCase.Case03,
-                tabs =
-                    tabs.map {
-                        when (it) {
-                            ExhibitionTab.International -> "해외전시"
-                            ExhibitionTab.Domestic -> "국내전시"
-                        }
-                    },
-                selectedIndex = tabs.indexOf(selectedTab),
-                onTabSelected = { index ->
-                    selectedTab = tabs[index]
+        AppTabRow(
+            case = AppTabCase.Case03,
+            tabs =
+                tabs.map {
+                    when (it) {
+                        ExhibitionTab.International -> "해외전시"
+                        ExhibitionTab.Domestic -> "국내전시"
+                    }
                 },
-                modifier = Modifier.padding(start = 24.dp),
-            )
+            selectedIndex = tabs.indexOf(selectedTab),
+            onTabSelected = { index ->
+                selectedTab = tabs[index]
+            },
+            modifier = Modifier.padding(start = 24.dp),
+        )
 
-            when (selectedTab) {
-                ExhibitionTab.International -> InternationalExhibitionSection()
-                ExhibitionTab.Domestic -> DomesticExhibitionSection()
-            }
+        when (selectedTab) {
+            ExhibitionTab.International -> InternationalExhibitionSection()
+            ExhibitionTab.Domestic -> DomesticExhibitionSection()
         }
     }
 }
