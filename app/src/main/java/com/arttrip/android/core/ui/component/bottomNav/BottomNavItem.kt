@@ -37,10 +37,10 @@ import com.arttrip.android.core.util.noRippleClickable
 /** 일반 네비 탭 아이템 */
 @Composable
 fun AppBottomNavItem(
+    modifier: Modifier = Modifier,
     item: BottomNavItem,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val visuals = rememberNavItemVisuals(selected)
 
@@ -69,10 +69,10 @@ fun AppBottomNavItem(
 /** 가운데 스탬프(FAB) 아이템 */
 @Composable
 fun AppBottomNavCenterItem(
+    modifier: Modifier = Modifier,
     item: BottomNavItem,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     buttonSize: Dp = 48.dp,
     labelGap: Dp = 4.dp,
 ) {
@@ -80,9 +80,12 @@ fun AppBottomNavCenterItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(labelGap),
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier =
-            modifier.noRippleClickable { onClick() },
+            modifier
+                .width(48.dp)
+                .height(66.dp)
+                .noRippleClickable { onClick() },
     ) {
         Surface(
             shape = CircleShape,

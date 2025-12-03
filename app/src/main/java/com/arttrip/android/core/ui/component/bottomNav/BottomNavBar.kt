@@ -39,10 +39,10 @@ import com.arttrip.android.core.ui.theme.AppColor
 
 @Composable
 fun AppBottomNavBarWithInset(
+    modifier: Modifier = Modifier,
     items: List<BottomNavItem>,
     selectedRoute: String?,
     onItemSelected: (BottomNavItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val bottomInset =
         WindowInsets.navigationBars
@@ -66,20 +66,22 @@ fun AppBottomNavBarWithInset(
     }
 }
 
+/**
+ * 피그마상 시스템바 영역인 24px뺀 바텀네비
+ * */
 @Composable
 fun AppBottomNavBar(
+    modifier: Modifier = Modifier,
     items: List<BottomNavItem>,
     selectedRoute: String?,
     onItemSelected: (BottomNavItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val stampIndex = 2
-    val barHeight = 86.dp
-    val totalHeight = 86.dp
-    val contentBottomPadding = 30.dp
+    // val barHeight = 86.dp
+    val totalHeight = 62.dp
+    val contentBottomPadding = 6.dp
     val contentTopPadding = 8.dp
     val horizontalPadding = 16.dp
-    val stampLift = 30.dp
     val stampSlotWidth = 46.dp
     val stampSlotHeight = 48.dp
 
@@ -101,8 +103,8 @@ fun AppBottomNavBar(
             shadowElevation = 5.dp,
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .height(barHeight),
+                    .fillMaxWidth(),
+// .height(barHeight),
         ) {
             Row(
                 modifier =
@@ -146,7 +148,7 @@ fun AppBottomNavBar(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = -stampLift),
+                    .offset(y = -contentBottomPadding),
         )
     }
 }
@@ -167,7 +169,7 @@ private object BottomNavOuterShape : Shape {
             val centerLift = 2f // centerX, -2f 에서 쓰던 중앙 높이(px)
 
             val outerRadius = 32.dp.toPx()
-            val bottomOffset = 40.dp.toPx()
+            val bottomOffset = 16.dp.toPx()
             // ============================
 
             val centerX = w / 2f

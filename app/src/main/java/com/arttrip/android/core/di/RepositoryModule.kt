@@ -28,6 +28,7 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun authRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
     @Singleton
     @Binds
     abstract fun homeRepository(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository

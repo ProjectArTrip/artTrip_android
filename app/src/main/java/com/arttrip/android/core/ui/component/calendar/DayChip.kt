@@ -55,9 +55,9 @@ enum class DayChipStateCase01 {
  */
 @Composable
 fun DayChipCase01(
+    modifier: Modifier = Modifier,
     dayOfMonth: Int,
     dayOfWeek: DayOfWeek,
-    modifier: Modifier = Modifier,
     state: DayChipStateCase01,
     onClick: () -> Unit = {},
 ) {
@@ -132,8 +132,8 @@ enum class DayChipStateCase02 {
  */
 @Composable
 fun DayChipCase02(
-    dayOfMonth: Int,
     modifier: Modifier = Modifier,
+    dayOfMonth: Int,
     state: DayChipStateCase02,
     onClick: () -> Unit = {},
 ) {

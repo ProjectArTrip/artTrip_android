@@ -43,9 +43,9 @@ import com.arttrip.android.core.ui.theme.Pretendard
  */
 @Composable
 fun AppButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     enabled: Boolean,
-    modifier: Modifier = Modifier,
     text: String,
 ) {
     Button(
@@ -81,8 +81,8 @@ fun AppButton(
  */
 @Composable
 fun ReviewButton(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     text: String,
 ) {
     val interactionSource = remember { MutableInteractionSource() }

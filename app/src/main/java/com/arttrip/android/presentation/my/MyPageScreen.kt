@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun MyPageScreen(
-    innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    innerPadding: PaddingValues,
 ) {
     Column(
         modifier = modifier.padding(innerPadding),
