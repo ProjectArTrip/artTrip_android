@@ -80,9 +80,12 @@ fun AppBottomNavCenterItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(labelGap),
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier =
-            modifier.noRippleClickable { onClick() },
+            modifier
+                .width(48.dp)
+                .height(66.dp)
+                .noRippleClickable { onClick() },
     ) {
         Surface(
             shape = CircleShape,
