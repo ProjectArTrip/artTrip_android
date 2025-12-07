@@ -162,5 +162,15 @@ class TokenAuthenticator
         private fun rebuildRequest(
             original: Request,
             newTokens: AuthTokens,
-        ): Request = original.newBuilder().build() // Header 추가는 상위 Interceptor에서 처리 중이라 그대로 유지
+        ): Request {
+            val newRequest =
+                original
+                    .newBuilder()
+                    .header("Authorization", "Bearer ${newTokens.accessToken}")
+                    .build()
+
+            Log.d(TAG, "rebuildRequest: 새 AccessToken으로 요청 재전송 - ${original.url.encodedPath}")
+
+            return newRequest
+        }
     }
