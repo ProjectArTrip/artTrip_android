@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,12 +65,8 @@ fun AppDropdown(
 
     val isSelected = selectedIndex in items.indices
     val displayText = if (isSelected) items[selectedIndex] else placeholder
-    val textStyle =
-        if (isSelected) {
-            AppDropdownDefaults.SelectedTextStyle
-        } else {
-            AppDropdownDefaults.PlaceholderTextStyle
-        }
+    val textStyle = AppDropdownDefaults.TextStyle
+    val textColor = AppDropdownDefaults.TextColor
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -103,6 +98,7 @@ fun AppDropdown(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = textStyle,
+                color = textColor,
             )
             Spacer(Modifier.width(10.dp))
             Icon(
@@ -146,7 +142,8 @@ private fun AppDropdownItem(
 ) {
     Text(
         text = text,
-        style = AppDropdownDefaults.ItemTextStyle,
+        style = AppDropdownDefaults.TextStyle,
+        color = AppDropdownDefaults.TextColor,
         modifier =
             modifier
                 .fillMaxWidth()
@@ -159,11 +156,8 @@ private object AppDropdownDefaults {
     val BackgroundColor = AppColor.Gray0
     val BorderColor = AppColor.Gray100
 
-    val PlaceholderTextStyle = AppTextStyle.Body01Regular.copy(color = AppColor.TextTertiary)
-
-    val SelectedTextStyle = AppTextStyle.Body01Bold.copy(color = AppColor.TextPrimary)
-
-    val ItemTextStyle = AppTextStyle.Body01Regular.copy(color = AppColor.TextTertiary)
+    val TextStyle = AppTextStyle.Body01Regular
+    val TextColor = AppColor.TextPrimary
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 500)
