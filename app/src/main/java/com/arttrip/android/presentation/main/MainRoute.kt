@@ -22,7 +22,7 @@ fun MainRoute(
         navController.navigate(route) {
             popUpTo(AppRoute.LOGIN) { inclusive = true }
         }
-        mainViewModel.dispatch(MainIntent.OnLoginSuccess)
+        mainViewModel.onIntent(MainIntent.OnLoginSuccess)
     }
 
     LaunchedEffect(Unit) {

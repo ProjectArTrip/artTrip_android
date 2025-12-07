@@ -42,7 +42,7 @@ class MainViewModel
             }
         }
 
-        fun dispatch(intent: MainIntent) {
+        fun onIntent(intent: MainIntent) {
             when (intent) {
                 MainIntent.OnLoginSuccess -> {
                     _state.value = _state.value.copy(authState = AuthState.LOGGED_IN)
