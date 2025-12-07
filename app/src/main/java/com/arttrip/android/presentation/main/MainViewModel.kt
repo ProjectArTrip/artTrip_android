@@ -34,12 +34,6 @@ class MainViewModel
                         authState = if (hasToken) AuthState.LOGGED_IN else AuthState.LOGGED_OUT,
                     )
             }
-
-            viewModelScope.launch {
-                sessionManager.logoutEvents.collect {
-                    _state.value = _state.value.copy(authState = AuthState.LOGGED_OUT)
-                }
-            }
         }
 
         fun onIntent(intent: MainIntent) {
