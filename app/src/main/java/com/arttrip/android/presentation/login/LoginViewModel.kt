@@ -40,14 +40,10 @@ class LoginViewModel
         fun onIntent(intent: LoginIntent) {
             when (intent) {
                 LoginIntent.ClickKakaoLogin -> {
+                    _state.update { state -> reduce(state, intent) }
                     viewModelScope.launch {
-                        _effect.emit(LoginEffect.NavigateToHome)
+                        _effect.emit(LoginEffect.LaunchKakaoLogin)
                     }
-                    // TODO: 서버 로그인 연동 복구되면 원래 Kakao 로그인 플로우로 되돌리기
-//                    _state.update { state -> reduce(state, intent) }
-//                    viewModelScope.launch {
-//                        _effect.emit(LoginEffect.LaunchKakaoLogin)
-//                    }
                 }
 
                 is LoginIntent.KakaoLoginSuccess -> {
