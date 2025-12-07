@@ -3,6 +3,8 @@ package com.arttrip.android.presentation.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.data.local.auth.TokenManager
+import com.arttrip.android.domain.model.auth.AuthTokens
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.login.SocialLoginUseCase
@@ -23,6 +25,7 @@ class LoginViewModel
     @Inject
     constructor(
         private val socialLoginUseCase: SocialLoginUseCase,
+        private val tokenManager: TokenManager,
     ) : ViewModel() {
         companion object {
             private const val TAG = "LoginViewModel"
@@ -37,14 +40,10 @@ class LoginViewModel
         fun onIntent(intent: LoginIntent) {
             when (intent) {
                 LoginIntent.ClickKakaoLogin -> {
+                    _state.update { state -> reduce(state, intent) }
                     viewModelScope.launch {
-                        _effect.emit(LoginEffect.NavigateToHome)
+                        _effect.emit(LoginEffect.LaunchKakaoLogin)
                     }
-                    // TODO: 서버 로그인 연동 복구되면 원래 Kakao 로그인 플로우로 되돌리기
-//                    _state.update { state -> reduce(state, intent) }
-//                    viewModelScope.launch {
-//                        _effect.emit(LoginEffect.LaunchKakaoLogin)
-//                    }
                 }
 
                 is LoginIntent.KakaoLoginSuccess -> {
@@ -121,10 +120,16 @@ class LoginViewModel
                                     isLoading = false,
                                 )
                             }
-                            val login = result.data // TODO token 저장
+                            val data = result.data
+                            val tokens =
+                                AuthTokens(
+                                    accessToken = data.accessToken,
+                                    refreshToken = data.refreshToken,
+                                )
+                            tokenManager.saveTokens(tokens)
 
                             val effect =
-                                if (login.isFirstLogin) {
+                                if (data.isFirstLogin) {
                                     LoginEffect.NavigateToIntro
                                 } else {
                                     LoginEffect.NavigateToHome

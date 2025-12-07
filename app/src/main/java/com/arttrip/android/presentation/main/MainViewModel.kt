@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.data.local.auth.SessionManager
@@ -29,20 +30,19 @@ class MainViewModel
         init {
             viewModelScope.launch {
                 val hasToken = tokenManager.hasTokens()
-                _state.value =
-                    _state.value.copy(
-                        authState = if (hasToken) AuthState.LOGGED_IN else AuthState.LOGGED_OUT,
-                    )
-            }
+                val authState =
+                    if (hasToken) AuthState.LOGGED_IN else AuthState.LOGGED_OUT
 
-            viewModelScope.launch {
-                sessionManager.logoutEvents.collect {
-                    _state.value = _state.value.copy(authState = AuthState.LOGGED_OUT)
-                }
+                Log.d(
+                    TAG,
+                    "init: hasToken=$hasToken → authState=$authState",
+                )
+
+                _state.value = _state.value.copy(authState = authState)
             }
         }
 
-        fun dispatch(intent: MainIntent) {
+        fun onIntent(intent: MainIntent) {
             when (intent) {
                 MainIntent.OnLoginSuccess -> {
                     _state.value = _state.value.copy(authState = AuthState.LOGGED_IN)
@@ -52,5 +52,9 @@ class MainViewModel
                     _state.value = _state.value.copy(authState = AuthState.LOGGED_OUT)
                 }
             }
+        }
+
+        companion object {
+            private const val TAG = "MainViewModel"
         }
     }

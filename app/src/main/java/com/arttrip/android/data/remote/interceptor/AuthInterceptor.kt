@@ -17,7 +17,6 @@ class AuthInterceptor
 
             val accessToken = tokenManager.getAccessToken()
             if (accessToken.isNullOrBlank()) {
-                // 토큰 없으면 그냥 원본 요청 그대로 진행
                 return chain.proceed(original)
             }
 
