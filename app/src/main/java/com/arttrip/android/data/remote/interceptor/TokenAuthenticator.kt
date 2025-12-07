@@ -7,13 +7,11 @@ import com.arttrip.android.data.remote.api.ApiConstants.AUTH_PATH
 import com.arttrip.android.data.remote.api.AuthApi
 import com.arttrip.android.data.remote.model.auth.RefreshRequestDto
 import com.arttrip.android.data.remote.model.auth.RefreshResponseDto
-import com.arttrip.android.data.remote.model.network.BaseResponseDto
 import com.arttrip.android.domain.model.auth.AuthTokens
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,136 +27,123 @@ class TokenAuthenticator
             route: Route?,
             response: Response,
         ): Request? {
-            if (shouldSkipAuthenticate(response)) {
-                return null
-            }
+            if (!shouldAttemptRefresh(response)) return null
 
-            val errorBody = response.peekBody(Long.MAX_VALUE).string()
-            if (!isTokenExpired(errorBody)) {
-                return null
-            }
+            if (!isAccessTokenExpired(response)) return null
 
             val newTokens = tryRefreshTokens() ?: return null
 
-            return buildRetriedRequest(response.request, newTokens)
+            return rebuildRequest(response.request, newTokens)
         }
 
-        private fun shouldSkipAuthenticate(response: Response): Boolean {
+        private fun shouldAttemptRefresh(response: Response): Boolean {
             // 무한 루프 방지
-            if (responseCount(response) >= 2) {
-                return true
-            }
+            if (responseDepth(response) >= 2) return false
 
-            // 로그인/소셜/리프레시 자체에서 401이면 리프레시 시도 X
             val path = response.request.url.encodedPath
-            if (isAuthRelatedPath(path)) {
-                return true
-            }
+            if (isAuthApi(path)) return false
 
-            // 저장된 refreshToken이 없으면 시도 불가
-            if (tokenManager.getRefreshToken().isNullOrBlank()) {
-                return true
-            }
+            if (tokenManager.getRefreshToken().isNullOrBlank()) return false
 
-            return false
+            return true
         }
 
-        private fun isAuthRelatedPath(path: String): Boolean {
-            return path.endsWith("${AUTH_PATH}/social") ||
+        private fun isAuthApi(path: String): Boolean =
+            path.endsWith("${AUTH_PATH}/social") ||
                 path.endsWith("${AUTH_PATH}/app/reissue")
-            // TODO: /auth/login 등 추가 필요하면 여기서만 관리
-        }
 
-        private fun responseCount(response: Response): Int {
-            var count = 1
-            var current: Response? = response.priorResponse
-            while (current != null) {
-                count++
-                current = current.priorResponse
+        private fun responseDepth(response: Response): Int {
+            var depth = 1
+            var prev = response.priorResponse
+            while (prev != null) {
+                depth++
+                prev = prev.priorResponse
             }
-            return count
+            return depth
         }
 
-        // 원래 응답이 "토큰 만료"인지 판단
-        private fun isTokenExpired(errorBody: String): Boolean {
-            if (errorBody.isBlank()) return false
-
-            return try {
-                val json = JSONObject(errorBody)
-                val code = json.optString("code")
-
-                when (code) {
-                    "COMMON401", // TODO: ACCESS_TOKEN_EXPIRED 같은 코드만 true
-                    "TOKEN_EXPIRED",
-                    "REFRESH_TOKEN_EXPIRED",
-                    -> true
-
-                    else -> false
-                }
-            } catch (e: Exception) {
-                // 에러 형태가 예상과 다르면 "토큰 만료"로 간주하지 않음
-                false
-            }
+        private fun isAccessTokenExpired(response: Response): Boolean {
+//            val errorBody = response.peekBody(Long.MAX_VALUE).string()
+//            if (errorBody.isBlank()) return false
+//
+//            return parseTokenExpired(errorBody)
+            // TODO: 서버에서 명확한 토큰 만료 코드를 주기 전까지는 401로만 판단
+            return response.code == 401
         }
+
+//        private fun parseTokenExpired(body: String): Boolean =
+//            try {
+//                val code = JSONObject(body).optString("code")
+//                code in setOf("COMMON401", "TOKEN_EXPIRED", "REFRESH_TOKEN_EXPIRED")
+//            } catch (_: Exception) {
+//                false
+//            }
 
         private fun tryRefreshTokens(): AuthTokens? {
             val refreshToken = tokenManager.getRefreshToken() ?: return null
 
-            val call =
-                authApi.refreshTokens(
-                    RefreshRequestDto(refreshToken = refreshToken),
-                )
-
             val response =
                 try {
-                    call.execute()
-                } catch (e: Exception) {
-                    // 네트워크/서버 문제 → 여기서는 바로 로그아웃까지는 하지 않고 null 반환
+                    authApi.refreshTokens(RefreshRequestDto(refreshToken)).execute()
+                } catch (_: Exception) {
                     return null
                 }
 
+            // ---(임시) HTTP 레벨에서 refresh 401 = Refresh Token 만료 ---
+            if (response.code() == 401) {
+                expireSession()
+                return null
+            }
+
+            // --- HTTP 오류 ---
             if (!response.isSuccessful) {
-                // HTTP 레벨에서 실패
-                tokenManager.clear()
+                expireTokens()
                 return null
             }
 
-            val body: BaseResponseDto<RefreshResponseDto> =
-                response.body() ?: run {
-                    tokenManager.clear()
-                    return null
-                }
+            val body =
+                response.body()
+                    ?: return expireTokens()
 
-            // 비즈니스 레벨 실패 처리
+            // --- 비즈니스 레벨 실패 ---
             if (!body.isSuccess || body.result == null) {
-                when (body.code) {
-                    // TODO: REFRESH_TOKEN_EXPIRED 코드에서만 logout
-                    "COMMON401" -> {
-                        tokenManager.clear()
-                        sessionManager.logout()
-                    }
-                    else -> {
-                        // 다른 에러 코드들에 대한 정책이 정해지면 여기에서 분기
-                        tokenManager.clear() // 지금은 일단 전부 날려버리기
-                    }
-                }
-                return null
+                return handleRefreshBusinessFailure(body.code)
             }
 
-            val result = body.result
+            return saveNewTokens(body.result)
+        }
 
+        private fun expireSession() {
+            tokenManager.clear()
+            sessionManager.logout()
+        }
+
+        private fun expireTokens(): AuthTokens? {
+            tokenManager.clear()
+            return null
+        }
+
+        private fun handleRefreshBusinessFailure(code: String): AuthTokens? {
+            if (code == "COMMON401") {
+                expireSession()
+            } else {
+                tokenManager.clear()
+            }
+            return null
+        }
+
+        private fun saveNewTokens(result: RefreshResponseDto): AuthTokens {
             val newTokens =
                 AuthTokens(
                     accessToken = result.accessToken,
                     refreshToken = result.refreshToken,
                 )
             tokenManager.saveTokens(newTokens)
-
             return newTokens
         }
 
-        private fun buildRetriedRequest(
+        private fun rebuildRequest(
             original: Request,
             newTokens: AuthTokens,
-        ): Request = original.newBuilder().build()
+        ): Request = original.newBuilder().build() // Header 추가는 상위 Interceptor에서 처리 중이라 그대로 유지
     }
