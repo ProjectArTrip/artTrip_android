@@ -3,6 +3,8 @@ package com.arttrip.android.presentation.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.data.local.auth.TokenManager
+import com.arttrip.android.domain.model.auth.AuthTokens
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.login.SocialLoginUseCase
@@ -23,6 +25,7 @@ class LoginViewModel
     @Inject
     constructor(
         private val socialLoginUseCase: SocialLoginUseCase,
+        private val tokenManager: TokenManager,
     ) : ViewModel() {
         companion object {
             private const val TAG = "LoginViewModel"
@@ -121,10 +124,16 @@ class LoginViewModel
                                     isLoading = false,
                                 )
                             }
-                            val login = result.data // TODO token 저장
+                            val data = result.data
+                            val tokens =
+                                AuthTokens(
+                                    accessToken = data.accessToken,
+                                    refreshToken = data.refreshToken,
+                                )
+                            tokenManager.saveTokens(tokens)
 
                             val effect =
-                                if (login.isFirstLogin) {
+                                if (data.isFirstLogin) {
                                     LoginEffect.NavigateToIntro
                                 } else {
                                     LoginEffect.NavigateToHome

@@ -3,7 +3,6 @@ package com.arttrip.android.presentation.main
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -16,7 +15,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.android.core.navigation.AppNavHost
 import com.arttrip.android.core.navigation.AppRoute
-import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
 import com.arttrip.android.core.ui.theme.ArtTripTheme
@@ -35,64 +33,41 @@ fun MainScreen(
 
     val bottomNavRoutes = remember { bottomNavItems.map { it.route }.toSet() }
     val shouldShowBottomNav =
-        uiState.authState == AuthState.LOGGED_IN && currentRoute in bottomNavRoutes
+        uiState.authState == AuthState.LOGGED_IN &&
+            currentRoute in bottomNavRoutes
 
-    when (uiState.authState) {
-        AuthState.UNKNOWN -> {
-            Scaffold(
-                modifier = modifier,
-                containerColor = Color.White,
-            ) { innerPadding ->
-                // TODO: SplashScreen으로 교체 예정
-                Text("Splash $innerPadding")
-            }
-        }
-
-        AuthState.LOGGED_OUT,
-        AuthState.LOGGED_IN,
-        -> {
-            val startDestination =
-                remember {
-                    if (uiState.authState == AuthState.LOGGED_IN) {
-                        BottomNavItem.Home.route
-                    } else {
-                        AppRoute.LOGIN
-                    }
+    Scaffold(
+        modifier = modifier,
+        containerColor = Color.White,
+        bottomBar = {
+            if (shouldShowBottomNav) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    AppBottomNavBarWithInset(
+                        items = bottomNavItems,
+                        selectedRoute = currentRoute,
+                        onItemSelected = { item ->
+                            navController.navigate(item.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                            }
+                        },
+                    )
                 }
-            Scaffold(
-                modifier = modifier,
-                containerColor = Color.White,
-                bottomBar = {
-                    if (shouldShowBottomNav) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.TopCenter,
-                        ) {
-                            AppBottomNavBarWithInset(
-                                items = bottomNavItems,
-                                selectedRoute = currentRoute,
-                                onItemSelected = { item ->
-                                    navController.navigate(item.route) {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
-                                    }
-                                },
-                            )
-                        }
-                    }
-                },
-            ) { innerPadding ->
-                AppNavHost(
-                    navController = navController,
-                    innerPadding = innerPadding,
-                    startDestination = startDestination,
-                    onLoginSuccess = onLoginSuccess,
-                )
             }
-        }
+        },
+    ) { innerPadding ->
+        AppNavHost(
+            navController = navController,
+            innerPadding = innerPadding,
+            startDestination = AppRoute.LOGIN, // TODO
+            onLoginSuccess = onLoginSuccess,
+        )
     }
 }
 
