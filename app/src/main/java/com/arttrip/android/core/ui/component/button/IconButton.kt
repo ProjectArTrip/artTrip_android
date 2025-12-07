@@ -36,8 +36,8 @@ import com.arttrip.android.core.ui.theme.AppColor
  */
 @Composable
 fun UploadButton(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -67,12 +67,13 @@ enum class LikeButtonState { Like, LikeSelected }
  */
 @Composable
 fun LikeButton(
+    modifier: Modifier = Modifier,
     state: LikeButtonState,
     onClick: () -> Unit,
 ) {
     Surface(
         modifier =
-            Modifier
+            modifier
                 .size(24.dp)
                 .clip(CircleShape)
                 .clickable(
@@ -114,12 +115,13 @@ enum class HeartButtonState { Heart, HeartSelected }
  */
 @Composable
 fun HeartButton(
+    modifier: Modifier = Modifier,
     state: HeartButtonState,
     onClick: () -> Unit,
 ) {
     Icon(
         modifier =
-            Modifier
+            modifier
                 .clip(CircleShape)
                 .clickable(
                     indication = ripple(bounded = true),
