@@ -32,9 +32,7 @@ fun MainScreen(
     val currentRoute = backStackEntry?.destination?.route
 
     val bottomNavRoutes = remember { bottomNavItems.map { it.route }.toSet() }
-    val shouldShowBottomNav =
-        uiState.authState == AuthState.LOGGED_IN &&
-            currentRoute in bottomNavRoutes
+    val shouldShowBottomNav = currentRoute in bottomNavRoutes
 
     Scaffold(
         modifier = modifier,
@@ -65,8 +63,8 @@ fun MainScreen(
         AppNavHost(
             navController = navController,
             innerPadding = innerPadding,
-            startDestination = AppRoute.LOGIN, // TODO
             onLoginSuccess = onLoginSuccess,
+            startDestination = AppRoute.SPLASH,
         )
     }
 }
