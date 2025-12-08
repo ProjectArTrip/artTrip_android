@@ -1,11 +1,12 @@
 package com.arttrip.android.data.repository
 
-import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.data.remote.datasource.AuthDataSource
 import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
+import com.arttrip.android.data.remote.model.auth.KeywordType
 import com.arttrip.android.data.remote.model.auth.LoginRequestDto
-import com.arttrip.android.domain.model.auth.AuthTokens
+import com.arttrip.android.data.remote.model.auth.UserKeywordsRequestDto
+import com.arttrip.android.domain.model.auth.KeywordGroups
 import com.arttrip.android.domain.model.auth.LoginModel
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiError
@@ -54,6 +55,80 @@ class AuthRepositoryImpl
                     val domainModel = dto.toDomain()
 
                     emit(ApiResult.Success(domainModel))
+                } catch (e: Exception) {
+                    val error = e.toAppError()
+                    emit(ApiResult.Error(error))
+                }
+            }
+
+        override fun getAllKeywords(): Flow<ApiResult<KeywordGroups>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val baseResponse =
+                        dataSource.getAllKeywords()
+
+                    val dto = baseResponse.result
+                    if (dto == null) {
+                        emit(
+                            ApiResult.Error(
+                                ApiError.HttpError(
+                                    statusCode = 200,
+                                    serverCode = "EMPTY_RESULT",
+                                    serverMessage = "empty result",
+                                ),
+                            ),
+                        )
+                        return@flow
+                    }
+
+                    val domainList = dto.toDomain()
+
+                    val genres = domainList.filter { it.type == KeywordType.GENRE }
+                    val styles = domainList.filter { it.type == KeywordType.STYLE }
+
+                    val groups =
+                        KeywordGroups(
+                            genres = genres,
+                            styles = styles,
+                        )
+
+                    emit(ApiResult.Success(groups))
+                } catch (e: Exception) {
+                    val error = e.toAppError()
+                    emit(ApiResult.Error(error))
+                }
+            }
+
+        override fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<String>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val baseResponse =
+                        dataSource.postUserKeywords(
+                            userKeywordsRequestDto =
+                                UserKeywordsRequestDto(
+                                    keywordIds = keywordIds,
+                                ),
+                        )
+
+                    val dto = baseResponse.result
+                    if (dto == null) {
+                        emit(
+                            ApiResult.Error(
+                                ApiError.HttpError(
+                                    statusCode = 200,
+                                    serverCode = "EMPTY_RESULT",
+                                    serverMessage = "empty result",
+                                ),
+                            ),
+                        )
+                        return@flow
+                    }
+
+                    emit(ApiResult.Success(dto))
                 } catch (e: Exception) {
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))

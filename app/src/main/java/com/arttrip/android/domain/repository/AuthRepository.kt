@@ -1,5 +1,6 @@
 package com.arttrip.android.domain.repository
 
+import com.arttrip.android.domain.model.auth.KeywordGroups
 import com.arttrip.android.domain.model.auth.LoginModel
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiResult
@@ -10,4 +11,8 @@ interface AuthRepository {
         provider: LoginProvider,
         idToken: String,
     ): Flow<ApiResult<LoginModel>>
+
+    fun getAllKeywords(): Flow<ApiResult<KeywordGroups>>
+
+    fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<String>>
 }
