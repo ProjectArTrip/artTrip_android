@@ -15,7 +15,7 @@ fun HomeRoute(
     onNavigate: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val homeState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -28,7 +28,7 @@ fun HomeRoute(
     }
     HomeScreen(
         innerPadding = innerPadding,
-        uiState = homeState,
+        state = state,
         onIntent = viewModel::onIntent,
     )
 }

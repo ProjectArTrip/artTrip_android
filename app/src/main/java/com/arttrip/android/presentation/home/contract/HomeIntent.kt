@@ -10,4 +10,5 @@ sealed interface HomeIntent {
     ) : HomeIntent
 
     object DateFilterIconClicked : HomeIntent
+    object LoadInterExhibitList: HomeIntent
 }
