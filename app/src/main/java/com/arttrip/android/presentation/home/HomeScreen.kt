@@ -839,7 +839,7 @@ fun ExhibitItemCase4(
     Column(
         modifier =
             Modifier
-                .width(120.dp)
+                .width(128.dp)
                 .clickable {
                     onItemClick()
                 },
@@ -908,7 +908,7 @@ fun ExhibitImage(
             ExhibitImageCase.CASE1 -> 180.dp
             ExhibitImageCase.CASE2 -> 120.dp
             ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 120.dp
+            ExhibitImageCase.CASE4 -> 128.dp
         }
 
     val imageHeight =
@@ -916,7 +916,7 @@ fun ExhibitImage(
             ExhibitImageCase.CASE1 -> 240.dp
             ExhibitImageCase.CASE2 -> 150.dp
             ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 150.dp
+            ExhibitImageCase.CASE4 -> 160.dp
         }
 
     val borderModifier =
