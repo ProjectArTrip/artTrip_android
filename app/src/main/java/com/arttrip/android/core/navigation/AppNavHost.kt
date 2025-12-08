@@ -16,6 +16,7 @@ import com.arttrip.android.presentation.intro.IntroRoute
 import com.arttrip.android.presentation.login.LoginRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.MyPageRoute
+import com.arttrip.android.presentation.splash.SplashRoute
 import com.arttrip.android.presentation.stamp.StampRoute
 
 @Composable
@@ -24,7 +25,6 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
     startDestination: String,
-    onLoginSuccess: (String) -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -43,10 +43,24 @@ fun AppNavHost(
             slideOutHorizontally { it } + fadeOut()
         },
     ) {
+        composable(AppRoute.SPLASH) {
+            SplashRoute(
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.SPLASH) { inclusive = true }
+                    }
+                },
+            )
+        }
+
         composable(AppRoute.LOGIN) {
             LoginRoute(
                 innerPadding = innerPadding,
-                onLoginSuccess = onLoginSuccess,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.LOGIN) { inclusive = true }
+                    }
+                },
             )
         }
 

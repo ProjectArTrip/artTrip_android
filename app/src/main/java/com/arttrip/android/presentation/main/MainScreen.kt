@@ -18,23 +18,17 @@ import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
 import com.arttrip.android.core.ui.theme.ArtTripTheme
-import com.arttrip.android.presentation.main.contract.AuthState
-import com.arttrip.android.presentation.main.contract.MainState
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    uiState: MainState,
-    onLoginSuccess: (String) -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
     val bottomNavRoutes = remember { bottomNavItems.map { it.route }.toSet() }
-    val shouldShowBottomNav =
-        uiState.authState == AuthState.LOGGED_IN &&
-            currentRoute in bottomNavRoutes
+    val shouldShowBottomNav = currentRoute in bottomNavRoutes
 
     Scaffold(
         modifier = modifier,
@@ -65,8 +59,7 @@ fun MainScreen(
         AppNavHost(
             navController = navController,
             innerPadding = innerPadding,
-            startDestination = AppRoute.LOGIN, // TODO
-            onLoginSuccess = onLoginSuccess,
+            startDestination = AppRoute.SPLASH,
         )
     }
 }
@@ -83,11 +76,6 @@ fun PreviewMainScreen_LoggedIn() {
         MainScreen(
             modifier = Modifier,
             navController = navController,
-            uiState =
-                MainState(
-                    authState = AuthState.LOGGED_IN,
-                ),
-            onLoginSuccess = {},
         )
     }
 }
@@ -104,11 +92,6 @@ fun PreviewMainScreen_LoggedOut() {
         MainScreen(
             modifier = Modifier,
             navController = navController,
-            uiState =
-                MainState(
-                    authState = AuthState.LOGGED_OUT,
-                ),
-            onLoginSuccess = {},
         )
     }
 }

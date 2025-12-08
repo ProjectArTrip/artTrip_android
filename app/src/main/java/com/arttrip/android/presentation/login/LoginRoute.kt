@@ -20,7 +20,7 @@ import com.kakao.sdk.user.UserApiClient
 @Composable
 fun LoginRoute(
     innerPadding: PaddingValues,
-    onLoginSuccess: (String) -> Unit,
+    onNavigate: (String) -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -44,10 +44,10 @@ fun LoginRoute(
                 }
 
                 LoginEffect.NavigateToIntro -> {
-                    onLoginSuccess(AppRoute.INTRO)
+                    onNavigate(AppRoute.INTRO)
                 }
                 LoginEffect.NavigateToHome -> {
-                    onLoginSuccess(BottomNavItem.Home.route)
+                    onNavigate(BottomNavItem.Home.route)
                 }
                 is LoginEffect.ShowError -> {
                     // 토스트/스낵바 등 표시
