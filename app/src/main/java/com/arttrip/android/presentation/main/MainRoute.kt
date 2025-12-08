@@ -18,13 +18,6 @@ fun MainRoute(
     val navController = rememberNavController()
     val uiState by mainViewModel.state.collectAsStateWithLifecycle()
 
-    val onLoginSuccess: (String) -> Unit = { route ->
-        navController.navigate(route) {
-            popUpTo(AppRoute.LOGIN) { inclusive = true }
-        }
-        mainViewModel.onIntent(MainIntent.OnLoginSuccess)
-    }
-
     LaunchedEffect(Unit) {
         mainViewModel.logoutEvents.collect {
             navController.navigate(AppRoute.LOGIN) {
@@ -37,6 +30,5 @@ fun MainRoute(
         modifier = modifier,
         navController = navController,
         uiState = uiState,
-        onLoginSuccess = onLoginSuccess,
     )
 }

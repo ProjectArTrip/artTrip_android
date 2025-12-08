@@ -26,7 +26,6 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     uiState: MainState,
-    onLoginSuccess: (String) -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -63,7 +62,6 @@ fun MainScreen(
         AppNavHost(
             navController = navController,
             innerPadding = innerPadding,
-            onLoginSuccess = onLoginSuccess,
             startDestination = AppRoute.SPLASH,
         )
     }
@@ -85,7 +83,6 @@ fun PreviewMainScreen_LoggedIn() {
                 MainState(
                     authState = AuthState.LOGGED_IN,
                 ),
-            onLoginSuccess = {},
         )
     }
 }
@@ -106,7 +103,6 @@ fun PreviewMainScreen_LoggedOut() {
                 MainState(
                     authState = AuthState.LOGGED_OUT,
                 ),
-            onLoginSuccess = {},
         )
     }
 }

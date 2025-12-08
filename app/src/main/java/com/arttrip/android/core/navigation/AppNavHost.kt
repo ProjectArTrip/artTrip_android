@@ -25,7 +25,6 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
     startDestination: String,
-    onLoginSuccess: (String) -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -45,17 +44,23 @@ fun AppNavHost(
         },
     ) {
         composable(AppRoute.SPLASH) {
-            SplashRoute(onNavigate = { targetRoute ->
-                navController.navigate(targetRoute) {
-                    popUpTo(AppRoute.SPLASH) { inclusive = true }
-                }
-            })
+            SplashRoute(
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.SPLASH) { inclusive = true }
+                    }
+                },
+            )
         }
 
         composable(AppRoute.LOGIN) {
             LoginRoute(
                 innerPadding = innerPadding,
-                onLoginSuccess = onLoginSuccess,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.LOGIN) { inclusive = true }
+                    }
+                },
             )
         }
 
