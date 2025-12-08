@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -43,6 +44,8 @@ import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.button.LikeButtonState
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.tab.AppTabCase
@@ -719,6 +722,12 @@ fun ExhibitItemCase1(
         url = exhibit.posterUrl,
         case = ExhibitImageCase.CASE1,
     ) {
+        LikeButton(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = (-16).dp, y = (16).dp),
+            state = LikeButtonState.Like
+        ) { }
         Box(
             modifier =
                 Modifier
@@ -777,7 +786,14 @@ fun ExhibitItemCase2(
                     onItemClick()
                 },
     ) {
-        ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE2)
+        ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE2) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
+        }
         Spacer(
             modifier =
                 Modifier
@@ -808,6 +824,12 @@ fun ExhibitItemCase3(
             url = exhibit.url,
             case = ExhibitImageCase.CASE3,
         ) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
             AppTag(
                 type = AppTagType.Ongoing,
                 modifier =
@@ -876,7 +898,14 @@ fun ExhibitItemCase4(
         ExhibitImage(
             url = exhibit.url,
             case = ExhibitImageCase.CASE4,
-        )
+        ) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
+        }
         Spacer(
             modifier =
                 Modifier
