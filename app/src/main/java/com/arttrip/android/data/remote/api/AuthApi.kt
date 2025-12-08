@@ -6,7 +6,7 @@ import com.arttrip.android.data.remote.model.auth.LoginRequestDto
 import com.arttrip.android.data.remote.model.auth.LoginResponseDto
 import com.arttrip.android.data.remote.model.auth.RefreshRequestDto
 import com.arttrip.android.data.remote.model.auth.RefreshResponseDto
-import com.arttrip.android.data.remote.model.auth.UserKeywordsReqeustDto
+import com.arttrip.android.data.remote.model.auth.UserKeywordsRequestDto
 import com.arttrip.android.data.remote.model.network.BaseResponseDto
 import retrofit2.Call
 import retrofit2.http.Body
@@ -29,6 +29,6 @@ interface AuthApi {
 
     @POST("${AUTH_PATH}/keywords")
     suspend fun postUserKeywords(
-        @Body body: UserKeywordsReqeustDto,
-    ): BaseResponseDto<Unit>
+        @Body body: UserKeywordsRequestDto,
+    ): BaseResponseDto<String>
 }
