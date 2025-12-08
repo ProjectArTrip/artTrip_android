@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.android.core.navigation.AppRoute
 
@@ -16,7 +15,6 @@ fun MainRoute(
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
-    val uiState by mainViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         mainViewModel.logoutEvents.collect {
@@ -29,6 +27,5 @@ fun MainRoute(
     MainScreen(
         modifier = modifier,
         navController = navController,
-        uiState = uiState,
     )
 }

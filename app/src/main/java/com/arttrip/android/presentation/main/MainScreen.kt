@@ -18,14 +18,11 @@ import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.core.navigation.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
 import com.arttrip.android.core.ui.theme.ArtTripTheme
-import com.arttrip.android.presentation.main.contract.AuthState
-import com.arttrip.android.presentation.main.contract.MainState
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    uiState: MainState,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -79,10 +76,6 @@ fun PreviewMainScreen_LoggedIn() {
         MainScreen(
             modifier = Modifier,
             navController = navController,
-            uiState =
-                MainState(
-                    authState = AuthState.LOGGED_IN,
-                ),
         )
     }
 }
@@ -99,10 +92,6 @@ fun PreviewMainScreen_LoggedOut() {
         MainScreen(
             modifier = Modifier,
             navController = navController,
-            uiState =
-                MainState(
-                    authState = AuthState.LOGGED_OUT,
-                ),
         )
     }
 }
