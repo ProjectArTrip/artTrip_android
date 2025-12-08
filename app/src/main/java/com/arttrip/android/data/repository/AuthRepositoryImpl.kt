@@ -19,7 +19,6 @@ class AuthRepositoryImpl
     @Inject
     constructor(
         private val dataSource: AuthDataSource,
-        private val tokenManager: TokenManager,
     ) : AuthRepository {
         override fun socialLogin(
             provider: LoginProvider,
@@ -51,13 +50,7 @@ class AuthRepositoryImpl
                         )
                         return@flow
                     }
-                    val tokens =
-                        AuthTokens(
-                            accessToken = dto.accessToken,
-                            refreshToken = dto.refreshToken,
-                        )
 
-                    tokenManager.saveTokens(tokens)
                     val domainModel = dto.toDomain()
 
                     emit(ApiResult.Success(domainModel))
