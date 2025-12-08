@@ -9,4 +9,6 @@ class HomeDataSource
         private val api: HomeApi,
     ) {
         suspend fun getCountryList() = api.getCountryList()
+
+        suspend fun getHomeRecommendToday(isDomestic: Boolean) = api.getHomeRecommendToday(isDomestic = isDomestic)
     }

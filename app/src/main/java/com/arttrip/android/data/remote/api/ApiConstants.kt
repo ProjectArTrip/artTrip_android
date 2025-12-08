@@ -6,4 +6,5 @@ object ApiConstants {
     const val AUTH_PATH = "/auth"
 
     const val HOME_INTER_PATH = "/home/overseas"
+    const val HOME_RECOMMEND_TODAY_PATH = "/home/recommend/today"
 }
