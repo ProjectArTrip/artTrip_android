@@ -1,8 +1,12 @@
 package com.arttrip.android.presentation.intro.contract
 
+import com.arttrip.android.domain.model.auth.KeywordModel
+
 data class IntroState(
-    val selectedGenreIds: List<Int> = emptyList(),
-    val selectedStyleIds: List<Int> = emptyList(),
+    val genres: List<KeywordModel> = emptyList(),
+    val styles: List<KeywordModel> = emptyList(),
+    val selectedGenreIds: Set<Int> = emptySet(),
+    val selectedStyleIds: Set<Int> = emptySet(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 ) {

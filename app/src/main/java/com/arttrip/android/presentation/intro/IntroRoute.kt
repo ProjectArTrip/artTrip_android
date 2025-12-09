@@ -2,10 +2,12 @@ package com.arttrip.android.presentation.intro
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.presentation.intro.contract.IntroEffect
+import com.arttrip.android.presentation.intro.contract.IntroIntent
 
 @Composable
 fun IntroRoute(
@@ -14,13 +16,19 @@ fun IntroRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    androidx.compose.runtime.LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
+        viewModel.onIntent(IntroIntent.Initialize)
+    }
+
+    // 2) Effect는 계속 수집
+    LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 IntroEffect.NavigateToHome -> {
-                    // TODO 홈으로 이동
                 }
-                is IntroEffect.ShowError -> {}
+                is IntroEffect.ShowError -> {
+                    // 스낵바 / 토스트 등
+                }
             }
         }
     }

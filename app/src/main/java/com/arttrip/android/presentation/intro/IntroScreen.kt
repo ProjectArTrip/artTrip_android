@@ -29,6 +29,7 @@ import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.domain.model.auth.KeywordModel
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 import com.arttrip.android.presentation.intro.contract.IntroState
 
@@ -79,6 +80,7 @@ fun IntroScreen(
 
             IntroGenreSection(
                 modifier = Modifier.fillMaxWidth(),
+                genreList = state.genres,
                 selectedIds = state.selectedGenreIds,
                 onToggleGenre = { id ->
                     onIntent(IntroIntent.ToggleGenre(id))
@@ -89,6 +91,7 @@ fun IntroScreen(
 
             IntroStyleSection(
                 modifier = Modifier.fillMaxWidth(),
+                styleList = state.styles,
                 selectedIds = state.selectedStyleIds,
                 onToggleStyle = { id ->
                     onIntent(IntroIntent.ToggleStyle(id))
@@ -140,19 +143,8 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
 @Composable
 private fun IntroGenreSection(
     modifier: Modifier = Modifier,
-    selectedIds: List<Int>,
-    genreList: List<Pair<Int, String>> =
-        listOf( // TODO API로 변경
-            1 to "현대미술",
-            2 to "사진전",
-            3 to "디지털아트",
-            4 to "고대미술",
-            5 to "조각",
-            6 to "설치미술",
-            7 to "공예",
-            8 to "회화",
-            9 to "건축",
-        ),
+    selectedIds: Set<Int>,
+    genreList: List<KeywordModel>,
     onToggleGenre: (Int) -> Unit,
 ) {
     Column(
@@ -172,12 +164,12 @@ private fun IntroGenreSection(
             itemVerticalAlignment = Alignment.Top,
         ) {
             genreList.forEach { genre ->
-                val selected = genre.first in selectedIds
+                val selected = genre.id in selectedIds
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
-                    text = genre.second,
+                    text = genre.name,
                     selected = selected,
-                    onClick = { onToggleGenre(genre.first) },
+                    onClick = { onToggleGenre(genre.id) },
                 )
             }
         }
@@ -187,18 +179,8 @@ private fun IntroGenreSection(
 @Composable
 private fun IntroStyleSection(
     modifier: Modifier = Modifier,
-    selectedIds: List<Int>,
-    styleList: List<Pair<Int, String>> =
-        listOf(
-            1 to "인터랙티브",
-            2 to "공간연출",
-            3 to "몰입형",
-            4 to "팝업",
-            5 to "미디어아트",
-            6 to "사운드 기반",
-            7 to "VR",
-            8 to "AR",
-        ),
+    selectedIds: Set<Int>,
+    styleList: List<KeywordModel>,
     onToggleStyle: (Int) -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -215,12 +197,12 @@ private fun IntroStyleSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             styleList.map { style ->
-                val selected = style.first in selectedIds
+                val selected = style.id in selectedIds
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
-                    text = style.second,
+                    text = style.name,
                     selected = selected,
-                    onClick = { onToggleStyle(style.first) },
+                    onClick = { onToggleStyle(style.id) },
                 )
             }
         }

@@ -2,6 +2,8 @@ package com.arttrip.android.presentation.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.intro.GetAllKeywordsUseCase
 import com.arttrip.android.domain.usecase.intro.SaveIntroKeywordsUseCase
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class IntroViewModel
     @Inject
     constructor(
+        private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
         private val saveIntroKeywordsUseCase: SaveIntroKeywordsUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(IntroState())
@@ -29,9 +32,49 @@ class IntroViewModel
 
         fun onIntent(intent: IntroIntent) {
             when (intent) {
+                is IntroIntent.Initialize -> {
+                    loadIntroOptions()
+                }
                 is IntroIntent.ToggleGenre -> handleToggleGenre(intent.id)
                 is IntroIntent.ToggleStyle -> handleToggleStyle(intent.id)
                 IntroIntent.ClickNext -> handleClickNext()
+            }
+        }
+
+        private fun loadIntroOptions() {
+            viewModelScope.launch {
+                getAllKeywordsUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = true,
+                                    errorMessage = null,
+                                )
+                            }
+                        }
+                        is ApiResult.Success -> {
+                            val groups = result.data
+
+                            _state.update {
+                                it.copy(
+                                    genres = groups.genres,
+                                    styles = groups.styles,
+                                    isLoading = false,
+                                    errorMessage = null,
+                                )
+                            }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "키워드를 가져오는데 실패했습니다.",
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -75,7 +118,7 @@ class IntroViewModel
         }
 
         private fun toggleId(
-            list: List<Int>,
+            set: Set<Int>,
             id: Int,
-        ): List<Int> = if (id in list) list - id else list + id
+        ): Set<Int> = if (id in set) set - id else set + id
     }

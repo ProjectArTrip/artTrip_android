@@ -9,5 +9,7 @@ sealed interface IntroIntent {
         val id: Int,
     ) : IntroIntent
 
+    data object Initialize : IntroIntent
+
     data object ClickNext : IntroIntent
 }

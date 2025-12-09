@@ -12,8 +12,8 @@ class SaveIntroKeywordsUseCase
          * @param styleIds  선택된 전시 스타일 ID 리스트
          */
         suspend operator fun invoke(
-            genreIds: List<Int>,
-            styleIds: List<Int>,
+            genreIds: Set<Int>,
+            styleIds: Set<Int>,
         ) {
             // TODO: API 붙이기
         }
