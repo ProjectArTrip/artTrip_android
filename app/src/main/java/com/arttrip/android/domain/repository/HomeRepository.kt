@@ -8,4 +8,6 @@ interface HomeRepository {
     fun getCountryList(): Flow<ApiResult<List<String>>>
 
     fun getHomeRecommendExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>>
+
+    fun getHomePersonalizedExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>>
 }

@@ -11,4 +11,9 @@ sealed interface HomeIntent {
 
     object DateFilterIconClicked : HomeIntent
     object LoadInterExhibitList: HomeIntent
+    object LoadInterRecommendExhibitList: HomeIntent
+    object LoadInterPersonalizedExhibitList: HomeIntent
+
+    object LoadDomesticRecommendExhibitList: HomeIntent
+    object LoadDomesticPersonalizedExhibitList: HomeIntent
 }

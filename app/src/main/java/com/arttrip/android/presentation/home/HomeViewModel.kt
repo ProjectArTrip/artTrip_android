@@ -1,12 +1,16 @@
 package com.arttrip.android.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.GetCountryListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.domain.usecase.home.GetHomeRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.international.GetCountryListUseCase
+import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.international.GetInterPersonalizedExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.international.GetInterRecommendExhibitListUseCase
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +27,10 @@ class HomeViewModel
     @Inject
     constructor(
         private val getCountryListUseCase: GetCountryListUseCase,
-        private val getHomeRecommendExhibitListUseCase: GetHomeRecommendExhibitListUseCase
+        private val getInterRecommendExhibitListUseCase: GetInterRecommendExhibitListUseCase,
+        private val getInterPersonalizedExhibitListUseCase: GetInterPersonalizedExhibitListUseCase,
+        private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
+        private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -34,7 +41,12 @@ class HomeViewModel
         init {
             // 화면 진입 시 자동 로딩
             onIntent(HomeIntent.LoadCountries)
-            onIntent(HomeIntent.LoadInterExhibitList)
+
+            onIntent(HomeIntent.LoadInterRecommendExhibitList)
+            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
+
+            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
+            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -53,69 +65,130 @@ class HomeViewModel
                     }
                 }
                 HomeIntent.LoadInterExhibitList -> loadRecommend(isDomestic = false)
+                HomeIntent.LoadInterRecommendExhibitList -> loadInterRecommendExhibitList()
+                HomeIntent.LoadInterPersonalizedExhibitList -> loadInterPersonalizedExhibitList()
+
+                HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
+                HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
             }
         }
 
-    private fun loadRecommend(isDomestic: Boolean) {
+    private fun loadInterRecommendExhibitList() {
         viewModelScope.launch {
-            getHomeRecommendExhibitListUseCase(isDomestic)
+            getInterRecommendExhibitListUseCase()
                 .collect { result ->
-                    Log.d("hyunjun", result.toString())
                     when (result) {
                         is ApiResult.Loading -> {
-                            _state.value = _state.value.copy(
-                                isLoading = true,
-                                errorMessage = null,
-                            )
                         }
 
                         is ApiResult.Success -> {
-                            Log.d("hyunjun", result.data.toString())
                             _state.value = _state.value.copy(
-                                isLoading = false,
-                                interRecommendList = result.data,
-                                errorMessage = null,
+                                interRecommendExhibitList = result.data
                             )
                         }
 
                         is ApiResult.Error -> {
-
                         }
                     }
                 }
         }
     }
 
-        private fun loadCountries() {
-            viewModelScope.launch {
-                getCountryListUseCase()
-                    .collect { result ->
-                        when (result) {
-                            is ApiResult.Loading -> {
-                                updateState { it.copy(isLoading = true, errorMessage = null) }
-                            }
+    private fun loadInterPersonalizedExhibitList() {
+        viewModelScope.launch {
+            getInterPersonalizedExhibitListUseCase()
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
 
-                            is ApiResult.Success -> {
-                                updateState {
-                                    it.copy(
-                                        isLoading = false,
-                                        countries = result.data,
-                                        errorMessage = null,
-                                    )
-                                }
-                            }
+                        is ApiResult.Success -> {
+                            _state.value = _state.value.copy(
+                                interPersonalizedExhibitList = result.data
+                            )
+                        }
 
-                            is ApiResult.Error -> {
-                                updateState {
-                                    it.copy(
-                                        isLoading = false,
-                                        errorMessage = "알 수 없는 오류가 발생했어요",
-                                    )
-                                }
-                            }
+                        is ApiResult.Error -> {
                         }
                     }
-            }
+                }
+        }
+    }
+
+    private fun loadDomesticRecommendExhibitList() {
+        viewModelScope.launch {
+            getDomesticRecommendExhibitListUseCase()
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value = _state.value.copy(
+                                domesticRecommendExhibitList = result.data
+                            )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun loadDomesticPersonalizedExhibitList() {
+        viewModelScope.launch {
+            getDomesticPersonalizedExhibitListUseCase()
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value = _state.value.copy(
+                                domesticPersonalizedExhibitList = result.data
+                            )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
+
+
+
+    private fun loadCountries() {
+//            viewModelScope.launch {
+//                getCountryListUseCase()
+//                    .collect { result ->
+//                        when (result) {
+//                            is ApiResult.Loading -> {
+//                                updateState { it.copy(isLoading = true, errorMessage = null) }
+//                            }
+//
+//                            is ApiResult.Success -> {
+//                                updateState {
+//                                    it.copy(
+//                                        isLoading = false,
+//                                        countries = result.data,
+//                                        errorMessage = null,
+//                                    )
+//                                }
+//                            }
+//
+//                            is ApiResult.Error -> {
+//                                updateState {
+//                                    it.copy(
+//                                        isLoading = false,
+//                                        errorMessage = "알 수 없는 오류가 발생했어요",
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+//            }
         }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {

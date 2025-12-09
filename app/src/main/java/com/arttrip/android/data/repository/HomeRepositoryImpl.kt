@@ -73,4 +73,34 @@ class HomeRepositoryImpl
                 emit(ApiResult.Error(error))
             }
         }
+
+    override fun getHomePersonalizedExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            emit(ApiResult.Loading)
+
+            try {
+                val baseResponse = dataSource.getHomePersonalized(isDomestic = isDomestic)
+
+                val dto = baseResponse.result
+                if (dto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = dto.toDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
 }

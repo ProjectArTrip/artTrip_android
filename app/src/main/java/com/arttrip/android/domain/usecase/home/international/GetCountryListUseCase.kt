@@ -1,4 +1,4 @@
-package com.arttrip.android.domain.usecase.home
+package com.arttrip.android.domain.usecase.home.international
 
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository

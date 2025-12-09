@@ -14,4 +14,9 @@ interface HomeApi {
     suspend fun getHomeRecommendToday(
         @Query("isDomestic") isDomestic: Boolean
     ): BaseResponseDto<List<ExhibitDto>>
+
+    @GET("${HOME_PATH}/personalized")
+    suspend fun getHomePersonalized(
+        @Query("isDomestic") isDomestic: Boolean
+    ): BaseResponseDto<List<ExhibitDto>>
 }

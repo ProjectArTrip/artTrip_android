@@ -11,4 +11,5 @@ class HomeDataSource
         suspend fun getCountryList() = api.getCountryList()
 
         suspend fun getHomeRecommendToday(isDomestic: Boolean) = api.getHomeRecommendToday(isDomestic = isDomestic)
+        suspend fun getHomePersonalized(isDomestic: Boolean) = api.getHomePersonalized(isDomestic = isDomestic)
     }
