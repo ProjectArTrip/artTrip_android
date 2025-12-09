@@ -67,6 +67,11 @@ fun AppNavHost(
         composable(AppRoute.INTRO) {
             IntroRoute(
                 innerPadding = innerPadding,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.INTRO) { inclusive = true }
+                    }
+                },
             )
         }
 

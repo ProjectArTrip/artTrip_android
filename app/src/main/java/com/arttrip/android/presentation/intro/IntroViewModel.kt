@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.intro
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
@@ -37,7 +38,7 @@ class IntroViewModel
                 }
                 is IntroIntent.ToggleGenre -> handleToggleGenre(intent.id)
                 is IntroIntent.ToggleStyle -> handleToggleStyle(intent.id)
-                IntroIntent.ClickNext -> handleClickNext()
+                is IntroIntent.ClickNext -> handleClickNext()
             }
         }
 
@@ -101,18 +102,32 @@ class IntroViewModel
             if (!current.isNextEnabled || current.isLoading) return
 
             viewModelScope.launch {
-                _state.update { it.copy(isLoading = true, errorMessage = null) }
-                runCatching {
-                    saveIntroKeywordsUseCase(
-                        genreIds = current.selectedGenreIds,
-                        styleIds = current.selectedStyleIds,
-                    )
-                }.onSuccess {
-                    _state.update { it.copy(isLoading = false) }
-                    _effect.emit(IntroEffect.NavigateToHome)
-                }.onFailure { e ->
-                    _state.update { it.copy(isLoading = false, errorMessage = e.message) }
-                    _effect.emit(IntroEffect.ShowError(e.message ?: "알 수 없는 오류가 발생했어요."))
+                saveIntroKeywordsUseCase(
+                    genreIds = current.selectedGenreIds,
+                    styleIds = current.selectedStyleIds,
+                ).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = true,
+                                    errorMessage = null,
+                                )
+                            }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isLoading = false) }
+                            _effect.emit(IntroEffect.NavigateToHome)
+                        }
+                        is ApiResult.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "키워드 설정에 실패하였습니다.",
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

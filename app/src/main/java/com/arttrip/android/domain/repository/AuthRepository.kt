@@ -14,5 +14,5 @@ interface AuthRepository {
 
     fun getAllKeywords(): Flow<ApiResult<KeywordGroups>>
 
-    fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<String>>
+    fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<Unit>>
 }

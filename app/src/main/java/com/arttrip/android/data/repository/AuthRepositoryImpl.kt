@@ -91,7 +91,7 @@ class AuthRepositoryImpl
                 }
             }
 
-        override fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<String>> =
+        override fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -104,21 +104,10 @@ class AuthRepositoryImpl
                                 ),
                         )
 
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
+                    if(baseResponse.isSuccess){
+                        emit(ApiResult.Success(Unit))
 
-                    emit(ApiResult.Success(dto))
+                    }
                 } catch (e: Exception) {
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))
