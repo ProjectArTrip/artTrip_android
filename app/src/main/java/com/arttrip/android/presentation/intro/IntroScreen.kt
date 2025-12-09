@@ -16,9 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,16 +37,6 @@ fun IntroScreen(
     state: IntroState,
     onIntent: (IntroIntent) -> Unit,
 ) {
-    val isNextEnabled by remember(
-        state.selectedGenreIds,
-        state.selectedStyleIds,
-    ) {
-        derivedStateOf {
-            state.selectedGenreIds.isNotEmpty() &&
-                state.selectedStyleIds.isNotEmpty()
-        }
-    }
-
     val buttonHeight = 52.dp
     val buttonBottomMargin = 16.dp
 
@@ -110,7 +98,7 @@ fun IntroScreen(
                         start = 24.dp,
                         end = 24.dp,
                     ),
-            enabled = isNextEnabled,
+            enabled = state.isNextEnabled,
             onClick = { onIntent(IntroIntent.ClickNext) },
         )
     }

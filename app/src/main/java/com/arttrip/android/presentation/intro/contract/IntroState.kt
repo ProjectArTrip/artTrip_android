@@ -11,5 +11,5 @@ data class IntroState(
     val errorMessage: String? = null,
 ) {
     val isNextEnabled: Boolean
-        get() = selectedGenreIds.isNotEmpty() && selectedStyleIds.isNotEmpty()
+        get() = selectedGenreIds.isNotEmpty()
 }
