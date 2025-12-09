@@ -3,7 +3,6 @@ package com.arttrip.android.data.repository
 import com.arttrip.android.data.remote.datasource.AuthDataSource
 import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
-import com.arttrip.android.data.remote.model.auth.KeywordType
 import com.arttrip.android.data.remote.model.auth.LoginRequestDto
 import com.arttrip.android.data.remote.model.auth.UserKeywordsRequestDto
 import com.arttrip.android.domain.model.auth.KeywordGroups
@@ -83,16 +82,7 @@ class AuthRepositoryImpl
                         return@flow
                     }
 
-                    val domainList = dto.toDomain()
-
-                    val genres = domainList.filter { it.type == KeywordType.GENRE }
-                    val styles = domainList.filter { it.type == KeywordType.STYLE }
-
-                    val groups =
-                        KeywordGroups(
-                            genres = genres,
-                            styles = styles,
-                        )
+                    val groups: KeywordGroups = dto.toDomain()
 
                     emit(ApiResult.Success(groups))
                 } catch (e: Exception) {
