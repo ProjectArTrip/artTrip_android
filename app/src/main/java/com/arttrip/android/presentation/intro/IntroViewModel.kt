@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.intro
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult

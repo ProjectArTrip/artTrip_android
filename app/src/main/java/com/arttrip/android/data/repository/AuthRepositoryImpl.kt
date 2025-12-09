@@ -104,9 +104,8 @@ class AuthRepositoryImpl
                                 ),
                         )
 
-                    if(baseResponse.isSuccess){
+                    if (baseResponse.isSuccess) {
                         emit(ApiResult.Success(Unit))
-
                     }
                 } catch (e: Exception) {
                     val error = e.toAppError()
