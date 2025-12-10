@@ -1,47 +1,22 @@
 package com.arttrip.android.core.navigation
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.arttrip.android.presentation.bookmark.BookmarkRoute
-import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.intro.IntroRoute
 import com.arttrip.android.presentation.login.LoginRoute
-import com.arttrip.android.presentation.map.MapRoute
-import com.arttrip.android.presentation.my.MyPageRoute
+import com.arttrip.android.presentation.main.MainRoute
 import com.arttrip.android.presentation.splash.SplashRoute
-import com.arttrip.android.presentation.stamp.StampRoute
 
 @Composable
-fun AppNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    innerPadding: PaddingValues,
-    startDestination: String,
-) {
+fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = startDestination,
-        modifier = modifier,
-        enterTransition = {
-            slideInHorizontally { it } + fadeIn()
-        },
-        exitTransition = {
-            slideOutHorizontally { -it / 3 } + fadeOut()
-        },
-        popEnterTransition = {
-            slideInHorizontally { -it / 3 } + fadeIn()
-        },
-        popExitTransition = {
-            slideOutHorizontally { it } + fadeOut()
-        },
+        startDestination = AppRoute.SPLASH,
+        modifier = Modifier,
     ) {
         composable(AppRoute.SPLASH) {
             SplashRoute(
@@ -55,7 +30,7 @@ fun AppNavHost(
 
         composable(AppRoute.LOGIN) {
             LoginRoute(
-                innerPadding = innerPadding,
+                innerPadding = PaddingValues(),
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute) {
                         popUpTo(AppRoute.LOGIN) { inclusive = true }
@@ -66,7 +41,7 @@ fun AppNavHost(
 
         composable(AppRoute.INTRO) {
             IntroRoute(
-                innerPadding = innerPadding,
+                innerPadding = PaddingValues(),
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute) {
                         popUpTo(AppRoute.INTRO) { inclusive = true }
@@ -75,11 +50,9 @@ fun AppNavHost(
             )
         }
 
-        // 바텀네비
-        composable(BottomNavItem.Home.route) { HomeRoute(innerPadding) }
-        composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
-        composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
-        composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
-        composable(BottomNavItem.MyPage.route) { MyPageRoute(innerPadding) }
+        // 여기서부터가 "메인 앱" 진입
+        composable(AppRoute.MAIN) {
+            MainRoute(appNavController = navController)
+        }
     }
 }

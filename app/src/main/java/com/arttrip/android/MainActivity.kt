@@ -5,8 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
+import com.arttrip.android.core.navigation.AppNavHost
 import com.arttrip.android.core.ui.theme.ArtTripTheme
-import com.arttrip.android.presentation.main.MainRoute
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,7 +19,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ArtTripTheme {
-                MainRoute()
+                val navController = rememberNavController()
+
+                AppNavHost(navController = navController)
             }
         }
     }
