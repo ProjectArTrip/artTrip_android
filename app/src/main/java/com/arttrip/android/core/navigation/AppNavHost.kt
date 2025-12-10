@@ -1,6 +1,5 @@
 package com.arttrip.android.core.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.safeDrawing

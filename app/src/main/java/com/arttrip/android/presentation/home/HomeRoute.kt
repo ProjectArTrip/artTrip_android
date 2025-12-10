@@ -14,7 +14,7 @@ fun HomeRoute(
 ) {
     val homeState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    //이동 예시
+    // 이동 예시
 //    LaunchedEffect(Unit) {
 //        viewModel.effect.collect { effect ->
 //            when (effect) {
