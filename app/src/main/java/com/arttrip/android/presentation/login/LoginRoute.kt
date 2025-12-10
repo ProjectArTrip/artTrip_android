@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.navigation.AppRoute
-import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.presentation.login.contract.LoginEffect
 import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.kakao.sdk.auth.model.OAuthToken
@@ -47,7 +46,7 @@ fun LoginRoute(
                     onNavigate(AppRoute.INTRO)
                 }
                 LoginEffect.NavigateToHome -> {
-                    onNavigate(BottomNavItem.Home.route)
+                    onNavigate(AppRoute.MAIN)
                 }
                 is LoginEffect.ShowError -> {
                     // 토스트/스낵바 등 표시

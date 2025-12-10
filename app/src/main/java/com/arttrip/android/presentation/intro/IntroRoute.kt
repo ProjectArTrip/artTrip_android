@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.navigation.BottomNavItem
+import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 
@@ -26,7 +26,7 @@ fun IntroRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 IntroEffect.NavigateToHome -> {
-                    onNavigate(BottomNavItem.Home.route)
+                    onNavigate(AppRoute.MAIN)
                 }
                 is IntroEffect.ShowError -> {
                     // 스낵바 / 토스트 등

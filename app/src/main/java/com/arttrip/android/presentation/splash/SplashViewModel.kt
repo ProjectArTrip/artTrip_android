@@ -3,7 +3,6 @@ package com.arttrip.android.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.navigation.AppRoute
-import com.arttrip.android.core.navigation.BottomNavItem
 import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.presentation.splash.contract.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +34,7 @@ class SplashViewModel
 
                 val target =
                     if (hasValidToken) {
-                        BottomNavItem.Home.route
+                        AppRoute.MAIN
                     } else {
                         AppRoute.LOGIN
                     }
