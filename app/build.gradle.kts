@@ -109,4 +109,7 @@ dependencies {
     implementation(libs.security.crypto)
     // Coil
     implementation(libs.coil.compose)
+
+    // Splash
+    implementation(libs.androidx.core.splashscreen)
 }

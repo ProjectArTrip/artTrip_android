@@ -29,7 +29,7 @@ class SplashViewModel
         private fun checkAuthAndDecideRoute() {
             viewModelScope.launch {
                 // 스플래쉬가 너무 순식간에 안 사라지도록 약간의 딜레이
-                delay(600L)
+                delay(1000L)
 
                 val hasValidToken = tokenManager.hasTokens()
 

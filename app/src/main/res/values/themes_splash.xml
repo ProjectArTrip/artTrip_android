@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ArtTrip_android.Splash" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">#FF8063FF</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_1</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.ArtTrip_android</item>
+    </style>
+</resources>
