@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.splash
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,30 +21,33 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 @Composable
 fun SplashScreen() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = AppColor.Primary300),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = AppColor.Primary300),
         contentAlignment = Alignment.Center,
-
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                modifier = Modifier
-                    .width(188.dp)
-                    .height(60.dp),
+                modifier =
+                    Modifier
+                        .width(188.dp)
+                        .height(60.dp),
                 painter = painterResource(R.drawable.ic_logo_white),
-                contentDescription = "logo image"
+                contentDescription = "logo image",
             )
             Spacer(
-                modifier = Modifier
-                    .height(20.dp)
+                modifier =
+                    Modifier
+                        .height(20.dp),
             )
             Text(
                 text = "세상의 전시, 내 손 안에.",
                 style = AppTextStyle.Title02Light,
-                color = AppColor.TextWhite)
+                color = AppColor.TextWhite,
+            )
         }
     }
 }
