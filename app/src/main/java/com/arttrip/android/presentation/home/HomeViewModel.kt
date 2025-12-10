@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.GetCountryListUseCase
+import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,6 +25,9 @@ class HomeViewModel
         private val _uiState = MutableStateFlow(HomeState())
         val uiState: StateFlow<HomeState> = _uiState
 
+        private val _effect = MutableSharedFlow<HomeEffect>()
+        val effect: SharedFlow<HomeEffect> = _effect
+
         init {
             // 화면 진입 시 자동 로딩
             onIntent(HomeIntent.LoadCountries)
@@ -35,6 +41,12 @@ class HomeViewModel
 
                 is HomeIntent.CountryClicked -> {
                     // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
+                }
+
+                is HomeIntent.DateFilterIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(HomeEffect.NavigateToDateFilter)
+                    }
                 }
             }
         }

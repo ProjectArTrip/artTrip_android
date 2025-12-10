@@ -2,6 +2,9 @@ package com.arttrip.android.presentation.home.sub.datefilter
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 @HiltViewModel
-class DateFilterViewModel : ViewModel()
+class
+DateFilterViewModel@Inject
+    constructor() : ViewModel()

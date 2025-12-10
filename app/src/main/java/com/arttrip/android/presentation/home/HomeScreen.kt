@@ -73,7 +73,9 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
     ) {
-        HomeAppBar()
+        HomeAppBar(
+            onIntent = onIntent,
+        )
 
         HomeContainer(
             uiState = uiState,
@@ -83,7 +85,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeAppBar() {
+fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -120,7 +122,9 @@ fun HomeAppBar() {
                 AppBarIconButton(
                     iconRes = R.drawable.ic_calendar_24,
                     contentDescription = "달력",
-                    onClick = {},
+                    onClick = {
+                        onIntent(HomeIntent.DateFilterIconClicked)
+                    },
                 )
                 AppBarIconButton(
                     iconRes = R.drawable.ic_search_24,
