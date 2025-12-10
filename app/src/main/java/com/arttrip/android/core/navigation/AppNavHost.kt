@@ -1,6 +1,9 @@
 package com.arttrip.android.core.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -29,8 +32,10 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(AppRoute.LOGIN) {
+            val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
+
             LoginRoute(
-                innerPadding = PaddingValues(),
+                innerPadding = systemPadding,
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute) {
                         popUpTo(AppRoute.LOGIN) { inclusive = true }
@@ -40,8 +45,9 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(AppRoute.INTRO) {
+            val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
             IntroRoute(
-                innerPadding = PaddingValues(),
+                innerPadding = systemPadding,
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute) {
                         popUpTo(AppRoute.INTRO) { inclusive = true }
@@ -50,7 +56,6 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        // 여기서부터가 "메인 앱" 진입
         composable(AppRoute.MAIN) {
             MainRoute(appNavController = navController)
         }
