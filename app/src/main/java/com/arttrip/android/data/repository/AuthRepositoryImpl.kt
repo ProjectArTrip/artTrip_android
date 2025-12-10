@@ -1,11 +1,11 @@
 package com.arttrip.android.data.repository
 
-import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.data.remote.datasource.AuthDataSource
 import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.model.auth.LoginRequestDto
-import com.arttrip.android.domain.model.auth.AuthTokens
+import com.arttrip.android.data.remote.model.auth.UserKeywordsRequestDto
+import com.arttrip.android.domain.model.auth.KeywordGroups
 import com.arttrip.android.domain.model.auth.LoginModel
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiError
@@ -19,7 +19,6 @@ class AuthRepositoryImpl
     @Inject
     constructor(
         private val dataSource: AuthDataSource,
-        private val tokenManager: TokenManager,
     ) : AuthRepository {
         override fun socialLogin(
             provider: LoginProvider,
@@ -51,16 +50,63 @@ class AuthRepositoryImpl
                         )
                         return@flow
                     }
-                    val tokens =
-                        AuthTokens(
-                            accessToken = dto.accessToken,
-                            refreshToken = dto.refreshToken,
-                        )
 
-                    tokenManager.saveTokens(tokens)
                     val domainModel = dto.toDomain()
 
                     emit(ApiResult.Success(domainModel))
+                } catch (e: Exception) {
+                    val error = e.toAppError()
+                    emit(ApiResult.Error(error))
+                }
+            }
+
+        override fun getAllKeywords(): Flow<ApiResult<KeywordGroups>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val baseResponse =
+                        dataSource.getAllKeywords()
+
+                    val dto = baseResponse.result
+                    if (dto == null) {
+                        emit(
+                            ApiResult.Error(
+                                ApiError.HttpError(
+                                    statusCode = 200,
+                                    serverCode = "EMPTY_RESULT",
+                                    serverMessage = "empty result",
+                                ),
+                            ),
+                        )
+                        return@flow
+                    }
+
+                    val groups: KeywordGroups = dto.toDomain()
+
+                    emit(ApiResult.Success(groups))
+                } catch (e: Exception) {
+                    val error = e.toAppError()
+                    emit(ApiResult.Error(error))
+                }
+            }
+
+        override fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val baseResponse =
+                        dataSource.postUserKeywords(
+                            userKeywordsRequestDto =
+                                UserKeywordsRequestDto(
+                                    keywordIds = keywordIds,
+                                ),
+                        )
+
+                    if (baseResponse.isSuccess) {
+                        emit(ApiResult.Success(Unit))
+                    }
                 } catch (e: Exception) {
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))
