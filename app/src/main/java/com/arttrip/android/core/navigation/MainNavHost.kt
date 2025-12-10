@@ -40,40 +40,15 @@ fun MainNavHost(
             slideOutHorizontally { it } + fadeOut()
         },
     ) {
-//        composable(AppRoute.SPLASH) {
-//            SplashRoute(
-//                onNavigate = { targetRoute ->
-//                    navController.navigate(targetRoute) {
-//                        popUpTo(AppRoute.SPLASH) { inclusive = true }
-//                    }
-//                },
-//            )
-//        }
-//
-//        composable(AppRoute.LOGIN) {
-//            LoginRoute(
-//                innerPadding = innerPadding,
-//                onNavigate = { targetRoute ->
-//                    navController.navigate(targetRoute) {
-//                        popUpTo(AppRoute.LOGIN) { inclusive = true }
-//                    }
-//                },
-//            )
-//        }
-//
-//        composable(AppRoute.INTRO) {
-//            IntroRoute(
-//                innerPadding = innerPadding,
-//                onNavigate = { targetRoute ->
-//                    navController.navigate(targetRoute) {
-//                        popUpTo(AppRoute.INTRO) { inclusive = true }
-//                    }
-//                },
-//            )
-//        }
-
         // 바텀네비
-        composable(BottomNavItem.Home.route) { HomeRoute(innerPadding) }
+        composable(BottomNavItem.Home.route) {
+            HomeRoute(
+                innerPadding,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute)
+                },
+            )
+        }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
