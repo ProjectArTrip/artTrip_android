@@ -8,4 +8,6 @@ sealed interface HomeIntent {
     data class CountryClicked(
         val name: String,
     ) : HomeIntent
+
+    object DateFilterIconClicked : HomeIntent
 }

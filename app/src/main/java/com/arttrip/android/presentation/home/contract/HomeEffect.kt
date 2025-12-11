@@ -1,3 +1,5 @@
 package com.arttrip.android.presentation.home.contract
 
-interface HomeEffect
+sealed interface HomeEffect {
+    object NavigateToDateFilter : HomeEffect
+}

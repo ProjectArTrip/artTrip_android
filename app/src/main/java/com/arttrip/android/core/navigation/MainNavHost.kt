@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.home.HomeRoute
+import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.stamp.StampRoute
@@ -53,5 +54,11 @@ fun MainNavHost(
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
         composable(BottomNavItem.MyPage.route) { MyPageRoute(innerPadding) }
+
+        composable(MainRoute.HOME_DATE_FILTER) {
+            DateFilterRoute(
+                innerPadding = innerPadding,
+            )
+        }
     }
 }

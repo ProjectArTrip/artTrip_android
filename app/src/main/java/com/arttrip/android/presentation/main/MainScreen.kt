@@ -26,27 +26,40 @@ fun MainScreen(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
+    val bottomNavRoutes =
+        listOf(
+            BottomNavItem.Home.route,
+            BottomNavItem.Map.route,
+            BottomNavItem.Stamp.route,
+            BottomNavItem.Bookmark.route,
+            BottomNavItem.MyPage.route,
+        )
+
+    val isBottomNavVisible = currentRoute in bottomNavRoutes
+
     Scaffold(
         modifier = modifier,
         containerColor = Color.White,
         bottomBar = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                AppBottomNavBarWithInset(
-                    items = bottomNavItems,
-                    selectedRoute = currentRoute,
-                    onItemSelected = { item ->
-                        navController.navigate(item.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
+            if (isBottomNavVisible) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    AppBottomNavBarWithInset(
+                        items = bottomNavItems,
+                        selectedRoute = currentRoute,
+                        onItemSelected = { item ->
+                            navController.navigate(item.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
                             }
-                        }
-                    },
-                )
+                        },
+                    )
+                }
             }
         },
     ) { innerPadding ->
