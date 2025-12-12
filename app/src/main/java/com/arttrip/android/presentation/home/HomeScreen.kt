@@ -103,7 +103,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 18.dp, top = 8.dp, bottom = 8.dp),
+                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -116,7 +116,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                         .height(28.dp),
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 AppBarIconButton(
                     iconRes = R.drawable.ic_alert_24,
@@ -144,15 +144,29 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
 fun AppBarIconButton(
     @DrawableRes iconRes: Int,
     contentDescription: String?,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
-    IconButton(
-        modifier = Modifier.size(36.dp),
-        onClick = onClick,
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val rippleIndication = ripple(
+        bounded = false,
+        radius = 18.dp
+
+    )
+
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rippleIndication,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(iconRes),
-            contentDescription = contentDescription,
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription
         )
     }
 }
