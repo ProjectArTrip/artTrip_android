@@ -61,12 +61,19 @@ import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-enum class ExhibitionTab {
-    Foreign,
-    Domestic
+enum class PlaceTab(val title: String) {
+    Foreign("해외전시"),
+    Domestic("국내전시");
+
+    companion object {
+        val tabs = entries
+        fun fromIndex(index: Int): PlaceTab = tabs[index]
+    }
 }
 
-enum class ForeignCountry(val id: Int, val labelKo: String) {
+fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
+
+enum class ForeignCountry(val id: Int, val label: String) {
     Entire(100, "전체"),
     Japan(101,"일본"),
     Usa(102,"미국"),
@@ -191,8 +198,7 @@ fun HomeBody(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(ExhibitionTab.Foreign) }
-    val tabs = remember { ExhibitionTab.entries }
+    val selectedIndex = state.placeTabs.toIndex()
 
     Column(
         modifier =
@@ -205,23 +211,18 @@ fun HomeBody(
 
         AppTabRow(
             case = AppTabCase.Case03,
-            tabs =
-                tabs.map {
-                    when (it) {
-                        ExhibitionTab.Foreign -> "해외전시"
-                        ExhibitionTab.Domestic -> "국내전시"
-                    }
-                },
-            selectedIndex = tabs.indexOf(selectedTab),
+            tabs = PlaceTab.tabs.map { it.title },
+            selectedIndex = selectedIndex,
             onTabSelected = { index ->
-                selectedTab = tabs[index]
+                val tab = PlaceTab.fromIndex(index)
+                if (tab != state.placeTabs) onIntent(HomeIntent.SelectTab(tab))
             },
             modifier = Modifier.padding(start = 24.dp),
         )
 
         // 해외 전시 탭만 국가 리스트 활성화
-        if (selectedTab == ExhibitionTab.Foreign) {
-            CountryChipList()
+        if (state.placeTabs == PlaceTab.Foreign) {
+            CountryChipList(state, onIntent)
         } else {
             Spacer(
                 modifier = Modifier
@@ -229,17 +230,15 @@ fun HomeBody(
             )
         }
 
-        when (selectedTab) {
-            ExhibitionTab.Foreign -> InternationalExhibitionSection(state, onIntent)
-            ExhibitionTab.Domestic -> DomesticExhibitionSection(state, onIntent)
+        when (state.placeTabs) {
+            PlaceTab.Foreign -> InternationalExhibitionSection(state, onIntent)
+            PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent)
         }
     }
 }
 
 @Composable
-fun CountryChipList() {
-    val countryList by remember { mutableStateOf(listOf("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
-    var selectedCountry by remember { mutableStateOf("전체") }
+fun CountryChipList(state: HomeState, onIntent: (HomeIntent) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -261,15 +260,13 @@ fun CountryChipList() {
                         .width(16.dp),
             )
 
-            countryList.forEach { country ->
+            ForeignCountry.entries.forEach { country ->
                 AppFilterChip(
-                    modifier = Modifier,
                     case = AppFilterChipCase.Case02,
-                    text = country,
-                    selected = selectedCountry == country,
-                ) {
-                    selectedCountry = country
-                }
+                    text = country.label,
+                    selected = state.countryChips == country,
+                    onClick = { onIntent(HomeIntent.SelectCountry(country)) }
+                )
             }
 
             Spacer(

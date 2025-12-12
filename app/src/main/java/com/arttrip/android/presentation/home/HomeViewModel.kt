@@ -6,7 +6,6 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetCountryListUseCase
 import com.arttrip.android.domain.usecase.home.international.GetInterPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.international.GetInterRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.international.GetInterScheduledExhibitListUseCase
@@ -54,6 +53,12 @@ class HomeViewModel
 
         fun onIntent(intent: HomeIntent) {
             when (intent) {
+                is HomeIntent.SelectTab -> {
+                    _state.update { it.copy(placeTabs = intent.tab) }
+                }
+                is HomeIntent.SelectCountry -> {
+                    _state.update { it.copy(countryChips = intent.country) }
+                }
                 HomeIntent.LoadCountries,
                 HomeIntent.Retry,
                 -> loadCountries()
@@ -62,9 +67,21 @@ class HomeViewModel
                     // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
                 }
 
+                is HomeIntent.AlertIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(HomeEffect.NavigateToAlert)
+                    }
+                }
+
                 is HomeIntent.DateFilterIconClicked -> {
                     viewModelScope.launch {
                         _effect.emit(HomeEffect.NavigateToDateFilter)
+                    }
+                }
+
+                is HomeIntent.SearchIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(HomeEffect.NavigateToSearch)
                     }
                 }
 
