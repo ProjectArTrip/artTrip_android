@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -25,8 +26,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,9 +62,23 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 enum class ExhibitionTab {
-    International, // 해외전시
-    Domestic, // 국내전시
+    Foreign,
+    Domestic
 }
+
+enum class ForeignCountry(val id: Int, val labelKo: String) {
+    Entire(100, "전체"),
+    Japan(101,"일본"),
+    Usa(102,"미국"),
+    Germany(103, "독일"),
+    Italy(104, "이태리")
+}
+
+enum class DomesticRegion(val id: Int, val label: String) {
+    Seoul(1,"서울"),
+    Busan(2,"부산")
+}
+
 
 @Composable
 fun HomeScreen(
@@ -176,7 +191,7 @@ fun HomeBody(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(ExhibitionTab.International) }
+    var selectedTab by remember { mutableStateOf(ExhibitionTab.Foreign) }
     val tabs = remember { ExhibitionTab.entries }
 
     Column(
@@ -193,7 +208,7 @@ fun HomeBody(
             tabs =
                 tabs.map {
                     when (it) {
-                        ExhibitionTab.International -> "해외전시"
+                        ExhibitionTab.Foreign -> "해외전시"
                         ExhibitionTab.Domestic -> "국내전시"
                     }
                 },
@@ -205,7 +220,7 @@ fun HomeBody(
         )
 
         // 해외 전시 탭만 국가 리스트 활성화
-        if (selectedTab == ExhibitionTab.International) {
+        if (selectedTab == ExhibitionTab.Foreign) {
             CountryChipList()
         } else {
             Spacer(
@@ -215,7 +230,7 @@ fun HomeBody(
         }
 
         when (selectedTab) {
-            ExhibitionTab.International -> InternationalExhibitionSection(state, onIntent)
+            ExhibitionTab.Foreign -> InternationalExhibitionSection(state, onIntent)
             ExhibitionTab.Domestic -> DomesticExhibitionSection(state, onIntent)
         }
     }
@@ -541,7 +556,7 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
     ) {
-        GenreTitle(title = "이번주 전시 일정")
+        SectionTitle(title = "이번주 전시 일정")
 
         Spacer(
             modifier =
@@ -591,7 +606,7 @@ fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
             Modifier
                 .fillMaxWidth(),
     ) {
-        GenreTitle(
+        SectionTitle(
             modifier =
                 Modifier
                     .padding(horizontal = 24.dp),
@@ -680,7 +695,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 }
 
 @Composable
-fun GenreTitle(
+fun SectionTitle(
     modifier: Modifier = Modifier,
     title: String,
 ) {
@@ -696,10 +711,12 @@ fun GenreTitle(
             style = AppTextStyle.Title01Bold,
             color = AppColor.TextPrimary,
         )
-        Icon(
-            painter = painterResource(R.drawable.ic_more_24),
-            contentDescription = "more button",
-        )
+        AppBarIconButton(
+            iconRes = R.drawable.ic_more_24,
+            contentDescription = "more button"
+        ) {
+
+        }
     }
 }
 
