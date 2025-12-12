@@ -10,4 +10,6 @@ interface HomeRepository {
     fun getHomeRecommendExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomePersonalizedExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>>
+
+    fun getHomeScheduleExhibitList(isDomestic: Boolean, date: String): Flow<ApiResult<List<ExhibitModel>>>
 }

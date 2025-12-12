@@ -3,14 +3,14 @@ package com.arttrip.android.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.home.GetCountryListUseCase
-import com.arttrip.android.presentation.home.contract.HomeEffect
-import com.arttrip.android.domain.usecase.home.GetHomeRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetCountryListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.international.GetCountryListUseCase
 import com.arttrip.android.domain.usecase.home.international.GetInterPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.international.GetInterRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.international.GetInterScheduledExhibitListUseCase
+import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,11 +26,12 @@ import javax.inject.Inject
 class HomeViewModel
     @Inject
     constructor(
-        private val getCountryListUseCase: GetCountryListUseCase,
         private val getInterRecommendExhibitListUseCase: GetInterRecommendExhibitListUseCase,
         private val getInterPersonalizedExhibitListUseCase: GetInterPersonalizedExhibitListUseCase,
+        private val getInterScheduledExhibitListUseCase: GetInterScheduledExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
-        private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase
+        private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
+        private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -44,9 +45,11 @@ class HomeViewModel
 
             onIntent(HomeIntent.LoadInterRecommendExhibitList)
             onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
+            onIntent(HomeIntent.LoadInterScheduledExhibitList)
 
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
             onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
+            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -64,12 +67,14 @@ class HomeViewModel
                         _effect.emit(HomeEffect.NavigateToDateFilter)
                     }
                 }
-                HomeIntent.LoadInterExhibitList -> loadRecommend(isDomestic = false)
+
                 HomeIntent.LoadInterRecommendExhibitList -> loadInterRecommendExhibitList()
                 HomeIntent.LoadInterPersonalizedExhibitList -> loadInterPersonalizedExhibitList()
+                HomeIntent.LoadInterScheduledExhibitList -> loadInterScheduledExhibitList("2025-12-12")
 
                 HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
                 HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
+                HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList("2025-12-12")
             }
         }
 
@@ -115,6 +120,27 @@ class HomeViewModel
         }
     }
 
+    private fun loadInterScheduledExhibitList(date: String) {
+        viewModelScope.launch {
+            getInterScheduledExhibitListUseCase(date = date)
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value = _state.value.copy(
+                                interScheduledExhibitList = result.data
+                            )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
+
     private fun loadDomesticRecommendExhibitList() {
         viewModelScope.launch {
             getDomesticRecommendExhibitListUseCase()
@@ -147,6 +173,27 @@ class HomeViewModel
                         is ApiResult.Success -> {
                             _state.value = _state.value.copy(
                                 domesticPersonalizedExhibitList = result.data
+                            )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun loadDomesticScheduledExhibitList(date: String) {
+        viewModelScope.launch {
+            getDomesticScheduledExhibitListUseCase(date = date)
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value = _state.value.copy(
+                                domesticScheduledExhibitList = result.data
                             )
                         }
 

@@ -19,4 +19,9 @@ interface HomeApi {
     suspend fun getHomePersonalized(
         @Query("isDomestic") isDomestic: Boolean
     ): BaseResponseDto<List<ExhibitDto>>
+
+    @GET("${HOME_PATH}/schedule")
+    suspend fun getHomeSchedule(
+        @Query("isDomestic") isDomestic: Boolean, @Query("date") date: String
+    ): BaseResponseDto<List<ExhibitDto>>
 }
