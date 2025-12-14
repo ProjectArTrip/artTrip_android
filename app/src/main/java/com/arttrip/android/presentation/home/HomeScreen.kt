@@ -76,10 +76,13 @@ fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
 enum class ForeignCountry(val id: Int, val label: String) {
     Entire(100, "전체"),
-    Japan(101,"일본"),
-    Usa(102,"미국"),
-    Germany(103, "독일"),
-    Italy(104, "이태리")
+    France(101,"프랑스"),
+    Germany(102,"독일"),
+    Italy(103, "이탈리아"),
+    Usa(104, "미국"),
+    Austria(105, "오스트리아"),
+    Japan(106, "일본"),
+    China(107, "중국")
 }
 
 enum class DomesticRegion(val id: Int, val label: String) {
