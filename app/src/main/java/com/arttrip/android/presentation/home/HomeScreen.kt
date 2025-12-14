@@ -75,19 +75,38 @@ enum class PlaceTab(val title: String) {
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
 enum class ForeignCountry(val id: Int, val label: String) {
-    Entire(100, "전체"),
-    France(101,"프랑스"),
-    Germany(102,"독일"),
-    Italy(103, "이탈리아"),
-    Usa(104, "미국"),
-    Austria(105, "오스트리아"),
-    Japan(106, "일본"),
-    China(107, "중국")
+    Entire(0, "전체"),
+    France(1,"프랑스"),
+    Germany(2,"독일"),
+    Italy(3, "이탈리아"),
+    Usa(4, "미국"),
+    Austria(5, "오스트리아"),
+    Japan(6, "일본"),
+    China(7, "중국")
 }
 
 enum class DomesticRegion(val id: Int, val label: String) {
-    Seoul(1,"서울"),
-    Busan(2,"부산")
+    Seoul(0,"서울"),
+    Gyeonggi(1, "경기"),
+    Chungcheong(2, "충청"),
+    Gangwon(3, "강원"),
+    Jeolla(4, "전라"),
+    Gyeongsang(5, "경상"),
+    Jeju(6, "제주")
+}
+
+enum class ExhibitGenre(val id: Int, val label: String) {
+    ContemporaryArt(0, "현대 미술"),
+    FineArt(1, "순수 미술"),
+    Photography(2, "사진"),
+    Painting(3, "회화"),
+    Sculpture(4, "조각"),
+    DigitalMediaArt(5, "디지털/미디어 아트"),
+    Craft(6, "공예"),
+    InstallationArt(7, "설치 미술"),
+    HistoricalClassicalArt(8, "역사/고전 미술"),
+    ModernArt(9, "근대 미술"),
+    PopArt(10, "팝아트"),
 }
 
 
@@ -295,6 +314,8 @@ fun InternationalExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> U
     val genreExhibit =
         getDummyExhibitList(8, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
 
+    val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.countryChips)]
+
     Column(
         modifier =
             Modifier
@@ -325,7 +346,9 @@ fun InternationalExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> U
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit)
+        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = genreChip) { genre ->
+            onIntent(HomeIntent.SelectForeignGenre(genre))
+        }
         Spacer(
             modifier =
                 Modifier
@@ -379,7 +402,9 @@ fun DomesticExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) 
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit)
+        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = state.domesticGenreChips) { genre ->
+            onIntent(HomeIntent.SelectDomesticGenre(genre))
+        }
         Spacer(
             modifier =
                 Modifier
@@ -390,8 +415,6 @@ fun DomesticExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) 
 
 @Composable
 fun ExhibitByLocationSection() {
-    val locationList by remember { mutableStateOf(listOf("수도권", "강원권", "충청북부권", "충청남부권", "전라북부권", "전라남부권", "경상북부권", "경상남부권", "제주권")) }
-
     Column {
         Row {
             Spacer(
@@ -416,26 +439,24 @@ fun ExhibitByLocationSection() {
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            locationList.forEachIndexed { index, location ->
-                if (index == 0) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
+
+            DomesticRegion.entries.forEach { region ->
                 LocationItem(
                     url = "https://img1.yna.co.kr/photo/yna/YH/2011/11/12/PYH2011111201190005600_P4.jpg",
-                    name = location,
+                    name = region.label,
                 )
-                if (index == locationList.lastIndex) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
             }
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
         }
     }
 }
@@ -599,9 +620,7 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
 }
 
 @Composable
-fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
-    val genreList by remember { mutableStateOf(listOf<String>("팝아트", "현대미술", "사진전", "타이틀")) }
-    var selectedGenre by remember { mutableStateOf("팝아트") }
+fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>, selectedGenre: ExhibitGenre, onGenreClick : (ExhibitGenre) -> Unit) {
     Column(
         modifier =
             Modifier
@@ -627,29 +646,27 @@ fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            genreList.forEachIndexed { index, genre ->
-                if (index == 0) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
+
+            ExhibitGenre.entries.forEach { genre ->
                 AppFilterChip(
                     case = AppFilterChipCase.Case02,
-                    text = genre,
+                    text = genre.label,
                     selected = selectedGenre == genre,
                 ) {
-                    selectedGenre = genre
-                }
-                if (index == genreList.lastIndex) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
+                    onGenreClick(genre)
                 }
             }
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
         }
 
         Spacer(

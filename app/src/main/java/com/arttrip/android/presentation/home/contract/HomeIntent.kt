@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home.contract
 
+import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
 
@@ -29,4 +30,7 @@ sealed interface HomeIntent {
     object LoadDomesticPersonalizedExhibitList: HomeIntent
 
     object LoadDomesticScheduledExhibitList: HomeIntent
+
+    data class SelectForeignGenre(val genre: ExhibitGenre) : HomeIntent
+    data class SelectDomesticGenre(val genre: ExhibitGenre): HomeIntent
 }

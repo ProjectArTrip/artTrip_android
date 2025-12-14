@@ -92,6 +92,29 @@ class HomeViewModel
                 HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
                 HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
                 HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList("2025-12-12")
+
+                is HomeIntent.SelectForeignGenre -> {
+                    val genre = intent.genre
+
+                    val country = _state.value.countryChips
+                    val index = ForeignCountry.entries.indexOf(country)
+
+                    _state.update { state ->
+                        state.copy(
+                            foreignGenreChips = state.foreignGenreChips.mapIndexed { i, old ->
+                                if (i == index) genre else old
+                            }
+                        )
+                    }
+                }
+
+                is HomeIntent.SelectDomesticGenre -> {
+                    val genre = intent.genre
+
+                    _state.update { state ->
+                        state.copy(domesticGenreChips = genre)
+                    }
+                }
             }
         }
 
