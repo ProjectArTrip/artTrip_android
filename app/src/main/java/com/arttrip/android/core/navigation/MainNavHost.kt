@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
+import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute
@@ -60,5 +61,7 @@ fun MainNavHost(
                 innerPadding = innerPadding,
             )
         }
+
+        composable(MainRoute.EXHIBITION_DETAIL) { ExhibitionDetailRoute(innerPadding) }
     }
 }

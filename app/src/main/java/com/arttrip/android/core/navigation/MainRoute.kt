@@ -8,4 +8,6 @@ object MainRoute {
     const val MY_PAGE = "my_page"
 
     const val HOME_DATE_FILTER = "home_date_filter"
+
+    const val EXHIBITION_DETAIL = "exhibition_detail"
 }
