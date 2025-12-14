@@ -58,12 +58,32 @@ fun AppIconButton(
     tint: Color = Color.Unspecified,
     onIconClick: () -> Unit = {},
 ) {
-    Icon(
-        modifier = modifier.noRippleClickable { onIconClick() },
-        painter = painterResource(id = iconResId),
-        contentDescription = contentDescription,
-        tint = tint,
+
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val rippleIndication = ripple(
+        bounded = false,
+        radius = 18.dp
+
     )
+
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rippleIndication,
+                onClick = onIconClick
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(id = iconResId),
+            contentDescription = contentDescription,
+            tint = tint,
+        )
+    }
+
 }
 
 /**
@@ -154,27 +174,45 @@ fun HeartButton(
     state: HeartButtonState,
     onClick: () -> Unit,
 ) {
-    Icon(
-        modifier =
-            modifier
-                .clip(CircleShape)
-                .clickable(
-                    indication = ripple(bounded = true),
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onClick,
-                ),
-        painter =
-            painterResource(
-                id =
-                    if (state == HeartButtonState.HeartSelected) {
-                        R.drawable.ic_heart_filled_purple_24
-                    } else {
-                        R.drawable.ic_heart_outline_black_24
-                    },
-            ),
-        tint = Color.Unspecified,
-        contentDescription = "heartButton button",
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val rippleIndication = ripple(
+        bounded = false,
+        radius = 18.dp
+
     )
+
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rippleIndication,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center){
+        Icon(
+            modifier =
+                modifier
+                    .clip(CircleShape)
+                    .clickable(
+                        indication = ripple(bounded = true),
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = onClick,
+                    ),
+            painter =
+                painterResource(
+                    id =
+                        if (state == HeartButtonState.HeartSelected) {
+                            R.drawable.ic_heart_filled_purple_24
+                        } else {
+                            R.drawable.ic_heart_outline_black_24
+                        },
+                ),
+            tint = Color.Unspecified,
+            contentDescription = "heartButton button",
+        )
+    }
 }
 
 @Preview(
