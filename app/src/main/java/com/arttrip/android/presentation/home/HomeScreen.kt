@@ -55,6 +55,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.component.tag.AppTagType
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -725,7 +726,7 @@ fun ExhibitItemCase1(
     ExhibitImage(
         modifier =
             Modifier
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
         url = exhibit.posterUrl,
@@ -791,7 +792,7 @@ fun ExhibitItemCase2(
         modifier =
             Modifier
                 .width(120.dp)
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
     ) {
@@ -824,7 +825,7 @@ fun ExhibitItemCase3(
     Row(
         modifier =
             Modifier
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
         verticalAlignment = Alignment.CenterVertically,
@@ -900,7 +901,7 @@ fun ExhibitItemCase4(
         modifier =
             Modifier
                 .width(128.dp)
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
     ) {
@@ -1027,7 +1028,7 @@ private fun getDummyExhibitList(
     List(size) { index ->
         ExhibitInfoModel(
             url = url,
-            title = "초대박 귀여운 쿼카 전시회 skrr~ #$index",
+            title = "초대박 귀여운 쿼카 전시회 #$index",
             place = "쿼카 공원",
             date = "2025.07.29 - 2025.08.10",
             country = "한국",
