@@ -55,7 +55,7 @@ fun ExhibitionDetailScreen(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(AppColor.Gray0)
                 .padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,13 +78,13 @@ fun ExhibitionDetailScreen(
         Box(
             modifier =
                 Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .background(AppColor.Gray0),
         ) {
             Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .verticalScroll(rememberScrollState()),
             ) {
                 ExhibitHeroImage(
@@ -108,12 +108,17 @@ fun ExhibitionDetailScreen(
                     Column(
                         modifier =
                             Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
+                                .fillMaxWidth(),
                     ) {
-                        ExhibitionInfoSection()
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        ExhibitionInfoSection(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
 
                         AppTabRow(
+                            modifier = Modifier.padding(horizontal = 24.dp),
                             case = AppTabCase.Case04,
                             tabs = listOf("상세 정보", "지도", "리뷰"),
                             selectedIndex = selectedTabIndex,

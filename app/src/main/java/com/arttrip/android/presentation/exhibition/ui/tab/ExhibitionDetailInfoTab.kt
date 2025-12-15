@@ -33,7 +33,8 @@ fun ExhibitionDetailInfoTab() {
     Column(
         modifier =
             Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
     ) {
         Box(
             modifier =

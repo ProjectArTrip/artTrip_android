@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,12 +14,11 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 
 @Composable
-fun ExhibitionInfoSection() {
+fun ExhibitionInfoSection(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 24.dp),
+            modifier
+                .fillMaxWidth(),
     ) {
         Text(
             text = "메이지·다이쇼 시대 예술의 장식적 취향을 통해 본 아르누보와 그 주변 환경",

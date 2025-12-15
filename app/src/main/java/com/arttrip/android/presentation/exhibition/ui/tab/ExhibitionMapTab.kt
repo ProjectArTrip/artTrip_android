@@ -20,9 +20,10 @@ fun ExhibitionMapTab() {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(AppColor.Gray50)
+                .padding(horizontal = 24.dp)
                 .height(220.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(AppColor.Gray50),
     ) {
         Text(
             text = "지도 탭 컨텐츠 영역 (임시)",
