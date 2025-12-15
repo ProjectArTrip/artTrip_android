@@ -2,7 +2,6 @@ package com.arttrip.android.core.di
 
 import com.arttrip.android.data.remote.api.AuthApi
 import com.arttrip.android.data.remote.api.HomeApi
-import com.arttrip.android.data.remote.api.UserApi
 import com.arttrip.android.data.remote.interceptor.AuthInterceptor
 import com.arttrip.android.data.remote.interceptor.TokenAuthenticator
 import dagger.Module
@@ -73,10 +72,6 @@ object NetworkModule {
 
         return retrofit.create(AuthApi::class.java)
     }
-
-    @Provides
-    @Singleton
-    fun provideUserApi(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
 
     @Provides
     @Singleton

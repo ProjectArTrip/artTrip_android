@@ -15,20 +15,26 @@ fun HomeRoute(
     onNavigate: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val homeState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
+                HomeEffect.NavigateToAlert -> {
+
+                }
                 HomeEffect.NavigateToDateFilter -> {
                     onNavigate(MainRoute.HOME_DATE_FILTER)
+                }
+                HomeEffect.NavigateToSearch -> {
+
                 }
             }
         }
     }
     HomeScreen(
         innerPadding = innerPadding,
-        uiState = homeState,
+        state = state,
         onIntent = viewModel::onIntent,
     )
 }

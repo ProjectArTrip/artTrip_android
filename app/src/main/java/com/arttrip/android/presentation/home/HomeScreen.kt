@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,8 +26,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +45,8 @@ import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.button.LikeButtonState
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.tab.AppTabCase
@@ -51,20 +55,65 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.component.tag.AppTagType
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
+import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-enum class ExhibitionTab {
-    International, // 해외전시
-    Domestic, // 국내전시
+enum class PlaceTab(val title: String) {
+    Foreign("해외전시"),
+    Domestic("국내전시");
+
+    companion object {
+        val tabs = entries
+        fun fromIndex(index: Int): PlaceTab = tabs[index]
+    }
 }
+
+fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
+
+enum class ForeignCountry(val id: Int, val label: String) {
+    Entire(0, "전체"),
+    France(1,"프랑스"),
+    Germany(2,"독일"),
+    Italy(3, "이탈리아"),
+    Usa(4, "미국"),
+    Austria(5, "오스트리아"),
+    Japan(6, "일본"),
+    China(7, "중국")
+}
+
+enum class DomesticRegion(val id: Int, val label: String) {
+    Seoul(0,"서울"),
+    Gyeonggi(1, "경기"),
+    Chungcheong(2, "충청"),
+    Gangwon(3, "강원"),
+    Jeolla(4, "전라"),
+    Gyeongsang(5, "경상"),
+    Jeju(6, "제주")
+}
+
+enum class ExhibitGenre(val id: Int, val label: String) {
+    ContemporaryArt(0, "현대 미술"),
+    FineArt(1, "순수 미술"),
+    Photography(2, "사진"),
+    Painting(3, "회화"),
+    Sculpture(4, "조각"),
+    DigitalMediaArt(5, "디지털/미디어 아트"),
+    Craft(6, "공예"),
+    InstallationArt(7, "설치 미술"),
+    HistoricalClassicalArt(8, "역사/고전 미술"),
+    ModernArt(9, "근대 미술"),
+    PopArt(10, "팝아트"),
+}
+
 
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
-    uiState: HomeState,
+    state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
     Column(
@@ -77,8 +126,8 @@ fun HomeScreen(
             onIntent = onIntent,
         )
 
-        HomeContainer(
-            uiState = uiState,
+        HomeBody(
+            state = state,
             onIntent = onIntent,
         )
     }
@@ -99,7 +148,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 18.dp, top = 8.dp, bottom = 8.dp),
+                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -112,7 +161,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                         .height(28.dp),
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 AppBarIconButton(
                     iconRes = R.drawable.ic_alert_24,
@@ -140,26 +189,39 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
 fun AppBarIconButton(
     @DrawableRes iconRes: Int,
     contentDescription: String?,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
-    IconButton(
-        modifier = Modifier.size(36.dp),
-        onClick = onClick,
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val rippleIndication = ripple(
+        bounded = false,
+        radius = 18.dp
+
+    )
+
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rippleIndication,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(iconRes),
-            contentDescription = contentDescription,
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription
         )
     }
 }
 
 @Composable
-fun HomeContainer(
-    uiState: HomeState,
+fun HomeBody(
+    state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(ExhibitionTab.International) }
-    val tabs = remember { ExhibitionTab.entries }
+    val selectedIndex = state.placeTabs.toIndex()
 
     Column(
         modifier =
@@ -172,52 +234,42 @@ fun HomeContainer(
 
         AppTabRow(
             case = AppTabCase.Case03,
-            tabs =
-                tabs.map {
-                    when (it) {
-                        ExhibitionTab.International -> "해외전시"
-                        ExhibitionTab.Domestic -> "국내전시"
-                    }
-                },
-            selectedIndex = tabs.indexOf(selectedTab),
+            tabs = PlaceTab.tabs.map { it.title },
+            selectedIndex = selectedIndex,
             onTabSelected = { index ->
-                selectedTab = tabs[index]
+                val tab = PlaceTab.fromIndex(index)
+                if (tab != state.placeTabs) onIntent(HomeIntent.SelectTab(tab))
             },
             modifier = Modifier.padding(start = 24.dp),
         )
 
-        when (selectedTab) {
-            ExhibitionTab.International -> InternationalExhibitionSection()
-            ExhibitionTab.Domestic -> DomesticExhibitionSection()
+        // 해외 전시 탭만 국가 리스트 활성화
+        if (state.placeTabs == PlaceTab.Foreign) {
+            CountryChipList(state, onIntent)
+        } else {
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+            )
+        }
+
+        when (state.placeTabs) {
+            PlaceTab.Foreign -> InternationalExhibitionSection(state, onIntent)
+            PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent)
         }
     }
 }
 
 @Composable
-fun InternationalExhibitionSection() {
-    val internalExhibits =
-        getDummyExhibitList(10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
-    val recommendationExhibits =
-        getDummyExhibitList(10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
-    val weeklyExhibits =
-        getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
-    val genreExhibit =
-        getDummyExhibitList(8, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+fun CountryChipList(state: HomeState, onIntent: (HomeIntent) -> Unit) {
 
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         Spacer(
-            modifier = Modifier.height(16.dp),
-        )
-        CountryChipList()
-        Spacer(
-            modifier =
-                Modifier
-                    .height(16.dp),
+            modifier = Modifier
+                .height(16.dp)
         )
         Row(
             modifier =
@@ -230,25 +282,58 @@ fun InternationalExhibitionSection() {
                     Modifier
                         .width(16.dp),
             )
-            internalExhibits.forEachIndexed { index, exhibit ->
-                ExhibitItemCase1(exhibit = exhibit)
-                if (index == 9) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+
+            ForeignCountry.entries.forEach { country ->
+                AppFilterChip(
+                    case = AppFilterChipCase.Case02,
+                    text = country.label,
+                    selected = state.countryChips == country,
+                    onClick = { onIntent(HomeIntent.SelectCountry(country)) }
+                )
             }
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
         }
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+    }
+}
+
+@Composable
+fun InternationalExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) {
+    val recommendExhibitList = state.interRecommendExhibitList
+    val personalizedExhibitList = state.interPersonalizedExhibitList
+    val weeklyExhibits =
+        getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+    val genreExhibit =
+        getDummyExhibitList(8, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+
+    val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.countryChips)]
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+    ) {
+        Spacer(
+            modifier = Modifier.height(8.dp),
+        )
+        RecommendSection(recommendExhibitList)
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        PersonalRecommendedSection(
+        PersonalizedSection(
             name = "손현준",
-            exhibitList = recommendationExhibits,
+            exhibitList = personalizedExhibitList,
         )
         Spacer(
             modifier =
@@ -261,50 +346,21 @@ fun InternationalExhibitionSection() {
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit)
-    }
-}
-
-@Composable
-fun CountryChipList() {
-    val countryList by remember { mutableStateOf(listOf("전체", "프랑스", "독일", "미국", "호주", "일본", "이탈리아")) }
-    var selectedCountry by remember { mutableStateOf("전체") }
-
-    Row(
-        modifier =
-            Modifier
-                .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Spacer(
-            modifier =
-                Modifier
-                    .width(16.dp),
-        )
-
-        countryList.forEach { country ->
-            AppFilterChip(
-                modifier = Modifier,
-                case = AppFilterChipCase.Case02,
-                text = country,
-                selected = selectedCountry == country,
-            ) {
-                selectedCountry = country
-            }
+        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = genreChip) { genre ->
+            onIntent(HomeIntent.SelectForeignGenre(genre))
         }
-
         Spacer(
             modifier =
                 Modifier
-                    .width(16.dp),
+                    .height(24.dp),
         )
     }
 }
 
 @Composable
-fun DomesticExhibitionSection() {
-    val internalExhibits = getDummyExhibitList(10, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
-    val recommendationExhibits = getDummyExhibitList(10, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+fun DomesticExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) {
+    val recommendExhibitList = state.domesticRecommendExhibitList
+    val personalizedExhibitList = state.domesticPersonalizedExhibitList
     val weeklyExhibits = getDummyExhibitList(3, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
     val genreExhibit = getDummyExhibitList(8, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
 
@@ -317,30 +373,9 @@ fun DomesticExhibitionSection() {
         Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
+                    .height(16.dp),
         )
-        Row(
-            modifier =
-                Modifier
-                    .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Spacer(
-                modifier =
-                    Modifier
-                        .width(16.dp),
-            )
-            internalExhibits.forEachIndexed { index, exhibit ->
-                ExhibitItemCase1(exhibit = exhibit)
-                if (index == 9) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
-            }
-        }
+        RecommendSection(recommendExhibitList)
         Spacer(
             modifier =
                 Modifier
@@ -352,9 +387,9 @@ fun DomesticExhibitionSection() {
                 Modifier
                     .height(32.dp),
         )
-        PersonalRecommendedSection(
+        PersonalizedSection(
             name = "손현준",
-            exhibitList = recommendationExhibits,
+            exhibitList = personalizedExhibitList,
         )
         Spacer(
             modifier =
@@ -367,14 +402,19 @@ fun DomesticExhibitionSection() {
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit)
+        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = state.domesticGenreChips) { genre ->
+            onIntent(HomeIntent.SelectDomesticGenre(genre))
+        }
+        Spacer(
+            modifier =
+                Modifier
+                    .height(24.dp),
+        )
     }
 }
 
 @Composable
 fun ExhibitByLocationSection() {
-    val locationList by remember { mutableStateOf(listOf("수도권", "강원권", "충청북부권", "충청남부권", "전라북부권", "전라남부권", "경상북부권", "경상남부권", "제주권")) }
-
     Column {
         Row {
             Spacer(
@@ -399,26 +439,24 @@ fun ExhibitByLocationSection() {
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            locationList.forEachIndexed { index, location ->
-                if (index == 0) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
+
+            DomesticRegion.entries.forEach { region ->
                 LocationItem(
                     url = "https://img1.yna.co.kr/photo/yna/YH/2011/11/12/PYH2011111201190005600_P4.jpg",
-                    name = location,
+                    name = region.label,
                 )
-                if (index == locationList.lastIndex) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
             }
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
         }
     }
 }
@@ -454,9 +492,35 @@ fun LocationItem(
 }
 
 @Composable
-fun PersonalRecommendedSection(
+fun RecommendSection(exhibitList : List<ExhibitModel>) {
+    Row(
+        modifier =
+            Modifier
+                .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Spacer(
+            modifier =
+                Modifier
+                    .width(16.dp),
+        )
+        exhibitList.forEachIndexed { index, exhibit ->
+            ExhibitItemCase1(exhibit = exhibit)
+            if (index == exhibitList.lastIndex) {
+                Spacer(
+                    modifier =
+                        Modifier
+                            .width(16.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PersonalizedSection(
     name: String,
-    exhibitList: List<ExhibitInfoModel>,
+    exhibitList: List<ExhibitModel>,
 ) {
     Column {
         Row {
@@ -514,7 +578,7 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
     ) {
-        GenreTitle(title = "이번주 전시 일정")
+        SectionTitle(title = "이번주 전시 일정")
 
         Spacer(
             modifier =
@@ -556,15 +620,13 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
 }
 
 @Composable
-fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
-    val genreList by remember { mutableStateOf(listOf<String>("팝아트", "현대미술", "사진전", "타이틀")) }
-    var selectedGenre by remember { mutableStateOf("팝아트") }
+fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>, selectedGenre: ExhibitGenre, onGenreClick : (ExhibitGenre) -> Unit) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth(),
     ) {
-        GenreTitle(
+        SectionTitle(
             modifier =
                 Modifier
                     .padding(horizontal = 24.dp),
@@ -584,29 +646,27 @@ fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>) {
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            genreList.forEachIndexed { index, genre ->
-                if (index == 0) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
+
+            ExhibitGenre.entries.forEach { genre ->
                 AppFilterChip(
                     case = AppFilterChipCase.Case02,
-                    text = genre,
+                    text = genre.label,
                     selected = selectedGenre == genre,
                 ) {
-                    selectedGenre = genre
-                }
-                if (index == genreList.lastIndex) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
+                    onGenreClick(genre)
                 }
             }
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(16.dp),
+            )
         }
 
         Spacer(
@@ -653,7 +713,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 }
 
 @Composable
-fun GenreTitle(
+fun SectionTitle(
     modifier: Modifier = Modifier,
     title: String,
 ) {
@@ -669,27 +729,35 @@ fun GenreTitle(
             style = AppTextStyle.Title01Bold,
             color = AppColor.TextPrimary,
         )
-        Icon(
-            painter = painterResource(R.drawable.ic_more_24),
-            contentDescription = "more button",
-        )
+        AppBarIconButton(
+            iconRes = R.drawable.ic_more_24,
+            contentDescription = "more button"
+        ) {
+
+        }
     }
 }
 
 @Composable
 fun ExhibitItemCase1(
-    exhibit: ExhibitInfoModel,
+    exhibit: ExhibitModel,
     onItemClick: () -> Unit = {},
 ) {
     ExhibitImage(
         modifier =
             Modifier
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
-        url = exhibit.url,
+        url = exhibit.posterUrl,
         case = ExhibitImageCase.CASE1,
     ) {
+        LikeButton(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = (-16).dp, y = (16).dp),
+            state = LikeButtonState.Like
+        ) { }
         Box(
             modifier =
                 Modifier
@@ -722,12 +790,12 @@ fun ExhibitItemCase1(
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.place,
+                text = exhibit.title,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.date,
+                text = exhibit.exhibitPeriod,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
@@ -737,18 +805,25 @@ fun ExhibitItemCase1(
 
 @Composable
 fun ExhibitItemCase2(
-    exhibit: ExhibitInfoModel,
+    exhibit: ExhibitModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(
         modifier =
             Modifier
                 .width(120.dp)
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
     ) {
-        ExhibitImage(url = exhibit.url, case = ExhibitImageCase.CASE2)
+        ExhibitImage(url = exhibit.posterUrl, case = ExhibitImageCase.CASE2) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
+        }
         Spacer(
             modifier =
                 Modifier
@@ -770,7 +845,7 @@ fun ExhibitItemCase3(
     Row(
         modifier =
             Modifier
-                .clickable {
+                .noRippleClickable {
                     onItemClick()
                 },
         verticalAlignment = Alignment.CenterVertically,
@@ -779,6 +854,12 @@ fun ExhibitItemCase3(
             url = exhibit.url,
             case = ExhibitImageCase.CASE3,
         ) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
             AppTag(
                 type = AppTagType.Ongoing,
                 modifier =
@@ -839,15 +920,22 @@ fun ExhibitItemCase4(
     Column(
         modifier =
             Modifier
-                .width(120.dp)
-                .clickable {
+                .width(128.dp)
+                .noRippleClickable {
                     onItemClick()
                 },
     ) {
         ExhibitImage(
             url = exhibit.url,
             case = ExhibitImageCase.CASE4,
-        )
+        ) {
+            LikeButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like
+            ) { }
+        }
         Spacer(
             modifier =
                 Modifier
@@ -908,7 +996,7 @@ fun ExhibitImage(
             ExhibitImageCase.CASE1 -> 180.dp
             ExhibitImageCase.CASE2 -> 120.dp
             ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 120.dp
+            ExhibitImageCase.CASE4 -> 128.dp
         }
 
     val imageHeight =
@@ -916,7 +1004,7 @@ fun ExhibitImage(
             ExhibitImageCase.CASE1 -> 240.dp
             ExhibitImageCase.CASE2 -> 150.dp
             ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 150.dp
+            ExhibitImageCase.CASE4 -> 160.dp
         }
 
     val borderModifier =
@@ -960,7 +1048,7 @@ private fun getDummyExhibitList(
     List(size) { index ->
         ExhibitInfoModel(
             url = url,
-            title = "초대박 귀여운 쿼카 전시회 skrr~ #$index",
+            title = "초대박 귀여운 쿼카 전시회 #$index",
             place = "쿼카 공원",
             date = "2025.07.29 - 2025.08.10",
             country = "한국",
