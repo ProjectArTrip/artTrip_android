@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +47,6 @@ fun ExhibitionDetailScreen(
     val dummyUrl = "https://i.ibb.co/nsRDL64B/detail.png"
     val heroVisibleHeight = 264.dp
     val contentRadius = 16.dp
-    val heroTotalHeight = heroVisibleHeight + contentRadius
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
@@ -75,46 +73,38 @@ fun ExhibitionDetailScreen(
             },
         )
 
-        Box(
+        Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .background(AppColor.Gray0),
+                    .verticalScroll(rememberScrollState()),
         ) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+            Box(
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 ExhibitHeroImage(
                     url = dummyUrl,
                     modifier = Modifier.fillMaxWidth(),
-                    height = heroTotalHeight,
+                    height = heroVisibleHeight,
                 )
 
                 Box(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .offset(y = -contentRadius)
-                            .clip(
-                                RoundedCornerShape(
-                                    topStart = contentRadius,
-                                    topEnd = contentRadius,
-                                ),
-                            ).background(AppColor.Gray0),
+                            .padding(top = heroVisibleHeight - contentRadius)
+                            .clip(RoundedCornerShape(topStart = contentRadius, topEnd = contentRadius))
+                            .background(AppColor.Gray0),
                 ) {
                     Column(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Spacer(modifier = Modifier.height(24.dp))
 
                         ExhibitionInfoSection(
                             modifier = Modifier.padding(horizontal = 24.dp),
                         )
+
                         Spacer(modifier = Modifier.height(24.dp))
 
                         AppTabRow(
@@ -122,16 +112,13 @@ fun ExhibitionDetailScreen(
                             case = AppTabCase.Case04,
                             tabs = listOf("상세 정보", "지도", "리뷰"),
                             selectedIndex = selectedTabIndex,
-                            onTabSelected = { index ->
-                                selectedTabIndex = index
-                            },
+                            onTabSelected = { selectedTabIndex = it },
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        ExhibitionDetailTabSection(
-                            selectedTabIndex = selectedTabIndex,
-                        )
+                        ExhibitionDetailTabSection(selectedTabIndex = selectedTabIndex)
+
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
