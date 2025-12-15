@@ -89,19 +89,19 @@ fun ReviewButton(
 
     Surface(
         onClick = onClick,
-        modifier = modifier.height(34.dp),
-        shape = RoundedCornerShape(4.dp),
+        modifier = modifier.height(48.dp),
+        shape = RoundedCornerShape(8.dp),
         color = AppColor.Gray0,
         contentColor = AppColor.TextPrimary,
-        border = BorderStroke(1.dp, AppColor.Gray50),
+        border = BorderStroke(1.dp, AppColor.Gray100),
         interactionSource = interactionSource,
     ) {
         Row(
-            Modifier.padding(horizontal = 16.dp),
+            Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
-            Text(text, style = AppTextStyle.Body02Bold)
+            Text(text, style = AppTextStyle.Body01Bold)
         }
     }
 }
