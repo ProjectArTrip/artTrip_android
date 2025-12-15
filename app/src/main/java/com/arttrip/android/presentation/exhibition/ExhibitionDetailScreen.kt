@@ -53,7 +53,7 @@ fun ExhibitionDetailScreen(
     Column(
         modifier =
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(AppColor.Gray0)
                 .padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,7 +85,7 @@ fun ExhibitionDetailScreen(
                 ExhibitHeroImage(
                     url = dummyUrl,
                     modifier = Modifier.fillMaxWidth(),
-                    height = heroVisibleHeight,
+                    height = heroVisibleHeight + contentRadius,
                 )
 
                 Box(
