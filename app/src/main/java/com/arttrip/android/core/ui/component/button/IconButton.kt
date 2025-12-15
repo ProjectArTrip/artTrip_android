@@ -58,24 +58,24 @@ fun AppIconButton(
     tint: Color = Color.Unspecified,
     onIconClick: () -> Unit = {},
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
 
-    val rippleIndication = ripple(
-        bounded = false,
-        radius = 18.dp
-
-    )
+    val rippleIndication =
+        ripple(
+            bounded = false,
+            radius = 18.dp,
+        )
 
     Box(
-        modifier = Modifier
-            .size(24.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = rippleIndication,
-                onClick = onIconClick
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(24.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = rippleIndication,
+                    onClick = onIconClick,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(id = iconResId),
@@ -83,7 +83,6 @@ fun AppIconButton(
             tint = tint,
         )
     }
-
 }
 
 /**
@@ -176,21 +175,23 @@ fun HeartButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    val rippleIndication = ripple(
-        bounded = false,
-        radius = 18.dp
-
-    )
+    val rippleIndication =
+        ripple(
+            bounded = false,
+            radius = 18.dp,
+        )
 
     Box(
-        modifier = Modifier
-            .size(24.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = rippleIndication,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center){
+        modifier =
+            Modifier
+                .size(24.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = rippleIndication,
+                    onClick = onClick,
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
         Icon(
             modifier =
                 modifier
