@@ -1,13 +1,12 @@
-package com.arttrip.android.data.remote.model.home
+package com.arttrip.android.domain.model.exhibit
 
-data class ExhibitDetailResponseDto(
+data class ExhibitDetailModel(
     val exhibitId: Long,
     val title: String,
     val description: String?,
     val posterUrl: String?,
     val ticketUrl: String?,
     val exhibitPeriod: String,
-    val status: String,
     val hallName: String?,
     val hallAddress: String?,
     val hallOpeningHours: String?,
