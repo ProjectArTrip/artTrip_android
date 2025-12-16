@@ -11,10 +11,7 @@ class HomeDataSource
     ) {
         suspend fun getHomeRecommendToday(requestDto: ExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
-        suspend fun getHomePersonalized(isDomestic: Boolean) = api.getHomePersonalized(isDomestic = isDomestic)
+        suspend fun getHomePersonalizedRandom(requestDto: ExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
-        suspend fun getHomeSchedule(
-            isDomestic: Boolean,
-            date: String,
-        ) = api.getHomeSchedule(isDomestic = isDomestic, date = date)
+        suspend fun getHomeSchedule(requestDto: ExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
     }

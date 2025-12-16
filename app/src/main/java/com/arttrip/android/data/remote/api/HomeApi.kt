@@ -12,17 +12,16 @@ import retrofit2.http.Query
 interface HomeApi {
     @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
-        @Body requestDto: ExhibitListRequestDto,
+        @Body requestDto: ExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 
-    @GET("${HOME_PATH}/personalized/random")
-    suspend fun getHomePersonalized(
-        @Query("isDomestic") isDomestic: Boolean,
+    @POST("${HOME_PATH}/personalized/random")
+    suspend fun getHomePersonalizedRandom(
+        @Body requestDto: ExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 
     @GET("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
-        @Query("isDomestic") isDomestic: Boolean,
-        @Query("date") date: String,
+        @Body requestDto: ExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 }

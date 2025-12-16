@@ -47,12 +47,13 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getHomePersonalizedExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getHomePersonalizedExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse = dataSource.getHomePersonalized(isDomestic = isDomestic)
+                    val requestDto = query.toRequestDto()
+                    val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
 
                     val dto = baseResponse.result
                     if (dto == null) {
@@ -78,14 +79,14 @@ class HomeRepositoryImpl
             }
 
         override fun getHomeScheduleExhibitList(
-            isDomestic: Boolean,
-            date: String,
+            query: ExhibitListQueryModel
         ): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse = dataSource.getHomeSchedule(isDomestic = isDomestic, date = date)
+                    val requestDto = query.toRequestDto()
+                    val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto)
 
                     val dto = baseResponse.result
                     if (dto == null) {

@@ -8,9 +8,9 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetInterPersonalizedExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.foreign.GetForeignRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetInterScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibitListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -28,8 +28,8 @@ class HomeViewModel
     @Inject
     constructor(
         private val getForeignRecommendExhibitListUseCase: GetForeignRecommendExhibitListUseCase,
-        private val getInterPersonalizedExhibitListUseCase: GetInterPersonalizedExhibitListUseCase,
-        private val getInterScheduledExhibitListUseCase: GetInterScheduledExhibitListUseCase,
+        private val getForeignPersonalizedExhibitListUseCase: GetForeignPersonalizedExhibitListUseCase,
+        private val getForeignScheduledExhibitListUseCase: GetForeignScheduledExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
         private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
         private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
@@ -89,12 +89,12 @@ class HomeViewModel
                 }
 
                 HomeIntent.LoadInterRecommendExhibitList -> loadForeignRecommendExhibitList()
-                HomeIntent.LoadInterPersonalizedExhibitList -> loadInterPersonalizedExhibitList()
-                HomeIntent.LoadInterScheduledExhibitList -> loadInterScheduledExhibitList("2025-12-12")
+                HomeIntent.LoadInterPersonalizedExhibitList -> loadForeignPersonalizedExhibitList()
+                HomeIntent.LoadInterScheduledExhibitList -> loadForeignScheduledExhibitList()
 
                 HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
                 HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
-                HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList("2025-12-12")
+                HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
 
                 is HomeIntent.SelectForeignGenre -> {
                     val genre = intent.genre
@@ -149,9 +149,15 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterPersonalizedExhibitList() {
+        private fun loadForeignPersonalizedExhibitList() {
             viewModelScope.launch {
-                getInterPersonalizedExhibitListUseCase()
+                val query = ForeignExhibitListQueryModel(
+                    country = "",
+                    singleGenre = null,
+                    date = ""
+                )
+
+                getForeignPersonalizedExhibitListUseCase(query = query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -171,9 +177,15 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterScheduledExhibitList(date: String) {
+        private fun loadForeignScheduledExhibitList() {
             viewModelScope.launch {
-                getInterScheduledExhibitListUseCase(date = date)
+                val query = ForeignExhibitListQueryModel(
+                    country = "",
+                    singleGenre = null,
+                    date = ""
+                )
+
+                getForeignScheduledExhibitListUseCase(query = query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -223,7 +235,13 @@ class HomeViewModel
 
         private fun loadDomesticPersonalizedExhibitList() {
             viewModelScope.launch {
-                getDomesticPersonalizedExhibitListUseCase()
+                val query = DomesticExhibitListQueryModel(
+                    region = "",
+                    singleGenre = null,
+                    date = ""
+                )
+
+                getDomesticPersonalizedExhibitListUseCase(query = query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -243,9 +261,15 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticScheduledExhibitList(date: String) {
+        private fun loadDomesticScheduledExhibitList() {
             viewModelScope.launch {
-                getDomesticScheduledExhibitListUseCase(date = date)
+                val query = DomesticExhibitListQueryModel(
+                    region = "",
+                    singleGenre = null,
+                    date = ""
+                )
+
+                getDomesticScheduledExhibitListUseCase(query = query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
