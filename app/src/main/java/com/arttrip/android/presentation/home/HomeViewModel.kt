@@ -40,15 +40,15 @@ class HomeViewModel
 
         init {
             // 화면 진입 시 자동 로딩
-            onIntent(HomeIntent.LoadCountries)
-
-            onIntent(HomeIntent.LoadInterRecommendExhibitList)
-            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
-            onIntent(HomeIntent.LoadInterScheduledExhibitList)
-
-            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
-            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
-            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
+//            onIntent(HomeIntent.LoadCountries)
+//
+//            onIntent(HomeIntent.LoadInterRecommendExhibitList)
+//            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
+//            onIntent(HomeIntent.LoadInterScheduledExhibitList)
+//
+//            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
+//            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
+//            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
         }
 
         fun onIntent(intent: HomeIntent) {
