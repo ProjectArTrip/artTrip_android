@@ -21,13 +21,11 @@ fun HomeRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeEffect.NavigateToAlert -> {
-
                 }
                 HomeEffect.NavigateToDateFilter -> {
                     onNavigate(MainRoute.HOME_DATE_FILTER)
                 }
                 HomeEffect.NavigateToSearch -> {
-
                 }
             }
         }

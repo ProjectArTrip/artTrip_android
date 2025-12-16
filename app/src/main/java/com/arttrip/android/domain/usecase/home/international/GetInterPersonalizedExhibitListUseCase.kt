@@ -6,8 +6,10 @@ import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetInterPersonalizedExhibitListUseCase @Inject constructor(
-    private val homeRepository: HomeRepository,
-) {
-    operator fun invoke(): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getHomePersonalizedExhibitList(isDomestic = false)
-}
+class GetInterPersonalizedExhibitListUseCase
+    @Inject
+    constructor(
+        private val homeRepository: HomeRepository,
+    ) {
+        operator fun invoke(): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getHomePersonalizedExhibitList(isDomestic = false)
+    }

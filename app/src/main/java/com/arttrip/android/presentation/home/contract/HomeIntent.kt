@@ -5,8 +5,14 @@ import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
 
 sealed interface HomeIntent {
-    data class SelectTab(val tab: PlaceTab) : HomeIntent
-    data class SelectCountry(val country: ForeignCountry) : HomeIntent
+    data class SelectTab(
+        val tab: PlaceTab,
+    ) : HomeIntent
+
+    data class SelectCountry(
+        val country: ForeignCountry,
+    ) : HomeIntent
+
     object LoadCountries : HomeIntent
 
     object Retry : HomeIntent
@@ -21,16 +27,23 @@ sealed interface HomeIntent {
 
     object SearchIconClicked : HomeIntent
 
-    object LoadInterRecommendExhibitList: HomeIntent
-    object LoadInterPersonalizedExhibitList: HomeIntent
+    object LoadInterRecommendExhibitList : HomeIntent
 
-    object LoadInterScheduledExhibitList: HomeIntent
+    object LoadInterPersonalizedExhibitList : HomeIntent
 
-    object LoadDomesticRecommendExhibitList: HomeIntent
-    object LoadDomesticPersonalizedExhibitList: HomeIntent
+    object LoadInterScheduledExhibitList : HomeIntent
 
-    object LoadDomesticScheduledExhibitList: HomeIntent
+    object LoadDomesticRecommendExhibitList : HomeIntent
 
-    data class SelectForeignGenre(val genre: ExhibitGenre) : HomeIntent
-    data class SelectDomesticGenre(val genre: ExhibitGenre): HomeIntent
+    object LoadDomesticPersonalizedExhibitList : HomeIntent
+
+    object LoadDomesticScheduledExhibitList : HomeIntent
+
+    data class SelectForeignGenre(
+        val genre: ExhibitGenre,
+    ) : HomeIntent
+
+    data class SelectDomesticGenre(
+        val genre: ExhibitGenre,
+    ) : HomeIntent
 }

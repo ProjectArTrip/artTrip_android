@@ -8,16 +8,12 @@ import com.arttrip.android.presentation.home.PlaceTab
 data class HomeState(
     val placeTabs: PlaceTab = PlaceTab.Foreign,
     val countryChips: ForeignCountry = ForeignCountry.Entire,
-
     val interRecommendExhibitList: List<ExhibitModel> = emptyList(),
     val interPersonalizedExhibitList: List<ExhibitModel> = emptyList(),
     val interScheduledExhibitList: List<ExhibitModel> = emptyList(),
-
     val domesticRecommendExhibitList: List<ExhibitModel> = emptyList(),
     val domesticPersonalizedExhibitList: List<ExhibitModel> = emptyList(),
     val domesticScheduledExhibitList: List<ExhibitModel> = emptyList(),
-
     val foreignGenreChips: List<ExhibitGenre> = List(ForeignCountry.entries.size) { ExhibitGenre.ContemporaryArt },
-
-    val domesticGenreChips: ExhibitGenre = ExhibitGenre.ContemporaryArt
+    val domesticGenreChips: ExhibitGenre = ExhibitGenre.ContemporaryArt,
 )

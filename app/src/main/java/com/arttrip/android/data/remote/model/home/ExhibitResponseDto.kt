@@ -2,7 +2,7 @@ package com.arttrip.android.data.remote.model.home
 
 import kotlinx.serialization.SerialName
 
-data class ExhibitDto(
+data class ExhibitResponseDto(
     @SerialName("exhibit_id")
     val id: Int,
     val title: String,
