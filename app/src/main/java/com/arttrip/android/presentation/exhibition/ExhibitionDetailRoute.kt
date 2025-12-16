@@ -6,16 +6,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.navigation.AppRoute
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
-import com.arttrip.android.presentation.intro.contract.IntroEffect
 
 @Composable
 fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
     exhibitId: Int,
-    onBack : () -> Unit,
+    onBack: () -> Unit,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -36,7 +34,6 @@ fun ExhibitionDetailRoute(
             }
         }
     }
-
 
     ExhibitionDetailScreen(
         innerPadding = innerPadding,

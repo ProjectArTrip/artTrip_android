@@ -44,7 +44,6 @@ fun ExhibitionDetailScreen(
     state: ExhibitionDetailState,
     onIntent: (ExhibitionDetailIntent) -> Unit,
 ) {
-    val dummyUrl = "https://i.ibb.co/nsRDL64B/detail.png"
     val heroVisibleHeight = 264.dp
     val contentRadius = 16.dp
 
@@ -60,7 +59,7 @@ fun ExhibitionDetailScreen(
     ) {
         AppTopBar(
             showBackButton = true,
-            onBackClick = {onIntent(ExhibitionDetailIntent.BackClicked)},
+            onBackClick = { onIntent(ExhibitionDetailIntent.BackClicked) },
             actions = {
                 AppIconButton(
                     iconResId = R.drawable.ic_share_24,
@@ -73,53 +72,59 @@ fun ExhibitionDetailScreen(
             },
         )
 
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-        ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
+        if (state.detail == null) {
+            ExhibitionDetailLoadingContent()
+        } else {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
             ) {
-                ExhibitHeroImage(
-                    url = dummyUrl,
-                    modifier = Modifier.fillMaxWidth(),
-                    height = heroVisibleHeight + contentRadius,
-                )
-
                 Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = heroVisibleHeight - contentRadius)
-                            .clip(RoundedCornerShape(topStart = contentRadius, topEnd = contentRadius))
-                            .background(AppColor.Gray0),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Column(
+                    ExhibitHeroImage(
                         modifier = Modifier.fillMaxWidth(),
+                        height = heroVisibleHeight + contentRadius,
+                        url = state.detail?.posterUrl,
+                        isLoading = state.isLoading,
+                    )
+
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = heroVisibleHeight - contentRadius)
+                                .clip(RoundedCornerShape(topStart = contentRadius, topEnd = contentRadius))
+                                .background(AppColor.Gray0),
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Spacer(modifier = Modifier.height(24.dp))
 
-                        ExhibitionInfoSection(
-                            modifier = Modifier.padding(horizontal = 24.dp),
-                        )
+                            ExhibitionInfoSection(
+                                modifier = Modifier.padding(horizontal = 24.dp),
+                                detail = state.detail,
+                            )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
 
-                        AppTabRow(
-                            modifier = Modifier.padding(horizontal = 24.dp),
-                            case = AppTabCase.Case04,
-                            tabs = listOf("상세 정보", "지도", "리뷰"),
-                            selectedIndex = selectedTabIndex,
-                            onTabSelected = { selectedTabIndex = it },
-                        )
+                            AppTabRow(
+                                modifier = Modifier.padding(horizontal = 24.dp),
+                                case = AppTabCase.Case04,
+                                tabs = listOf("상세 정보", "지도", "리뷰"),
+                                selectedIndex = selectedTabIndex,
+                                onTabSelected = { selectedTabIndex = it },
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        ExhibitionDetailTabSection(selectedTabIndex = selectedTabIndex)
+                            ExhibitionDetailTabSection(selectedTabIndex = selectedTabIndex, detail = state.detail)
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
                     }
                 }
             }
@@ -128,11 +133,50 @@ fun ExhibitionDetailScreen(
 }
 
 @Composable
+fun ExhibitionDetailLoadingContent() {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(280.dp)
+                    .background(AppColor.Gray100),
+        )
+        Spacer(Modifier.height(24.dp))
+        repeat(3) {
+            Box(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth()
+                        .height(20.dp)
+                        .background(AppColor.Gray100),
+            )
+            Spacer(Modifier.height(12.dp))
+        }
+    }
+}
+
+@Composable
 private fun ExhibitHeroImage(
     modifier: Modifier = Modifier,
-    url: String,
     height: Dp,
+    url: String?,
+    isLoading: Boolean = true,
 ) {
+    if (url.isNullOrEmpty() || isLoading) {
+        StaticSkeleton(
+            modifier =
+                Modifier
+                    .height(height),
+        )
+        return
+    }
     SubcomposeAsyncImage(
         modifier =
             modifier
