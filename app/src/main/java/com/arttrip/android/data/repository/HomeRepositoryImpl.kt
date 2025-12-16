@@ -110,4 +110,35 @@ class HomeRepositoryImpl
                     emit(ApiResult.Error(error))
                 }
             }
-    }
+
+    override fun getHomeGenreExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            emit(ApiResult.Loading)
+
+            try {
+                val requestDto = query.toRequestDto()
+                val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto)
+
+                val dto = baseResponse.result
+                if (dto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = dto.toDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+}

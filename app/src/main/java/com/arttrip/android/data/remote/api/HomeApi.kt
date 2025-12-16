@@ -20,8 +20,13 @@ interface HomeApi {
         @Body requestDto: ExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 
-    @GET("${HOME_PATH}/schedule")
+    @POST("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
+        @Body requestDto: ExhibitListRequestDto
+    ): BaseResponseDto<List<ExhibitResponseDto>>
+
+    @POST("${HOME_PATH}/genre/random")
+    suspend fun getHomeGenreRandom(
         @Body requestDto: ExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 }

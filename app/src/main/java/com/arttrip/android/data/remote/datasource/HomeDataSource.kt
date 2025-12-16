@@ -14,4 +14,6 @@ class HomeDataSource
         suspend fun getHomePersonalizedRandom(requestDto: ExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
         suspend fun getHomeSchedule(requestDto: ExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
+
+    suspend fun getHomeGenreRandom(requestDto: ExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
     }

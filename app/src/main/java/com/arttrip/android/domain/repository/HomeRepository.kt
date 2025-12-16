@@ -13,4 +13,8 @@ interface HomeRepository {
     fun getHomeScheduleExhibitList(
         query: ExhibitListQueryModel
     ): Flow<ApiResult<List<ExhibitModel>>>
+
+    fun getHomeGenreExhibitList(
+        query: ExhibitListQueryModel
+    ): Flow<ApiResult<List<ExhibitModel>>>
 }

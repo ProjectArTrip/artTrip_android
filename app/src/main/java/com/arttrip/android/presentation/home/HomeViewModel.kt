@@ -5,9 +5,11 @@ import ForeignExhibitListQueryModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.home.domestic.GetDomesticGenreExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignGenreExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.foreign.GetForeignPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.foreign.GetForeignRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibitListUseCase
@@ -30,9 +32,11 @@ class HomeViewModel
         private val getForeignRecommendExhibitListUseCase: GetForeignRecommendExhibitListUseCase,
         private val getForeignPersonalizedExhibitListUseCase: GetForeignPersonalizedExhibitListUseCase,
         private val getForeignScheduledExhibitListUseCase: GetForeignScheduledExhibitListUseCase,
+        private val getForeignGenreExhibitListUseCase: GetForeignGenreExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
         private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
         private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
+        private val getDomesticGenreExhibitListUseCase: GetDomesticGenreExhibitListUseCase
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -61,10 +65,6 @@ class HomeViewModel
                 is HomeIntent.SelectCountry -> {
                     _state.update { it.copy(countryChips = intent.country) }
                 }
-                HomeIntent.LoadCountries,
-                HomeIntent.Retry,
-                -> {
-                }
 
                 is HomeIntent.CountryClicked -> {
                     // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
@@ -88,13 +88,15 @@ class HomeViewModel
                     }
                 }
 
-                HomeIntent.LoadInterRecommendExhibitList -> loadForeignRecommendExhibitList()
-                HomeIntent.LoadInterPersonalizedExhibitList -> loadForeignPersonalizedExhibitList()
-                HomeIntent.LoadInterScheduledExhibitList -> loadForeignScheduledExhibitList()
+                HomeIntent.LoadForeignRecommendExhibitList -> loadForeignRecommendExhibitList()
+                HomeIntent.LoadForeignPersonalizedExhibitList -> loadForeignPersonalizedExhibitList()
+                HomeIntent.LoadForeignScheduledExhibitList -> loadForeignScheduledExhibitList()
+                HomeIntent.LoadForeignGenreExhibitList -> loadForeignGenreExhibitList()
 
                 HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
                 HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
                 HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
+                HomeIntent.LoadDomesticGenreExhibitList -> loadDomesticGenreExhibitList()
 
                 is HomeIntent.SelectForeignGenre -> {
                     val genre = intent.genre
@@ -205,6 +207,34 @@ class HomeViewModel
             }
         }
 
+    private fun loadForeignGenreExhibitList() {
+        viewModelScope.launch {
+            val query = ForeignExhibitListQueryModel(
+                country = "",
+                singleGenre = null,
+                date = ""
+            )
+
+            getForeignGenreExhibitListUseCase(query = query)
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value =
+                                _state.value.copy(
+                                    interScheduledExhibitList = result.data,
+                                )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
+
         private fun loadDomesticRecommendExhibitList() {
             viewModelScope.launch {
                 val query = DomesticExhibitListQueryModel(
@@ -288,6 +318,34 @@ class HomeViewModel
                     }
             }
         }
+
+    private fun loadDomesticGenreExhibitList() {
+        viewModelScope.launch {
+            val query = DomesticExhibitListQueryModel(
+                region = "",
+                singleGenre = null,
+                date = ""
+            )
+
+            getDomesticGenreExhibitListUseCase(query = query)
+                .collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+
+                        is ApiResult.Success -> {
+                            _state.value =
+                                _state.value.copy(
+                                    domesticScheduledExhibitList = result.data,
+                                )
+                        }
+
+                        is ApiResult.Error -> {
+                        }
+                    }
+                }
+        }
+    }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {
             _state.update { current -> reducer(current) }

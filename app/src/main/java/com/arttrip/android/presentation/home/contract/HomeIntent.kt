@@ -13,10 +13,6 @@ sealed interface HomeIntent {
         val country: ForeignCountry,
     ) : HomeIntent
 
-    object LoadCountries : HomeIntent
-
-    object Retry : HomeIntent
-
     data class CountryClicked(
         val name: String,
     ) : HomeIntent
@@ -27,17 +23,22 @@ sealed interface HomeIntent {
 
     object SearchIconClicked : HomeIntent
 
-    object LoadInterRecommendExhibitList : HomeIntent
+    object LoadForeignRecommendExhibitList : HomeIntent
 
-    object LoadInterPersonalizedExhibitList : HomeIntent
+    object LoadForeignPersonalizedExhibitList : HomeIntent
 
-    object LoadInterScheduledExhibitList : HomeIntent
+    object LoadForeignScheduledExhibitList : HomeIntent
+
+    object LoadForeignGenreExhibitList : HomeIntent
 
     object LoadDomesticRecommendExhibitList : HomeIntent
 
     object LoadDomesticPersonalizedExhibitList : HomeIntent
 
     object LoadDomesticScheduledExhibitList : HomeIntent
+
+    object LoadDomesticGenreExhibitList : HomeIntent
+
 
     data class SelectForeignGenre(
         val genre: ExhibitGenre,
