@@ -1,10 +1,10 @@
 package com.arttrip.android.data.remote.mapper.exhibit
 
 import com.arttrip.android.data.remote.model.home.ExhibitDetailResponseDto
-import com.arttrip.android.domain.model.exhibit.ExhibitDetailModel
+import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 
-fun ExhibitDetailResponseDto.toDomain(): ExhibitDetailModel =
-    ExhibitDetailModel(
+fun ExhibitDetailResponseDto.toDomain(): ExhibitionDetailModel =
+    ExhibitionDetailModel(
         exhibitId = exhibitId,
         title = title,
         description = description,

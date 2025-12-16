@@ -1,10 +1,9 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
-import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
-import com.arttrip.android.domain.model.exhibit.ExhibitDetailModel
+import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository
@@ -17,7 +16,7 @@ class ExhibitRepositoryImpl
     constructor(
         private val dataSource: ExhibitDataSource,
     ) : ExhibitRepository {
-        override fun getExhibitDetail(exhibitId: Int): Flow<ApiResult<ExhibitDetailModel>> =
+        override fun getExhibitDetail(exhibitId: Int): Flow<ApiResult<ExhibitionDetailModel>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -39,7 +38,7 @@ class ExhibitRepositoryImpl
                         return@flow
                     }
 
-                    val exhibitDetail: ExhibitDetailModel = dto.toDomain()
+                    val exhibitDetail: ExhibitionDetailModel = dto.toDomain()
 
                     emit(ApiResult.Success(exhibitDetail))
                 } catch (e: Exception) {
