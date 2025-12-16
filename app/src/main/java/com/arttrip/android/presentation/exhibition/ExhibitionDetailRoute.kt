@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
+    exhibitId: Int,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

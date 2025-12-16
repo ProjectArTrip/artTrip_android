@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
@@ -62,6 +64,9 @@ fun MainNavHost(
             )
         }
 
-        composable(MainRoute.EXHIBITION_DETAIL) { ExhibitionDetailRoute(innerPadding) }
+        composable(MainRoute.EXHIBITION_DETAIL, listOf(navArgument("exhibitId") { type = NavType.IntType })) { backStackEntry ->
+            val exhibitId = backStackEntry.arguments?.getInt("exhibitId") ?: return@composable
+            ExhibitionDetailRoute(innerPadding, exhibitId)
+        }
     }
 }
