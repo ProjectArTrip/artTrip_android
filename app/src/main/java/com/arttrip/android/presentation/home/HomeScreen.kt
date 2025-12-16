@@ -62,40 +62,53 @@ import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-enum class PlaceTab(val title: String) {
+enum class PlaceTab(
+    val title: String,
+) {
     Foreign("해외전시"),
-    Domestic("국내전시");
+    Domestic("국내전시"),
+    ;
 
     companion object {
         val tabs = entries
+
         fun fromIndex(index: Int): PlaceTab = tabs[index]
     }
 }
 
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
-enum class ForeignCountry(val id: Int, val label: String) {
+enum class ForeignCountry(
+    val id: Int,
+    val label: String,
+) {
     Entire(0, "전체"),
-    France(1,"프랑스"),
-    Germany(2,"독일"),
+    France(1, "프랑스"),
+    Germany(2, "독일"),
     Italy(3, "이탈리아"),
     Usa(4, "미국"),
     Austria(5, "오스트리아"),
     Japan(6, "일본"),
-    China(7, "중국")
+    China(7, "중국"),
 }
 
-enum class DomesticRegion(val id: Int, val label: String) {
-    Seoul(0,"서울"),
+enum class DomesticRegion(
+    val id: Int,
+    val label: String,
+) {
+    Seoul(0, "서울"),
     Gyeonggi(1, "경기"),
     Chungcheong(2, "충청"),
     Gangwon(3, "강원"),
     Jeolla(4, "전라"),
     Gyeongsang(5, "경상"),
-    Jeju(6, "제주")
+    Jeju(6, "제주"),
 }
 
-enum class ExhibitGenre(val id: Int, val label: String) {
+enum class ExhibitGenre(
+    val id: Int,
+    val label: String,
+) {
     ContemporaryArt(0, "현대 미술"),
     FineArt(1, "순수 미술"),
     Photography(2, "사진"),
@@ -108,7 +121,6 @@ enum class ExhibitGenre(val id: Int, val label: String) {
     ModernArt(9, "근대 미술"),
     PopArt(10, "팝아트"),
 }
-
 
 @Composable
 fun HomeScreen(
@@ -189,29 +201,30 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
 fun AppBarIconButton(
     @DrawableRes iconRes: Int,
     contentDescription: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    val rippleIndication = ripple(
-        bounded = false,
-        radius = 18.dp
-
-    )
+    val rippleIndication =
+        ripple(
+            bounded = false,
+            radius = 18.dp,
+        )
 
     Box(
-        modifier = Modifier
-            .size(24.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = rippleIndication,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(24.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = rippleIndication,
+                    onClick = onClick,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(id = iconRes),
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
         )
     }
 }
@@ -248,8 +261,9 @@ fun HomeBody(
             CountryChipList(state, onIntent)
         } else {
             Spacer(
-                modifier = Modifier
-                    .height(8.dp)
+                modifier =
+                    Modifier
+                        .height(8.dp),
             )
         }
 
@@ -261,15 +275,19 @@ fun HomeBody(
 }
 
 @Composable
-fun CountryChipList(state: HomeState, onIntent: (HomeIntent) -> Unit) {
-
+fun CountryChipList(
+    state: HomeState,
+    onIntent: (HomeIntent) -> Unit,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Spacer(
-            modifier = Modifier
-                .height(16.dp)
+            modifier =
+                Modifier
+                    .height(16.dp),
         )
         Row(
             modifier =
@@ -288,7 +306,7 @@ fun CountryChipList(state: HomeState, onIntent: (HomeIntent) -> Unit) {
                     case = AppFilterChipCase.Case02,
                     text = country.label,
                     selected = state.countryChips == country,
-                    onClick = { onIntent(HomeIntent.SelectCountry(country)) }
+                    onClick = { onIntent(HomeIntent.SelectCountry(country)) },
                 )
             }
 
@@ -299,14 +317,18 @@ fun CountryChipList(state: HomeState, onIntent: (HomeIntent) -> Unit) {
             )
         }
         Spacer(
-            modifier = Modifier
-                .height(8.dp)
+            modifier =
+                Modifier
+                    .height(8.dp),
         )
     }
 }
 
 @Composable
-fun InternationalExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) {
+fun InternationalExhibitionSection(
+    state: HomeState,
+    onIntent: (HomeIntent) -> Unit,
+) {
     val recommendExhibitList = state.interRecommendExhibitList
     val personalizedExhibitList = state.interPersonalizedExhibitList
     val weeklyExhibits =
@@ -358,7 +380,10 @@ fun InternationalExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> U
 }
 
 @Composable
-fun DomesticExhibitionSection(state: HomeState, onIntent: (HomeIntent) -> Unit) {
+fun DomesticExhibitionSection(
+    state: HomeState,
+    onIntent: (HomeIntent) -> Unit,
+) {
     val recommendExhibitList = state.domesticRecommendExhibitList
     val personalizedExhibitList = state.domesticPersonalizedExhibitList
     val weeklyExhibits = getDummyExhibitList(3, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
@@ -492,7 +517,7 @@ fun LocationItem(
 }
 
 @Composable
-fun RecommendSection(exhibitList : List<ExhibitModel>) {
+fun RecommendSection(exhibitList: List<ExhibitModel>) {
     Row(
         modifier =
             Modifier
@@ -620,7 +645,11 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
 }
 
 @Composable
-fun ExhibitionByGenreSection(exhibitList: List<ExhibitInfoModel>, selectedGenre: ExhibitGenre, onGenreClick : (ExhibitGenre) -> Unit) {
+fun ExhibitionByGenreSection(
+    exhibitList: List<ExhibitInfoModel>,
+    selectedGenre: ExhibitGenre,
+    onGenreClick: (ExhibitGenre) -> Unit,
+) {
     Column(
         modifier =
             Modifier
@@ -731,9 +760,8 @@ fun SectionTitle(
         )
         AppBarIconButton(
             iconRes = R.drawable.ic_more_24,
-            contentDescription = "more button"
+            contentDescription = "more button",
         ) {
-
         }
     }
 }
@@ -753,10 +781,11 @@ fun ExhibitItemCase1(
         case = ExhibitImageCase.CASE1,
     ) {
         LikeButton(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .offset(x = (-16).dp, y = (16).dp),
-            state = LikeButtonState.Like
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-16).dp, y = (16).dp),
+            state = LikeButtonState.Like,
         ) { }
         Box(
             modifier =
@@ -818,10 +847,11 @@ fun ExhibitItemCase2(
     ) {
         ExhibitImage(url = exhibit.posterUrl, case = ExhibitImageCase.CASE2) {
             LikeButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like,
             ) { }
         }
         Spacer(
@@ -855,10 +885,11 @@ fun ExhibitItemCase3(
             case = ExhibitImageCase.CASE3,
         ) {
             LikeButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like,
             ) { }
             AppTag(
                 type = AppTagType.Ongoing,
@@ -930,10 +961,11 @@ fun ExhibitItemCase4(
             case = ExhibitImageCase.CASE4,
         ) {
             LikeButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = (8).dp),
+                state = LikeButtonState.Like,
             ) { }
         }
         Spacer(

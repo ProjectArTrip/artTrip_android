@@ -3,7 +3,7 @@ package com.arttrip.android.domain.model.home
 enum class ExhibitStatus {
     ONGOING,
     UPCOMING,
-    DEADLINE
+    DEADLINE,
 }
 
 data class ExhibitModel(

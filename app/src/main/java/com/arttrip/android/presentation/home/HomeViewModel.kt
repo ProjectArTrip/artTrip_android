@@ -30,7 +30,7 @@ class HomeViewModel
         private val getInterScheduledExhibitListUseCase: GetInterScheduledExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
         private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
-        private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase
+        private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -40,15 +40,15 @@ class HomeViewModel
 
         init {
             // 화면 진입 시 자동 로딩
-            onIntent(HomeIntent.LoadCountries)
-
-            onIntent(HomeIntent.LoadInterRecommendExhibitList)
-            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
-            onIntent(HomeIntent.LoadInterScheduledExhibitList)
-
-            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
-            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
-            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
+//            onIntent(HomeIntent.LoadCountries)
+//
+//            onIntent(HomeIntent.LoadInterRecommendExhibitList)
+//            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
+//            onIntent(HomeIntent.LoadInterScheduledExhibitList)
+//
+//            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
+//            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
+//            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -101,9 +101,10 @@ class HomeViewModel
 
                     _state.update { state ->
                         state.copy(
-                            foreignGenreChips = state.foreignGenreChips.mapIndexed { i, old ->
-                                if (i == index) genre else old
-                            }
+                            foreignGenreChips =
+                                state.foreignGenreChips.mapIndexed { i, old ->
+                                    if (i == index) genre else old
+                                },
                         )
                     }
                 }
@@ -118,135 +119,139 @@ class HomeViewModel
             }
         }
 
-    private fun loadInterRecommendExhibitList() {
-        viewModelScope.launch {
-            getInterRecommendExhibitListUseCase()
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadInterRecommendExhibitList() {
+            viewModelScope.launch {
+                getInterRecommendExhibitListUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                interRecommendExhibitList = result.data
-                            )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        interRecommendExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
-                        }
-                    }
-                }
-        }
-    }
-
-    private fun loadInterPersonalizedExhibitList() {
-        viewModelScope.launch {
-            getInterPersonalizedExhibitListUseCase()
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
-
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                interPersonalizedExhibitList = result.data
-                            )
-                        }
-
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
-    private fun loadInterScheduledExhibitList(date: String) {
-        viewModelScope.launch {
-            getInterScheduledExhibitListUseCase(date = date)
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadInterPersonalizedExhibitList() {
+            viewModelScope.launch {
+                getInterPersonalizedExhibitListUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                interScheduledExhibitList = result.data
-                            )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        interPersonalizedExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
-    private fun loadDomesticRecommendExhibitList() {
-        viewModelScope.launch {
-            getDomesticRecommendExhibitListUseCase()
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadInterScheduledExhibitList(date: String) {
+            viewModelScope.launch {
+                getInterScheduledExhibitListUseCase(date = date)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                domesticRecommendExhibitList = result.data
-                            )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        interScheduledExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
-    private fun loadDomesticPersonalizedExhibitList() {
-        viewModelScope.launch {
-            getDomesticPersonalizedExhibitListUseCase()
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadDomesticRecommendExhibitList() {
+            viewModelScope.launch {
+                getDomesticRecommendExhibitListUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                domesticPersonalizedExhibitList = result.data
-                            )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        domesticRecommendExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
-    private fun loadDomesticScheduledExhibitList(date: String) {
-        viewModelScope.launch {
-            getDomesticScheduledExhibitListUseCase(date = date)
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadDomesticPersonalizedExhibitList() {
+            viewModelScope.launch {
+                getDomesticPersonalizedExhibitListUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value = _state.value.copy(
-                                domesticScheduledExhibitList = result.data
-                            )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        domesticPersonalizedExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
+        private fun loadDomesticScheduledExhibitList(date: String) {
+            viewModelScope.launch {
+                getDomesticScheduledExhibitListUseCase(date = date)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        domesticScheduledExhibitList = result.data,
+                                    )
+                            }
 
-    private fun loadCountries() {
+                            is ApiResult.Error -> {
+                            }
+                        }
+                    }
+            }
+        }
+
+        private fun loadCountries() {
 //            viewModelScope.launch {
 //                getCountryListUseCase()
 //                    .collect { result ->

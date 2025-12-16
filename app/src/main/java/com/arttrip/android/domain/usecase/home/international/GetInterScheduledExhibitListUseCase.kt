@@ -6,8 +6,11 @@ import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetInterScheduledExhibitListUseCase @Inject constructor(
-    private val homeRepository: HomeRepository,
-) {
-    operator fun invoke(date: String): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getHomeScheduleExhibitList(isDomestic = true, date = date)
-}
+class GetInterScheduledExhibitListUseCase
+    @Inject
+    constructor(
+        private val homeRepository: HomeRepository,
+    ) {
+        operator fun invoke(date: String): Flow<ApiResult<List<ExhibitModel>>> =
+            homeRepository.getHomeScheduleExhibitList(isDomestic = true, date = date)
+    }
