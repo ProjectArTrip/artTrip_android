@@ -56,7 +56,11 @@ fun MainNavHost(
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
-        composable(BottomNavItem.MyPage.route) { MyPageRoute(innerPadding) }
+        composable(BottomNavItem.MyPage.route) {
+            MyPageRoute(innerPadding, onNavigate = { targetRoute ->
+                navController.navigate(targetRoute)
+            })
+        }
 
         composable(MainRoute.HOME_DATE_FILTER) {
             DateFilterRoute(
