@@ -28,6 +28,7 @@ import com.arttrip.android.core.ui.component.button.ReviewButton
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 
 private const val DUMMY_URL = "https://i.ibb.co/nsRDL64B/detail.png"
 
@@ -73,7 +74,7 @@ private var dummyReviews =
     )
 
 @Composable
-fun ExhibitionReviewTab() {
+fun ExhibitionReviewTab(detail: ExhibitionDetailModel) {
     if (dummyReviews.isEmpty()) {
         ReviewsEmptyState()
     } else {
