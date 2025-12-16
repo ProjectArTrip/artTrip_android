@@ -6,8 +6,6 @@ import com.arttrip.android.domain.model.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
-    fun getCountryList(): Flow<ApiResult<List<String>>>
-
     fun getHomeRecommendExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomePersonalizedExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>>

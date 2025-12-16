@@ -10,9 +10,6 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface HomeApi {
-    @GET("${HOME_PATH}/overseas")
-    suspend fun getCountryList(): BaseResponseDto<List<String>>
-
     @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
         @Body requestDto: ExhibitListRequestDto,

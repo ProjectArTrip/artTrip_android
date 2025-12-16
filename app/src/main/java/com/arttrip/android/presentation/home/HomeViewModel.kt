@@ -63,7 +63,8 @@ class HomeViewModel
                 }
                 HomeIntent.LoadCountries,
                 HomeIntent.Retry,
-                -> loadCountries()
+                -> {
+                }
 
                 is HomeIntent.CountryClicked -> {
                     // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
@@ -262,38 +263,6 @@ class HomeViewModel
                         }
                     }
             }
-        }
-
-        private fun loadCountries() {
-//            viewModelScope.launch {
-//                getCountryListUseCase()
-//                    .collect { result ->
-//                        when (result) {
-//                            is ApiResult.Loading -> {
-//                                updateState { it.copy(isLoading = true, errorMessage = null) }
-//                            }
-//
-//                            is ApiResult.Success -> {
-//                                updateState {
-//                                    it.copy(
-//                                        isLoading = false,
-//                                        countries = result.data,
-//                                        errorMessage = null,
-//                                    )
-//                                }
-//                            }
-//
-//                            is ApiResult.Error -> {
-//                                updateState {
-//                                    it.copy(
-//                                        isLoading = false,
-//                                        errorMessage = "알 수 없는 오류가 발생했어요",
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//            }
         }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {
