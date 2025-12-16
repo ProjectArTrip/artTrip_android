@@ -165,7 +165,6 @@ fun ExhibitionDetailLoadingContent() {
 @Composable
 private fun ExhibitHeroImage(
     modifier: Modifier = Modifier,
-    url: String,
     height: Dp,
     url: String?,
     isLoading: Boolean = true,
