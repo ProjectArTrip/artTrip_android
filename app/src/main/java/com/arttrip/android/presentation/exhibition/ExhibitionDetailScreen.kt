@@ -60,7 +60,7 @@ fun ExhibitionDetailScreen(
     ) {
         AppTopBar(
             showBackButton = true,
-            onBackClick = {},
+            onBackClick = {onIntent(ExhibitionDetailIntent.BackClicked)},
             actions = {
                 AppIconButton(
                     iconResId = R.drawable.ic_share_24,

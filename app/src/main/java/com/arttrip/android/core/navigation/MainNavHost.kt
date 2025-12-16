@@ -70,7 +70,7 @@ fun MainNavHost(
 
         composable(MainRoute.EXHIBITION_DETAIL, listOf(navArgument("exhibitId") { type = NavType.IntType })) { backStackEntry ->
             val exhibitId = backStackEntry.arguments?.getInt("exhibitId") ?: return@composable
-            ExhibitionDetailRoute(innerPadding, exhibitId)
+            ExhibitionDetailRoute(innerPadding, exhibitId,  onBack = { navController.popBackStack() }, )
         }
     }
 }
