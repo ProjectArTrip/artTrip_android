@@ -1,8 +1,10 @@
 package com.arttrip.android.data.repository
 
+import ExhibitListQueryModel
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomain
+import com.arttrip.android.data.remote.mapper.home.toRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
@@ -44,15 +46,14 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getHomeRecommendExhibitList(isDomestic: Boolean): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getHomeRecommendExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
-                emit(ApiResult.Loading)
-
                 try {
-                    val baseResponse = dataSource.getHomeRecommendToday(isDomestic = isDomestic)
+                    val requestDto = query.toRequestDto()
+                    val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto)
 
-                    val dto = baseResponse.result
-                    if (dto == null) {
+                    val responseDto = baseResponse.result
+                    if (responseDto == null) {
                         emit(
                             ApiResult.Error(
                                 ApiError.HttpError(
@@ -65,7 +66,7 @@ class HomeRepositoryImpl
                         return@flow
                     }
 
-                    val domain = dto.toDomain()
+                    val domain = responseDto.toDomain()
 
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {

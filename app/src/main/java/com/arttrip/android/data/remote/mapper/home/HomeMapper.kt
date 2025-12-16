@@ -1,5 +1,9 @@
 package com.arttrip.android.data.remote.mapper.home
 
+import DomesticExhibitListQueryModel
+import ExhibitListQueryModel
+import ForeignExhibitListQueryModel
+import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitResponseDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.home.ExhibitStatus
@@ -21,4 +25,29 @@ fun String.toExhibitStatus(): ExhibitStatus =
         "UPCOMING" -> ExhibitStatus.UPCOMING
         "DEADLINE" -> ExhibitStatus.DEADLINE
         else -> ExhibitStatus.DEADLINE
+    }
+
+fun ExhibitListQueryModel.toRequestDto(): ExhibitListRequestDto =
+    when (this) {
+        is ForeignExhibitListQueryModel -> ExhibitListRequestDto(
+            isDomestic = false,
+            country = country,
+            region = null,
+            singleGenre = singleGenre,
+            genres = genres,
+            styles = styles,
+            date = date,
+            limit = limit,
+        )
+
+        is DomesticExhibitListQueryModel -> ExhibitListRequestDto(
+            isDomestic = true,
+            country = null,
+            region = region,
+            singleGenre = singleGenre,
+            genres = genres,
+            styles = styles,
+            date = date,
+            limit = limit,
+        )
     }

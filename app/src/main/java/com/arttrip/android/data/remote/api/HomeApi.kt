@@ -2,17 +2,20 @@ package com.arttrip.android.data.remote.api
 
 import com.arttrip.android.data.remote.api.ApiConstants.HOME_PATH
 import com.arttrip.android.data.remote.model.home.ExhibitResponseDto
+import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.network.BaseResponseDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface HomeApi {
     @GET("${HOME_PATH}/overseas")
     suspend fun getCountryList(): BaseResponseDto<List<String>>
 
-    @GET("${HOME_PATH}/recommend/today")
+    @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
-        @Query("isDomestic") isDomestic: Boolean,
+        @Body requestDto: ExhibitListRequestDto,
     ): BaseResponseDto<List<ExhibitResponseDto>>
 
     @GET("${HOME_PATH}/personalized/random")

@@ -1,14 +1,16 @@
 package com.arttrip.android.presentation.home
 
+import DomesticExhibitListQueryModel
+import ForeignExhibitListQueryModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterPersonalizedExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetInterPersonalizedExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetInterScheduledExhibitListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -25,7 +27,7 @@ import javax.inject.Inject
 class HomeViewModel
     @Inject
     constructor(
-        private val getInterRecommendExhibitListUseCase: GetInterRecommendExhibitListUseCase,
+        private val getForeignRecommendExhibitListUseCase: GetForeignRecommendExhibitListUseCase,
         private val getInterPersonalizedExhibitListUseCase: GetInterPersonalizedExhibitListUseCase,
         private val getInterScheduledExhibitListUseCase: GetInterScheduledExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
@@ -85,7 +87,7 @@ class HomeViewModel
                     }
                 }
 
-                HomeIntent.LoadInterRecommendExhibitList -> loadInterRecommendExhibitList()
+                HomeIntent.LoadInterRecommendExhibitList -> loadForeignRecommendExhibitList()
                 HomeIntent.LoadInterPersonalizedExhibitList -> loadInterPersonalizedExhibitList()
                 HomeIntent.LoadInterScheduledExhibitList -> loadInterScheduledExhibitList("2025-12-12")
 
@@ -119,9 +121,14 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterRecommendExhibitList() {
+        private fun loadForeignRecommendExhibitList() {
             viewModelScope.launch {
-                getInterRecommendExhibitListUseCase()
+                val query = ForeignExhibitListQueryModel(
+                    country = "",
+                    singleGenre = null,
+                    date = ""
+                )
+                getForeignRecommendExhibitListUseCase(query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -187,7 +194,13 @@ class HomeViewModel
 
         private fun loadDomesticRecommendExhibitList() {
             viewModelScope.launch {
-                getDomesticRecommendExhibitListUseCase()
+                val query = DomesticExhibitListQueryModel(
+                    region = "",
+                    singleGenre = null,
+                    date = ""
+                )
+
+                getDomesticRecommendExhibitListUseCase(query)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {

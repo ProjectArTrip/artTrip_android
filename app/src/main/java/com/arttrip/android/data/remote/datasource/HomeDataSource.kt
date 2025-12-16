@@ -1,6 +1,7 @@
 package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.HomeApi
+import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import javax.inject.Inject
 
 class HomeDataSource
@@ -10,7 +11,7 @@ class HomeDataSource
     ) {
         suspend fun getCountryList() = api.getCountryList()
 
-        suspend fun getHomeRecommendToday(isDomestic: Boolean) = api.getHomeRecommendToday(isDomestic = isDomestic)
+        suspend fun getHomeRecommendToday(requestDto: ExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
         suspend fun getHomePersonalized(isDomestic: Boolean) = api.getHomePersonalized(isDomestic = isDomestic)
 
