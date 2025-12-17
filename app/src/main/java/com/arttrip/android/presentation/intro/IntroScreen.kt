@@ -20,6 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.component.button.AppButton
@@ -55,7 +58,7 @@ fun IntroScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = 24.dp,
-                        top = 56.dp,
+                        top = 40.dp,
                         end = 24.dp,
                         bottom = buttonHeight,
                     ),
@@ -64,7 +67,7 @@ fun IntroScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             IntroGenreSection(
                 modifier = Modifier.fillMaxWidth(),
@@ -75,7 +78,7 @@ fun IntroScreen(
                 },
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             IntroStyleSection(
                 modifier = Modifier.fillMaxWidth(),
@@ -86,7 +89,7 @@ fun IntroScreen(
                 },
             )
 
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(32.dp + 52.dp))
         }
 
         IntroBottomCta(
@@ -111,19 +114,19 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
     ) {
         Text(
             text =
-                "이유지님의 관심있는 키워드를 \n" +
+                "사용자님의 관심있는 키워드를 \n" +
                     "골라주세요!",
             style = AppTextStyle.Headline,
             color = AppColor.TextPrimary,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "아트트립과 전시 여행을 시작해볼까요?",
-            style = AppTextStyle.Title02Light,
+            text = "한 가지 이상 선택이 가능해요.",
+            style = AppTextStyle.Body01Light,
             color = AppColor.TextPrimary,
         )
-        Spacer(modifier = Modifier.height(11.dp))
+        Spacer(modifier = Modifier.height(7.dp))
         HorizontalDivider(color = AppColor.Gray100, thickness = 1.dp)
     }
 }
@@ -139,11 +142,19 @@ private fun IntroGenreSection(
         modifier = modifier,
     ) {
         Text(
-            text = "좋아하는 전시 장르는 무엇인가요?",
+            text =
+                buildAnnotatedString {
+                    append("좋아하는 전시 장르는 무엇인가요? ")
+                    withStyle(
+                        style = SpanStyle(color = AppColor.SubRed),
+                    ) {
+                        append("*")
+                    }
+                },
             style = AppTextStyle.Title02Bold,
             color = AppColor.TextPrimary,
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
@@ -177,7 +188,7 @@ private fun IntroStyleSection(
             style = AppTextStyle.Title02Bold,
             color = AppColor.TextPrimary,
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
