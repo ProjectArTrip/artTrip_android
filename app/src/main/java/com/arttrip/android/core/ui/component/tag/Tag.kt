@@ -1,6 +1,7 @@
 package com.arttrip.android.core.ui.component.tag
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,7 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 
 /**
- * Figma Tag 컴포넌트.
+ * ### Figma: Tag
  *
  * - Ongoing → "진행중", Deadline → "마감임박" (Figma 매핑)
  */
@@ -36,7 +37,7 @@ fun AppTag(
     type: AppTagType,
 ) {
     val colors = AppTagDefaults.colors(type)
-    val style = AppTagDefaults.textStyle
+    val textStyle = AppTextStyle.Body02Bold
     val roundDp = 8.dp
 
     val shape =
@@ -63,7 +64,42 @@ fun AppTag(
     ) {
         Text(
             text = type.label,
-            style = style,
+            style = textStyle,
+            color = colors.textColor,
+        )
+    }
+}
+
+/**
+ * ### Figma: Tag(L)
+ *
+ * - Ongoing → "진행중", Deadline → "마감임박" (Figma 매핑)
+ */
+@Composable
+fun AppTagL(
+    modifier: Modifier = Modifier,
+    type: AppTagType,
+) {
+    val colors = AppTagDefaults.colors(type)
+    val textStyle = AppTextStyle.Body01Bold
+    val roundDp = 6.dp
+
+    val shape =
+        RoundedCornerShape(size = roundDp)
+
+    Box(
+        modifier =
+            modifier
+                .clip(shape)
+                .background(color = colors.backgroundColor, shape = shape)
+                .then(
+                    if (type == AppTagType.Deadline) Modifier.border(1.dp, colors.borderColor, shape) else Modifier,
+                ).padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = type.label,
+            style = textStyle,
             color = colors.textColor,
         )
     }
@@ -88,9 +124,6 @@ data class AppTagColors(
 )
 
 object AppTagDefaults {
-    val textStyle =
-        AppTextStyle.Body02Bold
-
     fun colors(type: AppTagType): AppTagColors =
         when (type) {
             AppTagType.Ongoing ->
@@ -156,5 +189,17 @@ fun SampleAppTag() {
     ) {
         AppTag(type = AppTagType.Deadline)
         AppTag(type = AppTagType.Ongoing)
+    }
+}
+
+@Preview
+@Composable
+fun SampleAppTagL() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(16.dp),
+    ) {
+        AppTagL(type = AppTagType.Deadline)
+        AppTagL(type = AppTagType.Ongoing)
     }
 }

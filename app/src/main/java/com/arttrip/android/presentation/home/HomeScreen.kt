@@ -46,7 +46,6 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.LikeButton
-import com.arttrip.android.core.ui.component.button.LikeButtonState
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.tab.AppTabCase
@@ -785,7 +784,7 @@ fun ExhibitItemCase1(
                 Modifier
                     .align(Alignment.TopEnd)
                     .offset(x = (-16).dp, y = (16).dp),
-            state = LikeButtonState.Like,
+            isSelected = false,
         ) { }
         Box(
             modifier =
@@ -851,7 +850,7 @@ fun ExhibitItemCase2(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like,
+                isSelected = false,
             ) { }
         }
         Spacer(
@@ -889,7 +888,7 @@ fun ExhibitItemCase3(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like,
+                isSelected = false,
             ) { }
             AppTag(
                 type = AppTagType.Ongoing,
@@ -965,7 +964,7 @@ fun ExhibitItemCase4(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                state = LikeButtonState.Like,
+                isSelected = false,
             ) { }
         }
         Spacer(
