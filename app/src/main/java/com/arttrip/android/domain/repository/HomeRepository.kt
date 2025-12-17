@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface HomeRepository {
     fun getHomeRecommendExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>>
 
-    fun getHomePersonalizedExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>>
+    fun getHomePersonalizedExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomeScheduleExhibitList(
         query: ExhibitListQueryModel
