@@ -45,6 +45,7 @@ import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.button.LikeButtonState
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
@@ -172,57 +173,27 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                AppBarIconButton(
-                    iconRes = R.drawable.ic_alert_24,
+                AppIconButton(
+                    modifier = Modifier,
+                    iconResId = R.drawable.ic_alert_24,
                     contentDescription = "알림",
-                    onClick = {},
-                )
-                AppBarIconButton(
-                    iconRes = R.drawable.ic_calendar_24,
+                ) {
+                }
+                AppIconButton(
+                    modifier = Modifier,
+                    iconResId = R.drawable.ic_calendar_24,
                     contentDescription = "달력",
-                    onClick = {
-                        onIntent(HomeIntent.DateFilterIconClicked)
-                    },
-                )
-                AppBarIconButton(
-                    iconRes = R.drawable.ic_search_24,
+                ) {
+                    onIntent(HomeIntent.DateFilterIconClicked)
+                }
+                AppIconButton(
+                    modifier = Modifier,
+                    iconResId = R.drawable.ic_search_24,
                     contentDescription = "검색",
-                    onClick = {},
-                )
+                ) {
+                }
             }
         }
-    }
-}
-
-@Composable
-fun AppBarIconButton(
-    @DrawableRes iconRes: Int,
-    contentDescription: String?,
-    onClick: () -> Unit,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    val rippleIndication =
-        ripple(
-            bounded = false,
-            radius = 18.dp,
-        )
-
-    Box(
-        modifier =
-            Modifier
-                .size(24.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = rippleIndication,
-                    onClick = onClick,
-                ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = contentDescription,
-        )
     }
 }
 
@@ -755,11 +726,14 @@ fun SectionTitle(
             style = AppTextStyle.Title01Bold,
             color = AppColor.TextPrimary,
         )
-        AppBarIconButton(
-            iconRes = R.drawable.ic_more_24,
-            contentDescription = "more button",
+        AppIconButton(
+            modifier = Modifier,
+            iconResId = R.drawable.ic_more_24,
+            contentDescription = "more button"
         ) {
+
         }
+
     }
 }
 
