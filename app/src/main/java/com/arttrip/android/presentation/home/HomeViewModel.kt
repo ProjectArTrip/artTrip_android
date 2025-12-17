@@ -49,11 +49,11 @@ class HomeViewModel
 //            onIntent(HomeIntent.LoadCountries)
 //
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
-//            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
+            onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
 //            onIntent(HomeIntent.LoadInterScheduledExhibitList)
 //
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
-//            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
+            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
 //            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
         }
 
@@ -92,7 +92,10 @@ class HomeViewModel
                     loadForeignRecommendExhibitList(intent.country)
                 }
 
-                HomeIntent.LoadForeignPersonalizedExhibitList -> loadForeignPersonalizedExhibitList()
+                is HomeIntent.LoadForeignPersonalizedExhibitList -> {
+                    loadForeignPersonalizedExhibitList(intent.country)
+                }
+
                 HomeIntent.LoadForeignScheduledExhibitList -> loadForeignScheduledExhibitList()
                 HomeIntent.LoadForeignGenreExhibitList -> loadForeignGenreExhibitList()
 
@@ -100,7 +103,10 @@ class HomeViewModel
                     loadDomesticRecommendExhibitList(intent.region)
                 }
 
-                HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
+                is HomeIntent.LoadDomesticPersonalizedExhibitList -> {
+                    loadDomesticPersonalizedExhibitList(intent.region)
+                }
+
                 HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
                 HomeIntent.LoadDomesticGenreExhibitList -> loadDomesticGenreExhibitList()
 
@@ -152,15 +158,9 @@ class HomeViewModel
             }
         }
 
-        private fun loadForeignPersonalizedExhibitList() {
+        private fun loadForeignPersonalizedExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                val query = ForeignExhibitListQueryModel(
-                    country = "",
-                    singleGenre = null,
-                    date = ""
-                )
-
-                getForeignPersonalizedExhibitListUseCase(query = query)
+                getForeignPersonalizedExhibitListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -258,15 +258,9 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticPersonalizedExhibitList() {
+        private fun loadDomesticPersonalizedExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
-                val query = DomesticExhibitListQueryModel(
-                    region = "",
-                    singleGenre = null,
-                    date = ""
-                )
-
-                getDomesticPersonalizedExhibitListUseCase(query = query)
+                getDomesticPersonalizedExhibitListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {

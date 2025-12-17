@@ -29,7 +29,9 @@ sealed interface HomeIntent {
         val country: ForeignCountry
     ) : HomeIntent
 
-    object LoadForeignPersonalizedExhibitList : HomeIntent
+    data class LoadForeignPersonalizedExhibitList(
+        val country: ForeignCountry
+    ) : HomeIntent
 
     object LoadForeignScheduledExhibitList : HomeIntent
 
@@ -39,7 +41,9 @@ sealed interface HomeIntent {
         val region: DomesticRegion
     ) : HomeIntent
 
-    object LoadDomesticPersonalizedExhibitList : HomeIntent
+    data class LoadDomesticPersonalizedExhibitList(
+        val region: DomesticRegion
+    ) : HomeIntent
 
     object LoadDomesticScheduledExhibitList : HomeIntent
 
