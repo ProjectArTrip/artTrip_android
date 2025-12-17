@@ -6,4 +6,6 @@ sealed interface ExhibitionDetailIntent {
     ) : ExhibitionDetailIntent
 
     data object BackClicked : ExhibitionDetailIntent
+
+    data object BookmarkClicked : ExhibitionDetailIntent
 }

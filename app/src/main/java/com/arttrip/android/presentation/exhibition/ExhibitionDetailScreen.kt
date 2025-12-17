@@ -26,9 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
-import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.button.HeartButton
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
@@ -61,14 +60,9 @@ fun ExhibitionDetailScreen(
             showBackButton = true,
             onBackClick = { onIntent(ExhibitionDetailIntent.BackClicked) },
             actions = {
-                AppIconButton(
-                    iconResId = R.drawable.ic_share_24,
-                    contentDescription = "공유",
-                )
-                AppIconButton(
-                    iconResId = R.drawable.ic_heart_outline_black_24,
-                    contentDescription = "하트",
-                )
+                HeartButton(isSelected = state.isBookmarked, onClick = {
+                    onIntent(ExhibitionDetailIntent.BookmarkClicked)
+                })
             },
         )
 
@@ -87,7 +81,7 @@ fun ExhibitionDetailScreen(
                     ExhibitHeroImage(
                         modifier = Modifier.fillMaxWidth(),
                         height = heroVisibleHeight + contentRadius,
-                        url = state.detail?.posterUrl,
+                        url = state.detail.posterUrl,
                         isLoading = state.isLoading,
                     )
 
