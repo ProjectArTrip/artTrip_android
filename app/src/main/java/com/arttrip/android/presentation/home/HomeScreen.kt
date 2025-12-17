@@ -79,12 +79,16 @@ enum class PlaceTab(
 
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
+sealed interface Place {
+    val label: String
+}
+
 enum class ForeignCountry(
-    val label: String,
-) {
+    override val label: String,
+) : Place {
     Entire("전체"),
     France("프랑스"),
-    Germany( "독일"),
+    Germany("독일"),
     Italy("이탈리아"),
     Usa("미국"),
     Austria("오스트리아"),
@@ -93,8 +97,9 @@ enum class ForeignCountry(
 }
 
 enum class DomesticRegion(
-    val label: String
-) {
+    override val label: String
+) : Place {
+    Entire("전체"),
     Seoul("서울"),
     Gyeonggi("경기"),
     Chungcheong("충청"),
