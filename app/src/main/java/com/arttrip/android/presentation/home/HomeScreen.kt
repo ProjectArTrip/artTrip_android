@@ -79,47 +79,44 @@ enum class PlaceTab(
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
 enum class ForeignCountry(
-    val id: Int,
     val label: String,
 ) {
-    Entire(0, "전체"),
-    France(1, "프랑스"),
-    Germany(2, "독일"),
-    Italy(3, "이탈리아"),
-    Usa(4, "미국"),
-    Austria(5, "오스트리아"),
-    Japan(6, "일본"),
-    China(7, "중국"),
+    Entire("전체"),
+    France("프랑스"),
+    Germany( "독일"),
+    Italy("이탈리아"),
+    Usa("미국"),
+    Austria("오스트리아"),
+    Japan("일본"),
+    China("중국"),
 }
 
 enum class DomesticRegion(
-    val id: Int,
-    val label: String,
+    val label: String
 ) {
-    Seoul(0, "서울"),
-    Gyeonggi(1, "경기"),
-    Chungcheong(2, "충청"),
-    Gangwon(3, "강원"),
-    Jeolla(4, "전라"),
-    Gyeongsang(5, "경상"),
-    Jeju(6, "제주"),
+    Seoul("서울"),
+    Gyeonggi("경기"),
+    Chungcheong("충청"),
+    Gangwon("강원"),
+    Jeolla("전라"),
+    Gyeongsang("경상"),
+    Jeju("제주"),
 }
 
 enum class ExhibitGenre(
-    val id: Int,
-    val label: String,
+    val label: String
 ) {
-    ContemporaryArt(0, "현대 미술"),
-    FineArt(1, "순수 미술"),
-    Photography(2, "사진"),
-    Painting(3, "회화"),
-    Sculpture(4, "조각"),
-    DigitalMediaArt(5, "디지털/미디어 아트"),
-    Craft(6, "공예"),
-    InstallationArt(7, "설치 미술"),
-    HistoricalClassicalArt(8, "역사/고전 미술"),
-    ModernArt(9, "근대 미술"),
-    PopArt(10, "팝아트"),
+    ContemporaryArt("현대 미술"),
+    FineArt( "순수 미술"),
+    Photography("사진"),
+    Painting("회화"),
+    Sculpture("조각"),
+    DigitalMediaArt("디지털/미디어 아트"),
+    Craft("공예"),
+    InstallationArt("설치 미술"),
+    HistoricalClassicalArt( "역사/고전 미술"),
+    ModernArt("근대 미술"),
+    PopArt("팝아트"),
 }
 
 @Composable
