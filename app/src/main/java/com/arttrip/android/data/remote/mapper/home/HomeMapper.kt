@@ -4,13 +4,17 @@ import DomesticExhibitListQueryModel
 import ExhibitListQueryModel
 import ForeignExhibitListQueryModel
 import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitResponseDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.GenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.home.ExhibitStatus
 import com.arttrip.android.presentation.home.DomesticRegion
+import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.Place
 
@@ -65,6 +69,19 @@ fun Place.toRequestDto(): RecommendExhibitListRequestDto =
         )
 
         is DomesticRegion -> DomesticExhibitListRequestDto(
+            region = this.label
+        )
+    }
+
+fun Place.toGenreRequestDto(genre: ExhibitGenre): GenreExhibitListRequestDto =
+    when (this) {
+        is ForeignCountry -> ForeignGenreExhibitListRequestDto(
+            singleGenre = genre.label,
+            country = this.label
+        )
+
+        is DomesticRegion -> DomesticGenreExhibitListRequestDto(
+            singleGenre = genre.label,
             region = this.label
         )
     }

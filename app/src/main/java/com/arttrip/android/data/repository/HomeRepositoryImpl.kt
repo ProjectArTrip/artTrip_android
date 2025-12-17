@@ -1,19 +1,20 @@
 package com.arttrip.android.data.repository
 
 import ExhibitListQueryModel
-import android.util.Log
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomain
+import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
-import com.arttrip.android.presentation.home.ForeignCountry
+import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.Place
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -125,13 +126,17 @@ class HomeRepositoryImpl
                 }
             }
 
-    override fun getHomeGenreExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
+    override fun getHomeGenreExhibitList(place: Place, genre: ExhibitGenre): Flow<ApiResult<List<ExhibitModel>>> =
         flow {
             emit(ApiResult.Loading)
 
             try {
-                val requestDto = query.toRequestDto()
-                val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto)
+                val requestDto = place.toGenreRequestDto(genre = genre)
+
+                val baseResponse = when (requestDto) {
+                    is ForeignGenreExhibitListRequestDto -> dataSource.getHomeGenreRandom(requestDto)
+                    is DomesticGenreExhibitListRequestDto -> dataSource.getHomeGenreRandom(requestDto)
+                }
 
                 val dto = baseResponse.result
                 if (dto == null) {
