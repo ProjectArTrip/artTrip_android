@@ -45,16 +45,15 @@ class HomeViewModel
         val effect: SharedFlow<HomeEffect> = _effect
 
         init {
-            // 화면 진입 시 자동 로딩
-//            onIntent(HomeIntent.LoadCountries)
-//
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
 //            onIntent(HomeIntent.LoadInterScheduledExhibitList)
+            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitGenre.ContemporaryArt))
 //
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
 //            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
+            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -97,7 +96,10 @@ class HomeViewModel
                 }
 
                 HomeIntent.LoadForeignScheduledExhibitList -> loadForeignScheduledExhibitList()
-                HomeIntent.LoadForeignGenreExhibitList -> loadForeignGenreExhibitList()
+
+                is HomeIntent.LoadForeignGenreExhibitList -> {
+                    loadForeignGenreExhibitList(intent.country, intent.genre)
+                }
 
                 is HomeIntent.LoadDomesticRecommendExhibitList -> {
                     loadDomesticRecommendExhibitList(intent.region)
@@ -108,7 +110,10 @@ class HomeViewModel
                 }
 
                 HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
-                HomeIntent.LoadDomesticGenreExhibitList -> loadDomesticGenreExhibitList()
+
+                is HomeIntent.LoadDomesticGenreExhibitList -> {
+                    loadDomesticGenreExhibitList(intent.region, intent.genre)
+                }
 
                 is HomeIntent.SelectForeignGenre -> {
                     val genre = intent.genre
@@ -208,15 +213,9 @@ class HomeViewModel
             }
         }
 
-    private fun loadForeignGenreExhibitList() {
+    private fun loadForeignGenreExhibitList(country: ForeignCountry, genre: ExhibitGenre) {
         viewModelScope.launch {
-            val query = ForeignExhibitListQueryModel(
-                country = "",
-                singleGenre = null,
-                date = ""
-            )
-
-            getForeignGenreExhibitListUseCase(query = query)
+            getForeignGenreExhibitListUseCase(country = country, genre = genre)
                 .collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
@@ -308,15 +307,9 @@ class HomeViewModel
             }
         }
 
-    private fun loadDomesticGenreExhibitList() {
+    private fun loadDomesticGenreExhibitList(region: DomesticRegion, genre: ExhibitGenre) {
         viewModelScope.launch {
-            val query = DomesticExhibitListQueryModel(
-                region = "",
-                singleGenre = null,
-                date = ""
-            )
-
-            getDomesticGenreExhibitListUseCase(query = query)
+            getDomesticGenreExhibitListUseCase(region = region, genre = genre)
                 .collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
