@@ -3,10 +3,16 @@ package com.arttrip.android.data.remote.mapper.home
 import DomesticExhibitListQueryModel
 import ExhibitListQueryModel
 import ForeignExhibitListQueryModel
+import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitResponseDto
+import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.home.ExhibitStatus
+import com.arttrip.android.presentation.home.DomesticRegion
+import com.arttrip.android.presentation.home.ForeignCountry
+import com.arttrip.android.presentation.home.Place
 
 fun List<ExhibitResponseDto>.toDomain(): List<ExhibitModel> = this.map { it.toDomain() }
 
@@ -49,5 +55,16 @@ fun ExhibitListQueryModel.toRequestDto(): ExhibitListRequestDto =
             styles = styles,
             date = date,
             limit = limit,
+        )
+    }
+
+fun Place.toRequestDto(): RecommendExhibitListRequestDto =
+    when (this) {
+        is ForeignCountry -> ForeignExhibitListRequestDto(
+            country = this.label
+        )
+
+        is DomesticRegion -> DomesticExhibitListRequestDto(
+            region = this.label
         )
     }

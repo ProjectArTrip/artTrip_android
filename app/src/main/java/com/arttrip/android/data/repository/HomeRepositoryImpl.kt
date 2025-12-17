@@ -1,14 +1,20 @@
 package com.arttrip.android.data.repository
 
 import ExhibitListQueryModel
+import android.util.Log
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomain
 import com.arttrip.android.data.remote.mapper.home.toRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
+import com.arttrip.android.presentation.home.ForeignCountry
+import com.arttrip.android.presentation.home.Place
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -18,11 +24,15 @@ class HomeRepositoryImpl
     constructor(
         private val dataSource: HomeDataSource,
     ) : HomeRepository {
-        override fun getHomeRecommendExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getHomeRecommendExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
                 try {
-                    val requestDto = query.toRequestDto()
-                    val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto)
+                    val requestDto = place.toRequestDto()
+
+                    val baseResponse = when (requestDto) {
+                        is ForeignExhibitListRequestDto -> dataSource.getHomeRecommendToday(requestDto)
+                        is DomesticExhibitListRequestDto -> dataSource.getHomeRecommendToday(requestDto)
+                    }
 
                     val responseDto = baseResponse.result
                     if (responseDto == null) {

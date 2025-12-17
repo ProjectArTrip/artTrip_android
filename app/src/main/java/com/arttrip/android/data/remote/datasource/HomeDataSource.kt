@@ -1,7 +1,10 @@
 package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.HomeApi
+import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import javax.inject.Inject
 
 class HomeDataSource
@@ -9,7 +12,9 @@ class HomeDataSource
     constructor(
         private val api: HomeApi,
     ) {
-        suspend fun getHomeRecommendToday(requestDto: ExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+        suspend fun getHomeRecommendToday(requestDto: ForeignExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+
+    suspend fun getHomeRecommendToday(requestDto: DomesticExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
         suspend fun getHomePersonalizedRandom(requestDto: ExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
