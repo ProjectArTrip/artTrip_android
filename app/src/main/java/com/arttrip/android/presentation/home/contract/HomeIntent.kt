@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home.contract
 
+import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
@@ -23,7 +24,10 @@ sealed interface HomeIntent {
 
     object SearchIconClicked : HomeIntent
 
-    object LoadForeignRecommendExhibitList : HomeIntent
+
+    data class LoadForeignRecommendExhibitList(
+        val country: ForeignCountry
+    ) : HomeIntent
 
     object LoadForeignPersonalizedExhibitList : HomeIntent
 
@@ -31,7 +35,9 @@ sealed interface HomeIntent {
 
     object LoadForeignGenreExhibitList : HomeIntent
 
-    object LoadDomesticRecommendExhibitList : HomeIntent
+    data class LoadDomesticRecommendExhibitList(
+        val region: DomesticRegion
+    ) : HomeIntent
 
     object LoadDomesticPersonalizedExhibitList : HomeIntent
 

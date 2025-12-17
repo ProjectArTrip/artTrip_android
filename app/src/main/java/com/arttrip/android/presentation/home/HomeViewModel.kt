@@ -48,11 +48,11 @@ class HomeViewModel
             // 화면 진입 시 자동 로딩
 //            onIntent(HomeIntent.LoadCountries)
 //
-//            onIntent(HomeIntent.LoadInterRecommendExhibitList)
+            onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
 //            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
 //            onIntent(HomeIntent.LoadInterScheduledExhibitList)
 //
-//            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
+            onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
 //            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
 //            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
         }
@@ -88,12 +88,18 @@ class HomeViewModel
                     }
                 }
 
-                HomeIntent.LoadForeignRecommendExhibitList -> loadForeignRecommendExhibitList()
+                is HomeIntent.LoadForeignRecommendExhibitList -> {
+                    loadForeignRecommendExhibitList(intent.country)
+                }
+
                 HomeIntent.LoadForeignPersonalizedExhibitList -> loadForeignPersonalizedExhibitList()
                 HomeIntent.LoadForeignScheduledExhibitList -> loadForeignScheduledExhibitList()
                 HomeIntent.LoadForeignGenreExhibitList -> loadForeignGenreExhibitList()
 
-                HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
+                is HomeIntent.LoadDomesticRecommendExhibitList -> {
+                    loadDomesticRecommendExhibitList(intent.region)
+                }
+
                 HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
                 HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
                 HomeIntent.LoadDomesticGenreExhibitList -> loadDomesticGenreExhibitList()
@@ -124,14 +130,9 @@ class HomeViewModel
             }
         }
 
-        private fun loadForeignRecommendExhibitList() {
+        private fun loadForeignRecommendExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                val query = ForeignExhibitListQueryModel(
-                    country = "",
-                    singleGenre = null,
-                    date = ""
-                )
-                getForeignRecommendExhibitListUseCase(query)
+                getForeignRecommendExhibitListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -235,15 +236,9 @@ class HomeViewModel
         }
     }
 
-        private fun loadDomesticRecommendExhibitList() {
+        private fun loadDomesticRecommendExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
-                val query = DomesticExhibitListQueryModel(
-                    region = "",
-                    singleGenre = null,
-                    date = ""
-                )
-
-                getDomesticRecommendExhibitListUseCase(query)
+                getDomesticRecommendExhibitListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
