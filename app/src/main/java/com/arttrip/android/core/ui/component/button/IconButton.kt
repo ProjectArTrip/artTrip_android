@@ -117,12 +117,12 @@ enum class LikeButtonState { Like, LikeSelected }
 
 /**
  * ### Figma: icon_like
- * - state: Like / LikeSelected
+ * * [isSelected]: true / false
  */
 @Composable
 fun LikeButton(
     modifier: Modifier = Modifier,
-    state: LikeButtonState,
+    isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     Surface(
@@ -148,7 +148,7 @@ fun LikeButton(
                 painter =
                     painterResource(
                         id =
-                            if (state == LikeButtonState.LikeSelected) {
+                            if (isSelected) {
                                 R.drawable.ic_heart_filled_red_14
                             } else {
                                 R.drawable.ic_heart_outline_white_14
@@ -161,16 +161,14 @@ fun LikeButton(
     }
 }
 
-enum class HeartButtonState { Heart, HeartSelected }
-
 /**
  * ### Figma: icon_heart
- * - state: Like / LikeSelected
+ * [isSelected]: true / false
  */
 @Composable
 fun HeartButton(
     modifier: Modifier = Modifier,
-    state: HeartButtonState,
+    isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -204,7 +202,7 @@ fun HeartButton(
             painter =
                 painterResource(
                     id =
-                        if (state == HeartButtonState.HeartSelected) {
+                        if (isSelected) {
                             R.drawable.ic_heart_filled_purple_24
                         } else {
                             R.drawable.ic_heart_outline_black_24
@@ -234,12 +232,12 @@ private fun PreviewButtons_Interactive() {
         )
 
         LikeButton(
-            state = if (likeSelected) LikeButtonState.LikeSelected else LikeButtonState.Like,
+            isSelected = likeSelected,
             onClick = { likeSelected = !likeSelected },
         )
 
         HeartButton(
-            state = if (heartSelected) HeartButtonState.HeartSelected else HeartButtonState.Heart,
+            isSelected = heartSelected,
             onClick = { heartSelected = !heartSelected },
         )
     }
