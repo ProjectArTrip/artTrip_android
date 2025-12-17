@@ -3,6 +3,7 @@ package com.arttrip.android.domain.repository
 import ExhibitListQueryModel
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.Place
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,6 @@ interface HomeRepository {
     ): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomeGenreExhibitList(
-        query: ExhibitListQueryModel
+        place: Place, genre: ExhibitGenre
     ): Flow<ApiResult<List<ExhibitModel>>>
 }
