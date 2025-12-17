@@ -57,13 +57,17 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getHomePersonalizedExhibitList(query: ExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getHomePersonalizedExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    val requestDto = query.toRequestDto()
-                    val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
+                    val requestDto = place.toRequestDto()
+
+                    val baseResponse = when (requestDto) {
+                        is ForeignExhibitListRequestDto -> dataSource.getHomePersonalizedRandom(requestDto)
+                        is DomesticExhibitListRequestDto -> dataSource.getHomePersonalizedRandom(requestDto)
+                    }
 
                     val dto = baseResponse.result
                     if (dto == null) {

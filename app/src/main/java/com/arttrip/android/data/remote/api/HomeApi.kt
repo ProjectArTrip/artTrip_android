@@ -22,7 +22,12 @@ interface HomeApi {
 
     @POST("${HOME_PATH}/personalized/random")
     suspend fun getHomePersonalizedRandom(
-        @Body requestDto: ExhibitListRequestDto
+        @Body requestDto: ForeignExhibitListRequestDto
+    ): BaseResponseDto<List<ExhibitResponseDto>>
+
+    @POST("${HOME_PATH}/personalized/random")
+    suspend fun getHomePersonalizedRandom(
+        @Body requestDto: DomesticExhibitListRequestDto
     ): BaseResponseDto<List<ExhibitResponseDto>>
 
     @POST("${HOME_PATH}/schedule")

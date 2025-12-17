@@ -16,7 +16,9 @@ class HomeDataSource
 
     suspend fun getHomeRecommendToday(requestDto: DomesticExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
-        suspend fun getHomePersonalizedRandom(requestDto: ExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+    suspend fun getHomePersonalizedRandom(requestDto: ForeignExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+
+        suspend fun getHomePersonalizedRandom(requestDto: DomesticExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
         suspend fun getHomeSchedule(requestDto: ExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
 
