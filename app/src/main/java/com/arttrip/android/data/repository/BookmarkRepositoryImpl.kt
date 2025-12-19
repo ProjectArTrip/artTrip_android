@@ -1,24 +1,23 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
-import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.favorite.toDomain
-import com.arttrip.android.domain.model.favorite.FavoriteCheckModel
-import com.arttrip.android.domain.model.favorite.FavoriteResult
+import com.arttrip.android.domain.model.bookmark.BookmarkCheckModel
+import com.arttrip.android.domain.model.bookmark.BookmarkResultModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.repository.FavoriteRepository
+import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class FavoriteRepositoryImpl
+class BookmarkRepositoryImpl
     @Inject
     constructor(
         private val dataSource: FavoriteDataSource,
-    ) : FavoriteRepository {
-        override fun addFavorite(exhibitId: Int): Flow<ApiResult<FavoriteResult>> =
+    ) : BookmarkRepository {
+        override fun addBookmark(exhibitId: Int): Flow<ApiResult<BookmarkResultModel>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -51,7 +50,7 @@ class FavoriteRepositoryImpl
                 }
             }
 
-        override fun removeFavorite(exhibitId: Int): Flow<ApiResult<Unit>> =
+        override fun removeBookmark(exhibitId: Int): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -70,7 +69,7 @@ class FavoriteRepositoryImpl
                 }
             }
 
-        override fun checkFavorite(exhibitId: Int): Flow<ApiResult<FavoriteCheckModel>> =
+        override fun checkBookmark(exhibitId: Int): Flow<ApiResult<BookmarkCheckModel>> =
             flow {
                 emit(ApiResult.Loading)
 
