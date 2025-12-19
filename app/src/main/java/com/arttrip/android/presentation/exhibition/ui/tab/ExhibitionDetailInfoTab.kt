@@ -35,6 +35,8 @@ import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 @Composable
 fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
     val address = detail.hallAddress?.trim().orEmpty()
+    val desc = detail.description?.trim().orEmpty()
+
     Column(
         modifier =
             Modifier
@@ -63,14 +65,11 @@ fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
                         Row(
                             verticalAlignment = Alignment.Top,
                         ) {
-                            Text(
-                                address,
-                                style = AppTextStyle.Body02Regular,
-                                color = AppColor.TextPrimary,
-                            )
-
-                            Spacer(Modifier.width(12.dp))
-                            CopyActionText(textToCopy = address)
+                            InfoValueText(value = address)
+                            if (address.isNotBlank()) {
+                                Spacer(Modifier.width(12.dp))
+                                CopyActionText(textToCopy = address)
+                            }
                         }
                     }
                 }
@@ -79,11 +78,7 @@ fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
                     iconResId = R.drawable.ic_duration_20,
                     title = "운영시간",
                 ) {
-                    Text(
-                        detail.hallOpeningHours.toAmPmLabelWith24hOrEmpty(), // "AM 10:30 - PM 19:00"으로 보여야하는데 "11:00 ~ 19:00" 이렇게들어옴
-                        style = AppTextStyle.Body02Regular,
-                        color = AppColor.TextPrimary,
-                    )
+                    InfoValueText(value = detail.hallOpeningHours)
 //                    Spacer(Modifier.height(4.dp))
 //                    Text(
 //                        "휴관일: 매주 월요일",
@@ -96,31 +91,27 @@ fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
                     iconResId = R.drawable.ic_contact_number_20,
                     title = "전화번호",
                 ) {
-                    Text(
-                        detail.hallPhone.orEmpty(), // 클릭시전화열려야하나
-                        style = AppTextStyle.Body02Regular,
-                        color = AppColor.TextPrimary,
-                    )
+                    InfoValueText(value = detail.hallPhone)
                 }
             }
         }
+        if (desc.isNotBlank()) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    // .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(AppColor.SubLightGray)
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-        ) {
-            Text(
-                detail.description.orEmpty(),
-                style = AppTextStyle.Body01Regular,
-                color = AppColor.TextPrimary,
-            )
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(AppColor.SubLightGray)
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+            ) {
+                Text(
+                    detail.description.orEmpty(),
+                    style = AppTextStyle.Body01Regular,
+                    color = AppColor.TextPrimary,
+                )
+            }
         }
     }
 }
@@ -192,6 +183,23 @@ private fun IconTextContentRow(
 }
 
 @Composable
+private fun InfoValueText(
+    modifier: Modifier = Modifier,
+    value: String?,
+    emptyText: String = "정보 없음",
+) {
+    val v = value?.trim().orEmpty()
+    val isEmpty = v.isBlank()
+
+    Text(
+        text = if (isEmpty) emptyText else v,
+        style = AppTextStyle.Body02Regular,
+        color = if (isEmpty) AppColor.TextTertiary else AppColor.TextPrimary,
+        modifier = modifier,
+    )
+}
+
+@Composable
 private fun CopyActionText(
     textToCopy: String,
     modifier: Modifier = Modifier,
@@ -208,20 +216,4 @@ private fun CopyActionText(
                 // 필요하면 토스트/스낵바는 상위에서 effect로 처리
             },
     )
-}
-
-private fun String?.toAmPmLabelWith24hOrEmpty(): String {
-    val raw = this?.trim().orEmpty()
-    if (raw.isBlank()) return ""
-
-    val parts = raw.split("~").map { it.trim() }
-    if (parts.size != 2) return raw.replace("~", "-")
-
-    fun label24h(t: String): String {
-        val h = t.substringBefore(":").toIntOrNull() ?: return t
-        val marker = if (h >= 12) "PM" else "AM"
-        return "$marker $t" // 19:00 그대로
-    }
-
-    return "${label24h(parts[0])} - ${label24h(parts[1])}"
 }
