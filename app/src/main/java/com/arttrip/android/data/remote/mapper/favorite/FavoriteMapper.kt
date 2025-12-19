@@ -13,5 +13,5 @@ fun AddFavoriteResDto.toDomain(): BookmarkResultModel =
 
 fun FavoriteCheckResDto.toDomain(): BookmarkCheckModel =
     BookmarkCheckModel(
-        isFavorite = isFavorite,
+        isBookmarked = isFavorite,
     )
