@@ -5,18 +5,23 @@ import ExhibitListQueryModel
 import ForeignExhibitListQueryModel
 import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitResponseDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.GenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ScheduleExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.home.ExhibitStatus
 import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.Place
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun List<ExhibitResponseDto>.toDomain(): List<ExhibitModel> = this.map { it.toDomain() }
 
@@ -85,3 +90,21 @@ fun Place.toGenreRequestDto(genre: ExhibitGenre): GenreExhibitListRequestDto =
             region = this.label
         )
     }
+
+fun Place.toScheduleRequestDto(date: LocalDate): ScheduleExhibitListRequestDto {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    val dateString = date.format(formatter)
+
+    return when (this) {
+        is ForeignCountry -> ForeignScheduleExhibitListRequestDto(
+            date = dateString,
+            country = this.label
+        )
+
+        is DomesticRegion -> DomesticScheduleExhibitListRequestDto(
+            date = dateString,
+            region = this.label
+        )
+    }
+}

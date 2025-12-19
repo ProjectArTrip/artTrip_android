@@ -3,9 +3,11 @@ package com.arttrip.android.data.remote.datasource
 import com.arttrip.android.data.remote.api.HomeApi
 import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import javax.inject.Inject
 
@@ -22,7 +24,9 @@ class HomeDataSource
 
         suspend fun getHomePersonalizedRandom(requestDto: DomesticExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
-        suspend fun getHomeSchedule(requestDto: ExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
+        suspend fun getHomeSchedule(requestDto: ForeignScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
+
+    suspend fun getHomeSchedule(requestDto: DomesticScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
 
     suspend fun getHomeGenreRandom(requestDto: ForeignGenreExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
 

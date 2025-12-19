@@ -16,6 +16,8 @@ import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibi
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
+import com.arttrip.android.presentation.home.contract.getThisWeekDatesStartingSunday
+import com.arttrip.android.presentation.home.model.ForeignExhibit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +25,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,16 +50,32 @@ class HomeViewModel
         val effect: SharedFlow<HomeEffect> = _effect
 
         init {
+            _state.update {
+                it.copy(
+                    foreignByCountry = initialForeignByCountry()
+                )
+            }
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
-//            onIntent(HomeIntent.LoadInterScheduledExhibitList)
+            onIntent(HomeIntent.LoadForeignScheduledExhibitList(ForeignCountry.Entire, LocalDate.now()))
             onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitGenre.ContemporaryArt))
-//
+
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
-//            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
+            onIntent(HomeIntent.LoadDomesticScheduledExhibitList(DomesticRegion.Entire, LocalDate.now()))
             onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
         }
+
+    private fun emptyForeignExhibit(): ForeignExhibit =
+        ForeignExhibit(
+            scheduledExhibitList =
+                getThisWeekDatesStartingSunday().associateWith { emptyList() },
+            genreExhibitMap =
+                ExhibitGenre.entries.associateWith { emptyList() }
+        )
+
+    private fun initialForeignByCountry(): Map<ForeignCountry, ForeignExhibit> =
+        ForeignCountry.entries.associateWith { emptyForeignExhibit() }
 
         fun onIntent(intent: HomeIntent) {
             when (intent) {
@@ -95,7 +116,9 @@ class HomeViewModel
                     loadForeignPersonalizedExhibitList(intent.country)
                 }
 
-                HomeIntent.LoadForeignScheduledExhibitList -> loadForeignScheduledExhibitList()
+                is HomeIntent.LoadForeignScheduledExhibitList -> {
+                    loadForeignScheduledExhibitList(intent.country, intent.date)
+                }
 
                 is HomeIntent.LoadForeignGenreExhibitList -> {
                     loadForeignGenreExhibitList(intent.country, intent.genre)
@@ -109,7 +132,9 @@ class HomeViewModel
                     loadDomesticPersonalizedExhibitList(intent.region)
                 }
 
-                HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList()
+                is HomeIntent.LoadDomesticScheduledExhibitList -> {
+                    loadDomesticScheduledExhibitList(intent.region, intent.date)
+                }
 
                 is HomeIntent.LoadDomesticGenreExhibitList -> {
                     loadDomesticGenreExhibitList(intent.region, intent.genre)
@@ -185,7 +210,7 @@ class HomeViewModel
             }
         }
 
-        private fun loadForeignScheduledExhibitList() {
+        private fun loadForeignScheduledExhibitList(country: ForeignCountry, date: LocalDate) {
             viewModelScope.launch {
                 val query = ForeignExhibitListQueryModel(
                     country = "",
@@ -193,7 +218,7 @@ class HomeViewModel
                     date = ""
                 )
 
-                getForeignScheduledExhibitListUseCase(query = query)
+                getForeignScheduledExhibitListUseCase(country = country, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -279,7 +304,7 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticScheduledExhibitList() {
+        private fun loadDomesticScheduledExhibitList(region: DomesticRegion, date: LocalDate) {
             viewModelScope.launch {
                 val query = DomesticExhibitListQueryModel(
                     region = "",
@@ -287,7 +312,7 @@ class HomeViewModel
                     date = ""
                 )
 
-                getDomesticScheduledExhibitListUseCase(query = query)
+                getDomesticScheduledExhibitListUseCase(region = region, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {

@@ -6,6 +6,7 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.Place
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 interface HomeRepository {
     fun getHomeRecommendExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>>
@@ -13,7 +14,7 @@ interface HomeRepository {
     fun getHomePersonalizedExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomeScheduleExhibitList(
-        query: ExhibitListQueryModel
+        place: Place, date: LocalDate
     ): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getHomeGenreExhibitList(

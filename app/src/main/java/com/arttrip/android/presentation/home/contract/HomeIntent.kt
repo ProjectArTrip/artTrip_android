@@ -4,6 +4,7 @@ import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
+import java.time.LocalDate
 
 sealed interface HomeIntent {
     data class SelectTab(
@@ -33,7 +34,10 @@ sealed interface HomeIntent {
         val country: ForeignCountry
     ) : HomeIntent
 
-    object LoadForeignScheduledExhibitList : HomeIntent
+    data class LoadForeignScheduledExhibitList(
+        val country: ForeignCountry,
+        val date: LocalDate
+    ) : HomeIntent
 
     data class LoadForeignGenreExhibitList(
         val country: ForeignCountry,
@@ -48,7 +52,10 @@ sealed interface HomeIntent {
         val region: DomesticRegion
     ) : HomeIntent
 
-    object LoadDomesticScheduledExhibitList : HomeIntent
+    data class LoadDomesticScheduledExhibitList(
+        val region: DomesticRegion,
+        val date: LocalDate
+    ) : HomeIntent
 
     data class LoadDomesticGenreExhibitList(
         val region: DomesticRegion,

@@ -6,10 +6,13 @@ import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomain
 import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRequestDto
+import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
@@ -18,6 +21,7 @@ import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.Place
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDate
 import javax.inject.Inject
 
 class HomeRepositoryImpl
@@ -94,14 +98,18 @@ class HomeRepositoryImpl
             }
 
         override fun getHomeScheduleExhibitList(
-            query: ExhibitListQueryModel
+            place: Place, date: LocalDate
         ): Flow<ApiResult<List<ExhibitModel>>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    val requestDto = query.toRequestDto()
-                    val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto)
+                    val requestDto = place.toScheduleRequestDto(date = date)
+
+                    val baseResponse = when (requestDto) {
+                        is ForeignScheduleExhibitListRequestDto -> dataSource.getHomeSchedule(requestDto)
+                        is DomesticScheduleExhibitListRequestDto -> dataSource.getHomeSchedule(requestDto)
+                    }
 
                     val dto = baseResponse.result
                     if (dto == null) {

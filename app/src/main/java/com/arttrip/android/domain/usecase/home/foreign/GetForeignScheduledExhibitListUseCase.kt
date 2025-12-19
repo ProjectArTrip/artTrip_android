@@ -4,7 +4,9 @@ import ForeignExhibitListQueryModel
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
+import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetForeignScheduledExhibitListUseCase
@@ -12,6 +14,6 @@ class GetForeignScheduledExhibitListUseCase
     constructor(
         private val homeRepository: HomeRepository,
     ) {
-        operator fun invoke(query: ForeignExhibitListQueryModel): Flow<ApiResult<List<ExhibitModel>>> =
-            homeRepository.getHomeScheduleExhibitList(query = query)
+        operator fun invoke(country: ForeignCountry, date: LocalDate): Flow<ApiResult<List<ExhibitModel>>> =
+            homeRepository.getHomeScheduleExhibitList(place = country, date = date)
     }
