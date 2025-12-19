@@ -183,6 +183,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                     iconResId = R.drawable.ic_alert_24,
                     contentDescription = "알림",
                 ) {
+                    onIntent(HomeIntent.AlertIconClicked)
                 }
                 AppIconButton(
                     modifier = Modifier,
@@ -196,6 +197,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                     iconResId = R.drawable.ic_search_24,
                     contentDescription = "검색",
                 ) {
+                    onIntent(HomeIntent.SearchIconClicked)
                 }
             }
         }
