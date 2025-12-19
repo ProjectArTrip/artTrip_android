@@ -444,10 +444,9 @@ fun ExhibitByLocationSection() {
             )
 
             DomesticRegion.entries.forEach { region ->
-                LocationItem(
-                    url = "https://img1.yna.co.kr/photo/yna/YH/2011/11/12/PYH2011111201190005600_P4.jpg",
-                    name = region.label,
-                )
+                if (region != DomesticRegion.Entire) {
+                    LocationItem(region = region)
+                }
             }
 
             Spacer(
@@ -461,20 +460,30 @@ fun ExhibitByLocationSection() {
 
 @Composable
 fun LocationItem(
-    url: String,
-    name: String,
+    region: DomesticRegion
 ) {
+    val painter = painterResource(when(region) {
+        DomesticRegion.Entire -> R.drawable.img_seoul
+        DomesticRegion.Seoul -> R.drawable.img_seoul
+        DomesticRegion.Gyeonggi -> R.drawable.img_gyeonggi
+        DomesticRegion.Gangwon -> R.drawable.img_gangwon
+        DomesticRegion.Chungcheong -> R.drawable.img_chungcheong
+        DomesticRegion.Jeolla -> R.drawable.img_jeolla
+        DomesticRegion.Gyeongsang -> R.drawable.img_gyeongsang
+        DomesticRegion.Jeju -> R.drawable.img_jeju
+    })
+    val name = region.label
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AsyncImage(
-            model = url,
-            contentDescription = "Locaiton Image",
-            modifier =
-                Modifier
-                    .size(64.dp)
-                    .clip(CircleShape),
-            contentScale = ContentScale.Crop,
+        Image(
+            painter = painter,
+            contentDescription = "Location Image",
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
         Spacer(
             modifier =
