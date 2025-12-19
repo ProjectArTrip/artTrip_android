@@ -36,10 +36,11 @@ fun ExhibitResponseDto.toDomain(): ExhibitModel =
 
 fun String.toExhibitStatus(): ExhibitStatus =
     when (this.uppercase()) {
-        "ONGOING" -> ExhibitStatus.ONGOING
         "UPCOMING" -> ExhibitStatus.UPCOMING
-        "DEADLINE" -> ExhibitStatus.DEADLINE
-        else -> ExhibitStatus.DEADLINE
+        "ONGOING" -> ExhibitStatus.ONGOING
+        "ENDING_SOON" -> ExhibitStatus.ENDING_SOON
+        "FINISHED" -> ExhibitStatus.FINISHED
+        else -> ExhibitStatus.FINISHED
     }
 
 fun ExhibitListQueryModel.toRequestDto(): ExhibitListRequestDto =
