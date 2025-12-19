@@ -11,6 +11,7 @@ import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class BookmarkRepositoryImpl
     @Inject
@@ -45,6 +46,7 @@ class BookmarkRepositoryImpl
 
                     emit(ApiResult.Success(domainModel))
                 } catch (e: Exception) {
+                    if (e is CancellationException) throw e
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))
                 }
@@ -64,6 +66,7 @@ class BookmarkRepositoryImpl
                         emit(ApiResult.Success(Unit))
                     }
                 } catch (e: Exception) {
+                    if (e is CancellationException) throw e
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))
                 }
