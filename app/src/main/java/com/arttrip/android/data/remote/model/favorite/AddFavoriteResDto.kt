@@ -1,6 +1,6 @@
 package com.arttrip.android.data.remote.model.favorite
 
-data class AddFavoriteResponseDto(
+data class AddFavoriteResDto(
     val favoriteId: Int,
     val exhibitId: Int,
     val title: String,

@@ -6,8 +6,8 @@ import com.arttrip.android.data.local.auth.SessionManager
 import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.data.remote.api.ApiConstants.AUTH_PATH
 import com.arttrip.android.data.remote.api.AuthApi
-import com.arttrip.android.data.remote.model.auth.RefreshRequestDto
-import com.arttrip.android.data.remote.model.auth.RefreshResponseDto
+import com.arttrip.android.data.remote.model.auth.RefreshReqDto
+import com.arttrip.android.data.remote.model.auth.RefreshResDto
 import com.arttrip.android.domain.model.auth.AuthTokens
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -93,7 +93,7 @@ class TokenAuthenticator
             Log.d(TAG, "🔄 Refresh Token 요청 시작")
             val response =
                 try {
-                    authApi.refreshTokens(RefreshRequestDto(refreshToken)).execute()
+                    authApi.refreshTokens(RefreshReqDto(refreshToken)).execute()
                 } catch (e: Exception) {
                     Log.e(TAG, "❗ Refresh 요청 실패 (네트워크 오류): ${e.message}")
                     return null
@@ -149,7 +149,7 @@ class TokenAuthenticator
             return null
         }
 
-        private fun saveNewTokens(result: RefreshResponseDto): AuthTokens {
+        private fun saveNewTokens(result: RefreshResDto): AuthTokens {
             val newTokens =
                 AuthTokens(
                     accessToken = result.accessToken,

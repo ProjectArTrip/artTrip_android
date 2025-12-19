@@ -3,8 +3,8 @@ package com.arttrip.android.data.repository
 import com.arttrip.android.data.remote.datasource.AuthDataSource
 import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
-import com.arttrip.android.data.remote.model.auth.LoginRequestDto
-import com.arttrip.android.data.remote.model.auth.UserKeywordsRequestDto
+import com.arttrip.android.data.remote.model.auth.LoginReqDto
+import com.arttrip.android.data.remote.model.auth.UserKeywordsReqDto
 import com.arttrip.android.domain.model.auth.KeywordGroups
 import com.arttrip.android.domain.model.auth.LoginModel
 import com.arttrip.android.domain.model.auth.LoginProvider
@@ -30,8 +30,8 @@ class AuthRepositoryImpl
                 try {
                     val baseResponse =
                         dataSource.postLogin(
-                            loginRequestDto =
-                                LoginRequestDto(
+                            loginReqDto =
+                                LoginReqDto(
                                     provider = provider.value,
                                     idToken = idToken,
                                 ),
@@ -98,8 +98,8 @@ class AuthRepositoryImpl
                 try {
                     val baseResponse =
                         dataSource.postUserKeywords(
-                            userKeywordsRequestDto =
-                                UserKeywordsRequestDto(
+                            userKeywordsReqDto =
+                                UserKeywordsReqDto(
                                     keywordIds = keywordIds,
                                 ),
                         )

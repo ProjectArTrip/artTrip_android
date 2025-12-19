@@ -1,5 +1,5 @@
 package com.arttrip.android.data.remote.model.favorite
 
-data class FavoriteCheckResponseDto(
+data class FavoriteCheckResDto(
     val isFavorite: Boolean,
 )

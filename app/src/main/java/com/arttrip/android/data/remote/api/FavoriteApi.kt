@@ -1,8 +1,8 @@
 package com.arttrip.android.data.remote.api
 
 import com.arttrip.android.data.remote.api.ApiConstants.FAVORITE_PATH
-import com.arttrip.android.data.remote.model.favorite.AddFavoriteResponseDto
-import com.arttrip.android.data.remote.model.favorite.FavoriteCheckResponseDto
+import com.arttrip.android.data.remote.model.favorite.AddFavoriteResDto
+import com.arttrip.android.data.remote.model.favorite.FavoriteCheckResDto
 import com.arttrip.android.data.remote.model.network.BaseResponseDto
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -13,7 +13,7 @@ interface FavoriteApi {
     @POST("${FAVORITE_PATH}/{exhibitId}")
     suspend fun postFavorite(
         @Path("exhibitId") exhibitId: Int,
-    ): BaseResponseDto<AddFavoriteResponseDto>
+    ): BaseResponseDto<AddFavoriteResDto>
 
     @DELETE("${FAVORITE_PATH}/{exhibitId}")
     suspend fun deleteFavorite(
@@ -23,5 +23,5 @@ interface FavoriteApi {
     @GET("${FAVORITE_PATH}/check/{exhibitId}")
     suspend fun getIsFavorite(
         @Path("exhibitId") exhibitId: Int,
-    ): BaseResponseDto<FavoriteCheckResponseDto>
+    ): BaseResponseDto<FavoriteCheckResDto>
 }
