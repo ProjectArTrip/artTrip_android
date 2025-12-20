@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.arttrip.android.R
+import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.LikeButton
@@ -51,7 +52,6 @@ import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTag
-import com.arttrip.android.core.ui.component.tag.AppTagType
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
@@ -891,10 +891,10 @@ fun ExhibitItemCase3(
                 isSelected = false,
             ) { }
             AppTag(
-                type = AppTagType.Ongoing,
                 modifier =
                     Modifier
                         .align(Alignment.BottomEnd),
+                status = ExhibitStatus.ONGOING,
             )
         }
         Spacer(

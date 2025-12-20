@@ -23,20 +23,26 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 
 /**
  * ### Figma: Tag
  *
- * - Ongoing → "진행중", Deadline → "마감임박" (Figma 매핑)
+ * - ONGOING → "진행중"
+ * - ENDING_SOON → "마감임박"
+ * - UPCOMING → "전시예정"
+ * - FINISHED → 표시하지 않음
  */
 @Composable
 fun AppTag(
     modifier: Modifier = Modifier,
-    type: AppTagType,
+    status: ExhibitStatus,
 ) {
-    val colors = AppTagDefaults.colors(type)
+    if (status == ExhibitStatus.FINISHED) return
+
+    val ui = AppTagDefaults.ui(status)
     val textStyle = AppTextStyle.Body02Bold
     val roundDp = 8.dp
 
@@ -52,20 +58,16 @@ fun AppTag(
         modifier =
             modifier
                 .clip(shape)
-                .background(color = colors.backgroundColor, shape = shape)
+                .background(color = ui.colors.backgroundColor, shape = shape)
                 .run {
-                    if (type == AppTagType.Deadline) {
-                        deadlineBorder(roundDp, colors.borderColor)
-                    } else {
-                        this
-                    }
+                    if (ui.hasBorder) deadlineBorder(roundDp, ui.colors.borderColor) else this
                 }.padding(horizontal = 8.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = type.label,
+            text = ui.label,
             style = textStyle,
-            color = colors.textColor,
+            color = ui.colors.textColor,
         )
     }
 }
@@ -73,71 +75,109 @@ fun AppTag(
 /**
  * ### Figma: Tag(L)
  *
- * - Ongoing → "진행중", Deadline → "마감임박" (Figma 매핑)
+ * - ONGOING → "진행중"
+ * - ENDING_SOON → "마감임박"
+ * - UPCOMING → "전시예정"
+ * - FINISHED → 표시하지 않음
  */
 @Composable
 fun AppTagL(
     modifier: Modifier = Modifier,
-    type: AppTagType,
+    status: ExhibitStatus,
 ) {
-    val colors = AppTagDefaults.colors(type)
+    if (status == ExhibitStatus.FINISHED) return
+
+    val ui = AppTagDefaults.ui(status)
     val textStyle = AppTextStyle.Body01Bold
     val roundDp = 6.dp
 
-    val shape =
-        RoundedCornerShape(size = roundDp)
+    val shape = RoundedCornerShape(size = roundDp)
 
     Box(
         modifier =
             modifier
                 .clip(shape)
-                .background(color = colors.backgroundColor, shape = shape)
+                .background(color = ui.colors.backgroundColor, shape = shape)
                 .then(
-                    if (type == AppTagType.Deadline) Modifier.border(1.dp, colors.borderColor, shape) else Modifier,
+                    if (ui.hasBorder) Modifier.border(1.dp, ui.colors.borderColor, shape) else Modifier,
                 ).padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = type.label,
+            text = ui.label,
             style = textStyle,
-            color = colors.textColor,
+            color = ui.colors.textColor,
         )
     }
 }
 
-/** Figma Tag 타입 매핑. */
-enum class AppTagType(
-    val label: String,
-) {
-    /** 진행중 */
-    Ongoing("진행중"),
-
-    /** 마감임박 */
-    Deadline("마감임박"),
-}
-
 @Stable
-data class AppTagColors(
+private data class AppTagColors(
     val textColor: Color,
     val backgroundColor: Color,
     val borderColor: Color,
 )
 
-object AppTagDefaults {
-    fun colors(type: AppTagType): AppTagColors =
-        when (type) {
-            AppTagType.Ongoing ->
-                AppTagColors(
-                    textColor = AppColor.TextPrimary,
-                    backgroundColor = AppColor.SubLime,
-                    borderColor = Color.Transparent,
+@Stable
+private data class AppTagUi(
+    val label: String,
+    val colors: AppTagColors,
+    val hasBorder: Boolean,
+)
+
+private object AppTagDefaults {
+    /**
+     * 전시 상태 → Tag UI 매핑
+     * FINISHED는 렌더링하지 않으므로 이 함수가 호출되지 않도록 상위에서 return 처리.
+     */
+    fun ui(status: ExhibitStatus): AppTagUi =
+        when (status) {
+            ExhibitStatus.ONGOING ->
+                AppTagUi(
+                    label = "진행중",
+                    hasBorder = false,
+                    colors =
+                        AppTagColors(
+                            textColor = AppColor.TextPrimary,
+                            backgroundColor = AppColor.SubLime,
+                            borderColor = Color.Transparent,
+                        ),
                 )
 
-            AppTagType.Deadline ->
-                AppTagColors(
-                    textColor = AppColor.TextPrimary,
-                    backgroundColor = AppColor.Gray0,
-                    borderColor = AppColor.Gray50,
+            ExhibitStatus.ENDING_SOON ->
+                AppTagUi(
+                    label = "마감임박",
+                    hasBorder = true,
+                    colors =
+                        AppTagColors(
+                            textColor = AppColor.TextPrimary,
+                            backgroundColor = AppColor.Gray0,
+                            borderColor = AppColor.Gray50,
+                        ),
+                )
+
+            ExhibitStatus.UPCOMING ->
+                AppTagUi(
+                    label = "전시예정",
+                    hasBorder = true,
+                    colors =
+                        AppTagColors(
+                            textColor = AppColor.TextPoint,
+                            backgroundColor = AppColor.SubLightGray,
+                            borderColor = AppColor.Gray100,
+                        ),
+                )
+
+            ExhibitStatus.FINISHED ->
+                AppTagUi(
+                    label = "",
+                    hasBorder = false,
+                    colors =
+                        AppTagColors(
+                            textColor = Color.Transparent,
+                            backgroundColor = Color.Transparent,
+                            borderColor = Color.Transparent,
+                        ),
                 )
         }
 }
@@ -187,8 +227,11 @@ fun SampleAppTag() {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        AppTag(type = AppTagType.Deadline)
-        AppTag(type = AppTagType.Ongoing)
+        AppTag(status = ExhibitStatus.ENDING_SOON)
+        AppTag(status = ExhibitStatus.ONGOING)
+        AppTag(status = ExhibitStatus.UPCOMING)
+        // FINISHED는 표시 안 됨 (아무것도 렌더링되지 않음)
+        AppTag(status = ExhibitStatus.FINISHED)
     }
 }
 
@@ -197,9 +240,11 @@ fun SampleAppTag() {
 fun SampleAppTagL() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp),
     ) {
-        AppTagL(type = AppTagType.Deadline)
-        AppTagL(type = AppTagType.Ongoing)
+        AppTagL(status = ExhibitStatus.ENDING_SOON)
+        AppTagL(status = ExhibitStatus.ONGOING)
+        AppTagL(status = ExhibitStatus.UPCOMING)
+        // FINISHED는 표시 안 됨
+        AppTagL(status = ExhibitStatus.FINISHED)
     }
 }
