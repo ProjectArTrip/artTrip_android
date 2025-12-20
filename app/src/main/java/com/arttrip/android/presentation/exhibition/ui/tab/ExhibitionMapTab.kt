@@ -13,10 +13,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 
 @Composable
-fun ExhibitionMapTab(detail: ExhibitionDetailModel) {
+fun ExhibitionMapTab() {
     Box(
         modifier =
             Modifier

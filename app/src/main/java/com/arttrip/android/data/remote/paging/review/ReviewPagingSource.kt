@@ -32,12 +32,13 @@ class ReviewPagingSource(
             val items: List<ReviewModel> =
                 body.reviews.map { it.toDomain() }
 
-            val nextCursor: Int? = body.nextCursor
+            val nextKey =
+                if (body.hasNext) body.nextCursor else null
 
             LoadResult.Page(
                 data = items,
                 prevKey = null,
-                nextKey = nextCursor,
+                nextKey = nextKey,
             )
         } catch (e: IOException) {
             LoadResult.Error(e)

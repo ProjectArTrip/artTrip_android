@@ -3,17 +3,22 @@ package com.arttrip.android.presentation.exhibition
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.domain.usecase.bookmark.AddBookmarkUseCase
 import com.arttrip.android.domain.usecase.bookmark.CheckBookmarkUseCase
 import com.arttrip.android.domain.usecase.bookmark.RemoveBookmarkUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetExhibitionDetailUseCase
+import com.arttrip.android.domain.usecase.review.GetExhibitionReviewsUseCase
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -34,6 +39,7 @@ class ExhibitionDetailViewModel
         private val checkBookmarkUseCase: CheckBookmarkUseCase,
         private val addBookmarkUseCase: AddBookmarkUseCase,
         private val removeBookmarkUseCase: RemoveBookmarkUseCase,
+        private val getExhibitionReviewsUseCase: GetExhibitionReviewsUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(ExhibitionDetailState())
         val state: StateFlow<ExhibitionDetailState> = _state
@@ -93,8 +99,14 @@ class ExhibitionDetailViewModel
 
                     bookmarkTargetFlow.tryEmit(target)
                 }
+
+                is ExhibitionDetailIntent.WriteReviewClicked -> {
+                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.NavigateToWriteReview(intent.exhibitId)) }
+                }
             }
         }
+
+        fun reviewsFlow(exhibitId: Int): Flow<PagingData<ReviewModel>> = getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
 
         private fun initialize(exhibitId: Int) {
             userTouchedBookmark = false
