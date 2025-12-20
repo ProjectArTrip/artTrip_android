@@ -61,15 +61,16 @@ fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
                     iconResId = R.drawable.ic_location_20,
                     title = "주소",
                 ) {
-                    if (address.isNotBlank()) {
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                        ) {
-                            InfoValueText(value = address)
-                            if (address.isNotBlank()) {
-                                Spacer(Modifier.width(12.dp))
-                                CopyActionText(textToCopy = address)
-                            }
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                    ) {
+                        InfoValueText(
+                            modifier = Modifier.weight(1f, fill = false),
+                            value = address,
+                        )
+                        if (address.isNotBlank()) {
+                            Spacer(Modifier.width(12.dp))
+                            CopyActionText(textToCopy = address)
                         }
                     }
                 }
