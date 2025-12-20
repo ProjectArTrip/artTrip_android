@@ -28,6 +28,7 @@ fun ExhibitionDetailRoute(
                 ExhibitionDetailEffect.NavigateBack -> {
                     onBack()
                 }
+                is ExhibitionDetailEffect.NavigateToWriteReview -> {
                 is ExhibitionDetailEffect.ShowError -> {
                     // 스낵바 / 토스트 등
                 }

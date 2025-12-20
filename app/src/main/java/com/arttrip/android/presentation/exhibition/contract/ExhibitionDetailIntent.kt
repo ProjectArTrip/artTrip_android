@@ -8,4 +8,8 @@ sealed interface ExhibitionDetailIntent {
     data object BackClicked : ExhibitionDetailIntent
 
     data object BookmarkClicked : ExhibitionDetailIntent
+
+    data class WriteReviewClicked(
+        val exhibitId: Int,
+    ) : ExhibitionDetailIntent
 }
