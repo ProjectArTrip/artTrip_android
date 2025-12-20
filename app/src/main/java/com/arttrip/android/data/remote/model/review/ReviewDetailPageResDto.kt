@@ -4,13 +4,13 @@ data class ReviewDetailPageResDto(
     val reviews: List<ReviewDetailDto> = emptyList(),
     val nextCursor: Int?,
     val hasNext: Boolean,
+    val reviewTotalCount: Int,
 )
 
 data class ReviewDetailDto(
     val reviewId: Int,
-    val reviewTitle: String,
     val visitDate: String, // "2025-12-16"
     val content: String,
-    val createdAt: String, // "2025-12-16T07:34:21.517Z"
-    val thumbnailUrl: List<String>? = null, // TODO 확인필요
+    val thumbnailUrl: String?,
+    val nickname: String,
 )

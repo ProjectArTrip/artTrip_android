@@ -9,9 +9,9 @@ import retrofit2.http.Query
 
 interface ReviewApi {
     @GET("${REVIEW_PATH}/{exhibitId}/detail")
-    suspend fun getExhibitReviewsDetail(
-        @Path("exhibitId") exhibitId: Long,
-        @Query("cursor") cursor: Long? = null,
+    suspend fun getExhibitDetailReviews(
+        @Path("exhibitId") exhibitId: Int,
+        @Query("cursor") cursor: Int? = null,
         @Query("size") size: Int = 10,
     ): BaseResponseDto<ReviewDetailPageResDto>
 }
