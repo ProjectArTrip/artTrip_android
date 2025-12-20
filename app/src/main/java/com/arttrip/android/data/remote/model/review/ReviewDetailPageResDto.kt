@@ -1,6 +1,6 @@
 package com.arttrip.android.data.remote.model.review
 
-data class ReviewDetailPageResponseDto(
+data class ReviewDetailPageResDto(
     val reviews: List<ReviewDetailDto> = emptyList(),
     val nextCursor: Int?,
     val hasNext: Boolean,
