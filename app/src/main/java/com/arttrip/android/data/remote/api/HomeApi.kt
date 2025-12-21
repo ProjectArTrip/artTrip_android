@@ -18,41 +18,41 @@ import retrofit2.http.POST
 interface HomeApi {
     @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
-        @Body requestDto: ForeignRecommendExhibitListRequestDto
+        @Body requestDto: ForeignRecommendExhibitListRequestDto,
     ): BaseResponseDto<List<ForeignExhibitResponseDto>>
 
     @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
-        @Body requestDto: DomesticRecommendExhibitListRequestDto
+        @Body requestDto: DomesticRecommendExhibitListRequestDto,
     ): BaseResponseDto<List<DomesticExhibitResponseDto>>
 
     @POST("${HOME_PATH}/personalized/random")
     suspend fun getHomePersonalizedRandom(
-        @Body requestDto: ForeignPersonalizedExhibitListRequestDto
+        @Body requestDto: ForeignPersonalizedExhibitListRequestDto,
     ): BaseResponseDto<List<ForeignExhibitResponseDto>>
 
     @POST("${HOME_PATH}/personalized/random")
     suspend fun getHomePersonalizedRandom(
-        @Body requestDto: DomesticPersonalizedExhibitListRequestDto
+        @Body requestDto: DomesticPersonalizedExhibitListRequestDto,
     ): BaseResponseDto<List<DomesticExhibitResponseDto>>
 
     @POST("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
-        @Body requestDto: ForeignScheduleExhibitListRequestDto
+        @Body requestDto: ForeignScheduleExhibitListRequestDto,
     ): BaseResponseDto<List<ForeignExhibitResponseDto>>
 
     @POST("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
-        @Body requestDto: DomesticScheduleExhibitListRequestDto
+        @Body requestDto: DomesticScheduleExhibitListRequestDto,
     ): BaseResponseDto<List<DomesticExhibitResponseDto>>
 
     @POST("${HOME_PATH}/genre/random")
     suspend fun getHomeGenreRandom(
-        @Body requestDto: ForeignGenreExhibitListRequestDto
+        @Body requestDto: ForeignGenreExhibitListRequestDto,
     ): BaseResponseDto<List<ForeignExhibitResponseDto>>
 
     @POST("${HOME_PATH}/genre/random")
     suspend fun getHomeGenreRandom(
-        @Body requestDto: DomesticGenreExhibitListRequestDto
+        @Body requestDto: DomesticGenreExhibitListRequestDto,
     ): BaseResponseDto<List<DomesticExhibitResponseDto>>
 }

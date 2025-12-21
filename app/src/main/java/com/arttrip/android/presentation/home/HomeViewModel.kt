@@ -37,7 +37,7 @@ class HomeViewModel
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
         private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
         private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
-        private val getDomesticGenreExhibitListUseCase: GetDomesticGenreExhibitListUseCase
+        private val getDomesticGenreExhibitListUseCase: GetDomesticGenreExhibitListUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -184,7 +184,10 @@ class HomeViewModel
             }
         }
 
-        private fun loadForeignScheduledExhibitList(country: ForeignCountry, date: LocalDate) {
+        private fun loadForeignScheduledExhibitList(
+            country: ForeignCountry,
+            date: LocalDate,
+        ) {
             viewModelScope.launch {
                 getForeignScheduledExhibitListUseCase(country = country, date = date)
                     .collect { result ->
@@ -207,28 +210,31 @@ class HomeViewModel
             }
         }
 
-    private fun loadForeignGenreExhibitList(country: ForeignCountry, genre: ExhibitGenre) {
-        viewModelScope.launch {
-            getForeignGenreExhibitListUseCase(country = country, genre = genre)
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadForeignGenreExhibitList(
+            country: ForeignCountry,
+            genre: ExhibitGenre,
+        ) {
+            viewModelScope.launch {
+                getForeignGenreExhibitListUseCase(country = country, genre = genre)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            setByGenre(country = country, genre = genre, list = result.data)
+                            is ApiResult.Success -> {
+                                setByGenre(country = country, genre = genre, list = result.data)
 //                            _state.value =
 //                                _state.value.copy(
 //                                    interScheduledExhibitList = result.data,
 //                                )
-                        }
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
         private fun loadDomesticRecommendExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
@@ -274,7 +280,10 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticScheduledExhibitList(region: DomesticRegion, date: LocalDate) {
+        private fun loadDomesticScheduledExhibitList(
+            region: DomesticRegion,
+            date: LocalDate,
+        ) {
             viewModelScope.launch {
                 getDomesticScheduledExhibitListUseCase(region = region, date = date)
                     .collect { result ->
@@ -296,91 +305,102 @@ class HomeViewModel
             }
         }
 
-    private fun loadDomesticGenreExhibitList(region: DomesticRegion, genre: ExhibitGenre) {
-        viewModelScope.launch {
-            getDomesticGenreExhibitListUseCase(region = region, genre = genre)
-                .collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
+        private fun loadDomesticGenreExhibitList(
+            region: DomesticRegion,
+            genre: ExhibitGenre,
+        ) {
+            viewModelScope.launch {
+                getDomesticGenreExhibitListUseCase(region = region, genre = genre)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
 
-                        is ApiResult.Success -> {
-                            _state.value =
-                                _state.value.copy(
-                                    domesticScheduledExhibitList = result.data,
-                                )
-                        }
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        domesticScheduledExhibitList = result.data,
+                                    )
+                            }
 
-                        is ApiResult.Error -> {
+                            is ApiResult.Error -> {
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
-    fun setRecommend(country: ForeignCountry, list: List<ExhibitModel>) {
-        _state.update { s ->
-            val current = s.countryData.getValue(country)
+        fun setRecommend(
+            country: ForeignCountry,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
 
-            s.copy(
-                countryData =
-                    s.countryData + (
+                s.copy(
+                    countryData =
+                        s.countryData + (
                             country to current.copy(recommendExhibit = list)
-                            )
-            )
+                        ),
+                )
+            }
         }
-    }
 
-    fun setPersonalized(country: ForeignCountry, list: List<ExhibitModel>) {
-        _state.update { s ->
-            val current = s.countryData.getValue(country)
+        fun setPersonalized(
+            country: ForeignCountry,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
 
-            s.copy(
-                countryData =
-                    s.countryData + (
+                s.copy(
+                    countryData =
+                        s.countryData + (
                             country to current.copy(personalizedList = list)
-                            )
-            )
+                        ),
+                )
+            }
         }
-    }
 
-    fun setWeekly(
-        country: ForeignCountry,
-        day: DayOfWeek,
-        list: List<ExhibitModel>
-    ) {
-        _state.update { s ->
-            val current = s.countryData.getValue(country)
+        fun setWeekly(
+            country: ForeignCountry,
+            day: DayOfWeek,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
 
-            s.copy(
-                countryData =
-                    s.countryData + (
-                            country to current.copy(
-                                weeklyList = current.weeklyList + (day to list)
-                            )
-                            )
-            )
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to
+                                current.copy(
+                                    weeklyList = current.weeklyList + (day to list),
+                                )
+                        ),
+                )
+            }
         }
-    }
 
-    fun setByGenre(
-        country: ForeignCountry,
-        genre: ExhibitGenre,
-        list: List<ExhibitModel>
-    ) {
-        _state.update { s ->
-            val current = s.countryData.getValue(country)
+        fun setByGenre(
+            country: ForeignCountry,
+            genre: ExhibitGenre,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
 
-            s.copy(
-                countryData =
-                    s.countryData + (
-                            country to current.copy(
-                                genreList = current.genreList + (genre to list)
-                            )
-                            )
-            )
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to
+                                current.copy(
+                                    genreList = current.genreList + (genre to list),
+                                )
+                        ),
+                )
+            }
         }
-    }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {
             _state.update { current -> reducer(current) }

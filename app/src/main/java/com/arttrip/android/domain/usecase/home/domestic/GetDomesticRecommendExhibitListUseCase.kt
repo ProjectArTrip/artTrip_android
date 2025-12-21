@@ -1,6 +1,5 @@
 package com.arttrip.android.domain.usecase.home.domestic
 
-import DomesticExhibitListQueryModel
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
@@ -13,5 +12,6 @@ class GetDomesticRecommendExhibitListUseCase
     constructor(
         private val homeRepository: HomeRepository,
     ) {
-        operator fun invoke(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getDomesticRecommendExhibitList(region = region)
+        operator fun invoke(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> =
+            homeRepository.getDomesticRecommendExhibitList(region = region)
     }

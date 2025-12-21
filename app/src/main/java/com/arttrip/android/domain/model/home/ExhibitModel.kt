@@ -4,7 +4,7 @@ enum class ExhibitStatus {
     ONGOING,
     UPCOMING,
     ENDING_SOON,
-    FINISHED
+    FINISHED,
 }
 
 data class ExhibitModel(
@@ -14,5 +14,5 @@ data class ExhibitModel(
     val status: ExhibitStatus,
     val period: String,
     val hallName: String,
-    val place: String
+    val place: String,
 )

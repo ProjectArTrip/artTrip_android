@@ -1,6 +1,5 @@
 package com.arttrip.android.domain.usecase.home.foreign
 
-import ForeignExhibitListQueryModel
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
@@ -14,6 +13,8 @@ class GetForeignScheduledExhibitListUseCase
     constructor(
         private val homeRepository: HomeRepository,
     ) {
-        operator fun invoke(country: ForeignCountry, date: LocalDate): Flow<ApiResult<List<ExhibitModel>>> =
-            homeRepository.getForeignScheduleExhibitList(country = country, date = date)
+        operator fun invoke(
+            country: ForeignCountry,
+            date: LocalDate,
+        ): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getForeignScheduleExhibitList(country = country, date = date)
     }

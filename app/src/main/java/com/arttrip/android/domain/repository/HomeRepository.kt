@@ -14,11 +14,13 @@ interface HomeRepository {
     fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getForeignScheduleExhibitList(
-        country: ForeignCountry, date: LocalDate
+        country: ForeignCountry,
+        date: LocalDate,
     ): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getForeignGenreExhibitList(
-        country: ForeignCountry, genre: ExhibitGenre
+        country: ForeignCountry,
+        genre: ExhibitGenre,
     ): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>>
@@ -26,10 +28,12 @@ interface HomeRepository {
     fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getDomesticScheduleExhibitList(
-        region: DomesticRegion, date: LocalDate
+        region: DomesticRegion,
+        date: LocalDate,
     ): Flow<ApiResult<List<ExhibitModel>>>
 
     fun getDomesticGenreExhibitList(
-        region: DomesticRegion, genre: ExhibitGenre
+        region: DomesticRegion,
+        genre: ExhibitGenre,
     ): Flow<ApiResult<List<ExhibitModel>>>
 }

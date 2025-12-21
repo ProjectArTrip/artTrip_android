@@ -1,6 +1,5 @@
 package com.arttrip.android.domain.usecase.home.foreign
 
-import ForeignExhibitListQueryModel
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
@@ -13,5 +12,6 @@ class GetForeignRecommendExhibitListUseCase
     constructor(
         private val homeRepository: HomeRepository,
     ) {
-        operator fun invoke(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getForeignRecommendExhibitList(country = country)
+        operator fun invoke(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
+            homeRepository.getForeignRecommendExhibitList(country = country)
     }

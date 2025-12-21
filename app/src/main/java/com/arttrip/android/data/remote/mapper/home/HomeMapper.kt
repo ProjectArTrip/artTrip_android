@@ -22,26 +22,26 @@ fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitModel> = this
 
 fun ForeignExhibitResponseDto.toDomain(): ExhibitModel =
     ExhibitModel(
-        id =id,
+        id = id,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = countryName
+        place = countryName,
     )
 
 fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitModel> = this.map { it.toDomain() }
 
 fun DomesticExhibitResponseDto.toDomain(): ExhibitModel =
     ExhibitModel(
-        id =id,
+        id = id,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = regionName
+        place = regionName,
     )
 
 fun String.toExhibitStatus(): ExhibitStatus =
@@ -55,18 +55,18 @@ fun String.toExhibitStatus(): ExhibitStatus =
 
 fun ForeignCountry.toRecommendRequestDto(): ForeignRecommendExhibitListRequestDto =
     ForeignRecommendExhibitListRequestDto(
-        country = this.label
+        country = this.label,
     )
 
 fun ForeignCountry.toPersonalizedRequestDto(): ForeignPersonalizedExhibitListRequestDto =
     ForeignPersonalizedExhibitListRequestDto(
-        country = this.label
+        country = this.label,
     )
 
 fun ForeignCountry.toGenreRequestDto(genre: ExhibitGenre): ForeignGenreExhibitListRequestDto =
     ForeignGenreExhibitListRequestDto(
         singleGenre = genre.label,
-        country = this.label
+        country = this.label,
     )
 
 fun ForeignCountry.toScheduleRequestDto(date: LocalDate): ForeignScheduleExhibitListRequestDto {
@@ -75,24 +75,24 @@ fun ForeignCountry.toScheduleRequestDto(date: LocalDate): ForeignScheduleExhibit
 
     return ForeignScheduleExhibitListRequestDto(
         date = dateString,
-        country = this.label
+        country = this.label,
     )
 }
 
 fun DomesticRegion.toRecommendRequestDto(): DomesticRecommendExhibitListRequestDto =
     DomesticRecommendExhibitListRequestDto(
-        region = this.label
+        region = this.label,
     )
 
 fun DomesticRegion.toPersonalizedRequestDto(): DomesticPersonalizedExhibitListRequestDto =
     DomesticPersonalizedExhibitListRequestDto(
-        region = this.label
+        region = this.label,
     )
 
 fun DomesticRegion.toGenreRequestDto(genre: ExhibitGenre): DomesticGenreExhibitListRequestDto =
     DomesticGenreExhibitListRequestDto(
         singleGenre = genre.label,
-        region = this.label
+        region = this.label,
     )
 
 fun DomesticRegion.toScheduleRequestDto(date: LocalDate): DomesticScheduleExhibitListRequestDto {
@@ -101,6 +101,6 @@ fun DomesticRegion.toScheduleRequestDto(date: LocalDate): DomesticScheduleExhibi
 
     return DomesticScheduleExhibitListRequestDto(
         date = dateString,
-        region = this.label
+        region = this.label,
     )
 }

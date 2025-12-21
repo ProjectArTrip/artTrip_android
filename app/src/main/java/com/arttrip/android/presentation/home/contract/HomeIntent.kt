@@ -25,43 +25,41 @@ sealed interface HomeIntent {
 
     object SearchIconClicked : HomeIntent
 
-
     data class LoadForeignRecommendExhibitList(
-        val country: ForeignCountry
+        val country: ForeignCountry,
     ) : HomeIntent
 
     data class LoadForeignPersonalizedExhibitList(
-        val country: ForeignCountry
+        val country: ForeignCountry,
     ) : HomeIntent
 
     data class LoadForeignScheduledExhibitList(
         val country: ForeignCountry,
-        val date: LocalDate
+        val date: LocalDate,
     ) : HomeIntent
 
     data class LoadForeignGenreExhibitList(
         val country: ForeignCountry,
-        val genre: ExhibitGenre
+        val genre: ExhibitGenre,
     ) : HomeIntent
 
     data class LoadDomesticRecommendExhibitList(
-        val region: DomesticRegion
+        val region: DomesticRegion,
     ) : HomeIntent
 
     data class LoadDomesticPersonalizedExhibitList(
-        val region: DomesticRegion
+        val region: DomesticRegion,
     ) : HomeIntent
 
     data class LoadDomesticScheduledExhibitList(
         val region: DomesticRegion,
-        val date: LocalDate
+        val date: LocalDate,
     ) : HomeIntent
 
     data class LoadDomesticGenreExhibitList(
         val region: DomesticRegion,
-        val genre: ExhibitGenre
+        val genre: ExhibitGenre,
     ) : HomeIntent
-
 
     data class SelectForeignGenre(
         val genre: ExhibitGenre,

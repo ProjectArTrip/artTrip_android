@@ -92,7 +92,7 @@ enum class ForeignCountry(
 }
 
 enum class DomesticRegion(
-    override val label: String
+    override val label: String,
 ) : Place {
     Entire("전체"),
     Seoul("서울"),
@@ -105,17 +105,17 @@ enum class DomesticRegion(
 }
 
 enum class ExhibitGenre(
-    val label: String
+    val label: String,
 ) {
     ContemporaryArt("현대 미술"),
-    FineArt( "순수 미술"),
+    FineArt("순수 미술"),
     Photography("사진"),
     Painting("회화"),
     Sculpture("조각"),
     DigitalMediaArt("디지털/미디어 아트"),
     Craft("공예"),
     InstallationArt("설치 미술"),
-    HistoricalClassicalArt( "역사/고전 미술"),
+    HistoricalClassicalArt("역사/고전 미술"),
     ModernArt("근대 미술"),
     PopArt("팝아트"),
 }
@@ -305,9 +305,11 @@ fun InternationalExhibitionSection(
         getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
 
     val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.selectedCountry)]
-    val genreExhibit = state.countryData.getValue(state.selectedCountry).genreList.getValue(genreChip)
-
-
+    val genreExhibit =
+        state.countryData
+            .getValue(state.selectedCountry)
+            .genreList
+            .getValue(genreChip)
 
     Column(
         modifier =
@@ -457,19 +459,20 @@ fun ExhibitByLocationSection() {
 }
 
 @Composable
-fun LocationItem(
-    region: DomesticRegion
-) {
-    val painter = painterResource(when(region) {
-        DomesticRegion.Entire -> R.drawable.img_seoul
-        DomesticRegion.Seoul -> R.drawable.img_seoul
-        DomesticRegion.Gyeonggi -> R.drawable.img_gyeonggi
-        DomesticRegion.Gangwon -> R.drawable.img_gangwon
-        DomesticRegion.Chungcheong -> R.drawable.img_chungcheong
-        DomesticRegion.Jeolla -> R.drawable.img_jeolla
-        DomesticRegion.Gyeongsang -> R.drawable.img_gyeongsang
-        DomesticRegion.Jeju -> R.drawable.img_jeju
-    })
+fun LocationItem(region: DomesticRegion) {
+    val painter =
+        painterResource(
+            when (region) {
+                DomesticRegion.Entire -> R.drawable.img_seoul
+                DomesticRegion.Seoul -> R.drawable.img_seoul
+                DomesticRegion.Gyeonggi -> R.drawable.img_gyeonggi
+                DomesticRegion.Gangwon -> R.drawable.img_gangwon
+                DomesticRegion.Chungcheong -> R.drawable.img_chungcheong
+                DomesticRegion.Jeolla -> R.drawable.img_jeolla
+                DomesticRegion.Gyeongsang -> R.drawable.img_gyeongsang
+                DomesticRegion.Jeju -> R.drawable.img_jeju
+            },
+        )
     val name = region.label
 
     Column(
@@ -478,10 +481,11 @@ fun LocationItem(
         Image(
             painter = painter,
             contentDescription = "Location Image",
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .clip(CircleShape),
+            contentScale = ContentScale.Crop,
         )
         Spacer(
             modifier =
@@ -741,11 +745,9 @@ fun SectionTitle(
         AppIconButton(
             modifier = Modifier,
             iconResId = R.drawable.ic_more_24,
-            contentDescription = "more button"
+            contentDescription = "more button",
         ) {
-
         }
-
     }
 }
 

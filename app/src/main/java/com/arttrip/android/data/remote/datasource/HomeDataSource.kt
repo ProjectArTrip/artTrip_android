@@ -16,19 +16,23 @@ class HomeDataSource
     constructor(
         private val api: HomeApi,
     ) {
-        suspend fun getHomeRecommendToday(requestDto: ForeignRecommendExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+        suspend fun getHomeRecommendToday(requestDto: ForeignRecommendExhibitListRequestDto) =
+            api.getHomeRecommendToday(requestDto = requestDto)
 
-    suspend fun getHomeRecommendToday(requestDto: DomesticRecommendExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+        suspend fun getHomeRecommendToday(requestDto: DomesticRecommendExhibitListRequestDto) =
+            api.getHomeRecommendToday(requestDto = requestDto)
 
-    suspend fun getHomePersonalizedRandom(requestDto: ForeignPersonalizedExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+        suspend fun getHomePersonalizedRandom(requestDto: ForeignPersonalizedExhibitListRequestDto) =
+            api.getHomePersonalizedRandom(requestDto = requestDto)
 
-        suspend fun getHomePersonalizedRandom(requestDto: DomesticPersonalizedExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+        suspend fun getHomePersonalizedRandom(requestDto: DomesticPersonalizedExhibitListRequestDto) =
+            api.getHomePersonalizedRandom(requestDto = requestDto)
 
         suspend fun getHomeSchedule(requestDto: ForeignScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
 
-    suspend fun getHomeSchedule(requestDto: DomesticScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
+        suspend fun getHomeSchedule(requestDto: DomesticScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
 
-    suspend fun getHomeGenreRandom(requestDto: ForeignGenreExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
+        suspend fun getHomeGenreRandom(requestDto: ForeignGenreExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
 
-    suspend fun getHomeGenreRandom(requestDto: DomesticGenreExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
+        suspend fun getHomeGenreRandom(requestDto: DomesticGenreExhibitListRequestDto) = api.getHomeGenreRandom(requestDto = requestDto)
     }
