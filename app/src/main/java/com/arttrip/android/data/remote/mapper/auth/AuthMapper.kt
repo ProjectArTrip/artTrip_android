@@ -3,14 +3,18 @@ package com.arttrip.android.data.remote.mapper.auth
 import com.arttrip.android.data.remote.model.auth.KeywordType
 import com.arttrip.android.data.remote.model.auth.KeywordsResDto
 import com.arttrip.android.data.remote.model.auth.LoginResDto
-import com.arttrip.android.domain.model.auth.KeywordGroups
-import com.arttrip.android.domain.model.auth.KeywordModel
-import com.arttrip.android.domain.model.auth.LoginModel
+import com.arttrip.android.domain.model.auth.AuthTokens
+import com.arttrip.android.domain.model.auth.LoginResult
+import com.arttrip.android.domain.model.userkeyword.KeywordGroups
+import com.arttrip.android.domain.model.userkeyword.KeywordModel
 
-fun LoginResDto.toDomain(): LoginModel =
-    LoginModel(
-        accessToken = accessToken,
-        refreshToken = refreshToken,
+fun LoginResDto.toDomain(): LoginResult =
+    LoginResult(
+        tokens =
+            AuthTokens(
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+            ),
         isFirstLogin = firstLogin,
     )
 

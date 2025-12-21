@@ -30,7 +30,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
 
 @Composable
 fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {

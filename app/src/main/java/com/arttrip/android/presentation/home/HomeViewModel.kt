@@ -2,16 +2,19 @@ package com.arttrip.android.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.home.domestic.GetDomesticGenreExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetForeignGenreExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetForeignPersonalizedExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetForeignRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetDomesticPersonalizedExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetDomesticRecommendExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetDomesticScheduleExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetForeignGenreExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetForeignPersonalizedExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
+import com.arttrip.android.domain.usecase.exhibition.GetForeignScheduledExhibitionListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -30,14 +33,14 @@ import javax.inject.Inject
 class HomeViewModel
     @Inject
     constructor(
-        private val getForeignRecommendExhibitListUseCase: GetForeignRecommendExhibitListUseCase,
-        private val getForeignPersonalizedExhibitListUseCase: GetForeignPersonalizedExhibitListUseCase,
-        private val getForeignScheduledExhibitListUseCase: GetForeignScheduledExhibitListUseCase,
-        private val getForeignGenreExhibitListUseCase: GetForeignGenreExhibitListUseCase,
-        private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
-        private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
-        private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
-        private val getDomesticGenreExhibitListUseCase: GetDomesticGenreExhibitListUseCase,
+        private val getForeignRecommendExhibitionListUseCase: GetForeignRecommendExhibitionListUseCase,
+        private val getForeignPersonalizedExhibitionListUseCase: GetForeignPersonalizedExhibitionListUseCase,
+        private val getForeignScheduledExhibitionListUseCase: GetForeignScheduledExhibitionListUseCase,
+        private val getForeignGenreExhibitionListUseCase: GetForeignGenreExhibitionListUseCase,
+        private val getDomesticRecommendExhibitionListUseCase: GetDomesticRecommendExhibitionListUseCase,
+        private val getDomesticPersonalizedExhibitionListUseCase: GetDomesticPersonalizedExhibitionListUseCase,
+        private val getDomesticScheduleExhibitionListUseCase: GetDomesticScheduleExhibitionListUseCase,
+        private val getDomesticGenreExhibitionListUseCase: GetDomesticGenreExhibitionListUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -49,12 +52,12 @@ class HomeViewModel
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignScheduledExhibitList(ForeignCountry.Entire, LocalDate.now()))
-            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitGenre.ContemporaryArt))
+            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitionGenre.ContemporaryArt))
 
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticScheduledExhibitList(DomesticRegion.Entire, LocalDate.now()))
-            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
+            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitionGenre.ContemporaryArt))
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -148,7 +151,7 @@ class HomeViewModel
 
         private fun loadForeignRecommendExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                getForeignRecommendExhibitListUseCase(country = country)
+                getForeignRecommendExhibitionListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -167,7 +170,7 @@ class HomeViewModel
 
         private fun loadForeignPersonalizedExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                getForeignPersonalizedExhibitListUseCase(country = country)
+                getForeignPersonalizedExhibitionListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -189,7 +192,7 @@ class HomeViewModel
             date: LocalDate,
         ) {
             viewModelScope.launch {
-                getForeignScheduledExhibitListUseCase(country = country, date = date)
+                getForeignScheduledExhibitionListUseCase(country = country, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -212,10 +215,10 @@ class HomeViewModel
 
         private fun loadForeignGenreExhibitList(
             country: ForeignCountry,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ) {
             viewModelScope.launch {
-                getForeignGenreExhibitListUseCase(country = country, genre = genre)
+                getForeignGenreExhibitionListUseCase(country = country, genre = genre)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -238,7 +241,7 @@ class HomeViewModel
 
         private fun loadDomesticRecommendExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
-                getDomesticRecommendExhibitListUseCase(region = region)
+                getDomesticRecommendExhibitionListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -260,7 +263,7 @@ class HomeViewModel
 
         private fun loadDomesticPersonalizedExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
-                getDomesticPersonalizedExhibitListUseCase(region = region)
+                getDomesticPersonalizedExhibitionListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -285,7 +288,7 @@ class HomeViewModel
             date: LocalDate,
         ) {
             viewModelScope.launch {
-                getDomesticScheduledExhibitListUseCase(region = region, date = date)
+                getDomesticScheduleExhibitionListUseCase(region = region, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -307,10 +310,10 @@ class HomeViewModel
 
         private fun loadDomesticGenreExhibitList(
             region: DomesticRegion,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ) {
             viewModelScope.launch {
-                getDomesticGenreExhibitListUseCase(region = region, genre = genre)
+                getDomesticGenreExhibitionListUseCase(region = region, genre = genre)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -332,7 +335,7 @@ class HomeViewModel
 
         fun setRecommend(
             country: ForeignCountry,
-            list: List<ExhibitModel>,
+            list: List<ExhibitionModel>,
         ) {
             _state.update { s ->
                 val current = s.countryData.getValue(country)
@@ -348,7 +351,7 @@ class HomeViewModel
 
         fun setPersonalized(
             country: ForeignCountry,
-            list: List<ExhibitModel>,
+            list: List<ExhibitionModel>,
         ) {
             _state.update { s ->
                 val current = s.countryData.getValue(country)
@@ -365,7 +368,7 @@ class HomeViewModel
         fun setWeekly(
             country: ForeignCountry,
             day: DayOfWeek,
-            list: List<ExhibitModel>,
+            list: List<ExhibitionModel>,
         ) {
             _state.update { s ->
                 val current = s.countryData.getValue(country)
@@ -384,8 +387,8 @@ class HomeViewModel
 
         fun setByGenre(
             country: ForeignCountry,
-            genre: ExhibitGenre,
-            list: List<ExhibitModel>,
+            genre: ExhibitionGenre,
+            list: List<ExhibitionModel>,
         ) {
             _state.update { s ->
                 val current = s.countryData.getValue(country)

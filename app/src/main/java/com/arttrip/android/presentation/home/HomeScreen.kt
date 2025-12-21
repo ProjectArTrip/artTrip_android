@@ -38,7 +38,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
@@ -51,7 +54,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
@@ -72,52 +75,6 @@ enum class PlaceTab(
 }
 
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
-
-sealed interface Place {
-    val label: String
-}
-
-enum class ForeignCountry(
-    override val label: String,
-) : Place {
-    Entire("전체"),
-    France("프랑스"),
-    Germany("독일"),
-    Italy("이탈리아"),
-    Usa("미국"),
-    Austria("오스트리아"),
-    Japan("일본"),
-    China("중국"),
-}
-
-enum class DomesticRegion(
-    override val label: String,
-) : Place {
-    Entire("전체"),
-    Seoul("서울"),
-    Gyeonggi("경기"),
-    Chungcheong("충청"),
-    Gangwon("강원"),
-    Jeolla("전라"),
-    Gyeongsang("경상"),
-    Jeju("제주"),
-}
-
-enum class ExhibitGenre(
-    val label: String,
-) {
-    ContemporaryArt("현대 미술"),
-    FineArt("순수 미술"),
-    Photography("사진"),
-    Painting("회화"),
-    Sculpture("조각"),
-    DigitalMediaArt("디지털/미디어 아트"),
-    Craft("공예"),
-    InstallationArt("설치 미술"),
-    HistoricalClassicalArt("역사/고전 미술"),
-    ModernArt("근대 미술"),
-    PopArt("팝아트"),
-}
 
 @Composable
 fun HomeScreen(
@@ -500,7 +457,7 @@ fun LocationItem(region: DomesticRegion) {
 }
 
 @Composable
-fun RecommendSection(exhibitList: List<ExhibitModel>) {
+fun RecommendSection(exhibitList: List<ExhibitionModel>) {
     Row(
         modifier =
             Modifier
@@ -528,7 +485,7 @@ fun RecommendSection(exhibitList: List<ExhibitModel>) {
 @Composable
 fun PersonalizedSection(
     name: String,
-    exhibitList: List<ExhibitModel>,
+    exhibitList: List<ExhibitionModel>,
 ) {
     Column {
         Row {
@@ -629,9 +586,9 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
 
 @Composable
 fun ExhibitionByGenreSection(
-    exhibitList: List<ExhibitModel>,
-    selectedGenre: ExhibitGenre,
-    onGenreClick: (ExhibitGenre) -> Unit,
+    exhibitList: List<ExhibitionModel>,
+    selectedGenre: ExhibitionGenre,
+    onGenreClick: (ExhibitionGenre) -> Unit,
 ) {
     Column(
         modifier =
@@ -664,7 +621,7 @@ fun ExhibitionByGenreSection(
                         .width(16.dp),
             )
 
-            ExhibitGenre.entries.forEach { genre ->
+            ExhibitionGenre.entries.forEach { genre ->
                 AppFilterChip(
                     case = AppFilterChipCase.Case02,
                     text = genre.label,
@@ -752,7 +709,7 @@ fun SectionTitle(
 
 @Composable
 fun ExhibitItemCase1(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     ExhibitImage(
@@ -818,7 +775,7 @@ fun ExhibitItemCase1(
 
 @Composable
 fun ExhibitItemCase2(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(
@@ -853,7 +810,7 @@ fun ExhibitItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Row(
@@ -879,7 +836,7 @@ fun ExhibitItemCase3(
                 modifier =
                     Modifier
                         .align(Alignment.BottomEnd),
-                status = ExhibitStatus.ONGOING,
+                status = ExhibitionStatus.ONGOING,
             )
         }
         Spacer(
@@ -929,7 +886,7 @@ fun ExhibitItemCase3(
 
 @Composable
 fun ExhibitItemCase4(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(

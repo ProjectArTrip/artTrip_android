@@ -5,11 +5,11 @@ import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.model.auth.LoginReqDto
 import com.arttrip.android.data.remote.model.auth.UserKeywordsReqDto
-import com.arttrip.android.domain.model.auth.KeywordGroups
-import com.arttrip.android.domain.model.auth.LoginModel
 import com.arttrip.android.domain.model.auth.LoginProvider
+import com.arttrip.android.domain.model.auth.LoginResult
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.model.userkeyword.KeywordGroups
 import com.arttrip.android.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,7 +23,7 @@ class AuthRepositoryImpl
         override fun socialLogin(
             provider: LoginProvider,
             idToken: String,
-        ): Flow<ApiResult<LoginModel>> =
+        ): Flow<ApiResult<LoginResult>> =
             flow {
                 emit(ApiResult.Loading)
 

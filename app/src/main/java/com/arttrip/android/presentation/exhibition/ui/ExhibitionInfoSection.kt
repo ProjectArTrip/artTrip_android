@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
 
 @Composable
 fun ExhibitionInfoSection(

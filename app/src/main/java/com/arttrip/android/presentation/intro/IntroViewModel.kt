@@ -3,8 +3,8 @@ package com.arttrip.android.presentation.intro
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.intro.GetAllKeywordsUseCase
-import com.arttrip.android.domain.usecase.intro.SaveIntroKeywordsUseCase
+import com.arttrip.android.domain.usecase.userkeyword.GetAllKeywordsUseCase
+import com.arttrip.android.domain.usecase.userkeyword.SaveUserKeywordsUseCase
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 import com.arttrip.android.presentation.intro.contract.IntroState
@@ -22,7 +22,7 @@ class IntroViewModel
     @Inject
     constructor(
         private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
-        private val saveIntroKeywordsUseCase: SaveIntroKeywordsUseCase,
+        private val saveUserKeywordsUseCase: SaveUserKeywordsUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(IntroState())
         val state: StateFlow<IntroState> = _state
@@ -101,7 +101,7 @@ class IntroViewModel
             if (!current.isNextEnabled || current.isLoading) return
 
             viewModelScope.launch {
-                saveIntroKeywordsUseCase(
+                saveUserKeywordsUseCase(
                     genreIds = current.selectedGenreIds,
                     styleIds = current.selectedStyleIds,
                 ).collect { result ->

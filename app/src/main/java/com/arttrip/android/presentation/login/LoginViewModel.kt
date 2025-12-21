@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.data.local.auth.TokenManager
-import com.arttrip.android.domain.model.auth.AuthTokens
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.login.SocialLoginUseCase
+import com.arttrip.android.domain.usecase.auth.SocialLoginUseCase
 import com.arttrip.android.presentation.login.contract.LoginEffect
 import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.arttrip.android.presentation.login.contract.LoginState
@@ -121,11 +120,7 @@ class LoginViewModel
                                 )
                             }
                             val data = result.data
-                            val tokens =
-                                AuthTokens(
-                                    accessToken = data.accessToken,
-                                    refreshToken = data.refreshToken,
-                                )
+                            val tokens = data.tokens
                             tokenManager.saveTokens(tokens)
 
                             val effect =

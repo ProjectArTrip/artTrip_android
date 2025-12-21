@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 
@@ -38,9 +38,9 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 @Composable
 fun AppTag(
     modifier: Modifier = Modifier,
-    status: ExhibitStatus,
+    status: ExhibitionStatus,
 ) {
-    if (status == ExhibitStatus.FINISHED) return
+    if (status == ExhibitionStatus.FINISHED) return
 
     val ui = AppTagDefaults.ui(status)
     val textStyle = AppTextStyle.Body02Bold
@@ -83,9 +83,9 @@ fun AppTag(
 @Composable
 fun AppTagL(
     modifier: Modifier = Modifier,
-    status: ExhibitStatus,
+    status: ExhibitionStatus,
 ) {
-    if (status == ExhibitStatus.FINISHED) return
+    if (status == ExhibitionStatus.FINISHED) return
 
     val ui = AppTagDefaults.ui(status)
     val textStyle = AppTextStyle.Body01Bold
@@ -130,9 +130,9 @@ private object AppTagDefaults {
      * 전시 상태 → Tag UI 매핑
      * FINISHED는 렌더링하지 않으므로 이 함수가 호출되지 않도록 상위에서 return 처리.
      */
-    fun ui(status: ExhibitStatus): AppTagUi =
+    fun ui(status: ExhibitionStatus): AppTagUi =
         when (status) {
-            ExhibitStatus.ONGOING ->
+            ExhibitionStatus.ONGOING ->
                 AppTagUi(
                     label = "진행중",
                     hasBorder = false,
@@ -144,7 +144,7 @@ private object AppTagDefaults {
                         ),
                 )
 
-            ExhibitStatus.ENDING_SOON ->
+            ExhibitionStatus.ENDING_SOON ->
                 AppTagUi(
                     label = "마감임박",
                     hasBorder = true,
@@ -156,7 +156,7 @@ private object AppTagDefaults {
                         ),
                 )
 
-            ExhibitStatus.UPCOMING ->
+            ExhibitionStatus.UPCOMING ->
                 AppTagUi(
                     label = "전시예정",
                     hasBorder = true,
@@ -168,7 +168,7 @@ private object AppTagDefaults {
                         ),
                 )
 
-            ExhibitStatus.FINISHED ->
+            ExhibitionStatus.FINISHED ->
                 AppTagUi(
                     label = "",
                     hasBorder = false,
@@ -227,11 +227,11 @@ fun SampleAppTag() {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        AppTag(status = ExhibitStatus.ENDING_SOON)
-        AppTag(status = ExhibitStatus.ONGOING)
-        AppTag(status = ExhibitStatus.UPCOMING)
+        AppTag(status = ExhibitionStatus.ENDING_SOON)
+        AppTag(status = ExhibitionStatus.ONGOING)
+        AppTag(status = ExhibitionStatus.UPCOMING)
         // FINISHED는 표시 안 됨 (아무것도 렌더링되지 않음)
-        AppTag(status = ExhibitStatus.FINISHED)
+        AppTag(status = ExhibitionStatus.FINISHED)
     }
 }
 
@@ -241,10 +241,10 @@ fun SampleAppTagL() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        AppTagL(status = ExhibitStatus.ENDING_SOON)
-        AppTagL(status = ExhibitStatus.ONGOING)
-        AppTagL(status = ExhibitStatus.UPCOMING)
+        AppTagL(status = ExhibitionStatus.ENDING_SOON)
+        AppTagL(status = ExhibitionStatus.ONGOING)
+        AppTagL(status = ExhibitionStatus.UPCOMING)
         // FINISHED는 표시 안 됨
-        AppTagL(status = ExhibitStatus.FINISHED)
+        AppTagL(status = ExhibitionStatus.FINISHED)
     }
 }

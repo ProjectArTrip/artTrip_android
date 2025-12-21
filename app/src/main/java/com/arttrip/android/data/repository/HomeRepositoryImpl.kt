@@ -1,5 +1,8 @@
 package com.arttrip.android.data.repository
 
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomesticDomain
@@ -8,13 +11,10 @@ import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
 import com.arttrip.android.data.remote.mapper.home.toPersonalizedRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRecommendRequestDto
 import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
-import com.arttrip.android.presentation.home.DomesticRegion
-import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
@@ -25,7 +25,7 @@ class HomeRepositoryImpl
     constructor(
         private val dataSource: HomeDataSource,
     ) : HomeRepository {
-        override fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toRecommendRequestDto()
@@ -55,7 +55,7 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toPersonalizedRequestDto()
@@ -88,7 +88,7 @@ class HomeRepositoryImpl
         override fun getForeignScheduleExhibitList(
             country: ForeignCountry,
             date: LocalDate,
-        ): Flow<ApiResult<List<ExhibitModel>>> =
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toScheduleRequestDto(date = date)
@@ -120,8 +120,8 @@ class HomeRepositoryImpl
 
         override fun getForeignGenreExhibitList(
             country: ForeignCountry,
-            genre: ExhibitGenre,
-        ): Flow<ApiResult<List<ExhibitModel>>> =
+            genre: ExhibitionGenre,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toGenreRequestDto(genre = genre)
@@ -151,7 +151,7 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toRecommendRequestDto()
@@ -181,7 +181,7 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> =
+        override fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toPersonalizedRequestDto()
@@ -214,7 +214,7 @@ class HomeRepositoryImpl
         override fun getDomesticScheduleExhibitList(
             region: DomesticRegion,
             date: LocalDate,
-        ): Flow<ApiResult<List<ExhibitModel>>> =
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toScheduleRequestDto(date = date)
@@ -246,8 +246,8 @@ class HomeRepositoryImpl
 
         override fun getDomesticGenreExhibitList(
             region: DomesticRegion,
-            genre: ExhibitGenre,
-        ): Flow<ApiResult<List<ExhibitModel>>> =
+            genre: ExhibitionGenre,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toGenreRequestDto(genre = genre)

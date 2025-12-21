@@ -1,6 +1,6 @@
 package com.arttrip.android.domain.usecase.exhibition
 
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository
 import kotlinx.coroutines.flow.Flow
