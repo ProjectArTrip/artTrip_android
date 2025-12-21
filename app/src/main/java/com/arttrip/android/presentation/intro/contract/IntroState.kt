@@ -1,6 +1,6 @@
 package com.arttrip.android.presentation.intro.contract
 
-import com.arttrip.android.domain.model.auth.KeywordModel
+import com.arttrip.android.domain.model.userkeyword.KeywordModel
 
 data class IntroState(
     val genres: List<KeywordModel> = emptyList(),

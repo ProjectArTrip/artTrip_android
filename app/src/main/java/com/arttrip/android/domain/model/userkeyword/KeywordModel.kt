@@ -1,4 +1,4 @@
-package com.arttrip.android.domain.model.auth
+package com.arttrip.android.domain.model.userkeyword
 
 data class KeywordModel(
     val id: Int,

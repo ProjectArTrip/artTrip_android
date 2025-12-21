@@ -30,7 +30,7 @@ import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.auth.KeywordModel
+import com.arttrip.android.domain.model.userkeyword.KeywordModel
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 import com.arttrip.android.presentation.intro.contract.IntroState
 
