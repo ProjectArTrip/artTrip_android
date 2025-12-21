@@ -2,13 +2,16 @@ package com.arttrip.android.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.home.domestic.GetDomesticGenreExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticRecommendExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticScheduledExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterPersonalizedExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterRecommendExhibitListUseCase
-import com.arttrip.android.domain.usecase.home.international.GetInterScheduledExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignGenreExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignPersonalizedExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignRecommendExhibitListUseCase
+import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibitListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -19,18 +22,22 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel
     @Inject
     constructor(
-        private val getInterRecommendExhibitListUseCase: GetInterRecommendExhibitListUseCase,
-        private val getInterPersonalizedExhibitListUseCase: GetInterPersonalizedExhibitListUseCase,
-        private val getInterScheduledExhibitListUseCase: GetInterScheduledExhibitListUseCase,
+        private val getForeignRecommendExhibitListUseCase: GetForeignRecommendExhibitListUseCase,
+        private val getForeignPersonalizedExhibitListUseCase: GetForeignPersonalizedExhibitListUseCase,
+        private val getForeignScheduledExhibitListUseCase: GetForeignScheduledExhibitListUseCase,
+        private val getForeignGenreExhibitListUseCase: GetForeignGenreExhibitListUseCase,
         private val getDomesticRecommendExhibitListUseCase: GetDomesticRecommendExhibitListUseCase,
         private val getDomesticPersonalizedExhibitListUseCase: GetDomesticPersonalizedExhibitListUseCase,
         private val getDomesticScheduledExhibitListUseCase: GetDomesticScheduledExhibitListUseCase,
+        private val getDomesticGenreExhibitListUseCase: GetDomesticGenreExhibitListUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -39,16 +46,15 @@ class HomeViewModel
         val effect: SharedFlow<HomeEffect> = _effect
 
         init {
-            // 화면 진입 시 자동 로딩
-//            onIntent(HomeIntent.LoadCountries)
-//
-//            onIntent(HomeIntent.LoadInterRecommendExhibitList)
-//            onIntent(HomeIntent.LoadInterPersonalizedExhibitList)
-//            onIntent(HomeIntent.LoadInterScheduledExhibitList)
-//
-//            onIntent(HomeIntent.LoadDomesticRecommendExhibitList)
-//            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList)
-//            onIntent(HomeIntent.LoadDomesticScheduledExhibitList)
+            onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
+            onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
+            onIntent(HomeIntent.LoadForeignScheduledExhibitList(ForeignCountry.Entire, LocalDate.now()))
+            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitGenre.ContemporaryArt))
+
+            onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
+            onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
+            onIntent(HomeIntent.LoadDomesticScheduledExhibitList(DomesticRegion.Entire, LocalDate.now()))
+            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -57,11 +63,8 @@ class HomeViewModel
                     _state.update { it.copy(placeTabs = intent.tab) }
                 }
                 is HomeIntent.SelectCountry -> {
-                    _state.update { it.copy(countryChips = intent.country) }
+                    _state.update { it.copy(selectedCountry = intent.country) }
                 }
-                HomeIntent.LoadCountries,
-                HomeIntent.Retry,
-                -> loadCountries()
 
                 is HomeIntent.CountryClicked -> {
                     // TODO: 나라 클릭시 처리 (로그, 네비게이션 등)
@@ -85,18 +88,42 @@ class HomeViewModel
                     }
                 }
 
-                HomeIntent.LoadInterRecommendExhibitList -> loadInterRecommendExhibitList()
-                HomeIntent.LoadInterPersonalizedExhibitList -> loadInterPersonalizedExhibitList()
-                HomeIntent.LoadInterScheduledExhibitList -> loadInterScheduledExhibitList("2025-12-12")
+                is HomeIntent.LoadForeignRecommendExhibitList -> {
+                    loadForeignRecommendExhibitList(intent.country)
+                }
 
-                HomeIntent.LoadDomesticRecommendExhibitList -> loadDomesticRecommendExhibitList()
-                HomeIntent.LoadDomesticPersonalizedExhibitList -> loadDomesticPersonalizedExhibitList()
-                HomeIntent.LoadDomesticScheduledExhibitList -> loadDomesticScheduledExhibitList("2025-12-12")
+                is HomeIntent.LoadForeignPersonalizedExhibitList -> {
+                    loadForeignPersonalizedExhibitList(intent.country)
+                }
+
+                is HomeIntent.LoadForeignScheduledExhibitList -> {
+                    loadForeignScheduledExhibitList(intent.country, intent.date)
+                }
+
+                is HomeIntent.LoadForeignGenreExhibitList -> {
+                    loadForeignGenreExhibitList(intent.country, intent.genre)
+                }
+
+                is HomeIntent.LoadDomesticRecommendExhibitList -> {
+                    loadDomesticRecommendExhibitList(intent.region)
+                }
+
+                is HomeIntent.LoadDomesticPersonalizedExhibitList -> {
+                    loadDomesticPersonalizedExhibitList(intent.region)
+                }
+
+                is HomeIntent.LoadDomesticScheduledExhibitList -> {
+                    loadDomesticScheduledExhibitList(intent.region, intent.date)
+                }
+
+                is HomeIntent.LoadDomesticGenreExhibitList -> {
+                    loadDomesticGenreExhibitList(intent.region, intent.genre)
+                }
 
                 is HomeIntent.SelectForeignGenre -> {
                     val genre = intent.genre
 
-                    val country = _state.value.countryChips
+                    val country = _state.value.selectedCountry
                     val index = ForeignCountry.entries.indexOf(country)
 
                     _state.update { state ->
@@ -119,19 +146,16 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterRecommendExhibitList() {
+        private fun loadForeignRecommendExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                getInterRecommendExhibitListUseCase()
+                getForeignRecommendExhibitListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interRecommendExhibitList = result.data,
-                                    )
+                                setRecommend(country = country, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -141,19 +165,16 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterPersonalizedExhibitList() {
+        private fun loadForeignPersonalizedExhibitList(country: ForeignCountry) {
             viewModelScope.launch {
-                getInterPersonalizedExhibitListUseCase()
+                getForeignPersonalizedExhibitListUseCase(country = country)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interPersonalizedExhibitList = result.data,
-                                    )
+                                setPersonalized(country = country, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -163,19 +184,23 @@ class HomeViewModel
             }
         }
 
-        private fun loadInterScheduledExhibitList(date: String) {
+        private fun loadForeignScheduledExhibitList(
+            country: ForeignCountry,
+            date: LocalDate,
+        ) {
             viewModelScope.launch {
-                getInterScheduledExhibitListUseCase(date = date)
+                getForeignScheduledExhibitListUseCase(country = country, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interScheduledExhibitList = result.data,
-                                    )
+                                setWeekly(country = country, day = date.dayOfWeek, list = result.data)
+//                                _state.value =
+//                                    _state.value.copy(
+//                                        interScheduledExhibitList = result.data,
+//                                    )
                             }
 
                             is ApiResult.Error -> {
@@ -185,9 +210,35 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticRecommendExhibitList() {
+        private fun loadForeignGenreExhibitList(
+            country: ForeignCountry,
+            genre: ExhibitGenre,
+        ) {
             viewModelScope.launch {
-                getDomesticRecommendExhibitListUseCase()
+                getForeignGenreExhibitListUseCase(country = country, genre = genre)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
+
+                            is ApiResult.Success -> {
+                                setByGenre(country = country, genre = genre, list = result.data)
+//                            _state.value =
+//                                _state.value.copy(
+//                                    interScheduledExhibitList = result.data,
+//                                )
+                            }
+
+                            is ApiResult.Error -> {
+                            }
+                        }
+                    }
+            }
+        }
+
+        private fun loadDomesticRecommendExhibitList(region: DomesticRegion) {
+            viewModelScope.launch {
+                getDomesticRecommendExhibitListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -207,9 +258,9 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticPersonalizedExhibitList() {
+        private fun loadDomesticPersonalizedExhibitList(region: DomesticRegion) {
             viewModelScope.launch {
-                getDomesticPersonalizedExhibitListUseCase()
+                getDomesticPersonalizedExhibitListUseCase(region = region)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -229,9 +280,12 @@ class HomeViewModel
             }
         }
 
-        private fun loadDomesticScheduledExhibitList(date: String) {
+        private fun loadDomesticScheduledExhibitList(
+            region: DomesticRegion,
+            date: LocalDate,
+        ) {
             viewModelScope.launch {
-                getDomesticScheduledExhibitListUseCase(date = date)
+                getDomesticScheduledExhibitListUseCase(region = region, date = date)
                     .collect { result ->
                         when (result) {
                             is ApiResult.Loading -> {
@@ -251,36 +305,101 @@ class HomeViewModel
             }
         }
 
-        private fun loadCountries() {
-//            viewModelScope.launch {
-//                getCountryListUseCase()
-//                    .collect { result ->
-//                        when (result) {
-//                            is ApiResult.Loading -> {
-//                                updateState { it.copy(isLoading = true, errorMessage = null) }
-//                            }
-//
-//                            is ApiResult.Success -> {
-//                                updateState {
-//                                    it.copy(
-//                                        isLoading = false,
-//                                        countries = result.data,
-//                                        errorMessage = null,
-//                                    )
-//                                }
-//                            }
-//
-//                            is ApiResult.Error -> {
-//                                updateState {
-//                                    it.copy(
-//                                        isLoading = false,
-//                                        errorMessage = "알 수 없는 오류가 발생했어요",
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//            }
+        private fun loadDomesticGenreExhibitList(
+            region: DomesticRegion,
+            genre: ExhibitGenre,
+        ) {
+            viewModelScope.launch {
+                getDomesticGenreExhibitListUseCase(region = region, genre = genre)
+                    .collect { result ->
+                        when (result) {
+                            is ApiResult.Loading -> {
+                            }
+
+                            is ApiResult.Success -> {
+                                _state.value =
+                                    _state.value.copy(
+                                        domesticScheduledExhibitList = result.data,
+                                    )
+                            }
+
+                            is ApiResult.Error -> {
+                            }
+                        }
+                    }
+            }
+        }
+
+        fun setRecommend(
+            country: ForeignCountry,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
+
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to current.copy(recommendExhibit = list)
+                        ),
+                )
+            }
+        }
+
+        fun setPersonalized(
+            country: ForeignCountry,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
+
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to current.copy(personalizedList = list)
+                        ),
+                )
+            }
+        }
+
+        fun setWeekly(
+            country: ForeignCountry,
+            day: DayOfWeek,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
+
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to
+                                current.copy(
+                                    weeklyList = current.weeklyList + (day to list),
+                                )
+                        ),
+                )
+            }
+        }
+
+        fun setByGenre(
+            country: ForeignCountry,
+            genre: ExhibitGenre,
+            list: List<ExhibitModel>,
+        ) {
+            _state.update { s ->
+                val current = s.countryData.getValue(country)
+
+                s.copy(
+                    countryData =
+                        s.countryData + (
+                            country to
+                                current.copy(
+                                    genreList = current.genreList + (genre to list),
+                                )
+                        ),
+                )
+            }
         }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {

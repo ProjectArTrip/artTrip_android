@@ -1,8 +1,10 @@
 package com.arttrip.android.presentation.home.contract
 
+import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
+import java.time.LocalDate
 
 sealed interface HomeIntent {
     data class SelectTab(
@@ -12,10 +14,6 @@ sealed interface HomeIntent {
     data class SelectCountry(
         val country: ForeignCountry,
     ) : HomeIntent
-
-    object LoadCountries : HomeIntent
-
-    object Retry : HomeIntent
 
     data class CountryClicked(
         val name: String,
@@ -27,17 +25,41 @@ sealed interface HomeIntent {
 
     object SearchIconClicked : HomeIntent
 
-    object LoadInterRecommendExhibitList : HomeIntent
+    data class LoadForeignRecommendExhibitList(
+        val country: ForeignCountry,
+    ) : HomeIntent
 
-    object LoadInterPersonalizedExhibitList : HomeIntent
+    data class LoadForeignPersonalizedExhibitList(
+        val country: ForeignCountry,
+    ) : HomeIntent
 
-    object LoadInterScheduledExhibitList : HomeIntent
+    data class LoadForeignScheduledExhibitList(
+        val country: ForeignCountry,
+        val date: LocalDate,
+    ) : HomeIntent
 
-    object LoadDomesticRecommendExhibitList : HomeIntent
+    data class LoadForeignGenreExhibitList(
+        val country: ForeignCountry,
+        val genre: ExhibitGenre,
+    ) : HomeIntent
 
-    object LoadDomesticPersonalizedExhibitList : HomeIntent
+    data class LoadDomesticRecommendExhibitList(
+        val region: DomesticRegion,
+    ) : HomeIntent
 
-    object LoadDomesticScheduledExhibitList : HomeIntent
+    data class LoadDomesticPersonalizedExhibitList(
+        val region: DomesticRegion,
+    ) : HomeIntent
+
+    data class LoadDomesticScheduledExhibitList(
+        val region: DomesticRegion,
+        val date: LocalDate,
+    ) : HomeIntent
+
+    data class LoadDomesticGenreExhibitList(
+        val region: DomesticRegion,
+        val genre: ExhibitGenre,
+    ) : HomeIntent
 
     data class SelectForeignGenre(
         val genre: ExhibitGenre,
