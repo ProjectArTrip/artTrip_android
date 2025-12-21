@@ -1,12 +1,9 @@
 package com.arttrip.android.presentation.home
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -25,9 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -233,7 +228,7 @@ fun HomeBody(
 
         // 해외 전시 탭만 국가 리스트 활성화
         if (state.placeTabs == PlaceTab.Foreign) {
-            CountryChipList(state, onIntent)
+            CountryListChip(state.selectedCountry, onIntent)
         } else {
             Spacer(
                 modifier =
@@ -250,8 +245,8 @@ fun HomeBody(
 }
 
 @Composable
-fun CountryChipList(
-    state: HomeState,
+fun CountryListChip(
+    selectedCountry: ForeignCountry,
     onIntent: (HomeIntent) -> Unit,
 ) {
     Column(
@@ -280,7 +275,7 @@ fun CountryChipList(
                 AppFilterChip(
                     case = AppFilterChipCase.Case02,
                     text = country.label,
-                    selected = state.countryChips == country,
+                    selected = selectedCountry == country,
                     onClick = { onIntent(HomeIntent.SelectCountry(country)) },
                 )
             }
@@ -304,14 +299,15 @@ fun InternationalExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    val recommendExhibitList = state.interRecommendExhibitList
-    val personalizedExhibitList = state.interPersonalizedExhibitList
+    val recommendExhibitList = state.countryData.getValue(state.selectedCountry).recommendExhibit
+    val personalizedExhibitList = state.countryData.getValue(state.selectedCountry).personalizedList
     val weeklyExhibits =
         getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
-    val genreExhibit =
-        getDummyExhibitList(8, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
 
-    val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.countryChips)]
+    val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.selectedCountry)]
+    val genreExhibit = state.countryData.getValue(state.selectedCountry).genreList.getValue(genreChip)
+
+
 
     Column(
         modifier =
@@ -402,9 +398,9 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = state.domesticGenreChips) { genre ->
-            onIntent(HomeIntent.SelectDomesticGenre(genre))
-        }
+//        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = state.domesticGenreChips) { genre ->
+//            onIntent(HomeIntent.SelectDomesticGenre(genre))
+//        }
         Spacer(
             modifier =
                 Modifier
@@ -618,19 +614,19 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
                     .height(20.dp),
         )
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            exhibitList.forEach { exhibit ->
-                ExhibitItemCase3(exhibit = exhibit)
-            }
-        }
+//        Column(
+//            verticalArrangement = Arrangement.spacedBy(8.dp),
+//        ) {
+//            exhibitList.forEach { exhibit ->
+//                ExhibitItemCase3(exhibit = exhibit)
+//            }
+//        }
     }
 }
 
 @Composable
 fun ExhibitionByGenreSection(
-    exhibitList: List<ExhibitInfoModel>,
+    exhibitList: List<ExhibitModel>,
     selectedGenre: ExhibitGenre,
     onGenreClick: (ExhibitGenre) -> Unit,
 ) {
@@ -806,12 +802,12 @@ fun ExhibitItemCase1(
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.title,
+                text = exhibit.hallName,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.exhibitPeriod,
+                text = exhibit.period,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
@@ -856,7 +852,7 @@ fun ExhibitItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibit: ExhibitInfoModel,
+    exhibit: ExhibitModel,
     onItemClick: () -> Unit = {},
 ) {
     Row(
@@ -868,7 +864,7 @@ fun ExhibitItemCase3(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ExhibitImage(
-            url = exhibit.url,
+            url = exhibit.posterUrl,
             case = ExhibitImageCase.CASE3,
         ) {
             LikeButton(
@@ -892,7 +888,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = exhibit.country,
+                text = exhibit.place,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )
@@ -922,7 +918,7 @@ fun ExhibitItemCase3(
                         .height(2.dp),
             )
             Text(
-                text = exhibit.date,
+                text = exhibit.period,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
@@ -932,7 +928,7 @@ fun ExhibitItemCase3(
 
 @Composable
 fun ExhibitItemCase4(
-    exhibit: ExhibitInfoModel,
+    exhibit: ExhibitModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(
@@ -944,7 +940,7 @@ fun ExhibitItemCase4(
                 },
     ) {
         ExhibitImage(
-            url = exhibit.url,
+            url = exhibit.posterUrl,
             case = ExhibitImageCase.CASE4,
         ) {
             LikeButton(
@@ -971,7 +967,7 @@ fun ExhibitItemCase4(
                     .height(4.dp),
         )
         Text(
-            text = exhibit.place,
+            text = exhibit.hallName,
             style = AppTextStyle.Body02Regular,
             color = AppColor.TextTertiary,
         )
@@ -981,7 +977,7 @@ fun ExhibitItemCase4(
                     .height(2.dp),
         )
         Text(
-            text = exhibit.date,
+            text = exhibit.period,
             style = AppTextStyle.Body03Regular,
             color = AppColor.TextTertiary,
         )

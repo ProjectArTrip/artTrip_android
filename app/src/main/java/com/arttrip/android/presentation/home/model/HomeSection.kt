@@ -4,9 +4,9 @@ import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.presentation.home.ExhibitGenre
 import java.time.DayOfWeek
 
-data class ForeignExhibit(
+data class HomeSection(
     val recommendExhibit: List<ExhibitModel> = emptyList(),
-    val personalizedExhibit: List<ExhibitModel> = emptyList(),
-    val scheduledExhibitList: Map<DayOfWeek, List<ExhibitModel>> = emptyMap(),
-    val genreExhibitMap: Map<ExhibitGenre, List<ExhibitModel>> = emptyMap(),
+    val personalizedList: List<ExhibitModel> = emptyList(),
+    val weeklyList: Map<DayOfWeek, List<ExhibitModel>> = emptyMap(),
+    val genreList: Map<ExhibitGenre, List<ExhibitModel>> = emptyMap(),
 )

@@ -1,9 +1,8 @@
 package com.arttrip.android.presentation.home
 
-import DomesticExhibitListQueryModel
-import ForeignExhibitListQueryModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticGenreExhibitListUseCase
 import com.arttrip.android.domain.usecase.home.domestic.GetDomesticPersonalizedExhibitListUseCase
@@ -16,8 +15,6 @@ import com.arttrip.android.domain.usecase.home.foreign.GetForeignScheduledExhibi
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
-import com.arttrip.android.presentation.home.contract.getThisWeekDatesStartingSunday
-import com.arttrip.android.presentation.home.model.ForeignExhibit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +24,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,11 +46,6 @@ class HomeViewModel
         val effect: SharedFlow<HomeEffect> = _effect
 
         init {
-            _state.update {
-                it.copy(
-                    foreignByCountry = initialForeignByCountry()
-                )
-            }
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignScheduledExhibitList(ForeignCountry.Entire, LocalDate.now()))
@@ -66,24 +57,13 @@ class HomeViewModel
             onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
         }
 
-    private fun emptyForeignExhibit(): ForeignExhibit =
-        ForeignExhibit(
-            scheduledExhibitList =
-                getThisWeekDatesStartingSunday().associateWith { emptyList() },
-            genreExhibitMap =
-                ExhibitGenre.entries.associateWith { emptyList() }
-        )
-
-    private fun initialForeignByCountry(): Map<ForeignCountry, ForeignExhibit> =
-        ForeignCountry.entries.associateWith { emptyForeignExhibit() }
-
         fun onIntent(intent: HomeIntent) {
             when (intent) {
                 is HomeIntent.SelectTab -> {
                     _state.update { it.copy(placeTabs = intent.tab) }
                 }
                 is HomeIntent.SelectCountry -> {
-                    _state.update { it.copy(countryChips = intent.country) }
+                    _state.update { it.copy(selectedCountry = intent.country) }
                 }
 
                 is HomeIntent.CountryClicked -> {
@@ -143,7 +123,7 @@ class HomeViewModel
                 is HomeIntent.SelectForeignGenre -> {
                     val genre = intent.genre
 
-                    val country = _state.value.countryChips
+                    val country = _state.value.selectedCountry
                     val index = ForeignCountry.entries.indexOf(country)
 
                     _state.update { state ->
@@ -175,10 +155,7 @@ class HomeViewModel
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interRecommendExhibitList = result.data,
-                                    )
+                                setRecommend(country = country, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -197,10 +174,7 @@ class HomeViewModel
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interPersonalizedExhibitList = result.data,
-                                    )
+                                setPersonalized(country = country, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -212,12 +186,6 @@ class HomeViewModel
 
         private fun loadForeignScheduledExhibitList(country: ForeignCountry, date: LocalDate) {
             viewModelScope.launch {
-                val query = ForeignExhibitListQueryModel(
-                    country = "",
-                    singleGenre = null,
-                    date = ""
-                )
-
                 getForeignScheduledExhibitListUseCase(country = country, date = date)
                     .collect { result ->
                         when (result) {
@@ -225,10 +193,11 @@ class HomeViewModel
                             }
 
                             is ApiResult.Success -> {
-                                _state.value =
-                                    _state.value.copy(
-                                        interScheduledExhibitList = result.data,
-                                    )
+                                setWeekly(country = country, day = date.dayOfWeek, list = result.data)
+//                                _state.value =
+//                                    _state.value.copy(
+//                                        interScheduledExhibitList = result.data,
+//                                    )
                             }
 
                             is ApiResult.Error -> {
@@ -247,10 +216,11 @@ class HomeViewModel
                         }
 
                         is ApiResult.Success -> {
-                            _state.value =
-                                _state.value.copy(
-                                    interScheduledExhibitList = result.data,
-                                )
+                            setByGenre(country = country, genre = genre, list = result.data)
+//                            _state.value =
+//                                _state.value.copy(
+//                                    interScheduledExhibitList = result.data,
+//                                )
                         }
 
                         is ApiResult.Error -> {
@@ -306,12 +276,6 @@ class HomeViewModel
 
         private fun loadDomesticScheduledExhibitList(region: DomesticRegion, date: LocalDate) {
             viewModelScope.launch {
-                val query = DomesticExhibitListQueryModel(
-                    region = "",
-                    singleGenre = null,
-                    date = ""
-                )
-
                 getDomesticScheduledExhibitListUseCase(region = region, date = date)
                     .collect { result ->
                         when (result) {
@@ -351,6 +315,70 @@ class HomeViewModel
                         }
                     }
                 }
+        }
+    }
+
+    fun setRecommend(country: ForeignCountry, list: List<ExhibitModel>) {
+        _state.update { s ->
+            val current = s.countryData.getValue(country)
+
+            s.copy(
+                countryData =
+                    s.countryData + (
+                            country to current.copy(recommendExhibit = list)
+                            )
+            )
+        }
+    }
+
+    fun setPersonalized(country: ForeignCountry, list: List<ExhibitModel>) {
+        _state.update { s ->
+            val current = s.countryData.getValue(country)
+
+            s.copy(
+                countryData =
+                    s.countryData + (
+                            country to current.copy(personalizedList = list)
+                            )
+            )
+        }
+    }
+
+    fun setWeekly(
+        country: ForeignCountry,
+        day: DayOfWeek,
+        list: List<ExhibitModel>
+    ) {
+        _state.update { s ->
+            val current = s.countryData.getValue(country)
+
+            s.copy(
+                countryData =
+                    s.countryData + (
+                            country to current.copy(
+                                weeklyList = current.weeklyList + (day to list)
+                            )
+                            )
+            )
+        }
+    }
+
+    fun setByGenre(
+        country: ForeignCountry,
+        genre: ExhibitGenre,
+        list: List<ExhibitModel>
+    ) {
+        _state.update { s ->
+            val current = s.countryData.getValue(country)
+
+            s.copy(
+                countryData =
+                    s.countryData + (
+                            country to current.copy(
+                                genreList = current.genreList + (genre to list)
+                            )
+                            )
+            )
         }
     }
 
