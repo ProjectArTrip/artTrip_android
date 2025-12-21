@@ -1,5 +1,8 @@
 package com.arttrip.android.data.repository
 
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomesticDomain
@@ -12,9 +15,6 @@ import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
-import com.arttrip.android.presentation.home.DomesticRegion
-import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
@@ -120,7 +120,7 @@ class HomeRepositoryImpl
 
         override fun getForeignGenreExhibitList(
             country: ForeignCountry,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
@@ -246,7 +246,7 @@ class HomeRepositoryImpl
 
         override fun getDomesticGenreExhibitList(
             region: DomesticRegion,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {

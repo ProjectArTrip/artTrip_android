@@ -1,10 +1,10 @@
 package com.arttrip.android.domain.usecase.exhibition
 
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
-import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,6 +15,6 @@ class GetForeignGenreExhibitionListUseCase
     ) {
         operator fun invoke(
             country: ForeignCountry,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignGenreExhibitList(country = country, genre = genre)
     }

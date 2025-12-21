@@ -1,8 +1,8 @@
 package com.arttrip.android.presentation.home.contract
 
-import com.arttrip.android.presentation.home.DomesticRegion
-import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.ForeignCountry
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
 import java.time.LocalDate
 
@@ -40,7 +40,7 @@ sealed interface HomeIntent {
 
     data class LoadForeignGenreExhibitList(
         val country: ForeignCountry,
-        val genre: ExhibitGenre,
+        val genre: ExhibitionGenre,
     ) : HomeIntent
 
     data class LoadDomesticRecommendExhibitList(
@@ -58,14 +58,14 @@ sealed interface HomeIntent {
 
     data class LoadDomesticGenreExhibitList(
         val region: DomesticRegion,
-        val genre: ExhibitGenre,
+        val genre: ExhibitionGenre,
     ) : HomeIntent
 
     data class SelectForeignGenre(
-        val genre: ExhibitGenre,
+        val genre: ExhibitionGenre,
     ) : HomeIntent
 
     data class SelectDomesticGenre(
-        val genre: ExhibitGenre,
+        val genre: ExhibitionGenre,
     ) : HomeIntent
 }

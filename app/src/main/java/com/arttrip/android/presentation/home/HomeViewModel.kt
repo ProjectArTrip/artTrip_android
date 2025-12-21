@@ -2,6 +2,9 @@ package com.arttrip.android.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
@@ -49,12 +52,12 @@ class HomeViewModel
             onIntent(HomeIntent.LoadForeignRecommendExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(ForeignCountry.Entire))
             onIntent(HomeIntent.LoadForeignScheduledExhibitList(ForeignCountry.Entire, LocalDate.now()))
-            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitGenre.ContemporaryArt))
+            onIntent(HomeIntent.LoadForeignGenreExhibitList(ForeignCountry.Entire, ExhibitionGenre.ContemporaryArt))
 
             onIntent(HomeIntent.LoadDomesticRecommendExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticPersonalizedExhibitList(DomesticRegion.Entire))
             onIntent(HomeIntent.LoadDomesticScheduledExhibitList(DomesticRegion.Entire, LocalDate.now()))
-            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitGenre.ContemporaryArt))
+            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitionGenre.ContemporaryArt))
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -212,7 +215,7 @@ class HomeViewModel
 
         private fun loadForeignGenreExhibitList(
             country: ForeignCountry,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ) {
             viewModelScope.launch {
                 getForeignGenreExhibitionListUseCase(country = country, genre = genre)
@@ -307,7 +310,7 @@ class HomeViewModel
 
         private fun loadDomesticGenreExhibitList(
             region: DomesticRegion,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
         ) {
             viewModelScope.launch {
                 getDomesticGenreExhibitionListUseCase(region = region, genre = genre)
@@ -384,7 +387,7 @@ class HomeViewModel
 
         fun setByGenre(
             country: ForeignCountry,
-            genre: ExhibitGenre,
+            genre: ExhibitionGenre,
             list: List<ExhibitionModel>,
         ) {
             _state.update { s ->

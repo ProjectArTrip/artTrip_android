@@ -1,10 +1,10 @@
 package com.arttrip.android.domain.repository
 
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.presentation.home.DomesticRegion
-import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -20,7 +20,7 @@ interface HomeRepository {
 
     fun getForeignGenreExhibitList(
         country: ForeignCountry,
-        genre: ExhibitGenre,
+        genre: ExhibitionGenre,
     ): Flow<ApiResult<List<ExhibitionModel>>>
 
     fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitionModel>>>
@@ -34,6 +34,6 @@ interface HomeRepository {
 
     fun getDomesticGenreExhibitList(
         region: DomesticRegion,
-        genre: ExhibitGenre,
+        genre: ExhibitionGenre,
     ): Flow<ApiResult<List<ExhibitionModel>>>
 }
