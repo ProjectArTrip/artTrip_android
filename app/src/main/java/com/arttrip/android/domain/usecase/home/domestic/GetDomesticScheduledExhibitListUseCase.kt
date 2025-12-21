@@ -16,5 +16,5 @@ class GetDomesticScheduledExhibitListUseCase
         private val homeRepository: HomeRepository,
     ) {
         operator fun invoke(region: DomesticRegion, date: LocalDate): Flow<ApiResult<List<ExhibitModel>>> =
-            homeRepository.getHomeScheduleExhibitList(place = region, date = date)
+            homeRepository.getDomesticScheduleExhibitList(region = region, date = date)
     }

@@ -15,5 +15,5 @@ class GetForeignScheduledExhibitListUseCase
         private val homeRepository: HomeRepository,
     ) {
         operator fun invoke(country: ForeignCountry, date: LocalDate): Flow<ApiResult<List<ExhibitModel>>> =
-            homeRepository.getHomeScheduleExhibitList(place = country, date = date)
+            homeRepository.getForeignScheduleExhibitList(country = country, date = date)
     }

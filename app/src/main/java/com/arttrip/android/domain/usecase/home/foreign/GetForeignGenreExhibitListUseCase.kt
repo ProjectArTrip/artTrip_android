@@ -15,5 +15,5 @@ constructor(
     private val homeRepository: HomeRepository,
 ) {
     operator fun invoke(country: ForeignCountry, genre: ExhibitGenre): Flow<ApiResult<List<ExhibitModel>>> =
-        homeRepository.getHomeGenreExhibitList(place = country, genre = genre)
+        homeRepository.getForeignGenreExhibitList(country = country, genre = genre)
 }

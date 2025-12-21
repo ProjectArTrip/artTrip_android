@@ -1,11 +1,11 @@
 package com.arttrip.android.data.remote.model.home
 
-data class ForeignRecommendExhibitListRequestDto(
+data class ForeignPersonalizedExhibitListRequestDto(
     val isDomestic: Boolean = false,
     val country: String,
 )
 
-data class DomesticRecommendExhibitListRequestDto(
+data class DomesticPersonalizedExhibitListRequestDto(
     val isDomestic: Boolean = true,
     val region: String,
 )

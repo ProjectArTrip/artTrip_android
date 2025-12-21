@@ -1,14 +1,14 @@
 package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.HomeApi
-import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticPersonalizedExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.DomesticRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.ExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignPersonalizedExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.RecommendExhibitListRequestDto
 import javax.inject.Inject
 
 class HomeDataSource
@@ -16,13 +16,13 @@ class HomeDataSource
     constructor(
         private val api: HomeApi,
     ) {
-        suspend fun getHomeRecommendToday(requestDto: ForeignExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+        suspend fun getHomeRecommendToday(requestDto: ForeignRecommendExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
-    suspend fun getHomeRecommendToday(requestDto: DomesticExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
+    suspend fun getHomeRecommendToday(requestDto: DomesticRecommendExhibitListRequestDto) = api.getHomeRecommendToday(requestDto = requestDto)
 
-    suspend fun getHomePersonalizedRandom(requestDto: ForeignExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+    suspend fun getHomePersonalizedRandom(requestDto: ForeignPersonalizedExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
-        suspend fun getHomePersonalizedRandom(requestDto: DomesticExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
+        suspend fun getHomePersonalizedRandom(requestDto: DomesticPersonalizedExhibitListRequestDto) = api.getHomePersonalizedRandom(requestDto = requestDto)
 
         suspend fun getHomeSchedule(requestDto: ForeignScheduleExhibitListRequestDto) = api.getHomeSchedule(requestDto = requestDto)
 

@@ -1,24 +1,21 @@
 package com.arttrip.android.data.repository
 
-import ExhibitListQueryModel
 import com.arttrip.android.data.remote.datasource.HomeDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.home.toDomain
+import com.arttrip.android.data.remote.mapper.home.toDomesticDomain
+import com.arttrip.android.data.remote.mapper.home.toForeignDomain
 import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
-import com.arttrip.android.data.remote.mapper.home.toRequestDto
+import com.arttrip.android.data.remote.mapper.home.toPersonalizedRequestDto
+import com.arttrip.android.data.remote.mapper.home.toRecommendRequestDto
 import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
-import com.arttrip.android.data.remote.model.home.DomesticExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.ForeignExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
-import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
 import com.arttrip.android.domain.model.home.ExhibitModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
+import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
-import com.arttrip.android.presentation.home.Place
+import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
@@ -29,125 +26,15 @@ class HomeRepositoryImpl
     constructor(
         private val dataSource: HomeDataSource,
     ) : HomeRepository {
-        override fun getHomeRecommendExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>> =
-            flow {
-                try {
-                    val requestDto = place.toRequestDto()
-
-                    val baseResponse = when (requestDto) {
-                        is ForeignExhibitListRequestDto -> dataSource.getHomeRecommendToday(requestDto)
-                        is DomesticExhibitListRequestDto -> dataSource.getHomeRecommendToday(requestDto)
-                    }
-
-                    val responseDto = baseResponse.result
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domain = responseDto.toDomain()
-
-                    emit(ApiResult.Success(domain))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
-                }
-            }
-
-        override fun getHomePersonalizedExhibitList(place: Place): Flow<ApiResult<List<ExhibitModel>>> =
-            flow {
-                emit(ApiResult.Loading)
-
-                try {
-                    val requestDto = place.toRequestDto()
-
-                    val baseResponse = when (requestDto) {
-                        is ForeignExhibitListRequestDto -> dataSource.getHomePersonalizedRandom(requestDto)
-                        is DomesticExhibitListRequestDto -> dataSource.getHomePersonalizedRandom(requestDto)
-                    }
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domain = dto.toDomain()
-
-                    emit(ApiResult.Success(domain))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
-                }
-            }
-
-        override fun getHomeScheduleExhibitList(
-            place: Place, date: LocalDate
-        ): Flow<ApiResult<List<ExhibitModel>>> =
-            flow {
-                emit(ApiResult.Loading)
-
-                try {
-                    val requestDto = place.toScheduleRequestDto(date = date)
-
-                    val baseResponse = when (requestDto) {
-                        is ForeignScheduleExhibitListRequestDto -> dataSource.getHomeSchedule(requestDto)
-                        is DomesticScheduleExhibitListRequestDto -> dataSource.getHomeSchedule(requestDto)
-                    }
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domain = dto.toDomain()
-
-                    emit(ApiResult.Success(domain))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
-                }
-            }
-
-    override fun getHomeGenreExhibitList(place: Place, genre: ExhibitGenre): Flow<ApiResult<List<ExhibitModel>>> =
+    override fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
         flow {
-            emit(ApiResult.Loading)
-
             try {
-                val requestDto = place.toGenreRequestDto(genre = genre)
+                val requestDto = country.toRecommendRequestDto()
 
-                val baseResponse = when (requestDto) {
-                    is ForeignGenreExhibitListRequestDto -> dataSource.getHomeGenreRandom(requestDto)
-                    is DomesticGenreExhibitListRequestDto -> dataSource.getHomeGenreRandom(requestDto)
-                }
+                val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto)
+                val responseDto = baseResponse.result
 
-                val dto = baseResponse.result
-                if (dto == null) {
+                if (responseDto == null) {
                     emit(
                         ApiResult.Error(
                             ApiError.HttpError(
@@ -160,7 +47,229 @@ class HomeRepositoryImpl
                     return@flow
                 }
 
-                val domain = dto.toDomain()
+                val domain = responseDto.toForeignDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = country.toPersonalizedRequestDto()
+
+                val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toForeignDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getForeignScheduleExhibitList(
+        country: ForeignCountry,
+        date: LocalDate
+    ): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = country.toScheduleRequestDto(date = date)
+
+                val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toForeignDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getForeignGenreExhibitList(
+        country: ForeignCountry,
+        genre: ExhibitGenre
+    ): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = country.toGenreRequestDto(genre = genre)
+
+                val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toForeignDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = region.toRecommendRequestDto()
+
+                val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toDomesticDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = region.toPersonalizedRequestDto()
+
+                val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toDomesticDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getDomesticScheduleExhibitList(
+        region: DomesticRegion,
+        date: LocalDate
+    ): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = region.toScheduleRequestDto(date = date)
+
+                val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toDomesticDomain()
+
+                emit(ApiResult.Success(domain))
+            } catch (e: Exception) {
+                val error = e.toAppError()
+                emit(ApiResult.Error(error))
+            }
+        }
+
+    override fun getDomesticGenreExhibitList(
+        region: DomesticRegion,
+        genre: ExhibitGenre
+    ): Flow<ApiResult<List<ExhibitModel>>> =
+        flow {
+            try {
+                val requestDto = region.toGenreRequestDto(genre = genre)
+
+                val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto)
+                val responseDto = baseResponse.result
+
+                if (responseDto == null) {
+                    emit(
+                        ApiResult.Error(
+                            ApiError.HttpError(
+                                statusCode = -1,
+                                serverCode = "EMPTY_RESULT",
+                                serverMessage = "empty result",
+                            ),
+                        ),
+                    )
+                    return@flow
+                }
+
+                val domain = responseDto.toDomesticDomain()
 
                 emit(ApiResult.Success(domain))
             } catch (e: Exception) {

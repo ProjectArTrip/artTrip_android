@@ -13,5 +13,5 @@ class GetDomesticPersonalizedExhibitListUseCase
     constructor(
         private val homeRepository: HomeRepository,
     ) {
-    operator fun invoke(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getHomePersonalizedExhibitList(place = region)
+    operator fun invoke(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getDomesticPersonalizedExhibitList(region = region)
     }

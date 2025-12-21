@@ -10,7 +10,9 @@ enum class ExhibitStatus {
 data class ExhibitModel(
     val id: Int,
     val title: String,
-    val posterUrl: String = "",
+    val posterUrl: String,
     val status: ExhibitStatus,
-    val exhibitPeriod: String,
+    val period: String,
+    val hallName: String,
+    val place: String
 )

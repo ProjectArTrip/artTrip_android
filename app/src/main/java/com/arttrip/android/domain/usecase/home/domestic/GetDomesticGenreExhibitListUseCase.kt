@@ -14,5 +14,5 @@ class GetDomesticGenreExhibitListUseCase
 constructor(
     private val homeRepository: HomeRepository,
 ) {
-    operator fun invoke(region: DomesticRegion, genre: ExhibitGenre): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getHomeGenreExhibitList(place = region, genre = genre)
+    operator fun invoke(region: DomesticRegion, genre: ExhibitGenre): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getDomesticGenreExhibitList(region = region, genre = genre)
 }

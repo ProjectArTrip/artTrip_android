@@ -14,5 +14,5 @@ class GetForeignPersonalizedExhibitListUseCase
         private val homeRepository: HomeRepository,
     ) {
     operator fun invoke(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>> =
-        homeRepository.getHomePersonalizedExhibitList(place = country)
+        homeRepository.getForeignPersonalizedExhibitList(country = country)
     }
