@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -23,61 +24,140 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.core.ui.component.button.ReviewButton
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.domain.model.review.ReviewModel
 
-private const val DUMMY_URL = "https://i.ibb.co/nsRDL64B/detail.png"
+fun LazyListScope.exhibitionReviewTab(
+    reviews: LazyPagingItems<ReviewModel>,
+    onWriteReview: () -> Unit,
+) {
+    val isEmpty =
+        reviews.loadState.refresh is LoadState.NotLoading && reviews.itemCount == 0
 
-data class ReviewUiModel(
-    val userName: String,
-    val date: String, // "2025-11-12"
-    val content: String,
-    val photoUrls: List<String>,
-)
+    if (isEmpty) {
+        item { ReviewsEmptyState() }
+    } else {
+        item {
+            ReviewsHeaderCard(
+                totalCountText = 200,
+                onWriteReview = onWriteReview,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-private var dummyReviews =
-    listOf(
-        ReviewUiModel(
-            userName = "김하늘",
-            date = "2025-11-12",
-            content = "전시 동선이 깔끔하고 작품 설명이 친절해서 몰입하기 좋았어요. 사진 찍기 좋은 포인트도 많았습니다.",
-            photoUrls = listOf(DUMMY_URL),
-        ),
-        ReviewUiModel(
-            userName = "파라오의 이집트",
-            date = "2025-10-28",
-            content = "평일 오전이라 한적해서 여유롭게 봤어요. 다만 공간이 생각보다 작아서 금방 끝났습니다.",
-            photoUrls = emptyList(), // 0개
-        ),
-        ReviewUiModel(
-            userName = "이서연",
-            date = "2025-09-03",
-            content = "테마가 명확해서 좋았고, 마지막 섹션이 특히 인상 깊었어요. 굿즈샵도 꽤 알찼습니다.",
-            photoUrls = List(5) { DUMMY_URL },
-        ),
-        ReviewUiModel(
-            userName = "이서연",
-            date = "2025-09-03",
-            content = "테마가 명확해서 좋았고, 마지막 섹션이 특히 인상 깊었어요. 굿즈샵도 꽤 알찼습니다.",
-            photoUrls = List(2) { DUMMY_URL },
-        ),
-        ReviewUiModel(
-            userName = "이서연",
-            date = "2025-09-03",
-            content = "테마가 명확해서 좋았고, 마지막 섹션이 특히 인상 깊었어요. 굿즈샵도 꽤 알찼습니다.",
-            photoUrls = List(3) { DUMMY_URL },
-        ),
-    )
+        items(
+            count = reviews.itemCount,
+            key = { idx -> reviews[idx]?.id ?: idx },
+        ) { idx ->
+            if (idx > 0) Spacer(modifier = Modifier.height(20.dp))
+            val item = reviews[idx] ?: return@items
+            ReviewListItem(model = item)
+        }
+    }
+}
 
 @Composable
-fun ExhibitionReviewTab() {
-    if (dummyReviews.isEmpty()) {
-        ReviewsEmptyState()
-    } else {
-        ReviewsContent()
+private fun ReviewsHeaderCard(
+    totalCountText: Int,
+    onWriteReview: () -> Unit,
+) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(AppColor.SubLightGray)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row {
+                Text(
+                    text = "전시 리뷰",
+                    style = AppTextStyle.Body01Bold,
+                    color = AppColor.TextPrimary,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "($totalCountText)",
+                    style = AppTextStyle.Body01Bold,
+                    color = AppColor.TextPoint,
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            ReviewButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onWriteReview,
+                text = "리뷰쓰기",
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReviewListItem(
+    modifier: Modifier = Modifier,
+    model: ReviewModel,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = model.writer,
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextTertiary,
+            )
+            Text(
+                text = model.visitDate,
+                style = AppTextStyle.Body01Light,
+                color = AppColor.TextTertiary,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            text = model.content,
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextPrimary,
+        )
+
+        if (model.photoUrls.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(20.dp))
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
+            ) {
+                items(
+                    count = model.photoUrls.size,
+                    key = { index -> "${model.photoUrls[index]}#$index" },
+                ) { index ->
+                    ReviewPhotoThumbnail(photoUrl = model.photoUrls[index])
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(19.dp))
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            thickness = 1.dp,
+            color = AppColor.Gray50,
+        )
     }
 }
 
@@ -100,129 +180,6 @@ private fun ReviewsEmptyState(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ReviewsContent() {
-    Column {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(AppColor.SubLightGray)
-                    .padding(horizontal = 24.dp, vertical = 12.dp),
-        ) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
-            ) {
-                Row {
-                    Text(
-                        text = "전시 리뷰",
-                        style = AppTextStyle.Body01Bold,
-                        color = AppColor.TextPrimary,
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "(280)",
-                        style = AppTextStyle.Body01Bold,
-                        color = AppColor.TextPoint,
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                ReviewButton(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
-                    onClick = {},
-                    text = "리뷰쓰기",
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // TODO 무한스크롤 적용시 LazyColumn으로 변경
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            dummyReviews.forEach { model ->
-                ReviewListItem(m = model)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ReviewListItem(
-    modifier: Modifier = Modifier,
-    m: ReviewUiModel,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = m.userName,
-                style = AppTextStyle.Body01Bold,
-                color = AppColor.TextTertiary,
-            )
-            Text(
-                text = m.date,
-                style = AppTextStyle.Body01Light,
-                color = AppColor.TextTertiary,
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            modifier =
-                Modifier
-                    .padding(horizontal = 24.dp),
-            text = m.content,
-            style = AppTextStyle.Body01Regular,
-            color = AppColor.TextPrimary,
-        )
-        if (m.photoUrls.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(20.dp))
-
-            LazyRow(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding =
-                    PaddingValues(
-                        start = 24.dp,
-                        end = 24.dp,
-                    ),
-            ) {
-                items(
-                    count = m.photoUrls.size,
-                    key = { index -> "${m.photoUrls[index]}#$index" },
-                ) { index ->
-                    val url = m.photoUrls[index]
-                    ReviewPhotoThumbnail(photoUrl = url)
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(19.dp))
-        HorizontalDivider(
-            modifier =
-                Modifier
-                    .padding(horizontal = 24.dp),
-            thickness = 1.dp,
-            color = AppColor.Gray50,
-        )
-    }
-}
-
-@Composable
 private fun ReviewPhotoThumbnail(
     modifier: Modifier = Modifier,
     photoUrl: String,
@@ -235,19 +192,7 @@ private fun ReviewPhotoThumbnail(
         model = photoUrl,
         contentDescription = "리뷰 이미지",
         contentScale = ContentScale.Crop,
-        loading = {
-            StaticSkeleton(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            )
-        },
-        error = {
-            StaticSkeleton(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            )
-        },
+        loading = { StaticSkeleton(modifier = Modifier.fillMaxSize()) },
+        error = { StaticSkeleton(modifier = Modifier.fillMaxSize()) },
     )
 }

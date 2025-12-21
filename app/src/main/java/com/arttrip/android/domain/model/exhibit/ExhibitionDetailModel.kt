@@ -1,7 +1,7 @@
 package com.arttrip.android.domain.model.exhibit
 
-data class ExhibitDetailModel(
-    val exhibitId: Long,
+data class ExhibitionDetailModel(
+    val exhibitId: Int,
     val title: String,
     val description: String?,
     val posterUrl: String?,

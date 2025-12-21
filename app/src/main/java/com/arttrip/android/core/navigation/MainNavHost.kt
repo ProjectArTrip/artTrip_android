@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
@@ -54,7 +56,11 @@ fun MainNavHost(
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
-        composable(BottomNavItem.MyPage.route) { MyPageRoute(innerPadding) }
+        composable(BottomNavItem.MyPage.route) {
+            MyPageRoute(innerPadding, onNavigate = { targetRoute ->
+                navController.navigate(targetRoute)
+            })
+        }
 
         composable(MainRoute.HOME_DATE_FILTER) {
             DateFilterRoute(
@@ -62,6 +68,9 @@ fun MainNavHost(
             )
         }
 
-        composable(MainRoute.EXHIBITION_DETAIL) { ExhibitionDetailRoute(innerPadding) }
+        composable(MainRoute.EXHIBITION_DETAIL, listOf(navArgument("exhibitId") { type = NavType.IntType })) { backStackEntry ->
+            val exhibitId = backStackEntry.arguments?.getInt("exhibitId") ?: return@composable
+            ExhibitionDetailRoute(innerPadding, exhibitId, onBack = { navController.popBackStack() })
+        }
     }
 }

@@ -9,5 +9,8 @@ object MainRoute {
 
     const val HOME_DATE_FILTER = "home_date_filter"
 
-    const val EXHIBITION_DETAIL = "exhibition_detail"
+    private const val EXHIBITION_DETAIL_ROUTE = "exhibitionDetail"
+    const val EXHIBITION_DETAIL = "$EXHIBITION_DETAIL_ROUTE/{exhibitId}"
+
+    fun exhibitionDetail(exhibitId: Int) = "$EXHIBITION_DETAIL_ROUTE/$exhibitId"
 }

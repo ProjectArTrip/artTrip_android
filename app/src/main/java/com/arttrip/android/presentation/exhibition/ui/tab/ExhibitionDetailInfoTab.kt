@@ -21,15 +21,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
+import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
 
 @Composable
-fun ExhibitionDetailInfoTab() {
+fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
+    val address = detail.hallAddress?.trim().orEmpty()
+    val desc = detail.description?.trim().orEmpty()
+
     Column(
         modifier =
             Modifier
@@ -57,17 +64,14 @@ fun ExhibitionDetailInfoTab() {
                     Row(
                         verticalAlignment = Alignment.Top,
                     ) {
-                        Text(
-                            "서울 강남구 역삼로 000 10층",
-                            style = AppTextStyle.Body02Regular,
-                            color = AppColor.TextPrimary,
+                        InfoValueText(
+                            modifier = Modifier.weight(1f, fill = false),
+                            value = address,
                         )
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            "복사",
-                            style = AppTextStyle.Body02Regular,
-                            color = AppColor.Primary300,
-                        )
+                        if (address.isNotBlank()) {
+                            Spacer(Modifier.width(12.dp))
+                            CopyActionText(textToCopy = address)
+                        }
                     }
                 }
 
@@ -75,48 +79,40 @@ fun ExhibitionDetailInfoTab() {
                     iconResId = R.drawable.ic_duration_20,
                     title = "운영시간",
                 ) {
-                    Text(
-                        "AM 10:30 - PM 19:00",
-                        style = AppTextStyle.Body02Regular,
-                        color = AppColor.TextPrimary,
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        "휴관일: 매주 월요일",
-                        style = AppTextStyle.Body02Regular,
-                        color = AppColor.SubRed,
-                    )
+                    InfoValueText(value = detail.hallOpeningHours)
+//                    Spacer(Modifier.height(4.dp))
+//                    Text(
+//                        "휴관일: 매주 월요일",
+//                        style = AppTextStyle.Body02Regular,
+//                        color = AppColor.SubRed,
+//                    )
                 }
 
                 IconTextContentRow(
                     iconResId = R.drawable.ic_contact_number_20,
                     title = "전화번호",
                 ) {
-                    Text(
-                        "000 - 123 - 1234",
-                        style = AppTextStyle.Body02Regular,
-                        color = AppColor.TextPrimary,
-                    )
+                    InfoValueText(value = detail.hallPhone)
                 }
             }
         }
+        if (desc.isNotBlank()) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(AppColor.SubLightGray)
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-        ) {
-            Text(
-                "전시 설명",
-                style = AppTextStyle.Body01Regular,
-                color = AppColor.TextPrimary,
-            )
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(AppColor.SubLightGray)
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+            ) {
+                Text(
+                    detail.description.orEmpty(),
+                    style = AppTextStyle.Body01Regular,
+                    color = AppColor.TextPrimary,
+                )
+            }
         }
     }
 }
@@ -185,4 +181,40 @@ private fun IconTextContentRow(
             contentPlaceable.placeRelative(leftW + gapW, contentY)
         }
     }
+}
+
+@Composable
+private fun InfoValueText(
+    modifier: Modifier = Modifier,
+    value: String?,
+    emptyText: String = "정보 없음",
+) {
+    val v = value?.trim().orEmpty()
+    val isEmpty = v.isBlank()
+
+    Text(
+        text = if (isEmpty) emptyText else v,
+        style = AppTextStyle.Body02Regular,
+        color = if (isEmpty) AppColor.TextTertiary else AppColor.TextPrimary,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun CopyActionText(
+    textToCopy: String,
+    modifier: Modifier = Modifier,
+) {
+    val clipboard = LocalClipboardManager.current
+
+    Text(
+        text = "복사",
+        style = AppTextStyle.Body02Regular,
+        color = AppColor.Primary300,
+        modifier =
+            modifier.noRippleClickable {
+                clipboard.setText(AnnotatedString(textToCopy))
+                // 필요하면 토스트/스낵바는 상위에서 effect로 처리
+            },
+    )
 }

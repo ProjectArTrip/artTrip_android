@@ -1,5 +1,5 @@
 package com.arttrip.android.data.remote.model.auth
 
-data class UserKeywordsRequestDto(
+data class UserKeywordsReqDto(
     val keywordIds: List<Int>,
 )

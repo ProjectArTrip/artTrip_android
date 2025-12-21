@@ -1,3 +1,15 @@
 package com.arttrip.android.presentation.exhibition.contract
 
-class ExhibitionDetailIntent
+sealed interface ExhibitionDetailIntent {
+    data class Initialize(
+        val exhibitId: Int,
+    ) : ExhibitionDetailIntent
+
+    data object BackClicked : ExhibitionDetailIntent
+
+    data object BookmarkClicked : ExhibitionDetailIntent
+
+    data class WriteReviewClicked(
+        val exhibitId: Int,
+    ) : ExhibitionDetailIntent
+}

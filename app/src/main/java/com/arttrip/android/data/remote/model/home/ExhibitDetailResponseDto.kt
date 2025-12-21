@@ -1,7 +1,7 @@
 package com.arttrip.android.data.remote.model.home
 
 data class ExhibitDetailResponseDto(
-    val exhibitId: Long,
+    val exhibitId: Int,
     val title: String,
     val description: String,
     val posterUrl: String?,

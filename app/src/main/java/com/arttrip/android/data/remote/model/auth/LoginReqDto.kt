@@ -1,6 +1,6 @@
 package com.arttrip.android.data.remote.model.auth
 
-data class LoginRequestDto(
+data class LoginReqDto(
     val provider: String,
     val idToken: String,
 )
