@@ -51,7 +51,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import java.time.DayOfWeek
@@ -73,13 +73,9 @@ enum class PlaceTab(
 
 fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 
-sealed interface Place {
-    val label: String
-}
-
 enum class ForeignCountry(
-    override val label: String,
-) : Place {
+    val label: String,
+) {
     Entire("전체"),
     France("프랑스"),
     Germany("독일"),
@@ -91,8 +87,8 @@ enum class ForeignCountry(
 }
 
 enum class DomesticRegion(
-    override val label: String,
-) : Place {
+    val label: String,
+) {
     Entire("전체"),
     Seoul("서울"),
     Gyeonggi("경기"),
@@ -500,7 +496,7 @@ fun LocationItem(region: DomesticRegion) {
 }
 
 @Composable
-fun RecommendSection(exhibitList: List<ExhibitModel>) {
+fun RecommendSection(exhibitList: List<ExhibitionModel>) {
     Row(
         modifier =
             Modifier
@@ -528,7 +524,7 @@ fun RecommendSection(exhibitList: List<ExhibitModel>) {
 @Composable
 fun PersonalizedSection(
     name: String,
-    exhibitList: List<ExhibitModel>,
+    exhibitList: List<ExhibitionModel>,
 ) {
     Column {
         Row {
@@ -629,7 +625,7 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
 
 @Composable
 fun ExhibitionByGenreSection(
-    exhibitList: List<ExhibitModel>,
+    exhibitList: List<ExhibitionModel>,
     selectedGenre: ExhibitGenre,
     onGenreClick: (ExhibitGenre) -> Unit,
 ) {
@@ -752,7 +748,7 @@ fun SectionTitle(
 
 @Composable
 fun ExhibitItemCase1(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     ExhibitImage(
@@ -818,7 +814,7 @@ fun ExhibitItemCase1(
 
 @Composable
 fun ExhibitItemCase2(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(
@@ -853,7 +849,7 @@ fun ExhibitItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Row(
@@ -929,7 +925,7 @@ fun ExhibitItemCase3(
 
 @Composable
 fun ExhibitItemCase4(
-    exhibit: ExhibitModel,
+    exhibit: ExhibitionModel,
     onItemClick: () -> Unit = {},
 ) {
     Column(

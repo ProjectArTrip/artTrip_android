@@ -1,6 +1,6 @@
 package com.arttrip.android.presentation.exhibition.contract
 
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
 
 data class ExhibitionDetailState(
     val isLoading: Boolean = false,

@@ -1,4 +1,4 @@
-package com.arttrip.android.domain.model.exhibit
+package com.arttrip.android.domain.model.exhibition
 
 data class ExhibitionDetailModel(
     val exhibitId: Int,

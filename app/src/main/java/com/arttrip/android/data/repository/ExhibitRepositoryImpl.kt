@@ -3,7 +3,7 @@ package com.arttrip.android.data.repository
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
-import com.arttrip.android.domain.model.exhibit.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository

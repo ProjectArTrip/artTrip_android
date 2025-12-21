@@ -1,20 +1,20 @@
-package com.arttrip.android.domain.usecase.home.foreign
+package com.arttrip.android.domain.usecase.exhibition
 
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
-import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
 
-class GetForeignGenreExhibitListUseCase
+class GetForeignScheduledExhibitionListUseCase
     @Inject
     constructor(
         private val homeRepository: HomeRepository,
     ) {
         operator fun invoke(
             country: ForeignCountry,
-            genre: ExhibitGenre,
-        ): Flow<ApiResult<List<ExhibitModel>>> = homeRepository.getForeignGenreExhibitList(country = country, genre = genre)
+            date: LocalDate,
+        ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignScheduleExhibitList(country = country, date = date)
     }

@@ -1,6 +1,6 @@
 package com.arttrip.android.domain.repository
 
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
@@ -9,31 +9,31 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface HomeRepository {
-    fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>>
+    fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitionModel>>>
 
-    fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitModel>>>
+    fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<ExhibitionModel>>>
 
     fun getForeignScheduleExhibitList(
         country: ForeignCountry,
         date: LocalDate,
-    ): Flow<ApiResult<List<ExhibitModel>>>
+    ): Flow<ApiResult<List<ExhibitionModel>>>
 
     fun getForeignGenreExhibitList(
         country: ForeignCountry,
         genre: ExhibitGenre,
-    ): Flow<ApiResult<List<ExhibitModel>>>
+    ): Flow<ApiResult<List<ExhibitionModel>>>
 
-    fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>>
+    fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitionModel>>>
 
-    fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitModel>>>
+    fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<ExhibitionModel>>>
 
     fun getDomesticScheduleExhibitList(
         region: DomesticRegion,
         date: LocalDate,
-    ): Flow<ApiResult<List<ExhibitModel>>>
+    ): Flow<ApiResult<List<ExhibitionModel>>>
 
     fun getDomesticGenreExhibitList(
         region: DomesticRegion,
         genre: ExhibitGenre,
-    ): Flow<ApiResult<List<ExhibitModel>>>
+    ): Flow<ApiResult<List<ExhibitionModel>>>
 }

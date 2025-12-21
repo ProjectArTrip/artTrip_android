@@ -1,5 +1,6 @@
 package com.arttrip.android.data.remote.mapper.home
 
+import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
 import com.arttrip.android.data.remote.model.home.DomesticExhibitResponseDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticPersonalizedExhibitListRequestDto
@@ -10,18 +11,17 @@ import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequest
 import com.arttrip.android.data.remote.model.home.ForeignPersonalizedExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
-import com.arttrip.android.domain.model.home.ExhibitModel
-import com.arttrip.android.domain.model.home.ExhibitStatus
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.presentation.home.DomesticRegion
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitModel> = this.map { it.toDomain() }
+fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
 
-fun ForeignExhibitResponseDto.toDomain(): ExhibitModel =
-    ExhibitModel(
+fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
+    ExhibitionModel(
         id = id,
         title = title,
         posterUrl = posterUrl,
@@ -31,10 +31,10 @@ fun ForeignExhibitResponseDto.toDomain(): ExhibitModel =
         place = countryName,
     )
 
-fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitModel> = this.map { it.toDomain() }
+fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
 
-fun DomesticExhibitResponseDto.toDomain(): ExhibitModel =
-    ExhibitModel(
+fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
+    ExhibitionModel(
         id = id,
         title = title,
         posterUrl = posterUrl,

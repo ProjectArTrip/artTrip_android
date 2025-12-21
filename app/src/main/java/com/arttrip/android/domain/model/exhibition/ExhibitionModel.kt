@@ -1,13 +1,8 @@
-package com.arttrip.android.domain.model.home
+package com.arttrip.android.domain.model.exhibition
 
-enum class ExhibitStatus {
-    ONGOING,
-    UPCOMING,
-    ENDING_SOON,
-    FINISHED,
-}
+import com.arttrip.android.core.model.enum.exhibit.ExhibitStatus
 
-data class ExhibitModel(
+data class ExhibitionModel(
     val id: Int,
     val title: String,
     val posterUrl: String,

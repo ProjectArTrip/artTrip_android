@@ -1,6 +1,6 @@
 package com.arttrip.android.presentation.home.contract
 
-import com.arttrip.android.domain.model.home.ExhibitModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.presentation.home.ExhibitGenre
 import com.arttrip.android.presentation.home.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
@@ -29,12 +29,12 @@ data class HomeState(
     val selectedCountry: ForeignCountry = ForeignCountry.Entire,
     val countryData: Map<ForeignCountry, HomeSection> =
         ForeignCountry.entries.associateWith { emptyCountryHomeData() },
-    val interRecommendExhibitList: List<ExhibitModel> = emptyList(),
-    val interPersonalizedExhibitList: List<ExhibitModel> = emptyList(),
-    val interScheduledExhibitList: List<ExhibitModel> = emptyList(),
-    val domesticRecommendExhibitList: List<ExhibitModel> = emptyList(),
-    val domesticPersonalizedExhibitList: List<ExhibitModel> = emptyList(),
-    val domesticScheduledExhibitList: List<ExhibitModel> = emptyList(),
+    val interRecommendExhibitList: List<ExhibitionModel> = emptyList(),
+    val interPersonalizedExhibitList: List<ExhibitionModel> = emptyList(),
+    val interScheduledExhibitList: List<ExhibitionModel> = emptyList(),
+    val domesticRecommendExhibitList: List<ExhibitionModel> = emptyList(),
+    val domesticPersonalizedExhibitList: List<ExhibitionModel> = emptyList(),
+    val domesticScheduledExhibitList: List<ExhibitionModel> = emptyList(),
     val foreignGenreChips: List<ExhibitGenre> = List(ForeignCountry.entries.size) { ExhibitGenre.ContemporaryArt },
     val domesticGenreChips: ExhibitGenre = ExhibitGenre.ContemporaryArt,
 )
