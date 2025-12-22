@@ -40,7 +40,6 @@ import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
@@ -184,7 +183,9 @@ fun HomeBody(
 
         // 해외 전시 탭만 국가 리스트 활성화
         if (state.placeTabs == PlaceTab.Foreign) {
-            CountryListChip(state.selectedCountry, onIntent)
+            CountryListChip(state.selectedCountry) { country ->
+                onIntent(HomeIntent.SelectCountry(country))
+            }
         } else {
             Spacer(
                 modifier =
@@ -203,7 +204,7 @@ fun HomeBody(
 @Composable
 fun CountryListChip(
     selectedCountry: ForeignCountry,
-    onIntent: (HomeIntent) -> Unit,
+    onCountryClick: (ForeignCountry) -> Unit
 ) {
     Column(
         modifier =
@@ -232,7 +233,9 @@ fun CountryListChip(
                     case = AppFilterChipCase.Case02,
                     text = country.label,
                     selected = selectedCountry == country,
-                    onClick = { onIntent(HomeIntent.SelectCountry(country)) },
+                    onClick = {
+                        onCountryClick(country)
+                    },
                 )
             }
 
@@ -257,8 +260,7 @@ fun InternationalExhibitionSection(
 ) {
     val recommendExhibitList = state.countryData.getValue(state.selectedCountry).recommendExhibit
     val personalizedExhibitList = state.countryData.getValue(state.selectedCountry).personalizedList
-    val weeklyExhibits =
-        getDummyExhibitList(3, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv5Sx2WM6VTB5Pdkze2mUgIQ285NCWUw8K6A&s")
+//    val weeklyExhibits = state.countryData.getValue(state.selectedCountry).weeklyList.getValue()
 
     val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.selectedCountry)]
     val genreExhibit =
@@ -284,22 +286,22 @@ fun InternationalExhibitionSection(
         )
         PersonalizedSection(
             name = "손현준",
-            exhibitList = personalizedExhibitList,
+            exhibitionList = personalizedExhibitList,
         )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+//        WeeklyExhibitSection(exhibitList = weeklyExhibits)
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = genreChip) { genre ->
-            onIntent(HomeIntent.SelectForeignGenre(genre))
-        }
+//        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = genreChip) { genre ->
+//            onIntent(HomeIntent.SelectForeignGenre(genre))
+//        }
         Spacer(
             modifier =
                 Modifier
@@ -315,8 +317,8 @@ fun DomesticExhibitionSection(
 ) {
     val recommendExhibitList = state.domesticRecommendExhibitList
     val personalizedExhibitList = state.domesticPersonalizedExhibitList
-    val weeklyExhibits = getDummyExhibitList(3, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
-    val genreExhibit = getDummyExhibitList(8, "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg")
+    val weeklyExhibits = state.domesticScheduledExhibitList
+    val genreExhibit = state.domesticGenreChips
 
     Column(
         modifier =
@@ -335,7 +337,7 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-        ExhibitByLocationSection()
+        DomesticRegionSection()
         Spacer(
             modifier =
                 Modifier
@@ -343,7 +345,7 @@ fun DomesticExhibitionSection(
         )
         PersonalizedSection(
             name = "손현준",
-            exhibitList = personalizedExhibitList,
+            exhibitionList = personalizedExhibitList,
         )
         Spacer(
             modifier =
@@ -368,7 +370,7 @@ fun DomesticExhibitionSection(
 }
 
 @Composable
-fun ExhibitByLocationSection() {
+fun DomesticRegionSection() {
     Column {
         Row {
             Spacer(
@@ -401,7 +403,7 @@ fun ExhibitByLocationSection() {
 
             DomesticRegion.entries.forEach { region ->
                 if (region != DomesticRegion.Entire) {
-                    LocationItem(region = region)
+                    DomesticRegionItem(region = region)
                 }
             }
 
@@ -415,7 +417,7 @@ fun ExhibitByLocationSection() {
 }
 
 @Composable
-fun LocationItem(region: DomesticRegion) {
+fun DomesticRegionItem(region: DomesticRegion) {
     val painter =
         painterResource(
             when (region) {
@@ -436,7 +438,7 @@ fun LocationItem(region: DomesticRegion) {
     ) {
         Image(
             painter = painter,
-            contentDescription = "Location Image",
+            contentDescription = "Region Image",
             modifier =
                 Modifier
                     .size(64.dp)
@@ -457,7 +459,7 @@ fun LocationItem(region: DomesticRegion) {
 }
 
 @Composable
-fun RecommendSection(exhibitList: List<ExhibitionModel>) {
+fun RecommendSection(exhibitionList: List<ExhibitionModel>) {
     Row(
         modifier =
             Modifier
@@ -469,9 +471,11 @@ fun RecommendSection(exhibitList: List<ExhibitionModel>) {
                 Modifier
                     .width(16.dp),
         )
-        exhibitList.forEachIndexed { index, exhibit ->
-            ExhibitItemCase1(exhibit = exhibit)
-            if (index == exhibitList.lastIndex) {
+        exhibitionList.forEachIndexed { index, exhibition ->
+            ExhibitionItemCase1(exhibition = exhibition,
+                onExhibitionClick = {id ->},
+                onLikeClick = {id ->})
+            if (index == exhibitionList.lastIndex) {
                 Spacer(
                     modifier =
                         Modifier
@@ -485,7 +489,7 @@ fun RecommendSection(exhibitList: List<ExhibitionModel>) {
 @Composable
 fun PersonalizedSection(
     name: String,
-    exhibitList: List<ExhibitionModel>,
+    exhibitionList: List<ExhibitionModel>,
 ) {
     Column {
         Row {
@@ -511,7 +515,7 @@ fun PersonalizedSection(
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            exhibitList.forEachIndexed { index, exhibit ->
+            exhibitionList.forEachIndexed { index, exhibition ->
                 if (index == 0) {
                     Spacer(
                         modifier =
@@ -519,8 +523,10 @@ fun PersonalizedSection(
                                 .width(16.dp),
                     )
                 }
-                ExhibitItemCase2(exhibit = exhibit)
-                if (index == exhibitList.lastIndex) {
+                ExhibitionItemCase2(exhibition = exhibition,
+                    onExhibitionClick = {id ->},
+                    onLikeClick = {id ->})
+                if (index == exhibitionList.lastIndex) {
                     Spacer(
                         modifier =
                             Modifier
@@ -533,7 +539,7 @@ fun PersonalizedSection(
 }
 
 @Composable
-fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
+fun WeeklyExhibitSection(exhibitList: List<ExhibitionModel>) {
     val weekDates = remember { getThisWeekDates() }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
@@ -543,7 +549,8 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
     ) {
-        SectionTitle(title = "이번주 전시 일정")
+        SectionTitle(title = "이번주 전시 일정",
+            onMoreClick = {})
 
         Spacer(
             modifier =
@@ -574,21 +581,34 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitInfoModel>) {
                     .height(20.dp),
         )
 
-//        Column(
-//            verticalArrangement = Arrangement.spacedBy(8.dp),
-//        ) {
-//            exhibitList.forEach { exhibit ->
-//                ExhibitItemCase3(exhibit = exhibit)
-//            }
-//        }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            exhibitList.forEach { exhibition ->
+                ExhibitItemCase3(exhibition = exhibition,
+                    onExhibitionClick = {id ->},
+                    onLikeClick = {id ->})
+            }
+        }
+    }
+}
+
+private fun getThisWeekDates(): List<LocalDate> {
+    val today = LocalDate.now()
+
+    val monday = today.with(DayOfWeek.MONDAY)
+
+    return (0..6).map { offset ->
+        monday.plusDays(offset.toLong())
     }
 }
 
 @Composable
 fun ExhibitionByGenreSection(
-    exhibitList: List<ExhibitionModel>,
+    exhibitionList: List<ExhibitionModel>,
     selectedGenre: ExhibitionGenre,
     onGenreClick: (ExhibitionGenre) -> Unit,
+    onMoreClick: () -> Unit
 ) {
     Column(
         modifier =
@@ -600,6 +620,7 @@ fun ExhibitionByGenreSection(
                 Modifier
                     .padding(horizontal = 24.dp),
             title = "장르별 전시 추천",
+            onMoreClick = onMoreClick
         )
 
         Spacer(
@@ -650,7 +671,7 @@ fun ExhibitionByGenreSection(
                     .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            exhibitList.forEachIndexed { index, exhibit ->
+            exhibitionList.forEachIndexed { index, exhibition ->
                 if (index == 0) {
                     Spacer(
                         modifier =
@@ -658,8 +679,14 @@ fun ExhibitionByGenreSection(
                                 .width(16.dp),
                     )
                 }
-                ExhibitItemCase4(exhibit = exhibit)
-                if (index == exhibitList.lastIndex) {
+                ExhibitionItemCase4(exhibition = exhibition,
+                    onExhibitionClick = {id ->
+
+                    },
+                    onLikeClick = {id ->
+
+                    })
+                if (index == exhibitionList.lastIndex) {
                     Spacer(
                         modifier =
                             Modifier
@@ -671,20 +698,11 @@ fun ExhibitionByGenreSection(
     }
 }
 
-private fun getThisWeekDates(): List<LocalDate> {
-    val today = LocalDate.now()
-
-    val monday = today.with(DayOfWeek.MONDAY)
-
-    return (0..6).map { offset ->
-        monday.plusDays(offset.toLong())
-    }
-}
-
 @Composable
 fun SectionTitle(
     modifier: Modifier = Modifier,
     title: String,
+    onMoreClick: () -> Unit
 ) {
     Row(
         modifier =
@@ -703,31 +721,35 @@ fun SectionTitle(
             iconResId = R.drawable.ic_more_24,
             contentDescription = "more button",
         ) {
+            onMoreClick()
         }
     }
 }
 
 @Composable
-fun ExhibitItemCase1(
-    exhibit: ExhibitionModel,
-    onItemClick: () -> Unit = {},
+fun ExhibitionItemCase1(
+    exhibition: ExhibitionModel,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit
 ) {
-    ExhibitImage(
+    ExhibitionImage(
         modifier =
             Modifier
                 .noRippleClickable {
-                    onItemClick()
+                    onExhibitionClick(exhibition.id)
                 },
-        url = exhibit.posterUrl,
-        case = ExhibitImageCase.CASE1,
+        url = exhibition.posterUrl,
+        case = ExhibitionImageCase.CASE1,
     ) {
         LikeButton(
             modifier =
                 Modifier
                     .align(Alignment.TopEnd)
                     .offset(x = (-16).dp, y = (16).dp),
-            isSelected = false,
-        ) { }
+            isSelected = true,
+        ) {
+            onLikeClick(exhibition.id)
+        }
         Box(
             modifier =
                 Modifier
@@ -755,17 +777,17 @@ fun ExhibitItemCase1(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = exhibit.title,
+                text = exhibition.title,
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.hallName,
+                text = exhibition.hallName,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
             Text(
-                text = exhibit.period,
+                text = exhibition.period,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextWhite,
             )
@@ -774,26 +796,29 @@ fun ExhibitItemCase1(
 }
 
 @Composable
-fun ExhibitItemCase2(
-    exhibit: ExhibitionModel,
-    onItemClick: () -> Unit = {},
+fun ExhibitionItemCase2(
+    exhibition: ExhibitionModel,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit
 ) {
     Column(
         modifier =
             Modifier
                 .width(120.dp)
                 .noRippleClickable {
-                    onItemClick()
+                    onExhibitionClick(exhibition.id)
                 },
     ) {
-        ExhibitImage(url = exhibit.posterUrl, case = ExhibitImageCase.CASE2) {
+        ExhibitionImage(url = exhibition.posterUrl, case = ExhibitionImageCase.CASE2) {
             LikeButton(
                 modifier =
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = false,
-            ) { }
+                isSelected = true,
+            ) {
+                onLikeClick(exhibition.id)
+            }
         }
         Spacer(
             modifier =
@@ -801,7 +826,7 @@ fun ExhibitItemCase2(
                     .height(8.dp),
         )
         Text(
-            text = exhibit.title,
+            text = exhibition.title,
             style = AppTextStyle.Body01Bold,
             color = AppColor.TextPrimary,
         )
@@ -810,33 +835,36 @@ fun ExhibitItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibit: ExhibitionModel,
-    onItemClick: () -> Unit = {},
+    exhibition: ExhibitionModel,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit
 ) {
     Row(
         modifier =
             Modifier
                 .noRippleClickable {
-                    onItemClick()
+                    onExhibitionClick(exhibition.id)
                 },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ExhibitImage(
-            url = exhibit.posterUrl,
-            case = ExhibitImageCase.CASE3,
+        ExhibitionImage(
+            url = exhibition.posterUrl,
+            case = ExhibitionImageCase.CASE3,
         ) {
             LikeButton(
                 modifier =
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = false,
-            ) { }
+                isSelected = true,
+            ) {
+                onLikeClick(exhibition.id)
+            }
             AppTag(
                 modifier =
                     Modifier
                         .align(Alignment.BottomEnd),
-                status = ExhibitionStatus.ONGOING,
+                status = exhibition.status,
             )
         }
         Spacer(
@@ -846,7 +874,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = exhibit.place,
+                text = exhibition.place,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )
@@ -856,7 +884,7 @@ fun ExhibitItemCase3(
                         .height(4.dp),
             )
             Text(
-                text = exhibit.title,
+                text = exhibition.title,
                 style = AppTextStyle.Body01Bold,
                 color = AppColor.TextPrimary,
             )
@@ -866,7 +894,7 @@ fun ExhibitItemCase3(
                         .height(4.dp),
             )
             Text(
-                text = exhibit.place,
+                text = exhibition.place,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
@@ -876,7 +904,7 @@ fun ExhibitItemCase3(
                         .height(2.dp),
             )
             Text(
-                text = exhibit.period,
+                text = exhibition.period,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
@@ -885,29 +913,32 @@ fun ExhibitItemCase3(
 }
 
 @Composable
-fun ExhibitItemCase4(
-    exhibit: ExhibitionModel,
-    onItemClick: () -> Unit = {},
+fun ExhibitionItemCase4(
+    exhibition: ExhibitionModel,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit
 ) {
     Column(
         modifier =
             Modifier
                 .width(128.dp)
                 .noRippleClickable {
-                    onItemClick()
+                    onExhibitionClick(exhibition.id)
                 },
     ) {
-        ExhibitImage(
-            url = exhibit.posterUrl,
-            case = ExhibitImageCase.CASE4,
+        ExhibitionImage(
+            url = exhibition.posterUrl,
+            case = ExhibitionImageCase.CASE4,
         ) {
             LikeButton(
                 modifier =
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = false,
-            ) { }
+                isSelected = true,
+            ) {
+                onLikeClick(exhibition.id)
+            }
         }
         Spacer(
             modifier =
@@ -915,7 +946,7 @@ fun ExhibitItemCase4(
                     .height(4.dp),
         )
         Text(
-            text = exhibit.title,
+            text = exhibition.title,
             style = AppTextStyle.Body01Bold,
             color = AppColor.TextPrimary,
         )
@@ -925,7 +956,7 @@ fun ExhibitItemCase4(
                     .height(4.dp),
         )
         Text(
-            text = exhibit.hallName,
+            text = exhibition.hallName,
             style = AppTextStyle.Body02Regular,
             color = AppColor.TextTertiary,
         )
@@ -935,67 +966,59 @@ fun ExhibitItemCase4(
                     .height(2.dp),
         )
         Text(
-            text = exhibit.period,
+            text = exhibition.period,
             style = AppTextStyle.Body03Regular,
             color = AppColor.TextTertiary,
         )
     }
 }
 
-enum class ExhibitImageCase {
+enum class ExhibitionImageCase {
     CASE1,
     CASE2,
     CASE3,
     CASE4,
 }
 
-data class ExhibitInfoModel(
-    val url: String,
-    val title: String,
-    val place: String,
-    val date: String,
-    val country: String,
-)
-
 @Composable
-fun ExhibitImage(
+fun ExhibitionImage(
     modifier: Modifier = Modifier,
     url: String,
-    case: ExhibitImageCase,
+    case: ExhibitionImageCase,
     content: (@Composable BoxScope.() -> Unit)? = null,
 ) {
-    val imageWidth =
+    val width =
         when (case) {
-            ExhibitImageCase.CASE1 -> 180.dp
-            ExhibitImageCase.CASE2 -> 120.dp
-            ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 128.dp
+            ExhibitionImageCase.CASE1 -> 180.dp
+            ExhibitionImageCase.CASE2 -> 120.dp
+            ExhibitionImageCase.CASE3 -> 100.dp
+            ExhibitionImageCase.CASE4 -> 128.dp
         }
 
-    val imageHeight =
+    val height =
         when (case) {
-            ExhibitImageCase.CASE1 -> 240.dp
-            ExhibitImageCase.CASE2 -> 150.dp
-            ExhibitImageCase.CASE3 -> 100.dp
-            ExhibitImageCase.CASE4 -> 160.dp
+            ExhibitionImageCase.CASE1 -> 240.dp
+            ExhibitionImageCase.CASE2 -> 150.dp
+            ExhibitionImageCase.CASE3 -> 100.dp
+            ExhibitionImageCase.CASE4 -> 160.dp
         }
 
     val borderModifier =
         when (case) {
-            ExhibitImageCase.CASE1 ->
+            ExhibitionImageCase.CASE1 ->
                 Modifier.border(
                     width = 1.dp,
                     color = AppColor.Gray50,
                     shape = RoundedCornerShape(8.dp),
                 )
-            ExhibitImageCase.CASE2, ExhibitImageCase.CASE3, ExhibitImageCase.CASE4 -> Modifier
+            ExhibitionImageCase.CASE2, ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> Modifier
         }
 
     Box(
         modifier =
             modifier
-                .width(imageWidth)
-                .height(imageHeight),
+                .width(width)
+                .height(height),
     ) {
         AsyncImage(
             modifier =
@@ -1004,7 +1027,7 @@ fun ExhibitImage(
                     .clip(RoundedCornerShape(8.dp))
                     .then(borderModifier),
             model = url,
-            contentDescription = "Exhibit Image",
+            contentDescription = "Exhibition Image",
             contentScale = ContentScale.Crop,
         )
 
@@ -1013,17 +1036,3 @@ fun ExhibitImage(
         }
     }
 }
-
-private fun getDummyExhibitList(
-    size: Int,
-    url: String,
-): List<ExhibitInfoModel> =
-    List(size) { index ->
-        ExhibitInfoModel(
-            url = url,
-            title = "초대박 귀여운 쿼카 전시회 #$index",
-            place = "쿼카 공원",
-            date = "2025.07.29 - 2025.08.10",
-            country = "한국",
-        )
-    }
