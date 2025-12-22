@@ -12,5 +12,5 @@ data class ReviewDetailDto(
     val visitDate: String, // "2025-12-16"
     val content: String,
     val thumbnailUrl: String?,
-    val nickname: String,
+    val nickname: String?,
 )

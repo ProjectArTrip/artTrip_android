@@ -6,11 +6,11 @@ import com.arttrip.android.domain.model.review.ReviewModel
 fun ReviewDetailDto.toDomain(): ReviewModel =
     ReviewModel(
         id = reviewId,
-        writer = nickname,
+        writer = nickname ?: "nickname",
         visitDate = visitDate,
         content = content,
         photoUrls =
             thumbnailUrl
-                ?.let { url -> List(5) { url } }
+                ?.let { url -> List(4) { url } }
                 ?: emptyList(),
     )
