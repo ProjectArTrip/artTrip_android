@@ -8,6 +8,9 @@ import com.arttrip.android.data.remote.paging.review.ReviewPagingSource
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class ReviewRepositoryImpl
@@ -15,6 +18,13 @@ class ReviewRepositoryImpl
     constructor(
         private val reviewDataSource: ReviewDataSource,
     ) : ReviewRepository {
+        private val _reviewTotalCount = MutableStateFlow<Int?>(null)
+        override val reviewTotalCount: StateFlow<Int?> = _reviewTotalCount.asStateFlow()
+
+        override fun clearReviewTotalCount() {
+            _reviewTotalCount.value = null
+        }
+
         override fun getExhibitionReviews(
             exhibitId: Int,
             pageSize: Int,
@@ -32,6 +42,9 @@ class ReviewRepositoryImpl
                     ReviewPagingSource(
                         dataSource = reviewDataSource,
                         exhibitId = exhibitId,
+                        onTotalCount = { count ->
+                            _reviewTotalCount.value = count
+                        },
                     )
                 },
             ).flow

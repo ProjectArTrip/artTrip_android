@@ -17,6 +17,7 @@ import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailInte
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,6 +66,7 @@ class ExhibitionDetailViewModel
 
         private var userTouchedBookmark = false
         private var lastSentTarget: Boolean? = null
+        private var reviewCountJob: Job? = null
 
         init {
             viewModelScope.launch {
@@ -112,6 +114,17 @@ class ExhibitionDetailViewModel
             userTouchedBookmark = false
             fetchExhibitionDetail(exhibitId)
             fetchBookmarkStatus(exhibitId)
+
+            getExhibitionReviewsUseCase.clearReviewTotalCount()
+            _state.update { it.copy(reviewTotalCount = null) }
+
+            reviewCountJob?.cancel()
+            reviewCountJob =
+                viewModelScope.launch {
+                    getExhibitionReviewsUseCase.reviewTotalCount.collectLatest { count ->
+                        _state.update { it.copy(reviewTotalCount = count) }
+                    }
+                }
         }
 
         private fun fetchExhibitionDetail(exhibitId: Int) {

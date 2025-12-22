@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class GetExhibitionReviewsUseCase
@@ -11,6 +12,10 @@ class GetExhibitionReviewsUseCase
     constructor(
         private val reviewRepository: ReviewRepository,
     ) {
+        val reviewTotalCount: StateFlow<Int?> = reviewRepository.reviewTotalCount
+
+        fun clearReviewTotalCount() = reviewRepository.clearReviewTotalCount()
+
         operator fun invoke(exhibitId: Int): Flow<PagingData<ReviewModel>> =
             reviewRepository.getExhibitionReviews(
                 exhibitId = exhibitId,

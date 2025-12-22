@@ -138,6 +138,7 @@ fun ExhibitionDetailScreen(
                     1 -> item { ExhibitionMapTab() }
                     2 ->
                         exhibitionReviewTab(
+                            reviewTotalCount = state.reviewTotalCount ?: 0,
                             reviews = reviewItems,
                             onWriteReview = {
                                 onIntent(
