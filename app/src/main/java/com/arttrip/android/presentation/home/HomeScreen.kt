@@ -665,20 +665,13 @@ fun ExhibitionByGenreSection(
                     .height(16.dp),
         )
 
-        Row(
+        Column(
             modifier =
                 Modifier
-                    .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            exhibitionList.forEachIndexed { index, exhibition ->
-                if (index == 0) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
+            exhibitionList.forEach { exhibition ->
                 ExhibitionItemCase4(exhibition = exhibition,
                     onExhibitionClick = {id ->
 
@@ -686,14 +679,8 @@ fun ExhibitionByGenreSection(
                     onLikeClick = {id ->
 
                     })
-                if (index == exhibitionList.lastIndex) {
-                    Spacer(
-                        modifier =
-                            Modifier
-                                .width(16.dp),
-                    )
-                }
             }
+
         }
     }
 }
@@ -894,7 +881,7 @@ fun ExhibitItemCase3(
                         .height(4.dp),
             )
             Text(
-                text = exhibition.place,
+                text = exhibition.hallName,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
@@ -918,17 +905,17 @@ fun ExhibitionItemCase4(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit
 ) {
-    Column(
+    Row(
         modifier =
             Modifier
-                .width(128.dp)
                 .noRippleClickable {
                     onExhibitionClick(exhibition.id)
                 },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ExhibitionImage(
             url = exhibition.posterUrl,
-            case = ExhibitionImageCase.CASE4,
+            case = ExhibitionImageCase.CASE3,
         ) {
             LikeButton(
                 modifier =
@@ -939,37 +926,45 @@ fun ExhibitionItemCase4(
             ) {
                 onLikeClick(exhibition.id)
             }
+            AppTag(
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd),
+                status = exhibition.status,
+            )
         }
         Spacer(
             modifier =
                 Modifier
-                    .height(4.dp),
+                    .width(12.dp),
         )
-        Text(
-            text = exhibition.title,
-            style = AppTextStyle.Body01Bold,
-            color = AppColor.TextPrimary,
-        )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(4.dp),
-        )
-        Text(
-            text = exhibition.hallName,
-            style = AppTextStyle.Body02Regular,
-            color = AppColor.TextTertiary,
-        )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(2.dp),
-        )
-        Text(
-            text = exhibition.period,
-            style = AppTextStyle.Body03Regular,
-            color = AppColor.TextTertiary,
-        )
+        Column {
+            Text(
+                text = exhibition.title,
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextPrimary,
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(4.dp),
+            )
+            Text(
+                text = exhibition.hallName,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextTertiary,
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(2.dp),
+            )
+            Text(
+                text = exhibition.period,
+                style = AppTextStyle.Body02Regular,
+                color = AppColor.TextTertiary,
+            )
+        }
     }
 }
 
@@ -991,16 +986,14 @@ fun ExhibitionImage(
         when (case) {
             ExhibitionImageCase.CASE1 -> 180.dp
             ExhibitionImageCase.CASE2 -> 120.dp
-            ExhibitionImageCase.CASE3 -> 100.dp
-            ExhibitionImageCase.CASE4 -> 128.dp
+            ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> 100.dp
         }
 
     val height =
         when (case) {
             ExhibitionImageCase.CASE1 -> 240.dp
             ExhibitionImageCase.CASE2 -> 150.dp
-            ExhibitionImageCase.CASE3 -> 100.dp
-            ExhibitionImageCase.CASE4 -> 160.dp
+            ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> 100.dp
         }
 
     val borderModifier =
