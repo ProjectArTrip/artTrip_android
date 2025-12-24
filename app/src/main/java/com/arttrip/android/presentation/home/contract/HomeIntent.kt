@@ -78,6 +78,6 @@ sealed interface HomeIntent {
     ) : HomeIntent
 
     data class ExhibitionClicked(
-        val id: Int
+        val id: Int,
     ) : HomeIntent
 }

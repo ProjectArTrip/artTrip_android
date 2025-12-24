@@ -68,15 +68,15 @@ class HomeViewModel
 //            onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, ExhibitionGenre.ContemporaryArt))
         }
 
-    private fun getThisWeekDates(): List<LocalDate> {
-        val today = LocalDate.now()
+        private fun getThisWeekDates(): List<LocalDate> {
+            val today = LocalDate.now()
 
-        val monday = today.with(DayOfWeek.MONDAY)
+            val monday = today.with(DayOfWeek.MONDAY)
 
-        return (0..6).map { offset ->
-            monday.plusDays(offset.toLong())
+            return (0..6).map { offset ->
+                monday.plusDays(offset.toLong())
+            }
         }
-    }
 
         fun onIntent(intent: HomeIntent) {
             when (intent) {
@@ -158,7 +158,6 @@ class HomeViewModel
                                 },
                         )
                     }
-
                 }
 
                 is HomeIntent.SelectDomesticDate -> {
@@ -340,7 +339,7 @@ class HomeViewModel
                             }
 
                             is ApiResult.Success -> {
-                               setDomesticWeekly(day = date, list = result.data)
+                                setDomesticWeekly(day = date, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -362,7 +361,7 @@ class HomeViewModel
                             }
 
                             is ApiResult.Success -> {
-                               setDomesticByGenre(genre = genre, list = result.data)
+                                setDomesticByGenre(genre = genre, list = result.data)
                             }
 
                             is ApiResult.Error -> {
@@ -444,52 +443,61 @@ class HomeViewModel
             }
         }
 
-
-    /** 1) 오늘/추천 리스트 전체 교체 */
-    private fun setDomesticRecommend(list: List<ExhibitionModel>) {
-        _state.update { s ->
-            s.copy(
-                domesticExhibitionData = s.domesticExhibitionData.copy(
-                    recommendExhibit = list
+        /** 1) 오늘/추천 리스트 전체 교체 */
+        private fun setDomesticRecommend(list: List<ExhibitionModel>) {
+            _state.update { s ->
+                s.copy(
+                    domesticExhibitionData =
+                        s.domesticExhibitionData.copy(
+                            recommendExhibit = list,
+                        ),
                 )
-            )
+            }
         }
-    }
 
-    /** 2) 개인화 리스트 전체 교체 */
-    private fun setDomesticPersonalized(list: List<ExhibitionModel>) {
-        _state.update { s ->
-            s.copy(
-                domesticExhibitionData = s.domesticExhibitionData.copy(
-                    personalizedList = list
+        /** 2) 개인화 리스트 전체 교체 */
+        private fun setDomesticPersonalized(list: List<ExhibitionModel>) {
+            _state.update { s ->
+                s.copy(
+                    domesticExhibitionData =
+                        s.domesticExhibitionData.copy(
+                            personalizedList = list,
+                        ),
                 )
-            )
+            }
         }
-    }
 
-    /** 3) 주간 리스트: 특정 요일만 교체 */
-    private fun setDomesticWeekly(day: LocalDate, list: List<ExhibitionModel>) {
-        _state.update { s ->
-            val current = s.domesticExhibitionData
-            s.copy(
-                domesticExhibitionData = current.copy(
-                    weeklyList = current.weeklyList + (day to list)
+        /** 3) 주간 리스트: 특정 요일만 교체 */
+        private fun setDomesticWeekly(
+            day: LocalDate,
+            list: List<ExhibitionModel>,
+        ) {
+            _state.update { s ->
+                val current = s.domesticExhibitionData
+                s.copy(
+                    domesticExhibitionData =
+                        current.copy(
+                            weeklyList = current.weeklyList + (day to list),
+                        ),
                 )
-            )
+            }
         }
-    }
 
-    /** 4) 장르 리스트: 특정 장르만 교체 */
-    private fun setDomesticByGenre(genre: ExhibitionGenre, list: List<ExhibitionModel>) {
-        _state.update { s ->
-            val current = s.domesticExhibitionData
-            s.copy(
-                domesticExhibitionData = current.copy(
-                    genreList = current.genreList + (genre to list)
+        /** 4) 장르 리스트: 특정 장르만 교체 */
+        private fun setDomesticByGenre(
+            genre: ExhibitionGenre,
+            list: List<ExhibitionModel>,
+        ) {
+            _state.update { s ->
+                val current = s.domesticExhibitionData
+                s.copy(
+                    domesticExhibitionData =
+                        current.copy(
+                            genreList = current.genreList + (genre to list),
+                        ),
                 )
-            )
+            }
         }
-    }
 
         private inline fun updateState(crossinline reducer: (HomeState) -> HomeState) {
             _state.update { current -> reducer(current) }

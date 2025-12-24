@@ -8,6 +8,6 @@ sealed interface HomeEffect {
     object NavigateToSearch : HomeEffect
 
     data class NavigateToExhibitionDetail(
-        val exhibitionId: Int
+        val exhibitionId: Int,
     ) : HomeEffect
 }

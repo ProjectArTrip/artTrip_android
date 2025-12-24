@@ -9,20 +9,13 @@ import java.time.LocalDate
 
 data class HomeState(
     val placeTabs: PlaceTab = PlaceTab.Foreign,
-
     val selectedCountry: ForeignCountry = ForeignCountry.Entire,
-
     val foreignExhibitionData: Map<ForeignCountry, HomeSection> =
         ForeignCountry.entries.associateWith { emptyCountryHomeData() },
-
     val foreignSelectedDate: List<LocalDate> = List(ForeignCountry.entries.size) { LocalDate.now() },
-
     val foreignSelectedGenre: List<ExhibitionGenre> = List(ForeignCountry.entries.size) { ExhibitionGenre.ContemporaryArt },
-
     val domesticExhibitionData: HomeSection = emptyCountryHomeData(),
-
     val domesticSelectedDate: LocalDate = LocalDate.now(),
-
     val domesticSelectedGenre: ExhibitionGenre = ExhibitionGenre.ContemporaryArt,
 )
 

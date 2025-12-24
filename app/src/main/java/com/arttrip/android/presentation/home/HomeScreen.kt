@@ -202,7 +202,7 @@ fun HomeBody(
 @Composable
 fun CountryListChip(
     selectedCountry: ForeignCountry,
-    onCountryClick: (ForeignCountry) -> Unit
+    onCountryClick: (ForeignCountry) -> Unit,
 ) {
     Column(
         modifier =
@@ -260,7 +260,11 @@ fun InternationalExhibitionSection(
     val personalizedExhibitList = state.foreignExhibitionData.getValue(state.selectedCountry).personalizedList
 
     val selectedDate = state.foreignSelectedDate[ForeignCountry.entries.indexOf(state.selectedCountry)]
-    val scheduleExhibitionList = state.foreignExhibitionData.getValue(state.selectedCountry).weeklyList.getValue(selectedDate)
+    val scheduleExhibitionList =
+        state.foreignExhibitionData
+            .getValue(state.selectedCountry)
+            .weeklyList
+            .getValue(selectedDate)
 
     val genreChip = state.foreignSelectedGenre[ForeignCountry.entries.indexOf(state.selectedCountry)]
     val genreExhibit =
@@ -278,7 +282,13 @@ fun InternationalExhibitionSection(
         Spacer(
             modifier = Modifier.height(8.dp),
         )
-        RecommendSection(recommendExhibitList)
+        RecommendSection(
+            recommendExhibitList,
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
@@ -287,23 +297,46 @@ fun InternationalExhibitionSection(
         PersonalizedSection(
             name = "손현준",
             exhibitionList = personalizedExhibitList,
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
         )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        WeeklyExhibitSection(weekDates = getThisWeekDates(), selectedDate = selectedDate, exhibitList = scheduleExhibitionList, onMoreClick = {}, onDateClick = {date ->
-            onIntent(HomeIntent.SelectForeignDate(date))
-        })
+        WeeklyExhibitSection(
+            weekDates = getThisWeekDates(),
+            selectedDate = selectedDate,
+            exhibitList = scheduleExhibitionList,
+            onMoreClick = {},
+            onDateClick = { date ->
+                onIntent(HomeIntent.SelectForeignDate(date))
+            },
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        ExhibitionByGenreSection(exhibitionList = genreExhibit, selectedGenre = genreChip, onGenreClick = { genre ->
-            onIntent(HomeIntent.SelectForeignGenre(genre))
-        }, onMoreClick = {})
+        ExhibitionByGenreSection(
+            exhibitionList = genreExhibit,
+            selectedGenre = genreChip,
+            onGenreClick = { genre ->
+                onIntent(HomeIntent.SelectForeignGenre(genre))
+            },
+            onMoreClick = {},
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
@@ -471,7 +504,11 @@ fun DomesticRegionItem(region: DomesticRegion) {
 }
 
 @Composable
-fun RecommendSection(exhibitionList: List<ExhibitionModel>) {
+fun RecommendSection(
+    exhibitionList: List<ExhibitionModel>,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+) {
     Row(
         modifier =
             Modifier
@@ -484,9 +521,15 @@ fun RecommendSection(exhibitionList: List<ExhibitionModel>) {
                     .width(16.dp),
         )
         exhibitionList.forEachIndexed { index, exhibition ->
-            ExhibitionItemCase1(exhibition = exhibition,
-                onExhibitionClick = {id ->},
-                onLikeClick = {id ->})
+            ExhibitionItemCase1(
+                exhibition = exhibition,
+                onExhibitionClick = { id ->
+                    onExhibitionClick(id)
+                },
+                onLikeClick = { id ->
+                    onLikeClick(id)
+                },
+            )
             if (index == exhibitionList.lastIndex) {
                 Spacer(
                     modifier =
@@ -502,6 +545,8 @@ fun RecommendSection(exhibitionList: List<ExhibitionModel>) {
 fun PersonalizedSection(
     name: String,
     exhibitionList: List<ExhibitionModel>,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
 ) {
     Column {
         Row {
@@ -535,9 +580,15 @@ fun PersonalizedSection(
                                 .width(16.dp),
                     )
                 }
-                ExhibitionItemCase2(exhibition = exhibition,
-                    onExhibitionClick = {id ->},
-                    onLikeClick = {id ->})
+                ExhibitionItemCase2(
+                    exhibition = exhibition,
+                    onExhibitionClick = { id ->
+                        onExhibitionClick(id)
+                    },
+                    onLikeClick = { id ->
+                        onLikeClick(id)
+                    },
+                )
                 if (index == exhibitionList.lastIndex) {
                     Spacer(
                         modifier =
@@ -551,17 +602,27 @@ fun PersonalizedSection(
 }
 
 @Composable
-fun WeeklyExhibitSection(weekDates: List<LocalDate>, selectedDate: LocalDate, exhibitList: List<ExhibitionModel>, onMoreClick : () -> Unit, onDateClick: (LocalDate) -> Unit) {
+fun WeeklyExhibitSection(
+    weekDates: List<LocalDate>,
+    selectedDate: LocalDate,
+    exhibitList: List<ExhibitionModel>,
+    onMoreClick: () -> Unit,
+    onDateClick: (LocalDate) -> Unit,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
     ) {
-        SectionTitle(title = "이번주 전시 일정",
+        SectionTitle(
+            title = "이번주 전시 일정",
             onMoreClick = {
                 onMoreClick()
-            })
+            },
+        )
 
         Spacer(
             modifier =
@@ -596,9 +657,15 @@ fun WeeklyExhibitSection(weekDates: List<LocalDate>, selectedDate: LocalDate, ex
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             exhibitList.forEach { exhibition ->
-                ExhibitItemCase3(exhibition = exhibition,
-                    onExhibitionClick = {id ->},
-                    onLikeClick = {id ->})
+                ExhibitItemCase3(
+                    exhibition = exhibition,
+                    onExhibitionClick = { id ->
+                        onExhibitionClick(id)
+                    },
+                    onLikeClick = { id ->
+                        onLikeClick(id)
+                    },
+                )
             }
         }
     }
@@ -609,7 +676,9 @@ fun ExhibitionByGenreSection(
     exhibitionList: List<ExhibitionModel>,
     selectedGenre: ExhibitionGenre,
     onGenreClick: (ExhibitionGenre) -> Unit,
-    onMoreClick: () -> Unit
+    onMoreClick: () -> Unit,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
 ) {
     Column(
         modifier =
@@ -621,7 +690,7 @@ fun ExhibitionByGenreSection(
                 Modifier
                     .padding(horizontal = 24.dp),
             title = "장르별 전시 추천",
-            onMoreClick = onMoreClick
+            onMoreClick = onMoreClick,
         )
 
         Spacer(
@@ -670,18 +739,19 @@ fun ExhibitionByGenreSection(
             modifier =
                 Modifier
                     .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             exhibitionList.forEach { exhibition ->
-                ExhibitionItemCase4(exhibition = exhibition,
-                    onExhibitionClick = {id ->
-
+                ExhibitionItemCase4(
+                    exhibition = exhibition,
+                    onExhibitionClick = { id ->
+                        onExhibitionClick(id)
                     },
-                    onLikeClick = {id ->
-
-                    })
+                    onLikeClick = { id ->
+                        onLikeClick(id)
+                    },
+                )
             }
-
         }
     }
 }
@@ -690,7 +760,7 @@ fun ExhibitionByGenreSection(
 fun SectionTitle(
     modifier: Modifier = Modifier,
     title: String,
-    onMoreClick: () -> Unit
+    onMoreClick: () -> Unit,
 ) {
     Row(
         modifier =
@@ -718,7 +788,7 @@ fun SectionTitle(
 fun ExhibitionItemCase1(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit
+    onLikeClick: (Int) -> Unit,
 ) {
     ExhibitionImage(
         modifier =
@@ -787,7 +857,7 @@ fun ExhibitionItemCase1(
 fun ExhibitionItemCase2(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit
+    onLikeClick: (Int) -> Unit,
 ) {
     Column(
         modifier =
@@ -825,7 +895,7 @@ fun ExhibitionItemCase2(
 fun ExhibitItemCase3(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit
+    onLikeClick: (Int) -> Unit,
 ) {
     Row(
         modifier =
@@ -904,7 +974,7 @@ fun ExhibitItemCase3(
 fun ExhibitionItemCase4(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit
+    onLikeClick: (Int) -> Unit,
 ) {
     Row(
         modifier =
@@ -1034,9 +1104,10 @@ fun ExhibitionImage(
 @Composable
 fun RecommendSectionLoading() {
     Row(
-        modifier = Modifier
-            .padding(start = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            Modifier
+                .padding(start = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(5) {
             RecommendExhibitionSkeleton()
@@ -1050,12 +1121,13 @@ fun PersonalizedSectionSkeleton() {
         TitleSkeleton()
 
         Spacer(
-            modifier = Modifier
-                .height(12.dp)
+            modifier =
+                Modifier
+                    .height(12.dp),
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             repeat(5) {
                 PersonalizedExhibitionSkeleton()
@@ -1069,54 +1141,57 @@ fun ScheduleSectionSkeleton() {
     Column {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             TitleSkeleton()
             Icon(
                 painter = painterResource(R.drawable.ic_more_24),
-                contentDescription = null
+                contentDescription = null,
             )
         }
         Spacer(
-            modifier = Modifier
-                .height(8.dp)
+            modifier =
+                Modifier
+                    .height(8.dp),
         )
-
     }
 }
 
 @Composable
 fun TitleSkeleton() {
     StaticSkeleton(
-        modifier = Modifier
-            .width(160.dp)
-            .height(20.dp),
-        shape = RoundedCornerShape(100.dp)
+        modifier =
+            Modifier
+                .width(160.dp)
+                .height(20.dp),
+        shape = RoundedCornerShape(100.dp),
     )
 }
 
 @Composable
 fun SubTitleSkeleton() {
     StaticSkeleton(
-        modifier = Modifier
-            .width(240.dp)
-            .height(20.dp),
-        shape = RoundedCornerShape(100.dp)
+        modifier =
+            Modifier
+                .width(240.dp)
+                .height(20.dp),
+        shape = RoundedCornerShape(100.dp),
     )
 }
 
 @Composable
 fun DateSkeleton() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         StaticSkeleton(
             modifier = Modifier.size(28.dp),
             shape = CircleShape,
         )
         Spacer(
-            modifier = Modifier
-                .height(4.dp)
+            modifier =
+                Modifier
+                    .height(4.dp),
         )
         StaticSkeleton(
             modifier = Modifier.size(16.dp),
@@ -1128,44 +1203,51 @@ fun DateSkeleton() {
 @Composable
 fun RecommendExhibitionSkeleton() {
     StaticSkeleton(
-        modifier = Modifier
-            .width(180.dp)
-            .height(240.dp),
-        shape = RoundedCornerShape(8.dp)
+        modifier =
+            Modifier
+                .width(180.dp)
+                .height(240.dp),
+        shape = RoundedCornerShape(8.dp),
     )
 }
 
 @Composable
 fun PersonalizedExhibitionSkeleton() {
     Column(
-        modifier = Modifier
-            .width(120.dp)
+        modifier =
+            Modifier
+                .width(120.dp),
     ) {
         StaticSkeleton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            shape = RoundedCornerShape(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+            shape = RoundedCornerShape(8.dp),
         )
         Spacer(
-            modifier = Modifier
-                .height(8.dp)
+            modifier =
+                Modifier
+                    .height(8.dp),
         )
         StaticSkeleton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(14.dp),
-            shape = RoundedCornerShape(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(14.dp),
+            shape = RoundedCornerShape(8.dp),
         )
         Spacer(
-            modifier = Modifier
-                .height(4.dp)
+            modifier =
+                Modifier
+                    .height(4.dp),
         )
         StaticSkeleton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(14.dp),
-            shape = RoundedCornerShape(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(14.dp),
+            shape = RoundedCornerShape(8.dp),
         )
     }
 }
