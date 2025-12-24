@@ -22,12 +22,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +44,7 @@ import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
+import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTag
@@ -258,13 +256,15 @@ fun InternationalExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    val recommendExhibitList = state.countryData.getValue(state.selectedCountry).recommendExhibit
-    val personalizedExhibitList = state.countryData.getValue(state.selectedCountry).personalizedList
-//    val weeklyExhibits = state.countryData.getValue(state.selectedCountry).weeklyList.getValue()
+    val recommendExhibitList = state.foreignExhibitionData.getValue(state.selectedCountry).recommendExhibit
+    val personalizedExhibitList = state.foreignExhibitionData.getValue(state.selectedCountry).personalizedList
 
-    val genreChip = state.foreignGenreChips[ForeignCountry.entries.indexOf(state.selectedCountry)]
+    val selectedDate = state.foreignSelectedDate[ForeignCountry.entries.indexOf(state.selectedCountry)]
+    val scheduleExhibitionList = state.foreignExhibitionData.getValue(state.selectedCountry).weeklyList.getValue(selectedDate)
+
+    val genreChip = state.foreignSelectedGenre[ForeignCountry.entries.indexOf(state.selectedCountry)]
     val genreExhibit =
-        state.countryData
+        state.foreignExhibitionData
             .getValue(state.selectedCountry)
             .genreList
             .getValue(genreChip)
@@ -293,15 +293,17 @@ fun InternationalExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-//        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+        WeeklyExhibitSection(weekDates = getThisWeekDates(), selectedDate = selectedDate, exhibitList = scheduleExhibitionList, onMoreClick = {}, onDateClick = {date ->
+            onIntent(HomeIntent.SelectForeignDate(date))
+        })
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-//        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = genreChip) { genre ->
-//            onIntent(HomeIntent.SelectForeignGenre(genre))
-//        }
+        ExhibitionByGenreSection(exhibitionList = genreExhibit, selectedGenre = genreChip, onGenreClick = { genre ->
+            onIntent(HomeIntent.SelectForeignGenre(genre))
+        }, onMoreClick = {})
         Spacer(
             modifier =
                 Modifier
@@ -310,15 +312,25 @@ fun InternationalExhibitionSection(
     }
 }
 
+private fun getThisWeekDates(): List<LocalDate> {
+    val today = LocalDate.now()
+
+    val monday = today.with(DayOfWeek.MONDAY)
+
+    return (0..6).map { offset ->
+        monday.plusDays(offset.toLong())
+    }
+}
+
 @Composable
 fun DomesticExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    val recommendExhibitList = state.domesticRecommendExhibitList
-    val personalizedExhibitList = state.domesticPersonalizedExhibitList
-    val weeklyExhibits = state.domesticScheduledExhibitList
-    val genreExhibit = state.domesticGenreChips
+//    val recommendExhibitList = state.domesticRecommendExhibitList
+//    val personalizedExhibitList = state.domesticPersonalizedExhibitList
+//    val weeklyExhibits = state.domesticScheduledExhibitList
+//    val genreExhibit = state.domesticSelectedGenre
 
     Column(
         modifier =
@@ -331,7 +343,7 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(16.dp),
         )
-        RecommendSection(recommendExhibitList)
+//        RecommendSection(recommendExhibitList)
         Spacer(
             modifier =
                 Modifier
@@ -343,16 +355,16 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-        PersonalizedSection(
-            name = "손현준",
-            exhibitionList = personalizedExhibitList,
-        )
+//        PersonalizedSection(
+//            name = "손현준",
+//            exhibitionList = personalizedExhibitList,
+//        )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+//        WeeklyExhibitSection(exhibitList = weeklyExhibits)
         Spacer(
             modifier =
                 Modifier
@@ -539,10 +551,7 @@ fun PersonalizedSection(
 }
 
 @Composable
-fun WeeklyExhibitSection(exhibitList: List<ExhibitionModel>) {
-    val weekDates = remember { getThisWeekDates() }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-
+fun WeeklyExhibitSection(weekDates: List<LocalDate>, selectedDate: LocalDate, exhibitList: List<ExhibitionModel>, onMoreClick : () -> Unit, onDateClick: (LocalDate) -> Unit) {
     Column(
         modifier =
             Modifier
@@ -550,7 +559,9 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitionModel>) {
                 .padding(horizontal = 24.dp),
     ) {
         SectionTitle(title = "이번주 전시 일정",
-            onMoreClick = {})
+            onMoreClick = {
+                onMoreClick()
+            })
 
         Spacer(
             modifier =
@@ -570,7 +581,7 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitionModel>) {
                     dayOfWeek = date.dayOfWeek,
                     state = if (date == selectedDate) DayChipStateCase01.Selected else DayChipStateCase01.Unselected,
                 ) {
-                    selectedDate = date
+                    onDateClick(date)
                 }
             }
         }
@@ -590,16 +601,6 @@ fun WeeklyExhibitSection(exhibitList: List<ExhibitionModel>) {
                     onLikeClick = {id ->})
             }
         }
-    }
-}
-
-private fun getThisWeekDates(): List<LocalDate> {
-    val today = LocalDate.now()
-
-    val monday = today.with(DayOfWeek.MONDAY)
-
-    return (0..6).map { offset ->
-        monday.plusDays(offset.toLong())
     }
 }
 
