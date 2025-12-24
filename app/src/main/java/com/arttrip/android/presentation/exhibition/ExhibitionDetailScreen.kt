@@ -34,6 +34,7 @@ import com.arttrip.android.core.ui.component.button.HeartButton
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
+import com.arttrip.android.core.ui.component.tag.AppTagL
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
@@ -94,6 +95,7 @@ fun ExhibitionDetailScreen(
                             height = heroVisibleHeight + contentRadius,
                             url = state.detail.posterUrl,
                             isLoading = state.isLoading,
+                            chip = { AppTagL(status = state.detail.status) },
                         )
 
                         Box(
@@ -190,6 +192,7 @@ private fun ExhibitHeroImage(
     height: Dp,
     url: String?,
     isLoading: Boolean = true,
+    chip: @Composable (() -> Unit),
 ) {
     if (url.isNullOrEmpty() || isLoading) {
         StaticSkeleton(
@@ -199,29 +202,43 @@ private fun ExhibitHeroImage(
         )
         return
     }
-    SubcomposeAsyncImage(
+    Box(
         modifier =
             modifier
                 .fillMaxWidth()
                 .height(height),
-        model = url,
-        contentDescription = "전시 상세 이미지",
-        contentScale = ContentScale.Crop,
-        loading = {
-            StaticSkeleton(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            )
-        },
-        error = {
-            StaticSkeleton(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            )
-        },
-    )
+    ) {
+        SubcomposeAsyncImage(
+            modifier =
+                modifier
+                    .matchParentSize(),
+            model = url,
+            contentDescription = "전시 상세 이미지",
+            contentScale = ContentScale.Crop,
+            loading = {
+                StaticSkeleton(
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                )
+            },
+            error = {
+                StaticSkeleton(
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                )
+            },
+        )
+        Box(
+            modifier =
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 24.dp, top = 16.dp),
+        ) {
+            chip()
+        }
+    }
 }
 
 @Preview(showBackground = true, name = "Exhibition Detail Preview")
