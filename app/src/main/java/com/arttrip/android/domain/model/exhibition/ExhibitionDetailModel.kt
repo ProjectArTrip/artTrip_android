@@ -13,4 +13,5 @@ data class ExhibitionDetailModel(
     val hallPhone: String?,
     val hallLatitude: Double?,
     val hallLongitude: Double?,
+    val isBookmarked: Boolean,
 )

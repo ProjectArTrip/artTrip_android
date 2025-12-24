@@ -136,6 +136,7 @@ class ExhibitionDetailViewModel
                             _state.update {
                                 it.copy(
                                     detail = result.data,
+                                    isBookmarked = result.data.isBookmarked,
                                     isLoading = false,
                                     errorMessage = null,
                                 )

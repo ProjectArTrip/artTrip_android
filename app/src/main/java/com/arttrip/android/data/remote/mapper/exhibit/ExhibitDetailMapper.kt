@@ -17,4 +17,5 @@ fun ExhibitDetailResponseDto.toDomain(): ExhibitionDetailModel =
         hallPhone = hallPhone,
         hallLatitude = hallLatitude,
         hallLongitude = hallLongitude,
+        isBookmarked = favorite,
     )
