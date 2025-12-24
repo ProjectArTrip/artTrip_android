@@ -11,6 +11,7 @@ import java.io.IOException
 class ReviewPagingSource(
     private val dataSource: ReviewDataSource,
     private val exhibitId: Int,
+    private val onTotalCount: (Int) -> Unit,
 ) : PagingSource<Int, ReviewModel>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ReviewModel> {
         return try {
@@ -29,6 +30,9 @@ class ReviewPagingSource(
                 res.result
                     ?: return LoadResult.Error(IllegalStateException("BaseResponseDto.result is null"))
 
+            if (cursor == null) {
+                onTotalCount(body.reviewTotalCount)
+            }
             val items: List<ReviewModel> =
                 body.reviews.map { it.toDomain() }
 

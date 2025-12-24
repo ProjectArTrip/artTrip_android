@@ -8,4 +8,5 @@ data class ExhibitionDetailState(
     val detail: ExhibitionDetailModel? = null,
     val isBookmarked: Boolean = false,
     val isBookmarkSyncing: Boolean = false,
+    val reviewTotalCount: Int? = null,
 )

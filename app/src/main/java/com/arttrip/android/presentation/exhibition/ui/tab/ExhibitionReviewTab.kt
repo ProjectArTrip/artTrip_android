@@ -34,6 +34,7 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.domain.model.review.ReviewModel
 
 fun LazyListScope.exhibitionReviewTab(
+    reviewTotalCount: Int,
     reviews: LazyPagingItems<ReviewModel>,
     onWriteReview: () -> Unit,
 ) {
@@ -45,7 +46,7 @@ fun LazyListScope.exhibitionReviewTab(
     } else {
         item {
             ReviewsHeaderCard(
-                totalCountText = 200,
+                totalCountText = reviewTotalCount,
                 onWriteReview = onWriteReview,
             )
             Spacer(modifier = Modifier.height(8.dp))
