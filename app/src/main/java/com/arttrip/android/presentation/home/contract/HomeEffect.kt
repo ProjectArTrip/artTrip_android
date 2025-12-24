@@ -6,4 +6,8 @@ sealed interface HomeEffect {
     object NavigateToDateFilter : HomeEffect
 
     object NavigateToSearch : HomeEffect
+
+    data class NavigateToExhibitionDetail(
+        val exhibitionId: Int
+    ) : HomeEffect
 }
