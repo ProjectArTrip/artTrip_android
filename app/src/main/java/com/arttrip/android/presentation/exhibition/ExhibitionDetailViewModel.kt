@@ -8,7 +8,6 @@ import androidx.paging.cachedIn
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.domain.usecase.bookmark.AddBookmarkUseCase
-import com.arttrip.android.domain.usecase.bookmark.CheckBookmarkUseCase
 import com.arttrip.android.domain.usecase.bookmark.RemoveBookmarkUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetExhibitionDetailUseCase
 import com.arttrip.android.domain.usecase.review.GetExhibitionReviewsUseCase
@@ -37,7 +36,6 @@ class ExhibitionDetailViewModel
     @Inject
     constructor(
         private val getExhibitionDetailUseCase: GetExhibitionDetailUseCase,
-        private val checkBookmarkUseCase: CheckBookmarkUseCase,
         private val addBookmarkUseCase: AddBookmarkUseCase,
         private val removeBookmarkUseCase: RemoveBookmarkUseCase,
         private val getExhibitionReviewsUseCase: GetExhibitionReviewsUseCase,
@@ -113,7 +111,6 @@ class ExhibitionDetailViewModel
         private fun initialize(exhibitId: Int) {
             userTouchedBookmark = false
             fetchExhibitionDetail(exhibitId)
-            fetchBookmarkStatus(exhibitId)
 
             getExhibitionReviewsUseCase.clearReviewTotalCount()
             _state.update { it.copy(reviewTotalCount = null) }
@@ -150,37 +147,6 @@ class ExhibitionDetailViewModel
                                 it.copy(
                                     isLoading = false,
                                     errorMessage = "전시 상세를 가져오는데 실패했습니다.",
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private fun fetchBookmarkStatus(exhibitId: Int) {
-            viewModelScope.launch {
-                checkBookmarkUseCase(exhibitId).collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                        }
-
-                        is ApiResult.Success -> {
-                            _state.update { s ->
-                                val serverValue = result.data.isBookmarked // (도메인 정리했으면 isBookmarked)
-                                if (userTouchedBookmark || s.isBookmarkSyncing) {
-                                    // 사용자가 이미 만졌으면 서버값으로 isBookmarked 덮지 않음
-                                    s
-                                } else {
-                                    s.copy(isBookmarked = serverValue)
-                                }
-                            }
-                        }
-
-                        is ApiResult.Error -> {
-                            _state.update {
-                                it.copy(
-                                    errorMessage = "즐겨찾기 정보를 가져오는데 실패했습니다.",
                                 )
                             }
                         }

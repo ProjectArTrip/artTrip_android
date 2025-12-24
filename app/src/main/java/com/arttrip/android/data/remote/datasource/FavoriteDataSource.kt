@@ -17,9 +17,4 @@ FavoriteDataSource@Inject
             api.deleteFavorite(
                 exhibitId = exhibitId,
             )
-
-        suspend fun getIsFavorite(exhibitId: Int) =
-            api.getIsFavorite(
-                exhibitId = exhibitId,
-            )
     }

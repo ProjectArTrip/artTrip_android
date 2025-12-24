@@ -3,7 +3,6 @@ package com.arttrip.android.data.repository
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.favorite.toDomain
-import com.arttrip.android.domain.model.bookmark.BookmarkCheckModel
 import com.arttrip.android.domain.model.bookmark.BookmarkResultModel
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
@@ -67,39 +66,6 @@ class BookmarkRepositoryImpl
                     }
                 } catch (e: Exception) {
                     if (e is CancellationException) throw e
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
-                }
-            }
-
-        override fun checkBookmark(exhibitId: Int): Flow<ApiResult<BookmarkCheckModel>> =
-            flow {
-                emit(ApiResult.Loading)
-
-                try {
-                    val baseResponse =
-                        dataSource.getIsFavorite(
-                            exhibitId,
-                        )
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domainModel = dto.toDomain()
-
-                    emit(ApiResult.Success(domainModel))
-                } catch (e: Exception) {
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))
                 }
