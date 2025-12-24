@@ -1030,3 +1030,142 @@ fun ExhibitionImage(
         }
     }
 }
+
+@Composable
+fun RecommendSectionLoading() {
+    Row(
+        modifier = Modifier
+            .padding(start = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        repeat(5) {
+            RecommendExhibitionSkeleton()
+        }
+    }
+}
+
+@Composable
+fun PersonalizedSectionSkeleton() {
+    Column {
+        TitleSkeleton()
+
+        Spacer(
+            modifier = Modifier
+                .height(12.dp)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            repeat(5) {
+                PersonalizedExhibitionSkeleton()
+            }
+        }
+    }
+}
+
+@Composable
+fun ScheduleSectionSkeleton() {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TitleSkeleton()
+            Icon(
+                painter = painterResource(R.drawable.ic_more_24),
+                contentDescription = null
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+
+    }
+}
+
+@Composable
+fun TitleSkeleton() {
+    StaticSkeleton(
+        modifier = Modifier
+            .width(160.dp)
+            .height(20.dp),
+        shape = RoundedCornerShape(100.dp)
+    )
+}
+
+@Composable
+fun SubTitleSkeleton() {
+    StaticSkeleton(
+        modifier = Modifier
+            .width(240.dp)
+            .height(20.dp),
+        shape = RoundedCornerShape(100.dp)
+    )
+}
+
+@Composable
+fun DateSkeleton() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        StaticSkeleton(
+            modifier = Modifier.size(28.dp),
+            shape = CircleShape,
+        )
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
+        StaticSkeleton(
+            modifier = Modifier.size(16.dp),
+            shape = CircleShape,
+        )
+    }
+}
+
+@Composable
+fun RecommendExhibitionSkeleton() {
+    StaticSkeleton(
+        modifier = Modifier
+            .width(180.dp)
+            .height(240.dp),
+        shape = RoundedCornerShape(8.dp)
+    )
+}
+
+@Composable
+fun PersonalizedExhibitionSkeleton() {
+    Column(
+        modifier = Modifier
+            .width(120.dp)
+    ) {
+        StaticSkeleton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp),
+            shape = RoundedCornerShape(8.dp)
+        )
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+        StaticSkeleton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(14.dp),
+            shape = RoundedCornerShape(8.dp)
+        )
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
+        StaticSkeleton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(14.dp),
+            shape = RoundedCornerShape(8.dp)
+        )
+    }
+}
