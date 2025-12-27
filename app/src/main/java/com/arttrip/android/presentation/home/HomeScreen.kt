@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -57,6 +58,7 @@ import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
+import com.arttrip.android.core.ui.component.chip.CountryChip
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
@@ -387,6 +389,8 @@ fun ForeignExhibitionSection(
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
             onLikeClick = {},
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry
         )
         Spacer(
             modifier =
@@ -612,6 +616,8 @@ fun RecommendSection(
     exhibitionList: List<ExhibitionModel>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry
 ) {
     Row(
         modifier =
@@ -633,6 +639,8 @@ fun RecommendSection(
                 onLikeClick = { id ->
                     onLikeClick(id)
                 },
+                placeTab = placeTab,
+                foreignCountry = foreignCountry
             )
             if (index == exhibitionList.lastIndex) {
                 Spacer(
@@ -893,6 +901,8 @@ fun ExhibitionItemCase1(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry
 ) {
     ExhibitionImage(
         modifier =
@@ -903,6 +913,14 @@ fun ExhibitionItemCase1(
         url = exhibition.posterUrl,
         case = ExhibitionImageCase.CASE1,
     ) {
+        if (placeTab == PlaceTab.Foreign && foreignCountry == ForeignCountry.Entire) {
+            CountryChip(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .offset(x = 10.dp, y = 16.dp),
+                label = exhibition.place
+            )
+        }
         LikeButton(
             modifier =
                 Modifier
