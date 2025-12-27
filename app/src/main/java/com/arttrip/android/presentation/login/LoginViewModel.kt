@@ -57,15 +57,27 @@ class LoginViewModel
                     }
                 }
 
-                LoginIntent.DismissError -> {
+                LoginIntent.ClickGoogleLogin -> {
                     _state.update { state -> reduce(state, intent) }
+                    viewModelScope.launch {
+                        _effect.emit(LoginEffect.LaunchGoogleLogin)
+                    }
                 }
 
-                LoginIntent.ClickGoogleLogin -> {
-                    // TODO: Google 로그인 연동 시 실제 로직으로 교체
+                is LoginIntent.GoogleLoginSuccess -> {
+                    loginWithIdToken(LoginProvider.GOOGLE, intent.idToken)
+                }
+
+                is LoginIntent.GoogleLoginFailure -> {
+                    intent.throwable?.let { Log.e(TAG, "Google login failed", it) }
+                    _state.update { state -> reduce(state, intent) }
                     viewModelScope.launch {
-                        _effect.emit(LoginEffect.NavigateToIntro)
+                        _effect.emit(LoginEffect.ShowError("구글 로그인에 실패했어요. 다시 시도해 주세요."))
                     }
+                }
+
+                LoginIntent.DismissError -> {
+                    _state.update { state -> reduce(state, intent) }
                 }
             }
         }
@@ -75,7 +87,7 @@ class LoginViewModel
             intent: LoginIntent,
         ): LoginState =
             when (intent) {
-                LoginIntent.ClickKakaoLogin ->
+                LoginIntent.ClickKakaoLogin, LoginIntent.ClickGoogleLogin ->
                     state.copy(
                         isLoading = true,
                         errorMessage = null,
@@ -86,6 +98,11 @@ class LoginViewModel
                         isLoading = false,
                         errorMessage = "카카오 로그인에 실패했어요. 다시 시도해 주세요.",
                     )
+                is LoginIntent.GoogleLoginFailure ->
+                    state.copy(
+                        isLoading = false,
+                        errorMessage = "구글 로그인에 실패했어요. 다시 시도해 주세요.",
+                    )
 
                 LoginIntent.DismissError ->
                     state.copy(
@@ -93,7 +110,7 @@ class LoginViewModel
                     )
 
                 is LoginIntent.KakaoLoginSuccess,
-                LoginIntent.ClickGoogleLogin,
+                is LoginIntent.GoogleLoginSuccess,
                 -> state
             }
 

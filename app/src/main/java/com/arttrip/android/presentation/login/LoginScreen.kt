@@ -60,7 +60,7 @@ fun LoginScreen(
             onClick = {
                 onIntent(LoginIntent.ClickGoogleLogin)
             },
-            enabled = true,
+            enabled = !state.isLoading,
         )
     }
 }
