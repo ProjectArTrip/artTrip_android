@@ -10,4 +10,5 @@ data class ExhibitionModel(
     val period: String,
     val hallName: String,
     val place: String,
+    val isBookmarked: Boolean
 )

@@ -11,4 +11,5 @@ data class ForeignExhibitResponseDto(
     val exhibitPeriod: String,
     val hallName: String,
     val countryName: String,
+    val favorite: Boolean
 )

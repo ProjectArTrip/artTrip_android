@@ -29,6 +29,7 @@ fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
         period = exhibitPeriod,
         hallName = hallName,
         place = countryName,
+        isBookmarked = favorite
     )
 
 fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
@@ -42,6 +43,7 @@ fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
         period = exhibitPeriod,
         hallName = hallName,
         place = regionName,
+        isBookmarked = favorite
     )
 
 fun String.toExhibitStatus(): ExhibitionStatus =

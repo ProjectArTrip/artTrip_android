@@ -926,7 +926,7 @@ fun ExhibitionItemCase1(
                 Modifier
                     .align(Alignment.TopEnd)
                     .offset(x = (-16).dp, y = (16).dp),
-            isSelected = true,
+            isSelected = exhibition.isBookmarked,
         ) {
             onLikeClick(exhibition.id)
         }
@@ -995,7 +995,7 @@ fun ExhibitionItemCase2(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = true,
+                isSelected = exhibition.isBookmarked,
             ) {
                 onLikeClick(exhibition.id)
             }
@@ -1036,7 +1036,7 @@ fun ExhibitItemCase3(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = true,
+                isSelected = exhibition.isBookmarked,
             ) {
                 onLikeClick(exhibition.id)
             }
@@ -1115,7 +1115,7 @@ fun ExhibitionItemCase4(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = true,
+                isSelected = exhibition.isBookmarked,
             ) {
                 onLikeClick(exhibition.id)
             }
