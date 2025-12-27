@@ -16,5 +16,5 @@ class GetForeignGenreExhibitionListUseCase
         operator fun invoke(
             country: ForeignCountry,
             genre: ExhibitionGenre,
-        ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignGenreExhibitList(country = country, genre = genre)
+        ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignGenreExhibitList(country = country, genre = genre, width = 200, height = 200, format = "png")
     }

@@ -16,5 +16,5 @@ class GetForeignScheduledExhibitionListUseCase
         operator fun invoke(
             country: ForeignCountry,
             date: LocalDate,
-        ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignScheduleExhibitList(country = country, date = date)
+        ): Flow<ApiResult<List<ExhibitionModel>>> = homeRepository.getForeignScheduleExhibitList(country = country, date = date, width = 200, height = 200, format = "png")
     }
