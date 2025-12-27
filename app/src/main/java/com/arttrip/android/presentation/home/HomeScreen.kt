@@ -1276,6 +1276,65 @@ fun ScheduleSectionSkeleton() {
                 Modifier
                     .height(8.dp),
         )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            repeat(7) {
+                DateSkeleton()
+            }
+        }
+        Spacer(
+            modifier =
+                Modifier
+                    .height(20.dp),
+        )
+        ScheduleAndGenreExhibitionSkeleton()
+        Spacer(
+            modifier =
+                Modifier
+                    .height(8.dp),
+        )
+        ScheduleAndGenreExhibitionSkeleton()
+    }
+}
+
+@Composable
+fun GenreSectionSkeleton() {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TitleSkeleton()
+            Icon(
+                painter = painterResource(R.drawable.ic_more_24),
+                contentDescription = null,
+            )
+        }
+        Spacer(
+            modifier =
+                Modifier
+                    .height(16.dp),
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            repeat(7) {
+                ChipSkeleton()
+            }
+        }
+        Spacer(
+            modifier =
+                Modifier
+                    .height(16.dp),
+        )
+        ScheduleAndGenreExhibitionSkeleton()
+        Spacer(
+            modifier =
+                Modifier
+                    .height(8.dp),
+        )
+        ScheduleAndGenreExhibitionSkeleton()
     }
 }
 
@@ -1320,6 +1379,16 @@ fun DateSkeleton() {
             shape = CircleShape,
         )
     }
+}
+
+@Composable
+fun ChipSkeleton() {
+    StaticSkeleton(
+        modifier = Modifier
+            .width(76.dp)
+            .height(32.dp),
+        shape = RoundedCornerShape(100.dp),
+    )
 }
 
 @Composable
@@ -1371,5 +1440,69 @@ fun PersonalizedExhibitionSkeleton() {
                     .height(14.dp),
             shape = RoundedCornerShape(8.dp),
         )
+    }
+}
+
+@Composable
+fun ScheduleAndGenreExhibitionSkeleton() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        StaticSkeleton(
+            modifier =
+                Modifier
+                    .width(100.dp)
+                    .height(100.dp),
+            shape = RoundedCornerShape(8.dp),
+        )
+        Spacer(
+            modifier = Modifier
+                .width(12.dp)
+        )
+        Column {
+            StaticSkeleton(
+                modifier =
+                    Modifier
+                        .width(64.dp)
+                        .height(16.dp),
+                shape = RoundedCornerShape(10.dp),
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(4.dp),
+            )
+            StaticSkeleton(
+                modifier =
+                    Modifier
+                        .width(160.dp)
+                        .height(16.dp),
+                shape = RoundedCornerShape(10.dp),
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(4.dp),
+            )
+            StaticSkeleton(
+                modifier =
+                    Modifier
+                        .width(120.dp)
+                        .height(14.dp),
+                shape = RoundedCornerShape(10.dp),
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(2.dp),
+            )
+            StaticSkeleton(
+                modifier =
+                    Modifier
+                        .width(120.dp)
+                        .height(14.dp),
+                shape = RoundedCornerShape(10.dp),
+            )
+        }
     }
 }
