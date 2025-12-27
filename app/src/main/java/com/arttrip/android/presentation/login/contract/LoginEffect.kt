@@ -3,6 +3,8 @@ package com.arttrip.android.presentation.login.contract
 sealed interface LoginEffect {
     data object LaunchKakaoLogin : LoginEffect
 
+    data object LaunchGoogleLogin : LoginEffect
+
     data object NavigateToIntro : LoginEffect
 
     data object NavigateToHome : LoginEffect
