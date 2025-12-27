@@ -1,6 +1,11 @@
 package com.arttrip.android.presentation.home
 
+import android.os.SystemClock
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -25,6 +30,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,19 +92,102 @@ fun HomeScreen(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
+    val foreignScrollState = rememberScrollState()
+    var foreignLastScroll by remember { mutableIntStateOf(0) }
+    var foreignLastToggleTime by remember { mutableLongStateOf(0L) }
+
+    val domesticScrollState = rememberScrollState()
+    var domesticLastScroll by remember { mutableIntStateOf(0) }
+    var domesticLastToggleTime by remember { mutableLongStateOf(0L) }
+
+
+
+    var appBarVisible by remember { mutableStateOf(true) }
+
+    val thresholdPx = 60
+    val debounceMs = 250L
+
+    LaunchedEffect(foreignScrollState) {
+        snapshotFlow { foreignScrollState.value }
+            .collect { current ->
+                val atTop = current == 0
+                val atBottom = current == foreignScrollState.maxValue
+                if (atTop) appBarVisible = true
+
+                // 양 끝 바운스 구간 흔들림에 의한 애니메이션 방지
+                if (atTop || atBottom) {
+                    foreignLastScroll = current
+                    return@collect
+                }
+
+                val delta = current - foreignLastScroll
+                if (kotlin.math.abs(delta) < thresholdPx) return@collect
+
+                val now = SystemClock.elapsedRealtime()
+                if (now - foreignLastToggleTime < debounceMs) {
+                    foreignLastScroll = current
+                    return@collect
+                }
+
+                val scrollingDown = delta > 0
+                appBarVisible = !scrollingDown
+
+                foreignLastToggleTime = now
+                foreignLastScroll = current
+            }
+    }
+
+    LaunchedEffect(domesticScrollState) {
+        snapshotFlow { domesticScrollState.value }
+            .collect { current ->
+                val atTop = current == 0
+                val atBottom = current == domesticScrollState.maxValue
+                if (atTop) appBarVisible = true
+
+                // 양 끝 바운스 구간 흔들림에 의한 애니메이션 방지
+                if (atTop || atBottom) {
+                    domesticLastScroll = current
+                    return@collect
+                }
+
+                val delta = current - domesticLastScroll
+                if (kotlin.math.abs(delta) < thresholdPx) return@collect
+
+                val now = SystemClock.elapsedRealtime()
+                if (now - domesticLastToggleTime < debounceMs) {
+                    domesticLastScroll = current
+                    return@collect
+                }
+
+                val scrollingDown = delta > 0
+                appBarVisible = !scrollingDown
+
+                domesticLastToggleTime = now
+                domesticLastScroll = current
+            }
+    }
+
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
     ) {
-        HomeAppBar(
-            onIntent = onIntent,
-        )
+        AnimatedVisibility(
+            visible = appBarVisible,
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
+            HomeAppBar(
+                onIntent = onIntent,
+            )
+        }
 
         HomeBody(
             state = state,
             onIntent = onIntent,
+            foreignScrollState = foreignScrollState,
+            domesticScrollState = domesticScrollState
         )
     }
 }
@@ -156,6 +252,8 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
 fun HomeBody(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
+    foreignScrollState: ScrollState,
+    domesticScrollState: ScrollState
 ) {
     val selectedIndex = state.placeTabs.toIndex()
 
@@ -193,8 +291,8 @@ fun HomeBody(
         }
 
         when (state.placeTabs) {
-            PlaceTab.Foreign -> InternationalExhibitionSection(state, onIntent)
-            PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent)
+            PlaceTab.Foreign -> ForeignExhibitionSection(state, onIntent, foreignScrollState)
+            PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent, domesticScrollState)
         }
     }
 }
@@ -252,9 +350,10 @@ fun CountryListChip(
 }
 
 @Composable
-fun InternationalExhibitionSection(
+fun ForeignExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
+    scrollState: ScrollState
 ) {
     val recommendExhibitList = state.foreignExhibitionData.getValue(state.selectedCountry).recommendExhibit
     val personalizedExhibitList = state.foreignExhibitionData.getValue(state.selectedCountry).personalizedList
@@ -277,7 +376,7 @@ fun InternationalExhibitionSection(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
     ) {
         Spacer(
             modifier = Modifier.height(8.dp),
@@ -359,6 +458,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 fun DomesticExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
+    scrollState: ScrollState
 ) {
 //    val recommendExhibitList = state.domesticRecommendExhibitList
 //    val personalizedExhibitList = state.domesticPersonalizedExhibitList
@@ -369,8 +469,12 @@ fun DomesticExhibitionSection(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
     ) {
+        Spacer(
+            modifier = Modifier
+                .height(2000.dp)
+        )
         Spacer(
             modifier =
                 Modifier
