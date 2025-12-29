@@ -60,7 +60,7 @@ fun AppButton(
     modifier: Modifier = Modifier,
     variant: AppButtonVariant = AppButtonVariant.Primary,
     onClick: () -> Unit,
-    enabled: Boolean,
+    enabled: Boolean = true,
     text: String,
 ) {
     val colors =
