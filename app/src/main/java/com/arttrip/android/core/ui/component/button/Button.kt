@@ -37,43 +37,92 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.Pretendard
 
 /**
- *### Figma: btn(default/disabled)
- *  - `default` == `enabled`
- *  - `disabled` == `!enabled`
+ * AppButton 스타일 구분.
+ *
+ * - [Primary]: Figma `btn` 디자인 컴포넌트
+ * - [Secondary]: 모달 CTA(2버튼)에서 사용하는 보조 버튼 스타일(프로젝트 커스텀)
+ */
+enum class AppButtonVariant {
+    Primary,
+    Secondary,
+}
+
+/**
+ * ### Figma: btn(default/disabled)
+ *
+ * 공통 버튼 컴포넌트.
+ * @param variant
+ * - 기본값은 [AppButtonVariant.Primary] (Figma `btn`)
+ * - [AppButtonVariant.Secondary]는 모달 CTA에서 쓰는 보조 버튼 스타일(커스텀)
  */
 @Composable
 fun AppButton(
     modifier: Modifier = Modifier,
+    variant: AppButtonVariant = AppButtonVariant.Primary,
     onClick: () -> Unit,
-    enabled: Boolean,
+    enabled: Boolean = true,
     text: String,
 ) {
+    val colors =
+        when (variant) {
+            AppButtonVariant.Primary -> AppButtonDefaults.PrimaryColors
+            AppButtonVariant.Secondary -> AppButtonDefaults.SecondaryColors
+        }
+
+    val border =
+        when (variant) {
+            AppButtonVariant.Primary -> null
+            AppButtonVariant.Secondary -> AppButtonDefaults.SecondaryBorder
+        }
     Button(
         onClick = onClick,
         enabled = enabled,
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(52.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = AppColor.Primary300,
-                contentColor = AppColor.TextWhite,
-                disabledContainerColor = AppColor.Gray100,
-                disabledContentColor = AppColor.TextTertiary,
-            ),
-        contentPadding =
-            PaddingValues(
-                top = 9.dp,
-                bottom = 9.dp,
-            ),
+                .height(AppButtonDefaults.Height),
+        shape = AppButtonDefaults.Shape,
+        colors = colors,
+        border = border,
+        contentPadding = AppButtonDefaults.ContentPadding,
     ) {
         Text(
             text = text,
             style = AppTextStyle.Title02Bold,
         )
     }
+}
+
+internal object AppButtonDefaults {
+    val Height = 52.dp
+    val Shape = RoundedCornerShape(12.dp)
+
+    val ContentPadding =
+        PaddingValues(
+            top = 9.dp,
+            bottom = 9.dp,
+        )
+
+    val PrimaryColors
+        @Composable get() =
+            ButtonDefaults.buttonColors(
+                containerColor = AppColor.Primary300,
+                contentColor = AppColor.TextWhite,
+                disabledContainerColor = AppColor.Gray100,
+                disabledContentColor = AppColor.TextTertiary,
+            )
+
+    val SecondaryColors
+        @Composable get() =
+            ButtonDefaults.buttonColors(
+                containerColor = AppColor.Gray0,
+                contentColor = AppColor.TextPrimary,
+                disabledContainerColor = AppColor.Gray0,
+                disabledContentColor = AppColor.TextTertiary,
+            )
+
+    val SecondaryBorder: BorderStroke
+        @Composable get() = BorderStroke(1.dp, AppColor.Gray100)
 }
 
 /**
@@ -201,7 +250,14 @@ private fun PreviewAllButtons_Interactive() {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             AppButton(
-                text = if (appBtnEnabled) "Btn (Enabled)" else "Btn (Disabled)",
+                text = if (appBtnEnabled) "Primary (Enabled)" else "Primary (Disabled)",
+                enabled = appBtnEnabled,
+                onClick = { appBtnEnabled = !appBtnEnabled },
+            )
+
+            AppButton(
+                variant = AppButtonVariant.Secondary,
+                text = if (appBtnEnabled) "Secondary (Enabled)" else "Secondary (Disabled)",
                 enabled = appBtnEnabled,
                 onClick = { appBtnEnabled = !appBtnEnabled },
             )

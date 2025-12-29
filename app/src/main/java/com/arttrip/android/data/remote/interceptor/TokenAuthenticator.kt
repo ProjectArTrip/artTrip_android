@@ -38,7 +38,10 @@ class TokenAuthenticator
             if (!shouldAttemptRefresh(response)) return null
             if (response.code != 401) return null
 
-            Log.d(TAG, "🔥 Access Token 만료 감지 → 동기화 블록 진입")
+            Log.d(
+                TAG,
+                "401 from ${response.request.method} ${response.request.url} retry=${response.retryCount}",
+            )
 
             synchronized(this) {
                 val currentAccessToken = tokenManager.getAccessToken()
