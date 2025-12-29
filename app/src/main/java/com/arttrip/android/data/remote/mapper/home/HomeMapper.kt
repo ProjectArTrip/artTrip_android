@@ -28,7 +28,7 @@ fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = countryName,
+        place = countryName ?: "",
         isBookmarked = favorite
     )
 
