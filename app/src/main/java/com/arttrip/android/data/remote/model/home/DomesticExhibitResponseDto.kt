@@ -1,10 +1,10 @@
 package com.arttrip.android.data.remote.model.home
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 
 data class DomesticExhibitResponseDto(
-    @SerialName("exhibit_id")
-    val id: Int,
+    @SerializedName("exhibit_id")
+    val exhibitId: Int,
     val title: String,
     val posterUrl: String,
     val status: String,

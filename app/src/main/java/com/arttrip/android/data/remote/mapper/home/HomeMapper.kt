@@ -22,7 +22,7 @@ fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitionModel> = t
 
 fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
     ExhibitionModel(
-        id = id,
+        id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
@@ -36,7 +36,7 @@ fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> =
 
 fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
     ExhibitionModel(
-        id = id,
+        id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
