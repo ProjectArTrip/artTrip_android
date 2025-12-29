@@ -1,6 +1,7 @@
 package com.arttrip.android.presentation.home
 
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -286,7 +287,7 @@ fun HomeBody(
         // 해외 전시 탭만 국가 리스트 활성화
         if (state.placeTabs == PlaceTab.Foreign) {
             CountryListChip(state.selectedCountry) { country ->
-                onIntent(HomeIntent.SelectCountry(country))
+                onIntent(HomeIntent.CountryClicked(country))
             }
         } else {
             Spacer(
@@ -370,7 +371,7 @@ fun ForeignExhibitionSection(
     val personalizedState = homeSection.personalizedList
 
     val selectedDate =
-        state.foreignSelectedDate[state.selectedCountry.ordinal]
+        state.foreignSelectedDate[selectedCountry.ordinal]
     val scheduleState: SectionLoadState<List<ExhibitionModel>> =
         homeSection.scheduleList[selectedDate] ?: SectionLoadState.Idle
 

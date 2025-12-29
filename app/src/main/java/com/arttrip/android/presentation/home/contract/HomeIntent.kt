@@ -11,10 +11,6 @@ sealed interface HomeIntent {
         val tab: PlaceTab,
     ) : HomeIntent
 
-    data class SelectCountry(
-        val country: ForeignCountry,
-    ) : HomeIntent
-
     data class CountryClicked(
         val country: ForeignCountry,
     ) : HomeIntent
