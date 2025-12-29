@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
@@ -65,15 +66,19 @@ class HomeViewModel
                 is HomeIntent.SelectTab -> {
                     _state.update { it.copy(placeTabs = intent.tab) }
                 }
-                is HomeIntent.SelectCountry -> {
-                    _state.update { it.copy(selectedCountry = intent.country) }
-                }
 
                 is HomeIntent.CountryClicked -> {
-                    loadForeignRecommendExhibitList(intent.country)
-                    loadForeignPersonalizedExhibitList(intent.country)
-                    loadForeignScheduledExhibitList(country = intent.country, date = LocalDate.now())
-                    loadForeignGenreExhibitList(country = intent.country, genre = ExhibitionGenre.ContemporaryArt)
+                    val newCountry = intent.country
+
+                    _state.update { it.copy(selectedCountry = intent.country) }
+
+                    val date = _state.value.foreignSelectedDate[intent.country.ordinal]
+                    val genre = _state.value.foreignSelectedGenre[intent.country.ordinal]
+
+                    loadForeignRecommendExhibitList(newCountry)
+                    loadForeignPersonalizedExhibitList(newCountry)
+                    loadForeignScheduledExhibitList(newCountry, date)
+                    loadForeignGenreExhibitList(newCountry, genre)
                 }
 
                 is HomeIntent.AlertIconClicked -> {
