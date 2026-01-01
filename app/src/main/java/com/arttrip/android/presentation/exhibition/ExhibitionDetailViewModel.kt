@@ -113,9 +113,21 @@ class ExhibitionDetailViewModel
                 }
 
                 ExhibitionDetailIntent.WriteReviewConfirmClicked -> {
-                    val id = state.value.detail?.exhibitId ?: return
+                    val detail = state.value.detail
+
+                    if (detail == null) return
                     _state.update { it.copy(writeReviewDialogVisible = false) }
-                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.NavigateToWriteReview(id)) }
+
+                    viewModelScope.launch {
+                        _effect.emit(
+                            ExhibitionDetailEffect.NavigateToWriteReview(
+                                exhibitId = detail.exhibitId,
+                                title = detail.title,
+                                hallName = detail.hallName.orEmpty(),
+                                posterUrl = detail.posterUrl,
+                            ),
+                        )
+                    }
                 }
             }
         }

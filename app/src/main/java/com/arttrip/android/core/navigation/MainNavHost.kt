@@ -6,6 +6,8 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,6 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
+import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ReviewWriteRoute
+import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute
@@ -74,9 +78,42 @@ fun MainNavHost(
                 innerPadding,
                 exhibitId,
                 onBack = { navController.popBackStack() },
-                onNavigate = { targetRoute ->
-                    navController.navigate(targetRoute)
+                onNavigateToReviewWrite = { id, title, hallName, posterUrl ->
+                    val prefill =
+                        ReviewWritePrefill(
+                            exhibitId = id,
+                            title = title,
+                            hallName = hallName,
+                            posterUrl = posterUrl,
+                        )
+
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(NavKeys.REVIEW_WRITE_PREFILL, prefill)
+
+                    navController.navigate(MainRoute.reviewWrite(id))
                 },
+            )
+        }
+
+        composable(
+            route = MainRoute.REVIEW_WRITE,
+        ) { _ ->
+            val handle = navController.previousBackStackEntry?.savedStateHandle
+
+            val prefill =
+                remember {
+                    handle?.get<ReviewWritePrefill>(NavKeys.REVIEW_WRITE_PREFILL)
+                }
+
+            LaunchedEffect(Unit) {
+                handle?.remove<ReviewWritePrefill>(NavKeys.REVIEW_WRITE_PREFILL)
+            }
+
+            ReviewWriteRoute(
+                innerPadding = innerPadding,
+                prefill = prefill,
+                onBack = { navController.popBackStack() },
             )
         }
     }

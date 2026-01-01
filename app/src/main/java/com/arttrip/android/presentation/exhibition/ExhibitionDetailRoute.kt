@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.navigation.MainRoute
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
 
@@ -16,7 +15,7 @@ fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
     exhibitId: Int,
     onBack: () -> Unit,
-    onNavigate: (String) -> Unit,
+    onNavigateToReviewWrite: (exhibitId: Int, title: String, hallName: String, posterUrl: String?) -> Unit,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -31,7 +30,12 @@ fun ExhibitionDetailRoute(
                     onBack()
                 }
                 is ExhibitionDetailEffect.NavigateToWriteReview -> {
-                    onNavigate(MainRoute.reviewWrite(effect.exhibitId))
+                    onNavigateToReviewWrite(
+                        effect.exhibitId,
+                        effect.title,
+                        effect.hallName,
+                        effect.posterUrl,
+                    )
                 }
                 is ExhibitionDetailEffect.ShowError -> {
                     // 스낵바 / 토스트 등
