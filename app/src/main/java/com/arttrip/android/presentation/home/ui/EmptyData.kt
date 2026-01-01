@@ -59,9 +59,9 @@ fun EmptyScheduleExhibition() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
             .background(color = AppColor.SubLightGray)
             .padding(top = 24.dp, bottom = 28.dp)
-            .clip(RoundedCornerShape(8.dp))
     ) {
         Column(
             modifier = Modifier
@@ -91,9 +91,10 @@ fun EmptyGenreExhibition(genre: ExhibitionGenre) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
             .background(color = AppColor.SubLightGray)
             .padding(top = 24.dp, bottom = 28.dp)
-            .clip(RoundedCornerShape(8.dp))
+
     ) {
         Column(
             modifier = Modifier
