@@ -473,10 +473,14 @@ fun DomesticExhibitionSection(
     onIntent: (HomeIntent) -> Unit,
     scrollState: ScrollState
 ) {
-//    val recommendExhibitList = state.domesticRecommendExhibitList
-//    val personalizedExhibitList = state.domesticPersonalizedExhibitList
-//    val weeklyExhibits = state.domesticScheduledExhibitList
-//    val genreExhibit = state.domesticSelectedGenre
+    val section = state.domesticExhibitionData
+    val selectedDate = state.domesticSelectedDate
+    val selectedGenre = state.domesticSelectedGenre
+
+    val recommendState = section.recommendExhibit
+    val personalizedState = section.personalizedList
+    val scheduleState = section.scheduleList[selectedDate] ?: SectionLoadState.Idle
+    val genreState = section.genreList[selectedGenre] ?: SectionLoadState.Idle
 
     Column(
         modifier =
@@ -485,15 +489,19 @@ fun DomesticExhibitionSection(
                 .verticalScroll(scrollState),
     ) {
         Spacer(
-            modifier = Modifier
-                .height(2000.dp)
-        )
-        Spacer(
             modifier =
                 Modifier
                     .height(16.dp),
         )
-//        RecommendSection(recommendExhibitList)
+        RecommendSection(
+            recommendState,
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry
+        )
         Spacer(
             modifier =
                 Modifier
@@ -505,24 +513,53 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-//        PersonalizedSection(
-//            name = "손현준",
-//            exhibitionList = personalizedExhibitList,
-//        )
+        PersonalizedSection(
+            name = "손현준",
+            sectionState = personalizedState,
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-//        WeeklyExhibitSection(exhibitList = weeklyExhibits)
+        WeeklyExhibitSection(
+            weekDates = getThisWeekDates(),
+            selectedDate = selectedDate,
+            sectionState = scheduleState,
+            onMoreClick = {},
+            onDateClick = { date ->
+                onIntent(HomeIntent.SelectDomesticDate(date))
+
+                onIntent(HomeIntent.LoadDomesticScheduledExhibitList(DomesticRegion.Entire, date))
+            },
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
                     .height(32.dp),
         )
-//        ExhibitionByGenreSection(exhibitList = genreExhibit, selectedGenre = state.domesticGenreChips) { genre ->
-//            onIntent(HomeIntent.SelectDomesticGenre(genre))
-//        }
+        ExhibitionByGenreSection(
+            selectedGenre = selectedGenre,
+            sectionState = genreState,
+            onGenreClick = { genre ->
+                onIntent(HomeIntent.SelectDomesticGenre(genre))
+
+                onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, genre))
+            },
+            onMoreClick = {},
+            onExhibitionClick = { id ->
+                onIntent(HomeIntent.ExhibitionClicked(id))
+            },
+            onLikeClick = {},
+        )
         Spacer(
             modifier =
                 Modifier
@@ -909,7 +946,13 @@ fun ExhibitionByGenreSection(
             }
             is SectionLoadState.Success -> {
                 if (sectionState.data.isEmpty()) {
-                    EmptyGenreExhibition(selectedGenre)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        EmptyGenreExhibition(selectedGenre)
+                    }
                 } else {
                     Column(
                         modifier =
