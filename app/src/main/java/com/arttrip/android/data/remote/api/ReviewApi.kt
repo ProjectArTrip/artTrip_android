@@ -13,5 +13,8 @@ interface ReviewApi {
         @Path("exhibitId") exhibitId: Int,
         @Query("cursor") cursor: Int? = null,
         @Query("size") size: Int = 10,
+        @Query("w") w: Int = 200,
+        @Query("h") h: Int = 200,
+        @Query("f") f: String = "webp",
     ): BaseResponseDto<ReviewDetailPageResDto>
 }
