@@ -70,6 +70,7 @@ import com.arttrip.android.presentation.home.contract.HomeState
 import com.arttrip.android.presentation.home.model.SectionLoadState
 import com.arttrip.android.presentation.home.ui.EmptyGenreExhibition
 import com.arttrip.android.presentation.home.ui.EmptyPersonalizedExhibition
+import com.arttrip.android.presentation.home.ui.EmptyRecommendExhibition
 import com.arttrip.android.presentation.home.ui.EmptyScheduleExhibition
 import com.arttrip.android.presentation.home.ui.GenreSectionLoading
 import com.arttrip.android.presentation.home.ui.RecommendSectionLoading
@@ -673,35 +674,45 @@ fun RecommendSection(
             RecommendSectionLoading()
         }
         is SectionLoadState.Success -> {
-            Row(
-                modifier =
-                    Modifier
-                        .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Spacer(
+            if (sectionState.data.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                ) {
+                    EmptyRecommendExhibition()
+                }
+            } else {
+                Row(
                     modifier =
                         Modifier
-                            .width(16.dp),
-                )
-                sectionState.data.forEach { exhibition ->
-                    ExhibitionItemCase1(
-                        exhibition = exhibition,
-                        onExhibitionClick = { id ->
-                            onExhibitionClick(id)
-                        },
-                        onLikeClick = { id ->
-                            onLikeClick(id)
-                        },
-                        placeTab = placeTab,
-                        foreignCountry = foreignCountry
+                            .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .width(16.dp),
+                    )
+                    sectionState.data.forEach { exhibition ->
+                        ExhibitionItemCase1(
+                            exhibition = exhibition,
+                            onExhibitionClick = { id ->
+                                onExhibitionClick(id)
+                            },
+                            onLikeClick = { id ->
+                                onLikeClick(id)
+                            },
+                            placeTab = placeTab,
+                            foreignCountry = foreignCountry
+                        )
+                    }
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .width(16.dp),
                     )
                 }
-                Spacer(
-                    modifier =
-                        Modifier
-                            .width(16.dp),
-                )
             }
         }
         is SectionLoadState.Error -> {
