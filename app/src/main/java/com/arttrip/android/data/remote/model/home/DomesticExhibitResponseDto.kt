@@ -11,5 +11,5 @@ data class DomesticExhibitResponseDto(
     val exhibitPeriod: String,
     val hallName: String,
     val regionName: String,
-    val favorite: Boolean
+    val favorite: Boolean,
 )

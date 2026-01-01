@@ -25,12 +25,23 @@ class HomeRepositoryImpl
     constructor(
         private val dataSource: HomeDataSource,
     ) : HomeRepository {
-        override fun getForeignRecommendExhibitList(country: ForeignCountry, width: Int, height: Int, format: String): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getForeignRecommendExhibitList(
+            country: ForeignCountry,
+            width: Int,
+            height: Int,
+            format: String,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toRecommendRequestDto()
 
-                    val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomeRecommendToday(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {
@@ -55,12 +66,23 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getForeignPersonalizedExhibitList(country: ForeignCountry, width: Int, height: Int, format: String): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getForeignPersonalizedExhibitList(
+            country: ForeignCountry,
+            width: Int,
+            height: Int,
+            format: String,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toPersonalizedRequestDto()
 
-                    val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomePersonalizedRandom(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {
@@ -87,7 +109,10 @@ class HomeRepositoryImpl
 
         override fun getForeignScheduleExhibitList(
             country: ForeignCountry,
-            date: LocalDate, width: Int, height: Int, format: String
+            date: LocalDate,
+            width: Int,
+            height: Int,
+            format: String,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
@@ -120,13 +145,22 @@ class HomeRepositoryImpl
 
         override fun getForeignGenreExhibitList(
             country: ForeignCountry,
-            genre: ExhibitionGenre, width: Int, height: Int, format: String
+            genre: ExhibitionGenre,
+            width: Int,
+            height: Int,
+            format: String,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = country.toGenreRequestDto(genre = genre)
 
-                    val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomeGenreRandom(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {
@@ -151,12 +185,23 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticRecommendExhibitList(region: DomesticRegion, width: Int, height: Int, format: String): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getDomesticRecommendExhibitList(
+            region: DomesticRegion,
+            width: Int,
+            height: Int,
+            format: String,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toRecommendRequestDto()
 
-                    val baseResponse = dataSource.getHomeRecommendToday(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomeRecommendToday(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {
@@ -181,12 +226,23 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticPersonalizedExhibitList(region: DomesticRegion, width: Int, height: Int, format: String): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getDomesticPersonalizedExhibitList(
+            region: DomesticRegion,
+            width: Int,
+            height: Int,
+            format: String,
+        ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toPersonalizedRequestDto()
 
-                    val baseResponse = dataSource.getHomePersonalizedRandom(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomePersonalizedRandom(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {
@@ -213,7 +269,10 @@ class HomeRepositoryImpl
 
         override fun getDomesticScheduleExhibitList(
             region: DomesticRegion,
-            date: LocalDate, width: Int, height: Int, format: String
+            date: LocalDate,
+            width: Int,
+            height: Int,
+            format: String,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
@@ -246,13 +305,22 @@ class HomeRepositoryImpl
 
         override fun getDomesticGenreExhibitList(
             region: DomesticRegion,
-            genre: ExhibitionGenre, width: Int, height: Int, format: String
+            genre: ExhibitionGenre,
+            width: Int,
+            height: Int,
+            format: String,
         ): Flow<ApiResult<List<ExhibitionModel>>> =
             flow {
                 try {
                     val requestDto = region.toGenreRequestDto(genre = genre)
 
-                    val baseResponse = dataSource.getHomeGenreRandom(requestDto = requestDto, width = width, height = height, format = format)
+                    val baseResponse =
+                        dataSource.getHomeGenreRandom(
+                            requestDto = requestDto,
+                            width = width,
+                            height = height,
+                            format = format,
+                        )
                     val responseDto = baseResponse.result
 
                     if (responseDto == null) {

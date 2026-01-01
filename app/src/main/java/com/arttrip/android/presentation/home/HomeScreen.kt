@@ -1,7 +1,6 @@
 package com.arttrip.android.presentation.home
 
 import android.os.SystemClock
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -108,8 +107,6 @@ fun HomeScreen(
     var domesticLastScroll by remember { mutableIntStateOf(0) }
     var domesticLastToggleTime by remember { mutableLongStateOf(0L) }
 
-
-
     var appBarVisible by remember { mutableStateOf(true) }
 
     val thresholdPx = 60
@@ -184,7 +181,7 @@ fun HomeScreen(
         AnimatedVisibility(
             visible = appBarVisible,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             HomeAppBar(
                 onIntent = onIntent,
@@ -195,7 +192,7 @@ fun HomeScreen(
             state = state,
             onIntent = onIntent,
             foreignScrollState = foreignScrollState,
-            domesticScrollState = domesticScrollState
+            domesticScrollState = domesticScrollState,
         )
     }
 }
@@ -261,7 +258,7 @@ fun HomeBody(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
     foreignScrollState: ScrollState,
-    domesticScrollState: ScrollState
+    domesticScrollState: ScrollState,
 ) {
     val selectedIndex = state.placeTabs.toIndex()
 
@@ -361,7 +358,7 @@ fun CountryListChip(
 fun ForeignExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
-    scrollState: ScrollState
+    scrollState: ScrollState,
 ) {
     val selectedCountry = state.selectedCountry
 
@@ -396,7 +393,7 @@ fun ForeignExhibitionSection(
             },
             onLikeClick = {},
             placeTab = state.placeTabs,
-            foreignCountry = state.selectedCountry
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -472,7 +469,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 fun DomesticExhibitionSection(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit,
-    scrollState: ScrollState
+    scrollState: ScrollState,
 ) {
     val section = state.domesticExhibitionData
     val selectedDate = state.domesticSelectedDate
@@ -501,7 +498,7 @@ fun DomesticExhibitionSection(
             },
             onLikeClick = {},
             placeTab = state.placeTabs,
-            foreignCountry = state.selectedCountry
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -664,11 +661,10 @@ fun RecommendSection(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
-    foreignCountry: ForeignCountry
+    foreignCountry: ForeignCountry,
 ) {
     when (sectionState) {
         SectionLoadState.Idle -> {
-
         }
         SectionLoadState.Loading -> {
             RecommendSectionLoading()
@@ -676,9 +672,10 @@ fun RecommendSection(
         is SectionLoadState.Success -> {
             if (sectionState.data.isEmpty()) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                 ) {
                     EmptyRecommendExhibition()
                 }
@@ -704,7 +701,7 @@ fun RecommendSection(
                                 onLikeClick(id)
                             },
                             placeTab = placeTab,
-                            foreignCountry = foreignCountry
+                            foreignCountry = foreignCountry,
                         )
                     }
                     Spacer(
@@ -747,7 +744,6 @@ fun PersonalizedSection(
         )
         when (sectionState) {
             SectionLoadState.Idle -> {
-
             }
             SectionLoadState.Loading -> {
                 RecommendSectionLoading()
@@ -755,9 +751,10 @@ fun PersonalizedSection(
             is SectionLoadState.Success -> {
                 if (sectionState.data.isEmpty()) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                     ) {
                         EmptyPersonalizedExhibition()
                     }
@@ -852,7 +849,6 @@ fun WeeklyExhibitSection(
 
         when (sectionState) {
             SectionLoadState.Idle -> {
-
             }
             SectionLoadState.Loading -> {
                 ScheduleSectionLoading()
@@ -950,7 +946,6 @@ fun ExhibitionByGenreSection(
 
         when (sectionState) {
             SectionLoadState.Idle -> {
-
             }
             SectionLoadState.Loading -> {
                 GenreSectionLoading()
@@ -958,9 +953,10 @@ fun ExhibitionByGenreSection(
             is SectionLoadState.Success -> {
                 if (sectionState.data.isEmpty()) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                     ) {
                         EmptyGenreExhibition(selectedGenre)
                     }
@@ -1025,7 +1021,7 @@ fun ExhibitionItemCase1(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
-    foreignCountry: ForeignCountry
+    foreignCountry: ForeignCountry,
 ) {
     ExhibitionImage(
         modifier =
@@ -1038,10 +1034,11 @@ fun ExhibitionItemCase1(
     ) {
         if (placeTab == PlaceTab.Foreign && foreignCountry == ForeignCountry.Entire) {
             CountryChip(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 10.dp, y = 16.dp),
-                label = exhibition.place
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .offset(x = 10.dp, y = 16.dp),
+                label = exhibition.place,
             )
         }
         LikeButton(

@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.home.ui
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,8 +40,9 @@ fun RecommendSectionLoading() {
 @Composable
 fun PersonalizedSectionLoading() {
     Row(
-        modifier = Modifier
-            .horizontalScroll(rememberScrollState(), enabled = false),
+        modifier =
+            Modifier
+                .horizontalScroll(rememberScrollState(), enabled = false),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(5) {
@@ -55,9 +54,10 @@ fun PersonalizedSectionLoading() {
 @Composable
 fun ScheduleSectionLoading() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(2) {
             ScheduleAndGenreExhibitionSkeleton()
@@ -68,13 +68,15 @@ fun ScheduleSectionLoading() {
 @Composable
 fun CurationSectionLoading() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -91,8 +93,9 @@ fun CurationSectionLoading() {
         )
         Row {
             Spacer(
-                modifier = Modifier
-                    .width(24.dp)
+                modifier =
+                    Modifier
+                        .width(24.dp),
             )
             SubTitleSkeleton()
         }
@@ -103,9 +106,10 @@ fun CurationSectionLoading() {
                     .height(12.dp),
         )
         Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState(), enabled = false)
-                .padding(start = 24.dp),
+            modifier =
+                Modifier
+                    .horizontalScroll(rememberScrollState(), enabled = false)
+                    .padding(start = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             repeat(7) {
@@ -118,10 +122,11 @@ fun CurationSectionLoading() {
 @Composable
 fun GenreSectionLoading() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(3) {
             ScheduleAndGenreExhibitionSkeleton()
@@ -175,9 +180,10 @@ fun DateSkeleton() {
 @Composable
 fun ChipSkeleton() {
     StaticSkeleton(
-        modifier = Modifier
-            .width(76.dp)
-            .height(32.dp),
+        modifier =
+            Modifier
+                .width(76.dp)
+                .height(32.dp),
         shape = RoundedCornerShape(100.dp),
     )
 }
@@ -237,7 +243,7 @@ fun PersonalizedExhibitionSkeleton() {
 @Composable
 fun ScheduleAndGenreExhibitionSkeleton() {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         StaticSkeleton(
             modifier =
@@ -247,8 +253,9 @@ fun ScheduleAndGenreExhibitionSkeleton() {
             shape = RoundedCornerShape(8.dp),
         )
         Spacer(
-            modifier = Modifier
-                .width(12.dp)
+            modifier =
+                Modifier
+                    .width(12.dp),
         )
         Column {
             StaticSkeleton(

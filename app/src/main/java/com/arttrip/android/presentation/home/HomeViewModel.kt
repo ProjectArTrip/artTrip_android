@@ -194,256 +194,279 @@ class HomeViewModel
             }
         }
 
-    private fun loadForeignRecommendExhibitList(country: ForeignCountry) {
-        val current = _state.value.foreignExhibitionData.getValue(country).recommendExhibit
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return // ✅ 캐시
+        private fun loadForeignRecommendExhibitList(country: ForeignCountry) {
+            val current =
+                _state.value.foreignExhibitionData
+                    .getValue(country)
+                    .recommendExhibit
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return // ✅ 캐시
 
-        setRecommendState(country, SectionLoadState.Loading)
+            setRecommendState(country, SectionLoadState.Loading)
 
-        viewModelScope.launch {
-            getForeignRecommendExhibitionListUseCase(country = country).collect { result ->
-                when (result) {
-                    is ApiResult.Loading -> Unit
-                    is ApiResult.Success -> setRecommendState(country, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setRecommendState(country, SectionLoadState.Error(result.error))
+            viewModelScope.launch {
+                getForeignRecommendExhibitionListUseCase(country = country).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> setRecommendState(country, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setRecommendState(country, SectionLoadState.Error(result.error))
+                    }
                 }
             }
         }
-    }
 
-    private fun setRecommendState(
-        country: ForeignCountry,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.foreignExhibitionData.getValue(country)
-            s.copy(
-                foreignExhibitionData = s.foreignExhibitionData + (
-                        country to current.copy(recommendExhibit = state)
+        private fun setRecommendState(
+            country: ForeignCountry,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.foreignExhibitionData.getValue(country)
+                s.copy(
+                    foreignExhibitionData =
+                        s.foreignExhibitionData + (
+                            country to current.copy(recommendExhibit = state)
                         ),
-            )
+                )
+            }
         }
-    }
 
-    private fun loadForeignPersonalizedExhibitList(country: ForeignCountry) {
-        val current = _state.value.foreignExhibitionData.getValue(country).personalizedList
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return // ✅ 캐시
+        private fun loadForeignPersonalizedExhibitList(country: ForeignCountry) {
+            val current =
+                _state.value.foreignExhibitionData
+                    .getValue(country)
+                    .personalizedList
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return // ✅ 캐시
 
-        setPersonalizedState(country, SectionLoadState.Loading)
+            setPersonalizedState(country, SectionLoadState.Loading)
 
-        viewModelScope.launch {
-            getForeignPersonalizedExhibitionListUseCase(country = country).collect { result ->
-                when (result) {
-                    is ApiResult.Loading -> Unit
-                    is ApiResult.Success -> setPersonalizedState(country, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setPersonalizedState(country, SectionLoadState.Error(result.error))
+            viewModelScope.launch {
+                getForeignPersonalizedExhibitionListUseCase(country = country).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> setPersonalizedState(country, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setPersonalizedState(country, SectionLoadState.Error(result.error))
+                    }
                 }
             }
         }
-    }
 
-    private fun setPersonalizedState(
-        country: ForeignCountry,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.foreignExhibitionData.getValue(country)
-            s.copy(
-                foreignExhibitionData = s.foreignExhibitionData + (
-                        country to current.copy(personalizedList = state)
+        private fun setPersonalizedState(
+            country: ForeignCountry,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.foreignExhibitionData.getValue(country)
+                s.copy(
+                    foreignExhibitionData =
+                        s.foreignExhibitionData + (
+                            country to current.copy(personalizedList = state)
                         ),
-            )
-        }
-    }
-
-    private fun loadForeignScheduledExhibitList(country: ForeignCountry, date: LocalDate) {
-        val current = _state.value.foreignExhibitionData.getValue(country).scheduleList[date]
-
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
-
-        setScheduleState(country, date, SectionLoadState.Loading)
-
-        viewModelScope.launch {
-            getForeignScheduledExhibitionListUseCase(country, date).collect { result ->
-                when (result) {
-                    is ApiResult.Loading -> Unit
-                    is ApiResult.Success -> setScheduleState(country, date, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setScheduleState(country, date, SectionLoadState.Error(result.error))
-                }
-            }
-        }
-    }
-
-    private fun setScheduleState(
-        country: ForeignCountry,
-        day: LocalDate,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.foreignExhibitionData.getValue(country)
-            s.copy(
-                foreignExhibitionData = s.foreignExhibitionData + (
-                        country to current.copy(
-                            scheduleList = current.scheduleList + (day to state)
-                        )
-                        )
-            )
-        }
-    }
-
-    private fun loadForeignGenreExhibitList(country: ForeignCountry, genre: ExhibitionGenre) {
-        val current = _state.value.foreignExhibitionData.getValue(country).genreList[genre]
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
-
-        setGenreState(country, genre, SectionLoadState.Loading)
-
-        viewModelScope.launch {
-            getForeignGenreExhibitionListUseCase(country, genre).collect { result ->
-                when (result) {
-                    is ApiResult.Loading -> Unit
-                    is ApiResult.Success -> setGenreState(country, genre, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setGenreState(country, genre, SectionLoadState.Error(result.error))
-                }
-            }
-        }
-    }
-
-    private fun setGenreState(
-        country: ForeignCountry,
-        genre: ExhibitionGenre,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.foreignExhibitionData.getValue(country)
-
-            s.copy(
-                foreignExhibitionData =
-                    s.foreignExhibitionData + (
-                            country to current.copy(
-                                genreList = current.genreList + (genre to state),
-                            )
-                            ),
-            )
-        }
-    }
-
-    private fun loadDomesticRecommendExhibitList() {
-        val current = _state.value.domesticExhibitionData.recommendExhibit
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
-
-        setDomesticRecommendState(SectionLoadState.Loading)
-
-        viewModelScope.launch {
-            getDomesticRecommendExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
-                when (result) {
-                    is ApiResult.Success -> setDomesticRecommendState(SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setDomesticRecommendState(SectionLoadState.Error(result.error))
-                    ApiResult.Loading -> Unit
-                }
-            }
-        }
-    }
-
-    private fun setDomesticRecommendState(
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            s.copy(
-                domesticExhibitionData = s.domesticExhibitionData.copy(
-                    recommendExhibit = state
                 )
-            )
+            }
         }
-    }
 
-    private fun loadDomesticPersonalizedExhibitList() {
-        val current = _state.value.domesticExhibitionData.personalizedList
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+        private fun loadForeignScheduledExhibitList(
+            country: ForeignCountry,
+            date: LocalDate,
+        ) {
+            val current =
+                _state.value.foreignExhibitionData
+                    .getValue(country)
+                    .scheduleList[date]
 
-        setDomesticPersonalizedState(SectionLoadState.Loading)
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
 
-        viewModelScope.launch {
-            getDomesticPersonalizedExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
-                when (result) {
-                    is ApiResult.Success -> setDomesticPersonalizedState(SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setDomesticPersonalizedState(SectionLoadState.Error(result.error))
-                    ApiResult.Loading -> Unit
+            setScheduleState(country, date, SectionLoadState.Loading)
+
+            viewModelScope.launch {
+                getForeignScheduledExhibitionListUseCase(country, date).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> setScheduleState(country, date, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setScheduleState(country, date, SectionLoadState.Error(result.error))
+                    }
                 }
             }
         }
-    }
 
-    private fun setDomesticPersonalizedState(
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            s.copy(
-                domesticExhibitionData = s.domesticExhibitionData.copy(
-                    personalizedList = state
+        private fun setScheduleState(
+            country: ForeignCountry,
+            day: LocalDate,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.foreignExhibitionData.getValue(country)
+                s.copy(
+                    foreignExhibitionData =
+                        s.foreignExhibitionData + (
+                            country to
+                                current.copy(
+                                    scheduleList = current.scheduleList + (day to state),
+                                )
+                        ),
                 )
-            )
+            }
         }
-    }
 
-    private fun loadDomesticScheduledExhibitList(date: LocalDate) {
-        val current = _state.value.domesticExhibitionData.scheduleList[date]
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+        private fun loadForeignGenreExhibitList(
+            country: ForeignCountry,
+            genre: ExhibitionGenre,
+        ) {
+            val current =
+                _state.value.foreignExhibitionData
+                    .getValue(country)
+                    .genreList[genre]
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
 
-        setDomesticWeeklyState(date, SectionLoadState.Loading)
+            setGenreState(country, genre, SectionLoadState.Loading)
 
-        viewModelScope.launch {
-            getDomesticScheduleExhibitionListUseCase(region = DomesticRegion.Entire, date = date).collect { result ->
-                when (result) {
-                    is ApiResult.Success -> setDomesticWeeklyState(date, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setDomesticWeeklyState(date, SectionLoadState.Error(result.error))
-                    ApiResult.Loading -> Unit
+            viewModelScope.launch {
+                getForeignGenreExhibitionListUseCase(country, genre).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> setGenreState(country, genre, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setGenreState(country, genre, SectionLoadState.Error(result.error))
+                    }
                 }
             }
         }
-    }
 
-    private fun setDomesticWeeklyState(
-        day: LocalDate,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.domesticExhibitionData
-            s.copy(
-                domesticExhibitionData = current.copy(
-                    scheduleList = current.scheduleList + (day to state)
+        private fun setGenreState(
+            country: ForeignCountry,
+            genre: ExhibitionGenre,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.foreignExhibitionData.getValue(country)
+
+                s.copy(
+                    foreignExhibitionData =
+                        s.foreignExhibitionData + (
+                            country to
+                                current.copy(
+                                    genreList = current.genreList + (genre to state),
+                                )
+                        ),
                 )
-            )
+            }
         }
-    }
 
-    private fun loadDomesticGenreExhibitList(genre: ExhibitionGenre) {
-        val current = _state.value.domesticExhibitionData.genreList[genre]
-        if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+        private fun loadDomesticRecommendExhibitList() {
+            val current = _state.value.domesticExhibitionData.recommendExhibit
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
 
-        setDomesticGenreState(genre, SectionLoadState.Loading)
+            setDomesticRecommendState(SectionLoadState.Loading)
 
-        viewModelScope.launch {
-            getDomesticGenreExhibitionListUseCase(region = DomesticRegion.Entire, genre = genre).collect { result ->
-                when (result) {
-                    is ApiResult.Success -> setDomesticGenreState(genre, SectionLoadState.Success(result.data))
-                    is ApiResult.Error -> setDomesticGenreState(genre, SectionLoadState.Error(result.error))
-                    ApiResult.Loading -> Unit
+            viewModelScope.launch {
+                getDomesticRecommendExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
+                    when (result) {
+                        is ApiResult.Success -> setDomesticRecommendState(SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setDomesticRecommendState(SectionLoadState.Error(result.error))
+                        ApiResult.Loading -> Unit
+                    }
                 }
             }
         }
-    }
 
-    private fun setDomesticGenreState(
-        genre: ExhibitionGenre,
-        state: SectionLoadState<List<ExhibitionModel>>,
-    ) {
-        _state.update { s ->
-            val current = s.domesticExhibitionData
-            s.copy(
-                domesticExhibitionData = current.copy(
-                    genreList = current.genreList + (genre to state)
+        private fun setDomesticRecommendState(state: SectionLoadState<List<ExhibitionModel>>) {
+            _state.update { s ->
+                s.copy(
+                    domesticExhibitionData =
+                        s.domesticExhibitionData.copy(
+                            recommendExhibit = state,
+                        ),
                 )
-            )
+            }
         }
-    }
+
+        private fun loadDomesticPersonalizedExhibitList() {
+            val current = _state.value.domesticExhibitionData.personalizedList
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+
+            setDomesticPersonalizedState(SectionLoadState.Loading)
+
+            viewModelScope.launch {
+                getDomesticPersonalizedExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
+                    when (result) {
+                        is ApiResult.Success -> setDomesticPersonalizedState(SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setDomesticPersonalizedState(SectionLoadState.Error(result.error))
+                        ApiResult.Loading -> Unit
+                    }
+                }
+            }
+        }
+
+        private fun setDomesticPersonalizedState(state: SectionLoadState<List<ExhibitionModel>>) {
+            _state.update { s ->
+                s.copy(
+                    domesticExhibitionData =
+                        s.domesticExhibitionData.copy(
+                            personalizedList = state,
+                        ),
+                )
+            }
+        }
+
+        private fun loadDomesticScheduledExhibitList(date: LocalDate) {
+            val current = _state.value.domesticExhibitionData.scheduleList[date]
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+
+            setDomesticWeeklyState(date, SectionLoadState.Loading)
+
+            viewModelScope.launch {
+                getDomesticScheduleExhibitionListUseCase(region = DomesticRegion.Entire, date = date).collect { result ->
+                    when (result) {
+                        is ApiResult.Success -> setDomesticWeeklyState(date, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setDomesticWeeklyState(date, SectionLoadState.Error(result.error))
+                        ApiResult.Loading -> Unit
+                    }
+                }
+            }
+        }
+
+        private fun setDomesticWeeklyState(
+            day: LocalDate,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.domesticExhibitionData
+                s.copy(
+                    domesticExhibitionData =
+                        current.copy(
+                            scheduleList = current.scheduleList + (day to state),
+                        ),
+                )
+            }
+        }
+
+        private fun loadDomesticGenreExhibitList(genre: ExhibitionGenre) {
+            val current = _state.value.domesticExhibitionData.genreList[genre]
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+
+            setDomesticGenreState(genre, SectionLoadState.Loading)
+
+            viewModelScope.launch {
+                getDomesticGenreExhibitionListUseCase(region = DomesticRegion.Entire, genre = genre).collect { result ->
+                    when (result) {
+                        is ApiResult.Success -> setDomesticGenreState(genre, SectionLoadState.Success(result.data))
+                        is ApiResult.Error -> setDomesticGenreState(genre, SectionLoadState.Error(result.error))
+                        ApiResult.Loading -> Unit
+                    }
+                }
+            }
+        }
+
+        private fun setDomesticGenreState(
+            genre: ExhibitionGenre,
+            state: SectionLoadState<List<ExhibitionModel>>,
+        ) {
+            _state.update { s ->
+                val current = s.domesticExhibitionData
+                s.copy(
+                    domesticExhibitionData =
+                        current.copy(
+                            genreList = current.genreList + (genre to state),
+                        ),
+                )
+            }
+        }
     }
