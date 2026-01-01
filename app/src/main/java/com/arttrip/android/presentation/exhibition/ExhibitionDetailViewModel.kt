@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.domain.usecase.bookmark.AddBookmarkUseCase
@@ -79,7 +80,7 @@ class ExhibitionDetailViewModel
         fun onIntent(intent: ExhibitionDetailIntent) {
             when (intent) {
                 is ExhibitionDetailIntent.Initialize -> {
-                    initialize(intent.exhibitId)
+                    initialize(intent.exhibitId, intent.imageQueryParams)
                 }
 
                 is ExhibitionDetailIntent.BackClicked -> {
@@ -134,9 +135,12 @@ class ExhibitionDetailViewModel
 
         fun reviewsFlow(exhibitId: Int): Flow<PagingData<ReviewModel>> = getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
 
-        private fun initialize(exhibitId: Int) {
+        private fun initialize(
+            exhibitId: Int,
+            imageQueryParams: ImageQueryParams,
+        ) {
             userTouchedBookmark = false
-            fetchExhibitionDetail(exhibitId)
+            fetchExhibitionDetail(exhibitId, imageQueryParams)
 
             getExhibitionReviewsUseCase.clearReviewTotalCount()
             _state.update { it.copy(reviewTotalCount = null) }
@@ -150,9 +154,12 @@ class ExhibitionDetailViewModel
                 }
         }
 
-        private fun fetchExhibitionDetail(exhibitId: Int) {
+        private fun fetchExhibitionDetail(
+            exhibitId: Int,
+            imageQueryParams: ImageQueryParams,
+        ) {
             viewModelScope.launch {
-                getExhibitionDetailUseCase(exhibitId).collect { result ->
+                getExhibitionDetailUseCase(exhibitId, imageQueryParams).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
                             _state.update { it.copy(isLoading = true, errorMessage = null) }
@@ -170,6 +177,8 @@ class ExhibitionDetailViewModel
                         }
 
                         is ApiResult.Error -> {
+                            Log.d("ExhibitDetail", "${result.error}")
+
                             _state.update {
                                 it.copy(
                                     isLoading = false,
