@@ -9,4 +9,5 @@ data class ExhibitionDetailState(
     val isBookmarked: Boolean = false,
     val isBookmarkSyncing: Boolean = false,
     val reviewTotalCount: Int? = null,
+    val writeReviewDialogVisible: Boolean = false,
 )

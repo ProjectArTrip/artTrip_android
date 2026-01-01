@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 
 data class ExhibitDetailResponseDto(
     @SerialName("exhibit_id")
+    val exhibitId: Int,
     val title: String,
     val description: String,
     val posterUrl: String?,

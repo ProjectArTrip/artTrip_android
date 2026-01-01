@@ -101,7 +101,21 @@ class ExhibitionDetailViewModel
                 }
 
                 is ExhibitionDetailIntent.WriteReviewClicked -> {
-                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.NavigateToWriteReview(intent.exhibitId)) }
+                    _state.update {
+                        it.copy(
+                            writeReviewDialogVisible = true,
+                        )
+                    }
+                }
+
+                ExhibitionDetailIntent.WriteReviewDialogDismissClicked -> {
+                    _state.update { it.copy(writeReviewDialogVisible = false) }
+                }
+
+                ExhibitionDetailIntent.WriteReviewConfirmClicked -> {
+                    val id = state.value.detail?.exhibitId ?: return
+                    _state.update { it.copy(writeReviewDialogVisible = false) }
+                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.NavigateToWriteReview(id)) }
                 }
             }
         }

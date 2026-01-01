@@ -35,12 +35,12 @@ import com.arttrip.android.domain.model.review.ReviewModel
 fun LazyListScope.exhibitionReviewTab(
     reviewTotalCount: Int,
     reviews: LazyPagingItems<ReviewModel>,
-    onWriteReview: () -> Unit,
+    onWriteReviewClicked: () -> Unit,
 ) {
     item {
         ReviewsHeaderCard(
             totalCountText = reviewTotalCount,
-            onWriteReview = onWriteReview,
+            onWriteReview = onWriteReviewClicked,
         )
     }
 

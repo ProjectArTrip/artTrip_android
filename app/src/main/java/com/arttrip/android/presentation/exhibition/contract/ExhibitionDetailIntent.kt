@@ -9,7 +9,9 @@ sealed interface ExhibitionDetailIntent {
 
     data object BookmarkClicked : ExhibitionDetailIntent
 
-    data class WriteReviewClicked(
-        val exhibitId: Int,
-    ) : ExhibitionDetailIntent
+    data object WriteReviewClicked : ExhibitionDetailIntent
+
+    data object WriteReviewDialogDismissClicked : ExhibitionDetailIntent
+
+    data object WriteReviewConfirmClicked : ExhibitionDetailIntent
 }
