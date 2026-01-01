@@ -15,6 +15,7 @@ fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
     exhibitId: Int,
     onBack: () -> Unit,
+    onNavigate: (String) -> Unit,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
