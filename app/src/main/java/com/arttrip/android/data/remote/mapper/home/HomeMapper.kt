@@ -22,26 +22,28 @@ fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitionModel> = t
 
 fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
     ExhibitionModel(
-        id = id,
+        id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = countryName,
+        place = countryName ?: "",
+        isBookmarked = favorite,
     )
 
 fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
 
 fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
     ExhibitionModel(
-        id = id,
+        id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
         place = regionName,
+        isBookmarked = favorite,
     )
 
 fun String.toExhibitStatus(): ExhibitionStatus =

@@ -11,12 +11,8 @@ sealed interface HomeIntent {
         val tab: PlaceTab,
     ) : HomeIntent
 
-    data class SelectCountry(
-        val country: ForeignCountry,
-    ) : HomeIntent
-
     data class CountryClicked(
-        val name: String,
+        val country: ForeignCountry,
     ) : HomeIntent
 
     object AlertIconClicked : HomeIntent
@@ -61,11 +57,23 @@ sealed interface HomeIntent {
         val genre: ExhibitionGenre,
     ) : HomeIntent
 
+    data class SelectForeignDate(
+        val date: LocalDate,
+    ) : HomeIntent
+
+    data class SelectDomesticDate(
+        val date: LocalDate,
+    ) : HomeIntent
+
     data class SelectForeignGenre(
         val genre: ExhibitionGenre,
     ) : HomeIntent
 
     data class SelectDomesticGenre(
         val genre: ExhibitionGenre,
+    ) : HomeIntent
+
+    data class ExhibitionClicked(
+        val id: Int,
     ) : HomeIntent
 }

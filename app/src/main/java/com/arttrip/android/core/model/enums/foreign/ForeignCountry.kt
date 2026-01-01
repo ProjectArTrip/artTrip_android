@@ -10,5 +10,4 @@ enum class ForeignCountry(
     Usa("미국"),
     Austria("오스트리아"),
     Japan("일본"),
-    China("중국"),
 }
