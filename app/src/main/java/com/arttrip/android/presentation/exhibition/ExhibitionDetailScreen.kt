@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
+import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
+import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.HeartButton
 import com.arttrip.android.core.ui.component.dialog.AppDialog
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
@@ -72,8 +74,14 @@ fun ExhibitionDetailScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppTopBar(
-            showBackButton = true,
-            onBackClick = { onIntent(ExhibitionDetailIntent.BackClicked) },
+            leading = {
+                AppIconButton(
+                    iconResId = R.drawable.ic_back_24,
+                    contentDescription = "뒤로가기",
+                ) {
+                    onIntent(ExhibitionDetailIntent.BackClicked)
+                }
+            },
             actions = {
                 HeartButton(isSelected = state.isBookmarked, onClick = {
                     onIntent(ExhibitionDetailIntent.BookmarkClicked)
