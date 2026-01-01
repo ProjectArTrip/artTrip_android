@@ -16,9 +16,16 @@ fun ReviewWriteRoute(
     onBack: () -> Unit,
     viewModel: ReviewWriteViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(prefill) {
         if (prefill == null) return@LaunchedEffect
         viewModel.onIntent(ReviewWriteIntent.Initialize(prefill = prefill))
     }
 
+    ReviewWriteScreen(
+        innerPadding = innerPadding,
+        state = state,
+        onIntent = viewModel::onIntent,
+    )
 }
