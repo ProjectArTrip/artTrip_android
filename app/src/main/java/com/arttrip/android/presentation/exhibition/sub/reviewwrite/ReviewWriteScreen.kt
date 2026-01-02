@@ -18,12 +18,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,6 +38,8 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
+import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
@@ -43,6 +48,7 @@ import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.Revi
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteState
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewPhotoRow
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewTextField
+import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.SingleSelectDatePicker
 
 @Composable
 fun ReviewWriteScreen(
@@ -98,7 +104,6 @@ fun ReviewWriteScreen(
                         .padding(horizontal = 24.dp),
                 valueText = state.visitDateText,
                 onClick = { onIntent(ReviewWriteIntent.VisitDateClicked) },
-                onCalendarClick = { onIntent(ReviewWriteIntent.CalendarClicked) },
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -163,6 +168,21 @@ fun ReviewWriteScreen(
             onClick = { onIntent(ReviewWriteIntent.SubmitClicked) },
             enabled = state.canSubmit,
         )
+
+        AppModalBottomSheet(
+            visible = state.isVisitDateSheetVisible,
+            onDismissRequest = { onIntent(ReviewWriteIntent.VisitDateSheetDismissed) },
+            contentPadding = PaddingValues(0.dp),
+            topBar = AppBottomSheetTopBar.None,
+        ) {
+            SingleSelectDatePicker(
+                modifier = Modifier.fillMaxWidth(),
+                initialMonth = state.calendarMonth,
+                initialSelected = state.visitDate,
+                onMonthChanged = { ym -> onIntent(ReviewWriteIntent.CalendarMonthChanged(ym)) },
+                onDateSelected = { date -> onIntent(ReviewWriteIntent.VisitDateSelected(date)) },
+            )
+        }
     }
 }
 
@@ -222,9 +242,8 @@ private fun ExhibitionHeader(
 @Composable
 private fun VisitDateSection(
     modifier: Modifier = Modifier,
-    valueText: String?, // 선택됐으면 "2026.01.02" 같은 텍스트,
+    valueText: String?,
     onClick: () -> Unit,
-    onCalendarClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -258,16 +277,16 @@ private fun VisitDateSection(
                 val hasValue = !valueText.isNullOrBlank()
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = if (hasValue) valueText!! else "방문일을 선택하세요.",
+                    text = if (hasValue) valueText else "방문일을 선택하세요.",
                     style = AppTextStyle.Body01Regular,
                     color = if (hasValue) AppColor.TextPrimary else AppColor.TextTertiary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-
-                AppIconButton(
-                    iconResId = R.drawable.ic_calendar_24,
-                    onIconClick = onCalendarClick,
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_calendar_24),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
                 )
             }
         }

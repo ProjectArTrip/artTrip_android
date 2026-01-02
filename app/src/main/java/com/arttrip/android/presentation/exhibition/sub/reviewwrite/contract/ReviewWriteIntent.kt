@@ -2,6 +2,8 @@ package com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract
 
 import android.net.Uri
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
+import java.time.LocalDate
+import java.time.YearMonth
 
 sealed interface ReviewWriteIntent {
     data class Initialize(
@@ -13,7 +15,15 @@ sealed interface ReviewWriteIntent {
     // 방문일
     data object VisitDateClicked : ReviewWriteIntent
 
-    data object CalendarClicked : ReviewWriteIntent // TODO 제거
+    data object VisitDateSheetDismissed : ReviewWriteIntent
+
+    data class VisitDateSelected(
+        val date: LocalDate,
+    ) : ReviewWriteIntent
+
+    data class CalendarMonthChanged(
+        val month: YearMonth,
+    ) : ReviewWriteIntent
 
     // 사진
     data class PhotoPickerResult(

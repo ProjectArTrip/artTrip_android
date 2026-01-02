@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.YearMonth
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,9 +50,30 @@ class ReviewWriteViewModel
                 }
 
                 ReviewWriteIntent.VisitDateClicked,
-                ReviewWriteIntent.CalendarClicked,
                 -> {
-                    // TODO: date picker open effect
+                    _state.update { s ->
+                        val baseDate = s.visitDate
+                        s.copy(
+                            isVisitDateSheetVisible = true,
+                            calendarMonth = baseDate?.let { YearMonth.from(it) } ?: YearMonth.now(),
+                        )
+                    }
+                }
+                ReviewWriteIntent.VisitDateSheetDismissed -> {
+                    _state.update { it.copy(isVisitDateSheetVisible = false) }
+                }
+                is ReviewWriteIntent.VisitDateSelected -> {
+                    _state.update {
+                        it.copy(
+                            visitDate = intent.date,
+                            isVisitDateSheetVisible = false, // TODO 선택 즉시 닫기(임시)
+                            calendarMonth = YearMonth.from(intent.date),
+                        )
+                    }
+                }
+
+                is ReviewWriteIntent.CalendarMonthChanged -> {
+                    _state.update { it.copy(calendarMonth = intent.month) }
                 }
 
                 ReviewWriteIntent.AddPhotoClicked -> {
