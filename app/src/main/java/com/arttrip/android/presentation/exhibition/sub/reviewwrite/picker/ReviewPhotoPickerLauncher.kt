@@ -21,30 +21,24 @@ private const val MAX_PHOTO_COUNT = 4
 
 @Composable
 fun rememberReviewPhotoPickerLauncher(
-    current: List<Uri>,
-    onMergedResult: (List<Uri>) -> Unit,
+    currentCount: Int,
+    onPicked: (List<Uri>) -> Unit,
 ): () -> Unit {
-    val latestCurrent by rememberUpdatedState(current)
+    val latestOnPicked by rememberUpdatedState(onPicked)
 
-    val singleLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.PickVisualMedia(),
-        ) { uri ->
-            if (uri != null) {
-                mergeAndEmit(latestCurrent, listOf(uri), onMergedResult)
-            }
-        }
-
-    val remaining = (MAX_PHOTO_COUNT - current.size).coerceAtLeast(0)
-
+    val remaining = (MAX_PHOTO_COUNT - currentCount).coerceAtLeast(0)
     val multiMax = remaining.coerceIn(2, MAX_PHOTO_COUNT)
+    val singleLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) latestOnPicked(listOf(uri))
+        }
 
     val multiLauncher =
         key(multiMax) {
             rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.PickMultipleVisualMedia(multiMax),
+                ActivityResultContracts.PickMultipleVisualMedia(multiMax),
             ) { uris ->
-                mergeAndEmit(latestCurrent, uris, onMergedResult)
+                if (uris.isNotEmpty()) latestOnPicked(uris)
             }
         }
 
@@ -53,7 +47,7 @@ fun rememberReviewPhotoPickerLauncher(
     return {
         when {
             remaining <= 0 -> Unit
-            remaining == 1 -> singleLauncher.launch(request) // 1장은 멀티 불가(크래시)라 싱글로 :contentReference[oaicite:1]{index=1}
+            remaining == 1 -> singleLauncher.launch(request)
             else -> multiLauncher.launch(request)
         }
     }
