@@ -147,6 +147,8 @@ sealed interface AppBottomSheetTopBar {
     data class Header(
         val title: String? = null,
     ) : AppBottomSheetTopBar
+
+    data object None : AppBottomSheetTopBar
 }
 
 @Composable
