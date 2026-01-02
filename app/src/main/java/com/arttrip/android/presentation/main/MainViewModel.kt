@@ -11,5 +11,9 @@ class MainViewModel
     constructor(
         private val sessionManager: SessionManager,
     ) : ViewModel() {
-        val logoutEvents = sessionManager.logoutEvents
+        val logoutSignal = sessionManager.logoutSignal
+
+        fun consumeLogoutSignal() {
+            sessionManager.consumeLogoutSignal()
+        }
     }
