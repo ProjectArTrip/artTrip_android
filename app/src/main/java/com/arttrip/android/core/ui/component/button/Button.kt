@@ -93,7 +93,7 @@ fun AppButton(
     }
 }
 
-internal object AppButtonDefaults {
+object AppButtonDefaults {
     val Height = 52.dp
     val Shape = RoundedCornerShape(12.dp)
 
