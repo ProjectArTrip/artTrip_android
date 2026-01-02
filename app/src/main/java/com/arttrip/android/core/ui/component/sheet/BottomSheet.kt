@@ -46,7 +46,8 @@ import com.arttrip.android.core.util.noRippleClickable
  * 상단 영역(TopBar) 형태에 따라 두 가지 스타일을 제공합니다.
  *
  * - **DragHandle 타입**: 상단 손잡이 표시 + 시트 드래그 제스처 활성화
- * - **Header 타입**: 상단 닫기(X) 헤더 표시 + 시트 드래그 제스처 비활성화 (바깥 클릭/뒤로가기는 dismiss 가능)
+ * - **Header 타입**: 상단 닫기(X) 제목 헤더 표시 + 시트 드래그 제스처 비활성화 (바깥 클릭/뒤로가기는 dismiss 가능)
+ * - **None 타입**: 시트 드래그 제스처 비활성화 (바깥 클릭/뒤로가기는 dismiss 가능)
  *
  * 예)
  * ```
