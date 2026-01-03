@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
+import com.arttrip.android.presentation.bookmark.contract.BookmarkState
 
 @Composable
 fun BookmarkScreen(
-    modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
+    state: BookmarkState,
+    onIntent: (BookmarkIntent) -> Unit,
 ) {
     Column(
-        modifier = modifier.padding(innerPadding),
+        modifier = Modifier.padding(innerPadding),
     ) {
         Text(
             text = "Bookmark",
