@@ -14,13 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.core.ui.theme.Pretendard
 
 @Composable
 fun ReviewTextField(
@@ -31,6 +29,8 @@ fun ReviewTextField(
     placeholder: String = "리뷰 작성해주세요.",
     enabled: Boolean = true,
 ) {
+    val countStr = value.length.toString()
+
     val shape = RoundedCornerShape(8.dp)
     Box(
         modifier =
@@ -75,14 +75,28 @@ fun ReviewTextField(
                     innerTextField()
                 },
             )
+
             Text(
-                text = "${value.length}/$maxChars",
-                style =
-                    TextStyle(
-                        fontSize = 12.sp,
-                        fontFamily = Pretendard,
-                        fontWeight = FontWeight(700),
-                    ),
+                text =
+                    buildAnnotatedString {
+                        withStyle(
+                            style =
+                                AppTextStyle.Body02Bold
+                                    .toSpanStyle()
+                                    .copy(color = AppColor.TextSecondary),
+                        ) {
+                            append(countStr)
+                        }
+
+                        withStyle(
+                            style =
+                                AppTextStyle.Body02Regular
+                                    .toSpanStyle()
+                                    .copy(color = AppColor.TextTertiary),
+                        ) {
+                            append("/$maxChars")
+                        }
+                    },
             )
         }
     }

@@ -185,6 +185,7 @@ fun ReviewWriteScreen(
                 initialSelected = state.visitDate,
                 onMonthChanged = { ym -> onIntent(ReviewWriteIntent.CalendarMonthChanged(ym)) },
                 onDateSelected = { date -> onIntent(ReviewWriteIntent.VisitDateSelected(date)) },
+                onCloseClicked = { onIntent(ReviewWriteIntent.VisitDateSheetDismissed) },
             )
         }
     }
