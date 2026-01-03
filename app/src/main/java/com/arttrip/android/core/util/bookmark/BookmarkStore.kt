@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -83,6 +85,35 @@ class BookmarkStore
          * - UI/VM 어디서든 구독 가능
          */
         fun bookmarkedFlow(exhibitId: Int): Flow<Boolean> = bookmarked.map { it[exhibitId] ?: false }.distinctUntilChanged()
+
+        /**
+         * 여러 exhibitId의 북마크 상태를 Map 형태로 제공
+         *
+         * - ids 변경 시 기존 구독 자동 취소
+         * - bookmarkedFlow(id)를 id별로 개별 구독
+         */
+        fun bookmarkedByIdsFlow(exhibitIdsFlow: Flow<List<Int>>): Flow<Map<Int, Boolean>> =
+            channelFlow {
+                var currentMap = emptyMap<Int, Boolean>()
+
+                exhibitIdsFlow
+                    .map { ids -> ids.distinct().sorted() }
+                    .distinctUntilChanged()
+                    .collectLatest { ids ->
+                        // ids가 바뀌면 이 블록 전체 취소됨
+                        currentMap = currentMap.filterKeys { it in ids }
+                        send(currentMap)
+
+                        ids.forEach { id ->
+                            launch {
+                                bookmarkedFlow(id).collectLatest { bookmarked ->
+                                    currentMap = currentMap + (id to bookmarked)
+                                    send(currentMap)
+                                }
+                            }
+                        }
+                    }
+            }
 
         fun isSyncingFlow(exhibitId: Int): Flow<Boolean> = syncing.map { it.contains(exhibitId) }.distinctUntilChanged()
 
