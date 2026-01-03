@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlin-parcelize")
 
     alias(libs.plugins.hilt)
     kotlin("kapt")

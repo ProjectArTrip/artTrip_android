@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.core.ui.component.button.ReviewButton
@@ -36,22 +35,21 @@ import com.arttrip.android.domain.model.review.ReviewModel
 fun LazyListScope.exhibitionReviewTab(
     reviewTotalCount: Int,
     reviews: LazyPagingItems<ReviewModel>,
-    onWriteReview: () -> Unit,
+    onWriteReviewClicked: () -> Unit,
 ) {
-    val isEmpty =
-        reviews.loadState.refresh is LoadState.NotLoading && reviews.itemCount == 0
+    item {
+        ReviewsHeaderCard(
+            totalCountText = reviewTotalCount,
+            onWriteReview = onWriteReviewClicked,
+        )
+    }
 
-    if (isEmpty) {
+    if (reviewTotalCount == 0) {
         item { ReviewsEmptyState() }
     } else {
         item {
-            ReviewsHeaderCard(
-                totalCountText = reviewTotalCount,
-                onWriteReview = onWriteReview,
-            )
             Spacer(modifier = Modifier.height(8.dp))
         }
-
         items(
             count = reviews.itemCount,
             key = { idx -> reviews[idx]?.id ?: idx },

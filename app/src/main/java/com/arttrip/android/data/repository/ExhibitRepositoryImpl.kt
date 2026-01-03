@@ -1,5 +1,7 @@
 package com.arttrip.android.data.repository
 
+import android.util.Log
+import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
@@ -16,13 +18,18 @@ class ExhibitRepositoryImpl
     constructor(
         private val dataSource: ExhibitDataSource,
     ) : ExhibitRepository {
-        override fun getExhibitDetail(exhibitId: Int): Flow<ApiResult<ExhibitionDetailModel>> =
+        override fun getExhibitDetail(
+            exhibitId: Int,
+            imageQueryParams: ImageQueryParams,
+        ): Flow<ApiResult<ExhibitionDetailModel>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
+                    Log.d("ExhibitDetail", "RepositoryImpl")
+
                     val baseResponse =
-                        dataSource.getExhibitDetail(exhibitId)
+                        dataSource.getExhibitDetail(exhibitId, imageQueryParams)
 
                     val dto = baseResponse.result
                     if (dto == null) {

@@ -1,7 +1,7 @@
 package com.arttrip.android.data.local.auth
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,11 +11,15 @@ class SessionManager
     constructor(
         private val tokenManager: TokenManager,
     ) {
-        private val _logoutEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-        val logoutEvents: SharedFlow<Unit> = _logoutEvents
+        private val _logoutSignal = MutableStateFlow(0)
+        val logoutSignal: StateFlow<Int> = _logoutSignal
 
         fun logout() {
             tokenManager.clear()
-            _logoutEvents.tryEmit(Unit)
+            _logoutSignal.value += 1
+        }
+
+        fun consumeLogoutSignal() {
+            _logoutSignal.value = 0
         }
     }

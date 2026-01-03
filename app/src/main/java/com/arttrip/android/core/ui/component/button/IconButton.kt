@@ -7,11 +7,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -87,6 +86,16 @@ fun AppIconButton(
 
 /**
  *### Figma: Btn_upload
+ *
+ * - 정사각형 버튼 (사이즈는 외부 modifier로 결정)
+ * - 내부 아이콘은 항상 가운데 정렬
+ * - 사용 예
+ * ```
+ * UploadButton(
+ *   modifier = Modifier.size(48.dp),
+ *   onClick = { /* ... */ }
+ * )
+ * ```
  */
 @Composable
 fun UploadButton(
@@ -96,24 +105,27 @@ fun UploadButton(
     Button(
         onClick = onClick,
         enabled = true,
-        modifier = modifier.wrapContentSize(),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp),
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = AppColor.SubLightGray,
                 contentColor = AppColor.Gray900,
             ),
-        contentPadding = PaddingValues(24.dp),
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_upload_24),
-            tint = Color.Unspecified,
-            contentDescription = "upload",
-        )
-    }
+        content = {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_upload_24),
+                    tint = Color.Unspecified,
+                    contentDescription = "업로드",
+                )
+            }
+        },
+    )
 }
-
-enum class LikeButtonState { Like, LikeSelected }
 
 /**
  * ### Figma: icon_like
@@ -228,6 +240,7 @@ private fun PreviewButtons_Interactive() {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         UploadButton(
+            modifier = Modifier.size(72.dp),
             onClick = { uploadClicked = !uploadClicked },
         )
 

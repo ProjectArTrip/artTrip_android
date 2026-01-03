@@ -5,6 +5,9 @@ sealed interface ExhibitionDetailEffect {
 
     data class NavigateToWriteReview(
         val exhibitId: Int,
+        val title: String,
+        val hallName: String,
+        val posterUrl: String?,
     ) : ExhibitionDetailEffect
 
     data class ShowError(

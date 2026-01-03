@@ -13,7 +13,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -23,19 +25,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
+import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
+import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.HeartButton
+import com.arttrip.android.core.ui.component.dialog.AppDialog
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTagL
 import com.arttrip.android.core.ui.theme.AppColor
+import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.domain.model.review.ReviewModel
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailState
@@ -67,8 +74,14 @@ fun ExhibitionDetailScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppTopBar(
-            showBackButton = true,
-            onBackClick = { onIntent(ExhibitionDetailIntent.BackClicked) },
+            leading = {
+                AppIconButton(
+                    iconResId = R.drawable.ic_back_24,
+                    contentDescription = "뒤로가기",
+                ) {
+                    onIntent(ExhibitionDetailIntent.BackClicked)
+                }
+            },
             actions = {
                 HeartButton(isSelected = state.isBookmarked, onClick = {
                     onIntent(ExhibitionDetailIntent.BookmarkClicked)
@@ -142,16 +155,57 @@ fun ExhibitionDetailScreen(
                         exhibitionReviewTab(
                             reviewTotalCount = state.reviewTotalCount ?: 0,
                             reviews = reviewItems,
-                            onWriteReview = {
+                            onWriteReviewClicked = {
                                 onIntent(
-                                    ExhibitionDetailIntent.WriteReviewClicked(
-                                        state.detail.exhibitId,
-                                    ),
+                                    ExhibitionDetailIntent.WriteReviewClicked,
                                 )
                             },
                         )
                 }
             }
+        }
+
+        AppDialog(
+            visible = state.writeReviewDialogVisible,
+            onDismissRequest = { onIntent(ExhibitionDetailIntent.WriteReviewDialogDismissClicked) },
+            primaryText = "리뷰 작성",
+            onPrimaryClick = { onIntent(ExhibitionDetailIntent.WriteReviewConfirmClicked) },
+            secondaryText = "취소",
+            onSecondaryClick = { onIntent(ExhibitionDetailIntent.WriteReviewDialogDismissClicked) },
+        ) {
+            Text(
+                text = "리뷰 쓰고 스탬프 받기",
+                style =
+                    AppTextStyle.Title02Bold,
+                color = AppColor.TextPrimary,
+            )
+
+            Spacer(Modifier.height(11.dp))
+
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = AppColor.Gray50,
+            )
+
+            Spacer(Modifier.height(30.dp))
+
+            Text(
+                text = "전시 리뷰를 작성하시면\n해당 국가 스탬프가 자동 발급됩니다.",
+                style = AppTextStyle.Body01Regular,
+                color = AppColor.TextPrimary,
+                textAlign = TextAlign.Center,
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = "리뷰를 작성하시겠습니까?",
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextPrimary,
+                textAlign = TextAlign.Center,
+            )
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }

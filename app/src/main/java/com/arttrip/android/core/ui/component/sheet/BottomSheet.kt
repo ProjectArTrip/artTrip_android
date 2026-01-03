@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,42 +43,43 @@ import com.arttrip.android.core.util.noRippleClickable
 /**
  * ### 앱 공통 Modal Bottom Sheet 컴포넌트.
  *
- * - **Drag handle 버전**: `showDragHandle = true` (상단 손잡이 표시)
- * - **Header 버전**: `showDragHandle = false` (상단에 닫기(X) 헤더 표시)
+ * 상단 영역(TopBar) 형태에 따라 두 가지 스타일을 제공합니다.
+ *
+ * - **DragHandle 타입**: 상단 손잡이 표시 + 시트 드래그 제스처 활성화
+ * - **Header 타입**: 상단 닫기(X) 제목 헤더 표시 + 시트 드래그 제스처 비활성화 (바깥 클릭/뒤로가기는 dismiss 가능)
+ * - **None 타입**: 시트 드래그 제스처 비활성화 (바깥 클릭/뒤로가기는 dismiss 가능)
  *
  * 예)
  * ```
- * // 1) Drag handle 버전
+ * // 1) DragHandle 타입
  * AppModalBottomSheet(
  *   visible = visible,
  *   onDismissRequest = { visible = false },
- *   showDragHandle = true,
+ *   topBar = AppBottomSheetTopBar.DragHandle,
  * ) { /* content */ }
  *
- * // 2) Header(X) 버전
+ * // 2) Header 타입 (title 선택)
  * AppModalBottomSheet(
  *   visible = visible,
  *   onDismissRequest = { visible = false },
- *   showDragHandle = false,
- *   title = "바텀시트 제목",
+ *   topBar = AppBottomSheetTopBar.Header(title = "바텀시트 제목"),
  * ) { /* content */ }
  * ```
  *
  * @param visible 바텀시트 노출 여부
  * @param onDismissRequest 바깥 영역 클릭/뒤로가기 등 dismiss 요청 콜백
  * @param contentPadding 내부 콘텐츠 패딩 (기본: horizontal 24dp)
- * @param showDragHandle true면 Drag handle 표시, false면 Header(X) 표시
- * @param title Header 버전에서 사용하는 제목 (nullable)
+ * @param topBar 상단 영역 타입(DragHandle/Header). Header의 title은 topBar 내부에서만 설정
  * @param content 본문 슬롯 (ColumnScope)
  */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppModalBottomSheet(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp),
-    showDragHandle: Boolean = false,
-    title: String? = null,
+    topBar: AppBottomSheetTopBar = AppBottomSheetTopBar.Header(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     if (!visible) return
@@ -88,9 +90,13 @@ fun AppModalBottomSheet(
     LaunchedEffect(Unit) {
         sheetState.show()
     }
+
+    val gesturesEnabled = topBar is AppBottomSheetTopBar.DragHandle
+
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
+        sheetGesturesEnabled = gesturesEnabled,
         containerColor = AppColor.SubLightGray,
         contentWindowInsets = { WindowInsets(bottom = 0.dp) },
         tonalElevation = 0.dp,
@@ -100,7 +106,7 @@ fun AppModalBottomSheet(
                 topEnd = 16.dp,
             ),
         dragHandle =
-            if (showDragHandle) {
+            if (topBar is AppBottomSheetTopBar.DragHandle) {
                 { AppBottomSheetDragHandle() }
             } else {
                 null
@@ -109,10 +115,10 @@ fun AppModalBottomSheet(
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            if (!showDragHandle) {
+            if (topBar is AppBottomSheetTopBar.Header) {
                 BottomSheetHeader(
                     modifier = Modifier.padding(contentPadding),
-                    title = title,
+                    title = topBar.title,
                     onCloseClick = onDismissRequest,
                 )
             }
@@ -133,6 +139,17 @@ fun AppModalBottomSheet(
             )
         }
     }
+}
+
+@Stable
+sealed interface AppBottomSheetTopBar {
+    data object DragHandle : AppBottomSheetTopBar
+
+    data class Header(
+        val title: String? = null,
+    ) : AppBottomSheetTopBar
+
+    data object None : AppBottomSheetTopBar
 }
 
 @Composable
@@ -181,35 +198,32 @@ private fun AppBottomSheetDragHandle(modifier: Modifier = Modifier) {
 }
 
 @Preview(
-    name = "AppModalBottomSheet - Handle vs Header",
+    name = "AppModalBottomSheet - Compare",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun AppModalBottomSheet_ComparePreview() {
     var visible by remember { mutableStateOf(false) }
-    var useDragHandle by remember { mutableStateOf(true) }
+    var topBar: AppBottomSheetTopBar by remember { mutableStateOf(AppBottomSheetTopBar.DragHandle) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             AppButton(
                 modifier = Modifier.width(160.dp),
                 variant = AppButtonVariant.Secondary,
-                text = "드래그핸들 시트",
+                text = "드래그핸들",
                 onClick = {
-                    useDragHandle = true
+                    topBar = AppBottomSheetTopBar.DragHandle
                     visible = true
                 },
             )
             AppButton(
                 modifier = Modifier.width(160.dp),
                 variant = AppButtonVariant.Primary,
-                text = "헤더 시트",
+                text = "헤더",
                 onClick = {
-                    useDragHandle = false
+                    topBar = AppBottomSheetTopBar.Header(title = "바텀시트 제목")
                     visible = true
                 },
             )
@@ -218,14 +232,12 @@ private fun AppModalBottomSheet_ComparePreview() {
         AppModalBottomSheet(
             visible = visible,
             onDismissRequest = { visible = false },
-            showDragHandle = useDragHandle,
-            title = if (useDragHandle) null else "바텀시트 제목",
+            topBar = topBar,
         ) {
             Text(
-                text = if (useDragHandle) "DragHandle 버전" else "Header 버전",
+                text = if (topBar is AppBottomSheetTopBar.DragHandle) "DragHandle 버전" else "Header 버전",
                 color = AppColor.TextPrimary,
             )
-
             Spacer(Modifier.height(400.dp))
         }
     }
