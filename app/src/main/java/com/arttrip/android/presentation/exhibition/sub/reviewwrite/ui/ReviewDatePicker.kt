@@ -1,7 +1,6 @@
 package com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,16 +73,16 @@ fun SingleSelectDatePicker(
 
         Spacer(Modifier.height(16.dp))
 
-        cells.chunked(7).forEach { week ->
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                week.forEach { cell ->
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            cells.chunked(7).forEach { week ->
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    week.forEach { cell ->
                         val state =
                             resolveDayState(
                                 date = cell.date,
@@ -111,7 +110,6 @@ fun SingleSelectDatePicker(
                     }
                 }
             }
-            Spacer(Modifier.height(16.dp))
         }
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.R
@@ -43,12 +44,15 @@ import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.ui.theme.ArtTripTheme
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteState
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewPhotoRow
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewTextField
 import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.SingleSelectDatePicker
+import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun ReviewWriteScreen(
@@ -172,7 +176,7 @@ fun ReviewWriteScreen(
         AppModalBottomSheet(
             visible = state.isVisitDateSheetVisible,
             onDismissRequest = { onIntent(ReviewWriteIntent.VisitDateSheetDismissed) },
-            contentPadding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp),
             topBar = AppBottomSheetTopBar.None,
         ) {
             SingleSelectDatePicker(
@@ -312,6 +316,27 @@ private fun ExhibitionPosterImage(
             contentScale = ContentScale.Crop,
             loading = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
             error = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
+        )
+    }
+}
+
+@Preview(name = "ReviewWrite - VisitDate Sheet Open", showBackground = true)
+@Composable
+private fun PreviewReviewWriteScreen_SheetOpen() {
+    ArtTripTheme {
+        ReviewWriteScreen(
+            innerPadding = PaddingValues(0.dp),
+            state =
+                ReviewWriteState(
+                    title = "리뷰 작성 프리뷰",
+                    hallName = "예술의전당",
+                    posterUrl = "https://picsum.photos/200/300",
+                    visitDate = LocalDate.now(),
+                    calendarMonth = YearMonth.now(),
+                    reviewText = "프리뷰에서 바텀시트 간격 확인",
+                    isVisitDateSheetVisible = true,
+                ),
+            onIntent = {},
         )
     }
 }
