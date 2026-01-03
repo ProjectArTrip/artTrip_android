@@ -1,4 +1,4 @@
-package com.arttrip.android.data.remote.model.home
+package com.arttrip.android.data.remote.model.exhibit
 
 data class ExhibitDetailResponseDto(
     val exhibitId: Int,

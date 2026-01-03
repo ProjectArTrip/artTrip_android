@@ -1,8 +1,8 @@
 package com.arttrip.android.data.remote.mapper.exhibit
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
-import com.arttrip.android.data.remote.model.home.ExhibitDetailResponseDto
 import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
+import com.arttrip.android.data.remote.model.exhibit.ExhibitDetailResponseDto
 
 fun ExhibitDetailResponseDto.toDomain(): ExhibitionDetail =
     ExhibitionDetail(
