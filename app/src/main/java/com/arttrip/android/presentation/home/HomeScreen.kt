@@ -234,7 +234,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                     iconResId = R.drawable.ic_alert_24,
                     contentDescription = "알림",
                 ) {
-                    onIntent(HomeIntent.AlertIconClicked)
+                    onIntent(HomeIntent.NotificationIconClicked)
                 }
                 AppIconButton(
                     modifier = Modifier,

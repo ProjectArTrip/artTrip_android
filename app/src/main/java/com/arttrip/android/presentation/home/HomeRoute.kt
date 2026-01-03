@@ -20,7 +20,8 @@ fun HomeRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                HomeEffect.NavigateToAlert -> {
+                HomeEffect.NavigateToNotification -> {
+                    onNavigate(MainRoute.HOME_NOTIFICATION)
                 }
                 HomeEffect.NavigateToDateFilter -> {
                     onNavigate(MainRoute.HOME_DATE_RESULT)

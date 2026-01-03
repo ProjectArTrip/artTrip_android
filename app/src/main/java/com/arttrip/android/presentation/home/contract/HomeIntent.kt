@@ -15,7 +15,7 @@ sealed interface HomeIntent {
         val country: ForeignCountry,
     ) : HomeIntent
 
-    object AlertIconClicked : HomeIntent
+    object NotificationIconClicked : HomeIntent
 
     object DateFilterIconClicked : HomeIntent
 

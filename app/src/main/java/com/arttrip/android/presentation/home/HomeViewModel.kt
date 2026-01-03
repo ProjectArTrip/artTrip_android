@@ -89,9 +89,9 @@ class HomeViewModel
                     loadForeignGenreExhibitList(newCountry, genre)
                 }
 
-                is HomeIntent.AlertIconClicked -> {
+                is HomeIntent.NotificationIconClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(HomeEffect.NavigateToAlert)
+                        _effect.emit(HomeEffect.NavigateToNotification)
                     }
                 }
 

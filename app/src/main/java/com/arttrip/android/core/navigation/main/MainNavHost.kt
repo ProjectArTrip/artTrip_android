@@ -19,6 +19,7 @@ import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
+import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
@@ -77,9 +78,16 @@ fun MainNavHost(
             )
         }
 
+
         composable(MainRoute.HOME_DATE_RESULT) {
             DateResultRoute(
                 innerPadding = innerPadding,
+            )
+        }
+
+        composable(MainRoute.HOME_NOTIFICATION) {
+            NotificationRoute(
+                innerPadding = innerPadding
             )
         }
 
