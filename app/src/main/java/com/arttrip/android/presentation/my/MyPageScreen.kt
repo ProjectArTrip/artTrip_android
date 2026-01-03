@@ -8,13 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.arttrip.android.core.navigation.MainRoute
 
 @Composable
 fun MyPageScreen(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
-    onNavigate: (String) -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
 ) {
     val viewModel: MyPageViewModel = hiltViewModel()
     Column(
@@ -29,7 +28,7 @@ fun MyPageScreen(
             Text(text = "임시 로그아웃")
         }
         Button(
-            onClick = { onNavigate(MainRoute.exhibitionDetail(1)) },
+            onClick = { onNavigateExhibitionDetail(305) },
         ) {
             Text(text = "임시 전시조회화면")
         }

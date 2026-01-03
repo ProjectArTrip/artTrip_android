@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 @Composable
 fun MyPageRoute(
     innerPadding: PaddingValues,
-    onNavigate: (String) -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
 ) {
     MyPageScreen(
         innerPadding = innerPadding,
-        onNavigate = onNavigate,
+        onNavigateExhibitionDetail = onNavigateExhibitionDetail,
     )
 }

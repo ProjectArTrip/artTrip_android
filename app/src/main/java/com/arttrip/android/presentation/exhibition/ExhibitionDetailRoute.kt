@@ -15,13 +15,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
+import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
 
 @Composable
 fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
     exhibitId: Int,
     onBack: () -> Unit,
-    onNavigateToReviewWrite: (exhibitId: Int, title: String, hallName: String, posterUrl: String?) -> Unit,
+    onNavigateReviewWrite: (prefill: ReviewWritePrefill) -> Unit,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -54,11 +55,13 @@ fun ExhibitionDetailRoute(
                 when (effect) {
                     ExhibitionDetailEffect.NavigateBack -> onBack()
                     is ExhibitionDetailEffect.NavigateToWriteReview -> {
-                        onNavigateToReviewWrite(
-                            effect.exhibitId,
-                            effect.title,
-                            effect.hallName,
-                            effect.posterUrl,
+                        onNavigateReviewWrite(
+                            ReviewWritePrefill(
+                                effect.exhibitId,
+                                effect.title,
+                                effect.hallName,
+                                effect.posterUrl,
+                            ),
                         )
                     }
                     is ExhibitionDetailEffect.ShowError -> {
