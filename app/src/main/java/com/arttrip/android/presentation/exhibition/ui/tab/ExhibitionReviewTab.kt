@@ -52,7 +52,6 @@ fun LazyListScope.exhibitionReviewTab(
         }
         items(
             count = reviews.itemCount,
-            key = { idx -> reviews[idx]?.id ?: idx },
         ) { idx ->
             if (idx > 0) Spacer(modifier = Modifier.height(20.dp))
             val item = reviews[idx] ?: return@items
