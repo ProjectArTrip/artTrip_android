@@ -34,7 +34,9 @@ class BookmarkViewModel
         fun onIntent(intent: BookmarkIntent) {
             when (intent) {
                 // TODO bookstore binding 추가
-                else -> {}
+                is BookmarkIntent.ChangeSort -> {
+                    _state.update { it.copy(sort = intent.sort) }
+                }
             }
         }
 
