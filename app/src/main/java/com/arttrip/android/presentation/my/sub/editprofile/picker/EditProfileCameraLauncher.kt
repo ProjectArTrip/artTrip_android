@@ -6,6 +6,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.core.content.FileProvider
 import java.io.File
@@ -28,20 +30,25 @@ fun rememberEditProfileCameraLauncher(
     val latestOnCaptured by rememberUpdatedState(onCaptured)
     val latestOnFailed by rememberUpdatedState(onFailed)
 
-    // 촬영 요청 시마다 새 Uri를 만들기 위해 holder를 씀
-    var pendingUri: Uri? = null
+    val pendingUriState = remember { mutableStateOf<Uri?>(null) }
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            val uri = pendingUri
-            pendingUri = null
+            val uri = pendingUriState.value
+            pendingUriState.value = null
 
             if (success && uri != null) latestOnCaptured(uri) else latestOnFailed?.invoke()
         }
 
     return {
-        pendingUri = createTempImageUri(context, authority)
-        pendingUri?.let { launcher.launch(it) } ?: latestOnFailed?.invoke()
+        val uri = createTempImageUri(context, authority)
+
+        if (uri != null) {
+            pendingUriState.value = uri
+            launcher.launch(uri)
+        } else {
+            latestOnFailed?.invoke()
+        }
     }
 }
 

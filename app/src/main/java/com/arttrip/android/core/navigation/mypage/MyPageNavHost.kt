@@ -67,6 +67,10 @@ fun MyPageNavHost(
         }
 
         composable(MyPageRoute.EDIT_PROFILE) {
+            EditProfileRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
         }
         composable(MyPageRoute.RECENT_EXHIBITIONS) {
         }
