@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.navigation.MainRoute
+import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.home.contract.HomeEffect
 
 @Composable

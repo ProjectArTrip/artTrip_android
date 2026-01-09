@@ -33,8 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.arttrip.android.core.navigation.BottomNavItem
-import com.arttrip.android.core.navigation.bottomNavItems
+import com.arttrip.android.core.navigation.main.BottomNavItem
+import com.arttrip.android.core.navigation.main.bottomNavItems
 import com.arttrip.android.core.ui.theme.AppColor
 
 @Composable

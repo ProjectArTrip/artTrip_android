@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.arttrip.android.core.navigation.AppNavHost
+import com.arttrip.android.core.navigation.app.AppNavHost
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 import dagger.hilt.android.AndroidEntryPoint
 

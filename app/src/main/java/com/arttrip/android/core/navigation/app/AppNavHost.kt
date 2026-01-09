@@ -1,0 +1,63 @@
+package com.arttrip.android.core.navigation.app
+
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.arttrip.android.core.navigation.app.AppRoute
+import com.arttrip.android.presentation.intro.IntroRoute
+import com.arttrip.android.presentation.login.LoginRoute
+import com.arttrip.android.presentation.main.MainRoute
+import com.arttrip.android.presentation.splash.SplashRoute
+
+@Composable
+fun AppNavHost(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = AppRoute.SPLASH,
+        modifier = Modifier,
+    ) {
+        composable(AppRoute.SPLASH) {
+            SplashRoute(
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.SPLASH) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable(AppRoute.LOGIN) {
+            val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
+
+            LoginRoute(
+                innerPadding = systemPadding,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.LOGIN) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable(AppRoute.INTRO) {
+            val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
+            IntroRoute(
+                innerPadding = systemPadding,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.INTRO) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable(AppRoute.MAIN) {
+            MainRoute(appNavController = navController)
+        }
+    }
+}

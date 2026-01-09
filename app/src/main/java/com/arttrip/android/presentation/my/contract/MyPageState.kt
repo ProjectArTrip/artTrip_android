@@ -1,6 +1,6 @@
 package com.arttrip.android.presentation.my.contract
 
 data class MyPageState(
-    val exhibitId: Int = 1,
-    val isBookmarked: Boolean = false,
+    val userName: String = "사용자",
+    val profileImageUrl: String? = null,
 )

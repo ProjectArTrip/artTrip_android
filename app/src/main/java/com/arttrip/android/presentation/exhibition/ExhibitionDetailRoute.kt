@@ -15,7 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 
 @Composable
 fun ExhibitionDetailRoute(

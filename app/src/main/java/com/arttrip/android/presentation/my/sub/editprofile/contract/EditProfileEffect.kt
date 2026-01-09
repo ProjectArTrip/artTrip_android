@@ -1,0 +1,9 @@
+package com.arttrip.android.presentation.my.sub.editprofile.contract
+
+sealed interface EditProfileEffect {
+    data object NavigateBack : EditProfileEffect
+
+    data object LaunchAlbumPicker : EditProfileEffect
+
+    data object LaunchCamera : EditProfileEffect
+}

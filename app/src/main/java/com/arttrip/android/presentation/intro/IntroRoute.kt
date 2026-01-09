@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.navigation.AppRoute
+import com.arttrip.android.core.navigation.app.AppRoute
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 
