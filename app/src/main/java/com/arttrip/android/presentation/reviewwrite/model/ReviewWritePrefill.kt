@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.model
+package com.arttrip.android.presentation.reviewwrite.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

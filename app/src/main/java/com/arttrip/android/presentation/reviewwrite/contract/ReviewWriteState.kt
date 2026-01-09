@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract
+package com.arttrip.android.presentation.reviewwrite.contract
 
 import android.net.Uri
 import java.time.LocalDate

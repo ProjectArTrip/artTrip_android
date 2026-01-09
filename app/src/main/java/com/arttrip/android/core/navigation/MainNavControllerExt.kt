@@ -2,7 +2,7 @@ package com.arttrip.android.core.navigation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavHostController
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 
 /* ================================
  * Public API

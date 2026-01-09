@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui
+package com.arttrip.android.presentation.reviewwrite.ui
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement

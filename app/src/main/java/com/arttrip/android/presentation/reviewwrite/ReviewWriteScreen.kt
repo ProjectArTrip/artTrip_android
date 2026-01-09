@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite
+package com.arttrip.android.presentation.reviewwrite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,11 +46,11 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteIntent
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteState
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewPhotoRow
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.ReviewTextField
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui.SingleSelectDatePicker
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
+import com.arttrip.android.presentation.reviewwrite.ui.ReviewPhotoRow
+import com.arttrip.android.presentation.reviewwrite.ui.ReviewTextField
+import com.arttrip.android.presentation.reviewwrite.ui.SingleSelectDatePicker
 import java.time.LocalDate
 import java.time.YearMonth
 

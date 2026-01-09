@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite
+package com.arttrip.android.presentation.reviewwrite
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -7,10 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteEffect
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteIntent
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.picker.rememberReviewPhotoPickerLauncher
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.picker.rememberReviewPhotoPickerLauncher
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

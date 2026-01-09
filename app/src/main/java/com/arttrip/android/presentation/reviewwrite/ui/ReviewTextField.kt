@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.ui
+package com.arttrip.android.presentation.reviewwrite.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

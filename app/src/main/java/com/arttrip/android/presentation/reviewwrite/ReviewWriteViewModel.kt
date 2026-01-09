@@ -1,11 +1,11 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite
+package com.arttrip.android.presentation.reviewwrite
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteEffect
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteIntent
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract.ReviewWriteState
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

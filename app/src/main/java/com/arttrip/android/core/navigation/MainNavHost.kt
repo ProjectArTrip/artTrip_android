@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.ReviewWriteRoute
+import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute

@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.picker
+package com.arttrip.android.presentation.reviewwrite.picker
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

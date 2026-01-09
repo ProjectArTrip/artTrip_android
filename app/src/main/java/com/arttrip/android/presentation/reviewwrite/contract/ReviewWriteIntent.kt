@@ -1,7 +1,7 @@
-package com.arttrip.android.presentation.exhibition.sub.reviewwrite.contract
+package com.arttrip.android.presentation.reviewwrite.contract
 
 import android.net.Uri
-import com.arttrip.android.presentation.exhibition.sub.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 import java.time.LocalDate
 import java.time.YearMonth
 
