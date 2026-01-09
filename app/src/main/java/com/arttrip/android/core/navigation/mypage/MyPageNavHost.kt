@@ -1,8 +1,13 @@
 package com.arttrip.android.core.navigation.mypage
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,6 +17,7 @@ import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 
 @Composable
 fun MyPageNavHost(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     mainNavController: NavHostController,
     innerPadding: PaddingValues,
@@ -19,6 +25,19 @@ fun MyPageNavHost(
     NavHost(
         navController = navController,
         startDestination = MyPageRoute.ROOT,
+        modifier = modifier,
+        enterTransition = {
+            slideInHorizontally { it } + fadeIn()
+        },
+        exitTransition = {
+            slideOutHorizontally { -it / 3 } + fadeOut()
+        },
+        popEnterTransition = {
+            slideInHorizontally { -it / 3 } + fadeIn()
+        },
+        popExitTransition = {
+            slideOutHorizontally { it } + fadeOut()
+        },
     ) {
         // MyPage 메인(루트)
         composable(MyPageRoute.ROOT) {
