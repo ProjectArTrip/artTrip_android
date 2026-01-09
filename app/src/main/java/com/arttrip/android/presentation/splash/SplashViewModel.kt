@@ -2,7 +2,7 @@ package com.arttrip.android.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arttrip.android.core.navigation.AppRoute
+import com.arttrip.android.core.navigation.app.AppRoute
 import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.presentation.splash.contract.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
