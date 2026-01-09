@@ -38,13 +38,14 @@ fun AppFilterChip(
     case: AppFilterChipCase = AppFilterChipCase.Case01,
     text: String,
     selected: Boolean,
+    showBorder: Boolean = true,
     onClick: () -> Unit,
 ) {
     Surface(
         shape = CircleShape,
         color = chipContainer(selected),
         contentColor = chipContent(selected),
-        border = chipBorder(selected),
+        border = chipBorder(selected, showBorder),
         modifier = modifier.wrapContentSize().noRippleClickable { onClick() },
     ) {
         Row(
@@ -74,7 +75,16 @@ private fun chipContainer(selected: Boolean) = if (selected) AppColor.Primary300
 private fun chipContent(selected: Boolean) = if (selected) AppColor.TextWhite else AppColor.TextPrimary
 
 @Composable
-private fun chipBorder(selected: Boolean) = if (selected) null else BorderStroke(1.dp, AppColor.Gray100)
+private fun chipBorder(
+    selected: Boolean,
+    showBorder: Boolean,
+) = if (!showBorder) {
+    null
+} else if (selected) {
+    null
+} else {
+    BorderStroke(1.dp, AppColor.Gray100)
+}
 
 @Composable
 private fun chipTextStyle(selected: Boolean) = if (selected) AppTextStyle.Body01Bold else AppTextStyle.Body01Light
