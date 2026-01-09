@@ -27,6 +27,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
+import kotlinx.coroutines.launch
 
 /**
  * ### 앱 공통 Modal Bottom Sheet 컴포넌트.
@@ -87,14 +89,23 @@ fun AppModalBottomSheet(
         rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         )
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         sheetState.show()
+    }
+
+    fun dismissWithAnimation() {
+        scope.launch {
+            sheetState.hide()
+            onDismissRequest()
+        }
     }
 
     val gesturesEnabled = topBar is AppBottomSheetTopBar.DragHandle
 
     ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { dismissWithAnimation() },
         sheetState = sheetState,
         sheetGesturesEnabled = gesturesEnabled,
         containerColor = AppColor.SubLightGray,
@@ -119,7 +130,7 @@ fun AppModalBottomSheet(
                 BottomSheetHeader(
                     modifier = Modifier.padding(contentPadding),
                     title = topBar.title,
-                    onCloseClick = onDismissRequest,
+                    onCloseClick = { dismissWithAnimation() },
                 )
             }
             Column(

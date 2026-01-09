@@ -1,6 +1,7 @@
 package com.arttrip.android.presentation.reviewwrite.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +44,7 @@ fun SingleSelectDatePicker(
     initialSelected: LocalDate? = null,
     onMonthChanged: (YearMonth) -> Unit = {},
     onDateSelected: (LocalDate) -> Unit = {},
+    onCloseClicked: () -> Unit,
 ) {
     var month by remember { mutableStateOf(initialMonth) }
     var selected by remember { mutableStateOf(initialSelected) }
@@ -52,20 +54,37 @@ fun SingleSelectDatePicker(
     val cells = remember(month) { buildMonthCellsWithAdjacent(month) }
 
     Column(modifier) {
-        CalendarHeader(
-            year = month.year,
-            month = month.monthValue,
-            onPrev = {
-                val newMonth = month.minusMonths(1)
-                month = newMonth
-                onMonthChanged(newMonth)
-            },
-            onNext = {
-                val newMonth = month.plusMonths(1)
-                month = newMonth
-                onMonthChanged(newMonth)
-            },
-        )
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                CalendarHeader(
+                    year = month.year,
+                    month = month.monthValue,
+                    onPrev = {
+                        val newMonth = month.minusMonths(1)
+                        month = newMonth
+                        onMonthChanged(newMonth)
+                    },
+                    onNext = {
+                        val newMonth = month.plusMonths(1)
+                        month = newMonth
+                        onMonthChanged(newMonth)
+                    },
+                )
+            }
+            AppIconButton(
+                iconResId = R.drawable.ic_close_24,
+                onIconClick = onCloseClicked,
+            )
+        }
 
         Spacer(Modifier.height(16.dp))
 
@@ -79,7 +98,9 @@ fun SingleSelectDatePicker(
         ) {
             cells.chunked(7).forEach { week ->
                 Row(
-                    Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     week.forEach { cell ->

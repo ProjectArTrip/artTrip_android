@@ -58,7 +58,14 @@ fun MainNavHost(
         }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
-        composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
+        composable(BottomNavItem.Bookmark.route) {
+            BookmarkRoute(
+                innerPadding,
+                onNavigateExhibitionDetail = { exhibitId ->
+                    navController.navigateToExhibitionDetail(exhibitId)
+                },
+            )
+        }
         composable(BottomNavItem.MyPage.route) {
             val myPageNavController = rememberNavController()
 
