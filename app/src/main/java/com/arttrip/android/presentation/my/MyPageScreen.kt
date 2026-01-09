@@ -21,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +36,7 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.presentation.my.contract.MyPageIntent
 import com.arttrip.android.presentation.my.contract.MyPageState
 
 private val CONTENT_HORIZONTAL_PADDING = 24.dp
@@ -47,6 +47,7 @@ private val BOTTOM_SCROLL_SPACER = 48.dp
 fun MyPageScreen(
     innerPadding: PaddingValues,
     state: MyPageState,
+    onIntent: (MyPageIntent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -76,9 +77,11 @@ fun MyPageScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             ProfileRow(
-                name = "사용자",
-                profileUrl = null,
-                onMoreClick = {},
+                name = state.userName,
+                profileUrl = state.profileImageUrl,
+                onMoreClick = {
+                    onIntent(MyPageIntent.ClickProfileMore)
+                },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -90,18 +93,18 @@ fun MyPageScreen(
                         .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MENU_ITEM_GAP),
             ) {
-                MenuItem(title = "최근 본 전시", onClick = {})
-                MenuItem(title = "나의 리뷰", onClick = {})
-                MenuItem(title = "나의 취향 분석", onClick = {})
-                MenuItem(title = "설정", onClick = {})
+                MenuItem(title = "최근 본 전시", onClick = { onIntent(MyPageIntent.ClickRecentExhibitions) })
+                MenuItem(title = "나의 리뷰", onClick = { onIntent(MyPageIntent.ClickMyReviews) })
+                MenuItem(title = "나의 취향 분석", onClick = { onIntent(MyPageIntent.ClickTasteAnalysis) })
+                MenuItem(title = "설정", onClick = { onIntent(MyPageIntent.ClickSettings) })
                 MenuItem(
                     title = "로그아웃",
                     titleColor = AppColor.SubRed,
                     trailing = null,
-                    onClick = {},
+                    onClick = { onIntent(MyPageIntent.ClickLogout) },
                 )
             }
-            VerticalDivider(modifier = Modifier.height(500.dp), color = AppColor.SubRed)
+
             Spacer(modifier = Modifier.height(BOTTOM_SCROLL_SPACER))
         }
     }

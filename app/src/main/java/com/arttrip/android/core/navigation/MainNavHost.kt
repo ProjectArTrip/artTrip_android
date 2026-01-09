@@ -59,9 +59,14 @@ fun MainNavHost(
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
         composable(BottomNavItem.MyPage.route) {
-            MyPageRoute(innerPadding, onNavigateExhibitionDetail = { exhibitId ->
-                navController.navigateToExhibitionDetail(exhibitId)
-            })
+            MyPageRoute(
+                innerPadding,
+                onNavigateEditProfile = {},
+                onNavigateRecentExhibitions = {},
+                onNavigateMyReviews = {},
+                onNavigateTasteAnalysis = {},
+                onNavigateSettings = {},
+            )
         }
 
         composable(MainRoute.HOME_DATE_FILTER) {
