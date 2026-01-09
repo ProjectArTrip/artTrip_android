@@ -1,4 +1,4 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.main
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,14 +12,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
-import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute
-import com.arttrip.android.presentation.my.MyPageRoute
+import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.stamp.StampRoute
 
 @Composable
@@ -59,13 +60,12 @@ fun MainNavHost(
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) { BookmarkRoute(innerPadding) }
         composable(BottomNavItem.MyPage.route) {
-            MyPageRoute(
-                innerPadding,
-                onNavigateEditProfile = {},
-                onNavigateRecentExhibitions = {},
-                onNavigateMyReviews = {},
-                onNavigateTasteAnalysis = {},
-                onNavigateSettings = {},
+            val myPageNavController = rememberNavController()
+
+            MyPageNavHost(
+                navController = myPageNavController,
+                mainNavController = navController,
+                innerPadding = innerPadding,
             )
         }
 

@@ -1,4 +1,4 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.app
 
 object AppRoute {
     const val LOGIN = "login"

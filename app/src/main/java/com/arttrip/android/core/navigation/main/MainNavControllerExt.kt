@@ -1,7 +1,9 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.main
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavHostController
+import com.arttrip.android.core.navigation.NavKeys
+import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 
 /* ================================

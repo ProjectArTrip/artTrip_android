@@ -1,4 +1,4 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.app
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.arttrip.android.core.navigation.app.AppRoute
 import com.arttrip.android.presentation.intro.IntroRoute
 import com.arttrip.android.presentation.login.LoginRoute
 import com.arttrip.android.presentation.main.MainRoute

@@ -27,8 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.arttrip.android.core.navigation.BottomNavItem
-import com.arttrip.android.core.navigation.bottomNavItems
+import com.arttrip.android.core.navigation.main.BottomNavItem
+import com.arttrip.android.core.navigation.main.bottomNavItems
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme

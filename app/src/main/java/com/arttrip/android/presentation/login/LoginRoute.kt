@@ -12,7 +12,7 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.BuildConfig
-import com.arttrip.android.core.navigation.AppRoute
+import com.arttrip.android.core.navigation.app.AppRoute
 import com.arttrip.android.presentation.login.contract.LoginEffect
 import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption

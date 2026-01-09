@@ -1,4 +1,4 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.main
 
 object MainRoute {
     const val HOME = "home"

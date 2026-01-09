@@ -12,9 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.arttrip.android.core.navigation.BottomNavItem
-import com.arttrip.android.core.navigation.MainNavHost
-import com.arttrip.android.core.navigation.bottomNavItems
+import com.arttrip.android.core.navigation.main.BottomNavItem
+import com.arttrip.android.core.navigation.main.MainNavHost
+import com.arttrip.android.core.navigation.main.bottomNavItems
 import com.arttrip.android.core.ui.component.bottomNav.AppBottomNavBarWithInset
 import com.arttrip.android.core.ui.theme.ArtTripTheme
 

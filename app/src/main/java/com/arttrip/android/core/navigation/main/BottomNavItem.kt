@@ -1,4 +1,4 @@
-package com.arttrip.android.core.navigation
+package com.arttrip.android.core.navigation.main
 
 import androidx.annotation.DrawableRes
 import com.arttrip.android.R

@@ -7,7 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.arttrip.android.core.navigation.AppRoute
+import com.arttrip.android.core.navigation.app.AppRoute
 
 @Composable
 fun MainRoute(
