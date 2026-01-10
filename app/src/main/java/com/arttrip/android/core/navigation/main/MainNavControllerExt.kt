@@ -15,6 +15,18 @@ fun NavHostController.navigateToExhibitionDetail(exhibitId: Int) {
     navigate(MainRoute.exhibitionDetail(exhibitId))
 }
 
+fun NavHostController.navigateToNotification() {
+    navigate(MainRoute.HOME_NOTIFICATION)
+}
+
+fun NavHostController.navigateToDateFilter() {
+    navigate(MainRoute.HOME_DATE_FILTER)
+}
+
+fun NavHostController.navigateToSearch() {
+    navigate(MainRoute.HOME_SEARCH)
+}
+
 fun NavHostController.navigateToRegion(region: DomesticRegion) {
     navigate(MainRoute.region(region))
 }

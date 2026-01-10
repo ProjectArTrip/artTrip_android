@@ -13,7 +13,10 @@ import com.arttrip.android.presentation.home.contract.HomeEffect
 @Composable
 fun HomeRoute(
     innerPadding: PaddingValues,
-    onNavigate: (String) -> Unit,
+    onNavigateNotification: () -> Unit,
+    onNavigateDateFilter: () -> Unit,
+    onNavigateSearch: () -> Unit,
+    onNavigateExhibitionDetail:(Int) -> Unit,
     onNavigateRegion: (DomesticRegion) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -23,16 +26,16 @@ fun HomeRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeEffect.NavigateToNotification -> {
-                    onNavigate(MainRoute.HOME_NOTIFICATION)
+                   onNavigateNotification()
                 }
                 HomeEffect.NavigateToDateFilter -> {
                     onNavigate(MainRoute.HOME_DATE_RESULT)
                 }
                 HomeEffect.NavigateToSearch -> {
-                    onNavigate(MainRoute.HOME_SEARCH)
+                    onNavigateSearch()
                 }
                 is HomeEffect.NavigateToExhibitionDetail -> {
-                    onNavigate(MainRoute.exhibitionDetail(exhibitId = effect.exhibitionId))
+                    onNavigateExhibitionDetail(effect.exhibitionId)
                 }
 
                 is HomeEffect.NavigateToRegion -> {

@@ -56,8 +56,11 @@ fun MainNavHost(
         composable(BottomNavItem.Home.route) {
             HomeRoute(
                 innerPadding,
-                onNavigate = { targetRoute ->
-                    navController.navigate(targetRoute)
+                onNavigateNotification = navController::navigateToNotification,
+                onNavigateDateFilter = navController::navigateToDateFilter,
+                onNavigateSearch = navController::navigateToSearch,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
                 },
                 onNavigateRegion = { region ->
                     navController.navigateToRegion(region)
