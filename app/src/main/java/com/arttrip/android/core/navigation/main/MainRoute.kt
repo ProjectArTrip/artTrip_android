@@ -12,6 +12,8 @@ object MainRoute {
 
     const val HOME_NOTIFICATION = "home_notification"
 
+    const val HOME_SEARCH = "home_search"
+
     private const val EXHIBITION_DETAIL_ROUTE = "exhibition_detail"
     const val EXHIBITION_DETAIL = "$EXHIBITION_DETAIL_ROUTE/{exhibitId}"
 

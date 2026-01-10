@@ -27,6 +27,7 @@ fun HomeRoute(
                     onNavigate(MainRoute.HOME_DATE_RESULT)
                 }
                 HomeEffect.NavigateToSearch -> {
+                    onNavigate(MainRoute.HOME_SEARCH)
                 }
                 is HomeEffect.NavigateToExhibitionDetail -> {
                     onNavigate(MainRoute.exhibitionDetail(exhibitId = effect.exhibitionId))
