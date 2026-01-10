@@ -50,9 +50,6 @@ fun MyPageNavHost(
                         toMyReviews = { navController.navigate(MyPageRoute.MY_REVIEWS) },
                         toTasteAnalysis = { navController.navigate(MyPageRoute.TASTE_ANALYSIS) },
                         toSettings = { navController.navigate(MyPageRoute.SETTINGS) },
-                        toReviewWrite = { exhibitId, prefill ->
-                            mainNavController.navigateToReviewWrite(exhibitId, prefill)
-                        },
                     )
                 }
 
@@ -61,7 +58,6 @@ fun MyPageNavHost(
                 onNavigateEditProfile = actions.toEditProfile,
                 onNavigateRecentExhibitions = actions.toRecentExhibitions,
                 onNavigateMyReviews = actions.toMyReviews,
-                onNavigateReviewWrite = actions.toReviewWrite,
                 onNavigateTasteAnalysis = actions.toTasteAnalysis,
                 onNavigateSettings = actions.toSettings,
             )
@@ -79,6 +75,9 @@ fun MyPageNavHost(
             MyReviewsRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateReviewWrite = { exhibitId, prefill ->
+                    mainNavController.navigateToReviewWrite(exhibitId, prefill)
+                },
             )
         }
         composable(MyPageRoute.TASTE_ANALYSIS) {
