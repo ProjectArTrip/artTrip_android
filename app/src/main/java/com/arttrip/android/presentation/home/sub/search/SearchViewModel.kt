@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,12 +24,19 @@ class SearchViewModel
 
         fun onIntent(intent: SearchIntent) {
             when (intent) {
+                is SearchIntent.InputTextChanged -> {
+                    _state.update { it.copy(inputText = intent.text) }
+                }
+                is SearchIntent.SearchClicked -> {
+
+                }
                 is SearchIntent.RecentKeywordClicked -> {}
                 is SearchIntent.RecentKeywordDismissClicked -> {}
                 is SearchIntent.RecommendKeywordClicked -> {}
                 SearchIntent.DeleteAllClicked -> {}
                 is SearchIntent.ExhibitionClicked -> {}
                 is SearchIntent.LikeClicked -> {}
+
             }
         }
     }

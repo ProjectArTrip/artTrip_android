@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
@@ -27,6 +29,7 @@ import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.chip.RecentSearchChip
 import com.arttrip.android.core.ui.component.chip.SuggestionChip
+import com.arttrip.android.core.ui.component.input.AppTextField
 import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
@@ -75,12 +78,29 @@ fun SearchScreen(
                     Modifier
                         .height(16.dp),
             )
-            // / 텍스트 필드 영역
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(48.dp),
-            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                AppTextField(
+                    value = state.inputText,
+                    onValueChange = { text ->
+                        onIntent(SearchIntent.InputTextChanged(text))
+                    },
+                    placeholder = "새로 오픈한 12월 독일 전시가 있어요",
+                    trailing = {
+                        AppIconButton(
+                            iconResId = R.drawable.ic_search_24,
+                            contentDescription = "Search Button",
+                            onIconClick = {
+                                onIntent(SearchIntent.SearchClicked(state.inputText))
+                            }
+                        )
+                    }
+                )
+            }
 
             Box(
                 modifier =

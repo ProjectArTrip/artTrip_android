@@ -1,6 +1,14 @@
 package com.arttrip.android.presentation.home.sub.search.contract
 
 sealed interface SearchIntent {
+    data class InputTextChanged(
+        val text: String,
+    ): SearchIntent
+
+    data class SearchClicked(
+        val keyword: String
+    ): SearchIntent
+
     data class RecentKeywordClicked(
         val keyword: String,
     ) : SearchIntent

@@ -25,4 +25,6 @@ data class SearchState(
             "현대미술",
             "해외",
         ),
+
+    val inputText: String = ""
 )
