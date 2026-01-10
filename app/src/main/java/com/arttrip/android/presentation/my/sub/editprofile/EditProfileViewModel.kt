@@ -79,7 +79,7 @@ class EditProfileViewModel
                     }
                 }
 
-                EditProfileIntent.NicknameModalDismissed -> {
+                EditProfileIntent.NicknameDialogDismissed -> {
                     _state.update {
                         it.copy(
                             isNicknameDialogVisible = false,

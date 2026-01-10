@@ -25,7 +25,7 @@ sealed interface EditProfileIntent {
 
     data object NicknameEditClicked : EditProfileIntent
 
-    data object NicknameModalDismissed : EditProfileIntent
+    data object NicknameDialogDismissed : EditProfileIntent
 
     data object NicknameConfirmClicked : EditProfileIntent
 
