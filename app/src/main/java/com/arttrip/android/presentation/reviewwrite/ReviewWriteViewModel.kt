@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -35,11 +36,23 @@ class ReviewWriteViewModel
                     if (initialized) return
                     initialized = true
                     _state.update {
-                        it.copy(
-                            title = intent.prefill.title,
-                            hallName = intent.prefill.hallName,
-                            posterUrl = intent.prefill.posterUrl,
-                        )
+                        if (intent.prefill.content != null) {
+                            it.copy(
+                                appTopBarTitle = "리뷰 수정하기",
+                                buttonText = "수정하기",
+                                visitDate = LocalDate.of(2025, 12, 11), // TODO
+                                title = intent.prefill.title,
+                                hallName = intent.prefill.hallName,
+                                posterUrl = intent.prefill.posterUrl,
+                                reviewText = intent.prefill.content,
+                            )
+                        } else {
+                            it.copy(
+                                title = intent.prefill.title,
+                                hallName = intent.prefill.hallName,
+                                posterUrl = intent.prefill.posterUrl,
+                            )
+                        }
                     }
                 }
 

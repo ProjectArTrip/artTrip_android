@@ -10,6 +10,8 @@ private const val MAX_REVIEW_TEXT_LENGTH = 500
 private val VISIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd")
 
 data class ReviewWriteState(
+    val appTopBarTitle: String = "리뷰 작성",
+    val buttonText: String = "등록하기",
     val title: String = "",
     val hallName: String = "",
     val posterUrl: String? = null,

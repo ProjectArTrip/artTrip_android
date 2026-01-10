@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -80,6 +82,7 @@ fun ReviewWriteScreen(
             horizontalAlignment = Alignment.Start,
         ) {
             ReviewWriteTopBar(
+                title = state.appTopBarTitle,
                 onClose = { onIntent(ReviewWriteIntent.BackClicked) },
             )
 
@@ -165,7 +168,7 @@ fun ReviewWriteScreen(
                         start = 24.dp,
                         end = 24.dp,
                     ),
-            text = "등록하기",
+            text = state.buttonText,
             onClick = { onIntent(ReviewWriteIntent.SubmitClicked) },
             enabled = state.canSubmit,
         )
@@ -189,7 +192,10 @@ fun ReviewWriteScreen(
 }
 
 @Composable
-private fun ReviewWriteTopBar(onClose: () -> Unit) {
+private fun ReviewWriteTopBar(
+    title: String,
+    onClose: () -> Unit,
+) {
     AppTopBar(
         leading = {
             AppIconButton(
@@ -197,7 +203,7 @@ private fun ReviewWriteTopBar(onClose: () -> Unit) {
                 contentDescription = "닫기",
             ) { onClose() }
         },
-        title = "리뷰 작성",
+        title = title,
     )
 }
 
@@ -281,14 +287,19 @@ private fun ExhibitionPosterImage(
     url: String?,
     isLoading: Boolean = true,
 ) {
+    val shape = RoundedCornerShape(4.dp)
+
     if (url.isNullOrEmpty() || isLoading) {
-        StaticSkeleton(modifier = modifier)
+        StaticSkeleton(
+            modifier = modifier,
+            shape = shape,
+        )
         return
     }
 
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier.matchParentSize().clip(shape),
             model = url,
             contentDescription = "전시 포스터",
             contentScale = ContentScale.Crop,
