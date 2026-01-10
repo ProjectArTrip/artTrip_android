@@ -46,7 +46,7 @@ import com.arttrip.android.core.util.noRippleClickable
  * 상태별 동작 / 텍스트 컬러
  * - enabled = false
  *   · 입력/포커스 불가 (비활성)
- *   · Text color: TextPrimary
+ *   · Text color: TextTertiary
  *
  * - readOnly = true
  *   · 활성 상태 유지, 편집만 불가
