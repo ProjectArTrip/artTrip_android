@@ -11,14 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -231,31 +232,99 @@ private fun InputContainer(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360)
+@Preview(name = "AppInputs - All States", showBackground = true, widthDp = 360, heightDp = 980)
 @Composable
-private fun Preview_AppInputs() {
-    var text by remember { mutableStateOf("") }
-    var selected by remember { mutableStateOf<String?>(null) }
+private fun Preview_AppInputs_AllStates() {
+    val longText = "텍스트가 길면 이렇게 말줄임이 됩니다. 텍스트가 길면 이렇게 말줄임이 됩니다."
 
     Column(
-        modifier = Modifier.padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier =
+            Modifier
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Text("AppTextField", style = AppTextStyle.Body01Regular, color = AppColor.TextPrimary)
+
+        Text("• Default (empty + placeholder)", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
         AppTextField(
-            value = text,
-            onValueChange = { text = it },
+            value = "",
+            onValueChange = {},
             placeholder = "텍스트를 입력하세요",
-            isError = false,
+        )
+
+        Text("• Filled + trailing", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppTextField(
+            value = "검색어",
+            onValueChange = {},
             trailing = { AppIconButton(iconResId = R.drawable.ic_search_24) },
         )
 
+        Text("• Error", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppTextField(
+            value = "잘못된 값",
+            onValueChange = {},
+            isError = true,
+        )
+
+        Text("• Disabled", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppTextField(
+            value = "비활성 값",
+            onValueChange = {},
+            enabled = false,
+        )
+
+        Text("• ReadOnly", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppTextField(
+            value = "읽기 전용 값",
+            onValueChange = {},
+            readOnly = true,
+        )
+
+        HorizontalDivider(color = AppColor.Gray50)
+
+        Text("AppSelectField", style = AppTextStyle.Body01Regular, color = AppColor.TextPrimary)
+
+        Text("• Default (empty + placeholder)", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
         AppSelectField(
-            text = selected,
+            text = null,
             placeholder = "방문일을 선택하세요",
-            onClick = {
-                selected = if (selected == null) "11월 25일 화" else null
-            },
-            isError = false,
+            onClick = {},
+            trailing = { AppIconButton(iconResId = R.drawable.ic_calendar_24) },
+        )
+
+        Text("• Filled + trailing", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppSelectField(
+            text = "11월 25일 화",
+            placeholder = "방문일을 선택하세요",
+            onClick = {},
+            trailing = { AppIconButton(iconResId = R.drawable.ic_calendar_24) },
+        )
+
+        Text("• Error", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppSelectField(
+            text = "선택된 값",
+            placeholder = "선택하세요",
+            isError = true,
+            onClick = {},
+            trailing = { AppIconButton(iconResId = R.drawable.ic_calendar_24) },
+        )
+
+        Text("• Disabled (UI 유지 + 클릭만 비활성)", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppSelectField(
+            text = "선택된 값",
+            placeholder = "선택하세요",
+            enabled = false,
+            onClick = {},
+            trailing = { AppIconButton(iconResId = R.drawable.ic_calendar_24) },
+        )
+
+        Text("• Long text (ellipsis)", style = AppTextStyle.Body02Regular, color = AppColor.TextTertiary)
+        AppSelectField(
+            text = longText,
+            placeholder = "선택하세요",
+            onClick = {},
+            trailing = { AppIconButton(iconResId = R.drawable.ic_calendar_24) },
         )
     }
 }
