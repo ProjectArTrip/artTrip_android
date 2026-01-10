@@ -67,7 +67,6 @@ fun BookmarkScreen(
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
 
-
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
             title = "즐겨찾기",
@@ -241,8 +240,7 @@ fun ExhibitionItem(
             Modifier
                 .noRippleClickable {
                     onItemClick(exhibition.id)
-                }
-                .padding(end = 20.dp),
+                }.padding(end = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ExhibitionThumbWithActions(

@@ -63,6 +63,7 @@ fun MyReviewsScreen(
                     iconResId = R.drawable.ic_back_24,
                     contentDescription = "뒤로가기",
                     onIconClick = {
+                        onIntent(MyReviewsIntent.BackClicked)
                     },
                 )
             },
