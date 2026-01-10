@@ -297,7 +297,7 @@ fun SearchResultContent(
                 )
 
             repeat(10) {
-                ExhibitionItemCase3(
+                ExhibitionItem(
                     exhibition = dummyExhibition,
                     onExhibitionClick = { id ->
                         onExhibitionClick(id)
@@ -317,7 +317,7 @@ fun SearchResultContent(
 }
 
 @Composable
-fun ExhibitionItemCase3(
+fun ExhibitionItem(
     exhibition: ExhibitionModel,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
