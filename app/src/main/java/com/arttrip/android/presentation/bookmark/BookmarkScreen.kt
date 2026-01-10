@@ -1,5 +1,10 @@
 package com.arttrip.android.presentation.bookmark
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +52,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
+import com.arttrip.android.core.util.rememberScrollUpVisible
 import com.arttrip.android.domain.model.exhibition.ExhibitionModel
 import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
 import com.arttrip.android.presentation.bookmark.contract.BookmarkSort
@@ -59,6 +65,8 @@ fun BookmarkScreen(
     onIntent: (BookmarkIntent) -> Unit,
 ) {
     val listState = rememberLazyListState()
+    val countVisible = rememberScrollUpVisible(listState).value
+
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
             title = "즐겨찾기",
@@ -71,59 +79,65 @@ fun BookmarkScreen(
             },
         )
 
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        AnimatedVisibility(
+            visible = countVisible,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
         ) {
-            Text(
-                "총 24개",
-                style = AppTextStyle.Title02Bold,
-                color = AppColor.TextPrimary,
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            SortTextButton(
-                text = "최신순",
-                selected = state.sort == BookmarkSort.LATEST,
-            ) {
-                if (state.sort != BookmarkSort.LATEST) {
-                    onIntent(BookmarkIntent.ChangeSort(BookmarkSort.LATEST))
-                }
-            }
-
-            VerticalDivider(
+            Row(
                 modifier =
                     Modifier
-                        .padding(horizontal = 12.dp)
-                        .height(12.dp),
-                thickness = 1.dp,
-                color = AppColor.Gray100,
-            )
-
-            SortTextButton(
-                text = "마감순",
-                selected = state.sort == BookmarkSort.DEADLINE,
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (state.sort != BookmarkSort.DEADLINE) {
-                    onIntent(BookmarkIntent.ChangeSort(BookmarkSort.DEADLINE))
+                Text(
+                    "총 ${state.bookmarkList.size}개",
+                    style = AppTextStyle.Title02Bold,
+                    color = AppColor.TextPrimary,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                SortTextButton(
+                    text = "최신순",
+                    selected = state.sort == BookmarkSort.LATEST,
+                ) {
+                    if (state.sort != BookmarkSort.LATEST) {
+                        onIntent(BookmarkIntent.ChangeSort(BookmarkSort.LATEST))
+                    }
                 }
+
+                VerticalDivider(
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 12.dp)
+                            .height(12.dp),
+                    thickness = 1.dp,
+                    color = AppColor.Gray100,
+                )
+
+                SortTextButton(
+                    text = "마감순",
+                    selected = state.sort == BookmarkSort.DEADLINE,
+                ) {
+                    if (state.sort != BookmarkSort.DEADLINE) {
+                        onIntent(BookmarkIntent.ChangeSort(BookmarkSort.DEADLINE))
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                AppIconButton(
+                    iconResId = R.drawable.ic_filter_24,
+                    onIconClick = { onIntent(BookmarkIntent.FilterSheetOpened) },
+                )
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            AppIconButton(
-                iconResId = R.drawable.ic_filter_24,
-                onIconClick = { onIntent(BookmarkIntent.FilterSheetOpened) },
-            )
         }
         LazyColumn(
             modifier = Modifier.padding(horizontal = 24.dp),
             state = listState,
-            contentPadding = PaddingValues(bottom = 48.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 48.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // TODO: 서버 연동 후 stable key(exhibitId 등) 적용

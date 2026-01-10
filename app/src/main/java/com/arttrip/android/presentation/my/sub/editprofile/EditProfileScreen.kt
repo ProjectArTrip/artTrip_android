@@ -115,10 +115,10 @@ fun EditProfileScreen(
             )
         }
         NicknameEditDialog(
-            visible = state.isNicknameModalVisible,
+            visible = state.isNicknameDialogVisible,
             nickname = state.nicknameInput,
             helperText = state.nicknameHelperText,
-            onDismissRequest = { onIntent(EditProfileIntent.NicknameModalDismissed) },
+            onDismissRequest = { onIntent(EditProfileIntent.NicknameDialogDismissed) },
             onNicknameChange = { onIntent(EditProfileIntent.NicknameChanged(it)) },
             onConfirmClicked = { onIntent(EditProfileIntent.NicknameConfirmClicked) },
         )

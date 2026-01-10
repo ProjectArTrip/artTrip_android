@@ -72,17 +72,17 @@ class EditProfileViewModel
                 EditProfileIntent.NicknameEditClicked -> {
                     _state.update {
                         it.copy(
-                            isNicknameModalVisible = true,
+                            isNicknameDialogVisible = true,
                             nicknameInput = it.userName,
                             nicknameHelperText = null,
                         )
                     }
                 }
 
-                EditProfileIntent.NicknameModalDismissed -> {
+                EditProfileIntent.NicknameDialogDismissed -> {
                     _state.update {
                         it.copy(
-                            isNicknameModalVisible = false,
+                            isNicknameDialogVisible = false,
                             nicknameHelperText = null,
                         )
                     }
@@ -111,7 +111,7 @@ class EditProfileViewModel
                         _state.update {
                             it.copy(
                                 userName = nickname,
-                                isNicknameModalVisible = false,
+                                isNicknameDialogVisible = false,
                                 nicknameHelperText = null,
                             )
                         }

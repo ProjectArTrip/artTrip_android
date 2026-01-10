@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.presentation.my.contract.MyPageEffect
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -16,7 +15,6 @@ fun MyPageRoute(
     onNavigateEditProfile: () -> Unit,
     onNavigateRecentExhibitions: () -> Unit,
     onNavigateMyReviews: () -> Unit,
-    onNavigateReviewWrite: (exhibitId: Int, prefill: ReviewWritePrefill) -> Unit,
     onNavigateTasteAnalysis: () -> Unit,
     onNavigateSettings: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),

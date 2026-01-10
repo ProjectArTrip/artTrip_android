@@ -6,7 +6,7 @@ data class EditProfileState(
     val isUploadingProfileImage: Boolean = false,
     val email: String = "abcd1234@naver.com",
     val isImageSheetVisible: Boolean = false,
-    val isNicknameModalVisible: Boolean = false,
+    val isNicknameDialogVisible: Boolean = false,
     val nicknameInput: String = "",
     val nicknameHelperText: String? = null,
     val isNicknameChecking: Boolean = false,

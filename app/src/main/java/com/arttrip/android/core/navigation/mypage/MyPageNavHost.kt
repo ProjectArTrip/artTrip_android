@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import com.arttrip.android.core.navigation.main.navigateToReviewWrite
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
+import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
 
 @Composable
 fun MyPageNavHost(
@@ -49,9 +50,6 @@ fun MyPageNavHost(
                         toMyReviews = { navController.navigate(MyPageRoute.MY_REVIEWS) },
                         toTasteAnalysis = { navController.navigate(MyPageRoute.TASTE_ANALYSIS) },
                         toSettings = { navController.navigate(MyPageRoute.SETTINGS) },
-                        toReviewWrite = { exhibitId, prefill ->
-                            mainNavController.navigateToReviewWrite(exhibitId, prefill)
-                        },
                     )
                 }
 
@@ -60,7 +58,6 @@ fun MyPageNavHost(
                 onNavigateEditProfile = actions.toEditProfile,
                 onNavigateRecentExhibitions = actions.toRecentExhibitions,
                 onNavigateMyReviews = actions.toMyReviews,
-                onNavigateReviewWrite = actions.toReviewWrite,
                 onNavigateTasteAnalysis = actions.toTasteAnalysis,
                 onNavigateSettings = actions.toSettings,
             )
@@ -75,6 +72,13 @@ fun MyPageNavHost(
         composable(MyPageRoute.RECENT_EXHIBITIONS) {
         }
         composable(MyPageRoute.MY_REVIEWS) {
+            MyReviewsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateReviewWrite = { exhibitId, prefill ->
+                    mainNavController.navigateToReviewWrite(exhibitId, prefill)
+                },
+            )
         }
         composable(MyPageRoute.TASTE_ANALYSIS) {
         }

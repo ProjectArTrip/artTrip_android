@@ -9,4 +9,5 @@ data class ReviewWritePrefill(
     val title: String,
     val hallName: String,
     val posterUrl: String?,
+    val content: String? = null,
 ) : Parcelable
