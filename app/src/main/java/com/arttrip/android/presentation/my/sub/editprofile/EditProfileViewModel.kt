@@ -73,7 +73,7 @@ class EditProfileViewModel
                     _state.update {
                         it.copy(
                             isNicknameModalVisible = true,
-                            nicknameInput = it.userName, // 현재 닉네임을 userName에 넣어둔 상태라면 이렇게
+                            nicknameInput = it.userName,
                             nicknameHelperText = null,
                         )
                     }
