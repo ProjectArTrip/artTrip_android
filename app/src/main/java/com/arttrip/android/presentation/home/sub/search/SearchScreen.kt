@@ -31,7 +31,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.home.ExhibitionImage
 import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
@@ -285,7 +285,7 @@ fun SearchResultContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             val dummyExhibition =
-                ExhibitionModel(
+                Exhibition(
                     id = 1,
                     title = "DDP 매거진 라이브러리: 기록에 머물다",
                     posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
@@ -318,7 +318,7 @@ fun SearchResultContent(
 
 @Composable
 fun ExhibitionItem(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {

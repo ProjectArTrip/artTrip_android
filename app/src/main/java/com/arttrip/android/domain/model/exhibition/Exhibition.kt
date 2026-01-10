@@ -2,7 +2,7 @@ package com.arttrip.android.domain.model.exhibition
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 
-data class ExhibitionModel(
+data class Exhibition(
     val id: Int,
     val title: String,
     val posterUrl: String,

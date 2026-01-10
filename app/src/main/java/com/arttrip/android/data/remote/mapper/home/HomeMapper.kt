@@ -14,14 +14,14 @@ import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequest
 import com.arttrip.android.data.remote.model.home.ForeignPersonalizedExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
+fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<Exhibition> = this.map { it.toDomain() }
 
-fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
-    ExhibitionModel(
+fun ForeignExhibitResponseDto.toDomain(): Exhibition =
+    Exhibition(
         id = exhibitId,
         title = title,
         posterUrl = posterUrl,
@@ -32,10 +32,10 @@ fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
         isBookmarked = favorite,
     )
 
-fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
+fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<Exhibition> = this.map { it.toDomain() }
 
-fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
-    ExhibitionModel(
+fun DomesticExhibitResponseDto.toDomain(): Exhibition =
+    Exhibition(
         id = exhibitId,
         title = title,
         posterUrl = posterUrl,

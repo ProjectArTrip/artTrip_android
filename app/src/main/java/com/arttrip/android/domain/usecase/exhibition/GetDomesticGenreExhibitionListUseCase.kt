@@ -2,7 +2,7 @@ package com.arttrip.android.domain.usecase.exhibition
 
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +16,6 @@ class GetDomesticGenreExhibitionListUseCase
         operator fun invoke(
             region: DomesticRegion,
             genre: ExhibitionGenre,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             homeRepository.getDomesticGenreExhibitList(region = region, genre = genre, width = 200, height = 200, format = "png")
     }

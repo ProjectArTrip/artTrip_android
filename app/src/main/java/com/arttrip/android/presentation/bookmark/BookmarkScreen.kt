@@ -54,7 +54,7 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.core.util.rememberScrollUpVisible
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
 import com.arttrip.android.presentation.bookmark.contract.BookmarkSort
 import com.arttrip.android.presentation.bookmark.contract.BookmarkState
@@ -252,7 +252,7 @@ private fun SortTextButton(
 
 @Composable
 fun ExhibitionItem(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onItemClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     isLiked: Boolean,

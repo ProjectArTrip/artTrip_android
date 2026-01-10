@@ -11,7 +11,7 @@ import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
 import com.arttrip.android.data.remote.mapper.home.toPersonalizedRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRecommendRequestDto
 import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +29,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toRecommendRequestDto()
@@ -56,7 +56,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toPersonalizedRequestDto()
@@ -83,7 +83,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toScheduleRequestDto(date = date)
@@ -105,7 +105,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toGenreRequestDto(genre = genre)
@@ -132,7 +132,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toRecommendRequestDto()
@@ -159,7 +159,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toPersonalizedRequestDto()
@@ -187,7 +187,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toScheduleRequestDto(date = date)
@@ -209,7 +209,7 @@ class HomeRepositoryImpl
             width: Int,
             height: Int,
             format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toGenreRequestDto(genre = genre)

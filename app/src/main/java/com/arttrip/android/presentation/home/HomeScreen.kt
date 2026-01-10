@@ -63,7 +63,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import com.arttrip.android.presentation.home.model.SectionLoadState
@@ -377,7 +377,7 @@ fun ForeignExhibitionSection(
 
     val selectedDate =
         state.foreignSelectedDate[selectedCountry.ordinal]
-    val scheduleState: SectionLoadState<List<ExhibitionModel>> =
+    val scheduleState: SectionLoadState<List<Exhibition>> =
         homeSection.scheduleList[selectedDate] ?: SectionLoadState.Idle
 
     val selectedGenre = state.foreignSelectedGenre[selectedCountry.ordinal]
@@ -664,7 +664,7 @@ fun DomesticRegionItem(region: DomesticRegion) {
 
 @Composable
 fun RecommendSection(
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
@@ -727,7 +727,7 @@ fun RecommendSection(
 @Composable
 fun PersonalizedSection(
     name: String,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -806,7 +806,7 @@ fun PersonalizedSection(
 fun WeeklyExhibitSection(
     weekDates: List<LocalDate>,
     selectedDate: LocalDate,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onMoreClick: () -> Unit,
     onDateClick: (LocalDate) -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -890,7 +890,7 @@ fun WeeklyExhibitSection(
 @Composable
 fun ExhibitionByGenreSection(
     selectedGenre: ExhibitionGenre,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onGenreClick: (ExhibitionGenre) -> Unit,
     onMoreClick: () -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -1024,7 +1024,7 @@ fun SectionTitle(
 
 @Composable
 fun ExhibitionItemCase1(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
@@ -1104,7 +1104,7 @@ fun ExhibitionItemCase1(
 
 @Composable
 fun ExhibitionItemCase2(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1142,7 +1142,7 @@ fun ExhibitionItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1221,7 +1221,7 @@ fun ExhibitItemCase3(
 
 @Composable
 fun ExhibitionItemCase4(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetDomesticPersonalizedExhibitionListUseCase
@@ -221,7 +221,7 @@ class HomeViewModel
 
         private fun setRecommendState(
             country: ForeignCountry,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.foreignExhibitionData.getValue(country)
@@ -256,7 +256,7 @@ class HomeViewModel
 
         private fun setPersonalizedState(
             country: ForeignCountry,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.foreignExhibitionData.getValue(country)
@@ -296,7 +296,7 @@ class HomeViewModel
         private fun setScheduleState(
             country: ForeignCountry,
             day: LocalDate,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.foreignExhibitionData.getValue(country)
@@ -338,7 +338,7 @@ class HomeViewModel
         private fun setGenreState(
             country: ForeignCountry,
             genre: ExhibitionGenre,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.foreignExhibitionData.getValue(country)
@@ -372,7 +372,7 @@ class HomeViewModel
             }
         }
 
-        private fun setDomesticRecommendState(state: SectionLoadState<List<ExhibitionModel>>) {
+        private fun setDomesticRecommendState(state: SectionLoadState<List<Exhibition>>) {
             _state.update { s ->
                 s.copy(
                     domesticExhibitionData =
@@ -400,7 +400,7 @@ class HomeViewModel
             }
         }
 
-        private fun setDomesticPersonalizedState(state: SectionLoadState<List<ExhibitionModel>>) {
+        private fun setDomesticPersonalizedState(state: SectionLoadState<List<Exhibition>>) {
             _state.update { s ->
                 s.copy(
                     domesticExhibitionData =
@@ -430,7 +430,7 @@ class HomeViewModel
 
         private fun setDomesticWeeklyState(
             day: LocalDate,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.domesticExhibitionData
@@ -462,7 +462,7 @@ class HomeViewModel
 
         private fun setDomesticGenreState(
             genre: ExhibitionGenre,
-            state: SectionLoadState<List<ExhibitionModel>>,
+            state: SectionLoadState<List<Exhibition>>,
         ) {
             _state.update { s ->
                 val current = s.domesticExhibitionData

@@ -1,15 +1,15 @@
 package com.arttrip.android.presentation.bookmark.contract
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.bookmark.model.BookmarkLocationFilter
 
 data class BookmarkState(
     val isLoading: Boolean = false,
     val sort: BookmarkSort = BookmarkSort.LATEST,
-    val bookmarkList: List<ExhibitionModel> =
+    val bookmarkList: List<Exhibition> =
         listOf(
-            ExhibitionModel(
+            Exhibition(
                 id = 1,
                 title = "빛과 그림자의 정원",
                 posterUrl = "https://picsum.photos/100/100",
@@ -19,7 +19,7 @@ data class BookmarkState(
                 place = "서울",
                 isBookmarked = true,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 2,
                 title = "현대 미술의 흐름: 1990–2025",
                 posterUrl = "https://picsum.photos/100/100",
@@ -29,7 +29,7 @@ data class BookmarkState(
                 place = "성수",
                 isBookmarked = false,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 3,
                 title = "색채 실험실",
                 posterUrl = "https://picsum.photos/100/100",
@@ -39,7 +39,7 @@ data class BookmarkState(
                 place = "부산",
                 isBookmarked = true,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 4,
                 title = "도시의 표정: 사진전",
                 posterUrl = "https://picsum.photos/100/100",
@@ -49,7 +49,7 @@ data class BookmarkState(
                 place = "대구",
                 isBookmarked = false,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 5,
                 title = "초현실의 방 — 긴 제목 테스트용 전시 타이틀입니다긴 제목 테스트용 전시 타이틀입니다긴 제목 테스트용 전시 타이틀입니다",
                 posterUrl = "https://picsum.photos/100/100",
@@ -59,7 +59,7 @@ data class BookmarkState(
                 place = "인천",
                 isBookmarked = true,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 6,
                 title = "공예의 시간",
                 posterUrl = "https://picsum.photos/100/100",
@@ -69,7 +69,7 @@ data class BookmarkState(
                 place = "광주",
                 isBookmarked = false,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 7,
                 title = "미디어아트: 사운드와 빛",
                 posterUrl = "https://picsum.photos/100/100",
@@ -79,7 +79,7 @@ data class BookmarkState(
                 place = "판교",
                 isBookmarked = true,
             ),
-            ExhibitionModel(
+            Exhibition(
                 id = 8,
                 title = "한국 근대 회화전",
                 posterUrl = "https://picsum.photos/100/100",
