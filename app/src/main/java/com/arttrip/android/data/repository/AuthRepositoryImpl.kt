@@ -9,7 +9,7 @@ import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.auth.LoginResult
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.userkeyword.KeywordGroups
+import com.arttrip.android.domain.model.usertaste.TasteGroupModel
 import com.arttrip.android.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -60,7 +60,7 @@ class AuthRepositoryImpl
                 }
             }
 
-        override fun getAllKeywords(): Flow<ApiResult<KeywordGroups>> =
+        override fun getTasteGroups(): Flow<ApiResult<TasteGroupModel>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -82,7 +82,7 @@ class AuthRepositoryImpl
                         return@flow
                     }
 
-                    val groups: KeywordGroups = dto.toDomain()
+                    val groups: TasteGroupModel = dto.toDomain()
 
                     emit(ApiResult.Success(groups))
                 } catch (e: Exception) {
@@ -91,7 +91,7 @@ class AuthRepositoryImpl
                 }
             }
 
-        override fun saveUserKeywords(keywordIds: List<Int>): Flow<ApiResult<Unit>> =
+        override fun saveUserTaste(tasteIds: List<Int>): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -100,7 +100,7 @@ class AuthRepositoryImpl
                         dataSource.postUserKeywords(
                             userKeywordsReqDto =
                                 UserKeywordsReqDto(
-                                    keywordIds = keywordIds,
+                                    keywordIds = tasteIds,
                                 ),
                         )
 

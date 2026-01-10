@@ -1,11 +1,11 @@
-package com.arttrip.android.domain.usecase.userkeyword
+package com.arttrip.android.domain.usecase.userTaste
 
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class SaveUserKeywordsUseCase
+class SaveUserTasteUseCase
     @Inject
     constructor(
         private val authRepository: AuthRepository,
@@ -14,7 +14,7 @@ class SaveUserKeywordsUseCase
             genreIds: Set<Int>,
             styleIds: Set<Int>,
         ): Flow<ApiResult<Unit>> =
-            authRepository.saveUserKeywords(
+            authRepository.saveUserTaste(
                 (genreIds + styleIds).toList(),
             )
     }

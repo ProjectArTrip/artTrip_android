@@ -5,8 +5,8 @@ import com.arttrip.android.data.remote.model.auth.KeywordsResDto
 import com.arttrip.android.data.remote.model.auth.LoginResDto
 import com.arttrip.android.domain.model.auth.AuthTokens
 import com.arttrip.android.domain.model.auth.LoginResult
-import com.arttrip.android.domain.model.userkeyword.KeywordGroups
-import com.arttrip.android.domain.model.userkeyword.KeywordModel
+import com.arttrip.android.domain.model.usertaste.TasteGroupModel
+import com.arttrip.android.domain.model.usertaste.TasteModel
 
 fun LoginResDto.toDomain(): LoginResult =
     LoginResult(
@@ -18,24 +18,24 @@ fun LoginResDto.toDomain(): LoginResult =
         isFirstLogin = firstLogin,
     )
 
-fun List<KeywordsResDto>.toDomain(): KeywordGroups {
-    val genres = mutableListOf<KeywordModel>()
-    val styles = mutableListOf<KeywordModel>()
+fun List<KeywordsResDto>.toDomain(): TasteGroupModel {
+    val genres = mutableListOf<TasteModel>()
+    val styles = mutableListOf<TasteModel>()
 
     for (dto in this) {
-        val keyword =
-            KeywordModel(
+        val taste =
+            TasteModel(
                 id = dto.keywordId,
                 name = dto.name,
             )
 
         when (KeywordType.valueOf(dto.type)) {
-            KeywordType.GENRE -> genres += keyword
-            KeywordType.STYLE -> styles += keyword
+            KeywordType.GENRE -> genres += taste
+            KeywordType.STYLE -> styles += taste
         }
     }
 
-    return KeywordGroups(
+    return TasteGroupModel(
         genres = genres,
         styles = styles,
     )
