@@ -12,9 +12,6 @@ data class SearchState(
             "굿즈",
             "전시해설",
             "DDP",
-            "서울",
-            "인기전시",
-            "신규",
         ),
     val recommendKeywordList: List<String> =
         listOf(
@@ -24,5 +21,8 @@ data class SearchState(
             "서울",
             "인기전시",
             "신규",
+            "판교",
+            "현대미술",
+            "해외",
         ),
 )

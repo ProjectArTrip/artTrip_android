@@ -23,12 +23,12 @@ class SearchViewModel
 
         fun onIntent(intent: SearchIntent) {
             when (intent) {
-                is SearchIntent.RecentKeywordClicked -> TODO()
-                is SearchIntent.RecentKeywordDismissClicked -> TODO()
-                is SearchIntent.RecommendKeywordClicked -> TODO()
-                SearchIntent.DeleteAllClicked -> TODO()
-                is SearchIntent.ExhibitionClicked -> TODO()
-                is SearchIntent.LikeClicked -> TODO()
+                is SearchIntent.RecentKeywordClicked -> {}
+                is SearchIntent.RecentKeywordDismissClicked -> {}
+                is SearchIntent.RecommendKeywordClicked -> {}
+                SearchIntent.DeleteAllClicked -> {}
+                is SearchIntent.ExhibitionClicked -> {}
+                is SearchIntent.LikeClicked -> {}
             }
         }
     }

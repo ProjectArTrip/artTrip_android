@@ -94,18 +94,18 @@ fun SearchScreen(
                     onIntent = onIntent,
                 )
 
-                // 검색 결과 X 섹션
-                EmptySearchResultContent()
-
-                // 검색 결과 O 섹션
-                SearchResultContent(
-                    onExhibitionClick = { id ->
-                        onIntent(SearchIntent.ExhibitionClicked(id))
-                    },
-                    onLikeClick = { id ->
-                        onIntent(SearchIntent.LikeClicked(id))
-                    },
-                )
+//                // 검색 결과 X 섹션
+//                EmptySearchResultContent()
+//
+//                // 검색 결과 O 섹션
+//                SearchResultContent(
+//                    onExhibitionClick = { id ->
+//                        onIntent(SearchIntent.ExhibitionClicked(id))
+//                    },
+//                    onLikeClick = { id ->
+//                        onIntent(SearchIntent.LikeClicked(id))
+//                    },
+//                )
             }
         }
     }
