@@ -1,7 +1,7 @@
 package com.arttrip.android.domain.usecase.exhibition
 
 import com.arttrip.android.core.model.image.ImageQueryParams
-import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ class GetExhibitionDetailUseCase
         operator fun invoke(
             exhibitId: Int,
             imageQueryParams: ImageQueryParams,
-        ): Flow<ApiResult<ExhibitionDetailModel>> =
+        ): Flow<ApiResult<ExhibitionDetail>> =
             exhibitRepository.getExhibitDetail(
                 exhibitId = exhibitId,
                 imageQueryParams = imageQueryParams,

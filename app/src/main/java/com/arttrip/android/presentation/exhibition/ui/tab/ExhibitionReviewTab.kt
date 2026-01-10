@@ -30,11 +30,11 @@ import com.arttrip.android.core.ui.component.button.ReviewButton
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.review.ReviewModel
+import com.arttrip.android.domain.model.review.Review
 
 fun LazyListScope.exhibitionReviewTab(
     reviewTotalCount: Int,
-    reviews: LazyPagingItems<ReviewModel>,
+    reviews: LazyPagingItems<Review>,
     onWriteReviewClicked: () -> Unit,
 ) {
     item {
@@ -102,7 +102,7 @@ private fun ReviewsHeaderCard(
 @Composable
 private fun ReviewListItem(
     modifier: Modifier = Modifier,
-    model: ReviewModel,
+    model: Review,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(

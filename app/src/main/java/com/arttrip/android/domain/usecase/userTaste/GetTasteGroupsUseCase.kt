@@ -1,7 +1,7 @@
 package com.arttrip.android.domain.usecase.userTaste
 
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.usertaste.TasteGroupModel
+import com.arttrip.android.domain.model.usertaste.TasteGroup
 import com.arttrip.android.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -11,5 +11,5 @@ class GetTasteGroupsUseCase
     constructor(
         private val authRepository: AuthRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<TasteGroupModel>> = authRepository.getTasteGroups()
+        operator fun invoke(): Flow<ApiResult<TasteGroup>> = authRepository.getTasteGroups()
     }

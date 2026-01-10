@@ -9,7 +9,7 @@ import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.auth.LoginResult
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.usertaste.TasteGroupModel
+import com.arttrip.android.domain.model.usertaste.TasteGroup
 import com.arttrip.android.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -60,7 +60,7 @@ class AuthRepositoryImpl
                 }
             }
 
-        override fun getTasteGroups(): Flow<ApiResult<TasteGroupModel>> =
+        override fun getTasteGroups(): Flow<ApiResult<TasteGroup>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -82,7 +82,7 @@ class AuthRepositoryImpl
                         return@flow
                     }
 
-                    val groups: TasteGroupModel = dto.toDomain()
+                    val groups: TasteGroup = dto.toDomain()
 
                     emit(ApiResult.Success(groups))
                 } catch (e: Exception) {

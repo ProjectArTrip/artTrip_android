@@ -43,7 +43,7 @@ import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTagL
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.review.ReviewModel
+import com.arttrip.android.domain.model.review.Review
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailState
 import com.arttrip.android.presentation.exhibition.ui.ExhibitionInfoSection
@@ -58,7 +58,7 @@ fun ExhibitionDetailScreen(
     innerPadding: PaddingValues,
     state: ExhibitionDetailState,
     onIntent: (ExhibitionDetailIntent) -> Unit,
-    reviewsFlow: Flow<PagingData<ReviewModel>>,
+    reviewsFlow: Flow<PagingData<Review>>,
 ) {
     val heroVisibleHeight = 264.dp
     val contentRadius = 16.dp
@@ -302,14 +302,14 @@ private fun ExhibitionDetailScreenPreview() {
         flowOf(
             PagingData.from(
                 listOf(
-                    ReviewModel(
+                    Review(
                         id = 1,
                         writer = "김하늘",
                         visitDate = "2025-11-12",
                         content = "전시 동선이 깔끔하고 작품 설명이 친절해서 몰입하기 좋았어요.",
                         photoUrls = emptyList(),
                     ),
-                    ReviewModel(
+                    Review(
                         id = 2,
                         writer = "이서연",
                         visitDate = "2025-09-03",

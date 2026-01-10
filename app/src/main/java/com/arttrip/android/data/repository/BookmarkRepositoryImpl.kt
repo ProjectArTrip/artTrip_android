@@ -3,7 +3,7 @@ package com.arttrip.android.data.repository
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.favorite.toDomain
-import com.arttrip.android.domain.model.bookmark.BookmarkResultModel
+import com.arttrip.android.domain.model.bookmark.BookmarkResult
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
@@ -17,7 +17,7 @@ class BookmarkRepositoryImpl
     constructor(
         private val dataSource: FavoriteDataSource,
     ) : BookmarkRepository {
-        override fun addBookmark(exhibitId: Int): Flow<ApiResult<BookmarkResultModel>> =
+        override fun addBookmark(exhibitId: Int): Flow<ApiResult<BookmarkResult>> =
             flow {
                 emit(ApiResult.Loading)
 
