@@ -30,20 +30,25 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 
 @Composable
-fun RegionScreen(innerPadding: PaddingValues, region: DomesticRegion) {
+fun RegionScreen(
+    innerPadding: PaddingValues,
+    region: DomesticRegion,
+) {
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             Spacer(
-                modifier = Modifier
-                    .height(16.dp)
+                modifier =
+                    Modifier
+                        .height(16.dp),
             )
             AppTopBar(
                 title = region.label,
@@ -52,39 +57,41 @@ fun RegionScreen(innerPadding: PaddingValues, region: DomesticRegion) {
                         iconResId = R.drawable.ic_back_24,
                         contentDescription = "Back Button",
                         onIconClick = {
-
-                        }
+                        },
                     )
-                }
+                },
             )
             Spacer(
-                modifier = Modifier
-                    .height(12.dp)
+                modifier =
+                    Modifier
+                        .height(12.dp),
             )
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 repeat(10) {
                     NotificationItem(
                         isRead = false,
                         title = "알림 타이틀",
-                        message = "알림 내용"
+                        message = "알림 내용",
                     )
                 }
                 repeat(10) {
                     NotificationItem(
                         isRead = true,
                         title = "알림 타이틀",
-                        message = "알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 "
+                        message = "알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 알림 내용 ",
                     )
                 }
                 Spacer(
-                    modifier = Modifier
-                        .height(28.dp)
+                    modifier =
+                        Modifier
+                            .height(28.dp),
                 )
             }
         }
@@ -92,68 +99,82 @@ fun RegionScreen(innerPadding: PaddingValues, region: DomesticRegion) {
 }
 
 @Composable
-fun NotificationItem(isRead: Boolean, title: String, message: String) {
+fun NotificationItem(
+    isRead: Boolean,
+    title: String,
+    message: String,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Spacer(
-            modifier = Modifier
-                .height(12.dp)
+            modifier =
+                Modifier
+                    .height(12.dp),
         )
         Row {
             Spacer(
-                modifier = Modifier
-                    .width(12.dp)
+                modifier =
+                    Modifier
+                        .width(12.dp),
             )
             Icon(
                 painter = painterResource(if (isRead) R.drawable.ic_alert_24 else R.drawable.ic_alert_badge_24),
                 contentDescription = "Alert Icon",
-                tint = Color.Unspecified
+                tint = Color.Unspecified,
             )
             Spacer(
-                modifier = Modifier
-                    .width(20.dp)
+                modifier =
+                    Modifier
+                        .width(20.dp),
             )
             Column {
                 Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
+                    modifier =
+                        Modifier
+                            .height(1.dp),
                 )
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = title,
                         style = AppTextStyle.Title02Bold,
-                        color = AppColor.TextPrimary
+                        color = AppColor.TextPrimary,
                     )
                     Text(
                         text = "N분 전",
                         style = AppTextStyle.Body02Light,
-                        color = AppColor.TextTertiary
+                        color = AppColor.TextTertiary,
                     )
                 }
                 Spacer(
-                    modifier = Modifier
-                        .height(8.dp)
+                    modifier =
+                        Modifier
+                            .height(8.dp),
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
                 ) {
                     Text(
-                        modifier = Modifier
-                            .height(40.dp),
+                        modifier =
+                            Modifier
+                                .height(40.dp),
                         text = message,
                         style = AppTextStyle.Body01Regular,
                         color = AppColor.TextSecondary,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis)
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }

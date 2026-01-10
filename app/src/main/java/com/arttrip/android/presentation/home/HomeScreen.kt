@@ -457,7 +457,7 @@ fun ForeignExhibitionSection(
         Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
+                    .height(48.dp),
         )
     }
 }
@@ -568,7 +568,7 @@ fun DomesticExhibitionSection(
         Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
+                    .height(48.dp),
         )
     }
 }

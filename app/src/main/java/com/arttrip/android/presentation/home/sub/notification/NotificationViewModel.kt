@@ -7,4 +7,4 @@ import javax.inject.Inject
 @HiltViewModel
 class
 NotificationViewModel@Inject
-constructor() : ViewModel()
+    constructor() : ViewModel()

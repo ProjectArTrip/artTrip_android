@@ -7,4 +7,4 @@ import javax.inject.Inject
 @HiltViewModel
 class
 RegionViewModel@Inject
-constructor() : ViewModel()
+    constructor() : ViewModel()

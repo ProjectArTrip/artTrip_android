@@ -79,9 +79,13 @@ fun MainNavHost(
             )
         }
 
-
         composable(MainRoute.HOME_DATE_RESULT) {
             DateResultRoute(
+                innerPadding = innerPadding,
+            )
+        }
+        composable(MainRoute.HOME_NOTIFICATION) {
+            NotificationRoute(
                 innerPadding = innerPadding,
             )
         }
@@ -94,7 +98,7 @@ fun MainNavHost(
 
         composable(MainRoute.HOME_SEARCH) {
             SearchRoute(
-                innerPadding = innerPadding
+                innerPadding = innerPadding,
             )
         }
 
