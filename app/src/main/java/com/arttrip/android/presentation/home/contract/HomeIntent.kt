@@ -78,4 +78,8 @@ sealed interface HomeIntent {
     data class ExhibitionClicked(
         val id: Int,
     ) : HomeIntent
+
+    data class RegionClicked(
+        val region: DomesticRegion
+    ): HomeIntent
 }

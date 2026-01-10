@@ -16,6 +16,7 @@ import com.arttrip.android.domain.usecase.exhibition.GetForeignPersonalizedExhib
 import com.arttrip.android.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetForeignScheduledExhibitionListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
+import com.arttrip.android.presentation.home.contract.HomeEffect.*
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import com.arttrip.android.presentation.home.model.SectionLoadState
@@ -193,7 +194,13 @@ class HomeViewModel
                 }
                 is HomeIntent.ExhibitionClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(HomeEffect.NavigateToExhibitionDetail(intent.id))
+                        _effect.emit(NavigateToExhibitionDetail(intent.id))
+                    }
+                }
+
+                is HomeIntent.RegionClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(NavigateToRegion(intent.region))
                     }
                 }
             }

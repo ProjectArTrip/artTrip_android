@@ -14,12 +14,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
 import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
+import com.arttrip.android.presentation.home.sub.region.RegionRoute
 import com.arttrip.android.presentation.home.sub.search.SearchRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.sub.taste.TasteRoute
@@ -57,6 +59,10 @@ fun MainNavHost(
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute)
                 },
+                onNavigateRegion = { region ->
+                    navController.navigateToRegion(region)
+                }
+
             )
         }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
@@ -101,6 +107,15 @@ fun MainNavHost(
             SearchRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack
+            )
+        }
+
+        composable(MainRoute.HOME_REGION, listOf(navArgument("region") {type = NavType.EnumType(
+            DomesticRegion::class.java)})) { backStackEntry ->
+            val region = backStackEntry.arguments?.getSerializable("region") as? DomesticRegion ?: return@composable
+            RegionRoute(
+                innerPadding = innerPadding,
+                region = region
             )
         }
 

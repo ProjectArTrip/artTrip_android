@@ -5,12 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.presentation.home.sub.search.SearchScreen
 
 @Composable
 fun RegionRoute(
     innerPadding: PaddingValues,
     viewModel: RegionViewModel = hiltViewModel(),
+    region: DomesticRegion
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -18,5 +20,6 @@ fun RegionRoute(
         innerPadding = innerPadding,
         state = state,
         onIntent = viewModel::onIntent,
+        region = region
     )
 }

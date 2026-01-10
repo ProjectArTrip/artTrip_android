@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.home.contract.HomeEffect
 
@@ -13,6 +14,7 @@ import com.arttrip.android.presentation.home.contract.HomeEffect
 fun HomeRoute(
     innerPadding: PaddingValues,
     onNavigate: (String) -> Unit,
+    onNavigateRegion: (DomesticRegion) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -31,6 +33,10 @@ fun HomeRoute(
                 }
                 is HomeEffect.NavigateToExhibitionDetail -> {
                     onNavigate(MainRoute.exhibitionDetail(exhibitId = effect.exhibitionId))
+                }
+
+                is HomeEffect.NavigateToRegion -> {
+                    onNavigateRegion(effect.region)
                 }
             }
         }

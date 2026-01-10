@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
@@ -39,7 +40,8 @@ import com.arttrip.android.presentation.home.sub.region.contract.RegionState
 fun RegionScreen(
     innerPadding: PaddingValues,
     state: RegionState,
-    onIntent: (RegionIntent) -> Unit
+    onIntent: (RegionIntent) -> Unit,
+    region: DomesticRegion
 ) {
     Box(
         modifier =
@@ -79,7 +81,7 @@ fun RegionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "경기",
+                        text = region.label,
                         style = AppTextStyle.Headline,
                         color = AppColor.TextPrimary
                     )
@@ -93,7 +95,14 @@ fun RegionScreen(
                     )
                 }
             }
-//            ExhibitionList()
+            ExhibitionList(
+                onExhibitionClick = { id ->
+                    onIntent(RegionIntent.ExhibitionClicked(id))
+                },
+                onLikeClick = { id ->
+                    onIntent(RegionIntent.LikeClicked(id))
+                }
+            )
         }
     }
 }

@@ -512,7 +512,9 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-        DomesticRegionSection()
+        DomesticRegionSection(onRegionClick = { region ->
+            onIntent(HomeIntent.RegionClicked(region = region))
+        })
         Spacer(
             modifier =
                 Modifier
@@ -574,7 +576,7 @@ fun DomesticExhibitionSection(
 }
 
 @Composable
-fun DomesticRegionSection() {
+fun DomesticRegionSection(onRegionClick: (DomesticRegion) -> Unit) {
     Column {
         Row {
             Spacer(
@@ -607,7 +609,7 @@ fun DomesticRegionSection() {
 
             DomesticRegion.entries.forEach { region ->
                 if (region != DomesticRegion.Entire) {
-                    DomesticRegionItem(region = region)
+                    DomesticRegionItem(region = region, onRegionClick = { region -> onRegionClick(region)})
                 }
             }
 
@@ -621,7 +623,7 @@ fun DomesticRegionSection() {
 }
 
 @Composable
-fun DomesticRegionItem(region: DomesticRegion) {
+fun DomesticRegionItem(region: DomesticRegion, onRegionClick: (DomesticRegion) -> Unit) {
     val painter =
         painterResource(
             when (region) {
@@ -638,6 +640,10 @@ fun DomesticRegionItem(region: DomesticRegion) {
     val name = region.label
 
     Column(
+        modifier = Modifier
+            .noRippleClickable {
+                onRegionClick(region)
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
