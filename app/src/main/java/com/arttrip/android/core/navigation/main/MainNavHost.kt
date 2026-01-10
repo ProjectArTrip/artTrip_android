@@ -87,6 +87,7 @@ fun MainNavHost(
         composable(MainRoute.HOME_NOTIFICATION) {
             NotificationRoute(
                 innerPadding = innerPadding,
+                onBack = navController::popBackStack
             )
         }
 
@@ -99,6 +100,7 @@ fun MainNavHost(
         composable(MainRoute.HOME_SEARCH) {
             SearchRoute(
                 innerPadding = innerPadding,
+                onBack = navController::popBackStack
             )
         }
 

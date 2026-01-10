@@ -1,6 +1,8 @@
 package com.arttrip.android.presentation.home.sub.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.android.presentation.home.sub.search.contract.SearchState
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +27,11 @@ class SearchViewModel
 
         fun onIntent(intent: SearchIntent) {
             when (intent) {
+                SearchIntent.BackClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(SearchEffect.NavigateBack)
+                    }
+                }
                 is SearchIntent.InputTextChanged -> {
                     _state.update { it.copy(inputText = intent.text) }
                 }

@@ -69,6 +69,7 @@ fun SearchScreen(
                         iconResId = R.drawable.ic_back_24,
                         contentDescription = "Back Button",
                         onIconClick = {
+                            onIntent(SearchIntent.BackClicked)
                         },
                     )
                 },

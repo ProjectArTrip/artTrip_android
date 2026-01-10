@@ -1,6 +1,8 @@
 package com.arttrip.android.presentation.home.sub.search.contract
 
 sealed interface SearchIntent {
+    object BackClicked: SearchIntent
+
     data class InputTextChanged(
         val text: String,
     ): SearchIntent
