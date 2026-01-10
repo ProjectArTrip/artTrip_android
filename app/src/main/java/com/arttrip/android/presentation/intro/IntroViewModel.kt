@@ -3,8 +3,8 @@ package com.arttrip.android.presentation.intro
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.userkeyword.GetAllKeywordsUseCase
-import com.arttrip.android.domain.usecase.userkeyword.SaveUserKeywordsUseCase
+import com.arttrip.android.domain.usecase.userTaste.GetTasteGroupsUseCase
+import com.arttrip.android.domain.usecase.userTaste.SaveUserTasteUseCase
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 import com.arttrip.android.presentation.intro.contract.IntroState
@@ -21,8 +21,8 @@ import javax.inject.Inject
 class IntroViewModel
     @Inject
     constructor(
-        private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
-        private val saveUserKeywordsUseCase: SaveUserKeywordsUseCase,
+        private val getTasteGroupsUseCase: GetTasteGroupsUseCase,
+        private val saveUserTasteUseCase: SaveUserTasteUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(IntroState())
         val state: StateFlow<IntroState> = _state
@@ -43,7 +43,7 @@ class IntroViewModel
 
         private fun loadIntroOptions() {
             viewModelScope.launch {
-                getAllKeywordsUseCase().collect { result ->
+                getTasteGroupsUseCase().collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
                             _state.update {
@@ -101,7 +101,7 @@ class IntroViewModel
             if (!current.isNextEnabled || current.isLoading) return
 
             viewModelScope.launch {
-                saveUserKeywordsUseCase(
+                saveUserTasteUseCase(
                     genreIds = current.selectedGenreIds,
                     styleIds = current.selectedStyleIds,
                 ).collect { result ->

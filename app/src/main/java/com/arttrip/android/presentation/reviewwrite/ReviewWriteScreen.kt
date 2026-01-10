@@ -1,7 +1,6 @@
 package com.arttrip.android.presentation.reviewwrite
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -23,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -39,13 +36,13 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.input.AppSelectField
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
-import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
 import com.arttrip.android.presentation.reviewwrite.ui.ReviewPhotoRow
@@ -263,38 +260,18 @@ private fun VisitDateSection(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val shape = RoundedCornerShape(8.dp)
-
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .clip(shape)
-                    .border(width = 1.dp, color = AppColor.Gray100, shape = shape)
-                    .noRippleClickable(true) { onClick() }
-                    .padding(horizontal = 16.dp),
-        ) {
-            Row(
-                modifier = Modifier.matchParentSize(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                val hasValue = !valueText.isNullOrBlank()
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = if (hasValue) valueText else "방문일을 선택하세요.",
-                    style = AppTextStyle.Body01Regular,
-                    color = if (hasValue) AppColor.TextPrimary else AppColor.TextTertiary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+        AppSelectField(
+            text = valueText,
+            placeholder = "방문일을 선택하세요.",
+            onClick = onClick,
+            trailing = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_calendar_24),
                     contentDescription = null,
                     tint = Color.Unspecified,
                 )
-            }
-        }
+            },
+        )
     }
 }
 
@@ -335,7 +312,7 @@ private fun PreviewReviewWriteScreen_SheetOpen() {
                     visitDate = LocalDate.now(),
                     calendarMonth = YearMonth.now(),
                     reviewText = "프리뷰에서 바텀시트 간격 확인",
-                    isVisitDateSheetVisible = true,
+                    isVisitDateSheetVisible = false,
                 ),
             onIntent = {},
         )

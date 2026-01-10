@@ -5,7 +5,7 @@ import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
-import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository
@@ -21,7 +21,7 @@ class ExhibitRepositoryImpl
         override fun getExhibitDetail(
             exhibitId: Int,
             imageQueryParams: ImageQueryParams,
-        ): Flow<ApiResult<ExhibitionDetailModel>> =
+        ): Flow<ApiResult<ExhibitionDetail>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -45,7 +45,7 @@ class ExhibitRepositoryImpl
                         return@flow
                     }
 
-                    val exhibitDetail: ExhibitionDetailModel = dto.toDomain()
+                    val exhibitDetail: ExhibitionDetail = dto.toDomain()
 
                     emit(ApiResult.Success(exhibitDetail))
                 } catch (e: Exception) {

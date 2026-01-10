@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.core.util.bookmark.BookmarkStore
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.review.ReviewModel
+import com.arttrip.android.domain.model.review.Review
 import com.arttrip.android.domain.usecase.exhibition.GetExhibitionDetailUseCase
 import com.arttrip.android.domain.usecase.review.GetExhibitionReviewsUseCase
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
@@ -107,7 +107,7 @@ class ExhibitionDetailViewModel
             }
         }
 
-        fun reviewsFlow(exhibitId: Int): Flow<PagingData<ReviewModel>> = getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
+        fun reviewsFlow(exhibitId: Int): Flow<PagingData<Review>> = getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
 
         private fun initialize(
             exhibitId: Int,

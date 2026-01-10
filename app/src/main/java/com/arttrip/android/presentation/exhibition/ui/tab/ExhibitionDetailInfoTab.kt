@@ -30,10 +30,10 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
 
 @Composable
-fun ExhibitionDetailInfoTab(detail: ExhibitionDetailModel) {
+fun ExhibitionDetailInfoTab(detail: ExhibitionDetail) {
     val address = detail.hallAddress?.trim().orEmpty()
     val desc = detail.description?.trim().orEmpty()
 

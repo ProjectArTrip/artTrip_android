@@ -1,4 +1,4 @@
-package com.arttrip.android.core.ui.component.textfield
+package com.arttrip.android.core.ui.component.input
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,7 +46,7 @@ import com.arttrip.android.core.util.noRippleClickable
  * [Filled] : 날짜 값 표시 + 삭제(X) 노출
  */
 
-enum class DateFieldChipState {
+enum class DateSelectFieldState {
     Default,
     Focused,
     Filled,
@@ -62,41 +62,41 @@ enum class DateFieldChipState {
  * Clicked → Default 복귀(칩 바깥 터치로 해제) 규칙은
  * 부모(화면)에서 상태를 제어
  *
- * @param value 선택/표시할 날짜 텍스트. [Filled][DateFieldChipState.Filled]상태에서 필수.
+ * @param value 선택/표시할 날짜 텍스트. [Filled][DateSelectFieldState.Filled]상태에서 필수.
  * @param placeholder value가 비어 있고
- * [Default][DateFieldChipState.Default]/[Focused][DateFieldChipState.Focused] 상태에서 필수.
+ * [Default][DateSelectFieldState.Default]/[Focused][DateSelectFieldState.Focused] 상태에서 필수.
  * @param state 칩 상태(Default/Clicked/Filled).
  * @param modifier 외부에서 전달받는 Modifier.
- * @param onChipClick 칩 전체 클릭 시 호출. 일반적으로 날짜 선택 UI를 연다.
+ * @param onFieldClick 칩 전체 클릭 시 호출. 일반적으로 날짜 선택 UI를 연다.
  * @param onDismissClick Filled 상태에서 X 클릭 시 호출. 선택된 값을 제거한다.
  */
 
 @Composable
-fun DateFieldChip(
+fun DateSelectField(
     modifier: Modifier = Modifier,
     value: String,
     placeholder: String,
-    state: DateFieldChipState = DateFieldChipState.Default,
-    onChipClick: () -> Unit = {},
+    state: DateSelectFieldState = DateSelectFieldState.Default,
+    onFieldClick: () -> Unit = {},
     onDismissClick: () -> Unit = {},
 ) {
     when (state) {
-        DateFieldChipState.Default,
-        DateFieldChipState.Focused,
+        DateSelectFieldState.Default,
+        DateSelectFieldState.Focused,
         ->
             require(placeholder.isNotBlank()) {
-                "DateFieldChip: state=$state 에서는 placeholder가 필요합니다. placeholder=\"$placeholder\""
+                "DateSelectField: state=$state 에서는 placeholder가 필요합니다. placeholder=\"$placeholder\""
             }
-        DateFieldChipState.Filled ->
+        DateSelectFieldState.Filled ->
             require(value.isNotBlank()) {
-                "DateFieldChip: state=$state 에서는 value가 필요합니다. value=\"$value\""
+                "DateSelectField: state=$state 에서는 value가 필요합니다. value=\"$value\""
             }
     }
 
-    val showPlaceholder = state != DateFieldChipState.Filled
+    val showPlaceholder = state != DateSelectFieldState.Filled
     val displayText = if (showPlaceholder) placeholder else value
 
-    val style = resolveDateFieldChipStyle(state, showPlaceholder)
+    val style = resolveDateFieldStyle(state, showPlaceholder)
     val shape = RoundedCornerShape(8.dp)
 
     Box(
@@ -106,14 +106,14 @@ fun DateFieldChip(
                 .background(Color.White, shape)
                 .border(1.dp, style.borderColor, shape)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
-                .noRippleClickable { onChipClick() },
+                .noRippleClickable { onFieldClick() },
         contentAlignment = Alignment.CenterStart,
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val showDismiss = state == DateFieldChipState.Filled
+            val showDismiss = state == DateSelectFieldState.Filled
 
             Text(
                 text = displayText,
@@ -136,13 +136,13 @@ fun DateFieldChip(
 }
 
 @Stable
-internal data class DateFieldChipStyle(
+internal data class DateFieldStyle(
     val borderColor: Color,
     val textStyle: TextStyle,
     val textColor: Color,
 )
 
-internal object DateFieldChipDefaults {
+internal object DateFieldDefaults {
     val BorderDefault = AppColor.Gray100
     val BorderActive = AppColor.Primary300
 
@@ -159,26 +159,26 @@ internal object DateFieldChipDefaults {
     val FilledTextColor = AppColor.TextPrimary
 }
 
-private fun resolveDateFieldChipStyle(
-    state: DateFieldChipState,
+private fun resolveDateFieldStyle(
+    state: DateSelectFieldState,
     showPlaceholder: Boolean,
-): DateFieldChipStyle {
+): DateFieldStyle {
     val borderColor =
         when (state) {
-            DateFieldChipState.Default -> DateFieldChipDefaults.BorderDefault
-            DateFieldChipState.Focused,
-            DateFieldChipState.Filled,
-            -> DateFieldChipDefaults.BorderActive
+            DateSelectFieldState.Default -> DateFieldDefaults.BorderDefault
+            DateSelectFieldState.Focused,
+            DateSelectFieldState.Filled,
+            -> DateFieldDefaults.BorderActive
         }
 
     val (textStyle, textColor) =
-        if (showPlaceholder || state != DateFieldChipState.Filled) {
-            DateFieldChipDefaults.HintTextStyle to DateFieldChipDefaults.HintTextColor
+        if (showPlaceholder || state != DateSelectFieldState.Filled) {
+            DateFieldDefaults.HintTextStyle to DateFieldDefaults.HintTextColor
         } else {
-            DateFieldChipDefaults.FilledTextStyle to DateFieldChipDefaults.FilledTextColor
+            DateFieldDefaults.FilledTextStyle to DateFieldDefaults.FilledTextColor
         }
 
-    return DateFieldChipStyle(
+    return DateFieldStyle(
         borderColor = borderColor,
         textStyle = textStyle,
         textColor = textColor,
@@ -187,11 +187,11 @@ private fun resolveDateFieldChipStyle(
 
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-fun PreviewDateFieldChip_Interaction() {
+fun PreviewDateSelectField_Interaction() {
     var leftText by remember { mutableStateOf("") }
-    var leftState by remember { mutableStateOf(DateFieldChipState.Default) }
+    var leftState by remember { mutableStateOf(DateSelectFieldState.Default) }
     var rightText by remember { mutableStateOf("") }
-    var rightState by remember { mutableStateOf(DateFieldChipState.Default) }
+    var rightState by remember { mutableStateOf(DateSelectFieldState.Default) }
 
     Column(
         modifier =
@@ -203,8 +203,8 @@ fun PreviewDateFieldChip_Interaction() {
                     interactionSource = remember { MutableInteractionSource() },
                 ) {
                     // Clicked이면 Default로 복귀
-                    if (leftState == DateFieldChipState.Focused) leftState = DateFieldChipState.Default
-                    if (rightState == DateFieldChipState.Focused) rightState = DateFieldChipState.Default
+                    if (leftState == DateSelectFieldState.Focused) leftState = DateSelectFieldState.Default
+                    if (rightState == DateSelectFieldState.Focused) rightState = DateSelectFieldState.Default
                 },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -212,34 +212,34 @@ fun PreviewDateFieldChip_Interaction() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            DateFieldChip(
+            DateSelectField(
                 modifier = Modifier.weight(1f),
                 value = leftText,
                 placeholder = "시작일",
                 state = leftState,
-                onChipClick = {
-                    if (leftState == DateFieldChipState.Default) {
-                        leftState = DateFieldChipState.Focused
+                onFieldClick = {
+                    if (leftState == DateSelectFieldState.Default) {
+                        leftState = DateSelectFieldState.Focused
                     }
                 },
                 onDismissClick = {
-                    leftState = DateFieldChipState.Default
+                    leftState = DateSelectFieldState.Default
                     leftText = ""
                 },
             )
 
-            DateFieldChip(
+            DateSelectField(
                 modifier = Modifier.weight(1f),
                 value = rightText,
                 placeholder = "종료일",
                 state = rightState,
-                onChipClick = {
-                    if (rightState == DateFieldChipState.Default) {
-                        rightState = DateFieldChipState.Focused
+                onFieldClick = {
+                    if (rightState == DateSelectFieldState.Default) {
+                        rightState = DateSelectFieldState.Focused
                     }
                 },
                 onDismissClick = {
-                    rightState = DateFieldChipState.Default
+                    rightState = DateSelectFieldState.Default
                     rightText = ""
                 },
             )
@@ -247,12 +247,12 @@ fun PreviewDateFieldChip_Interaction() {
 
         Button(
             onClick = {
-                if (leftState == DateFieldChipState.Focused) {
-                    leftState = DateFieldChipState.Filled
+                if (leftState == DateSelectFieldState.Focused) {
+                    leftState = DateSelectFieldState.Filled
                     leftText = "11월 25일 화"
                 }
-                if (rightState == DateFieldChipState.Focused) {
-                    rightState = DateFieldChipState.Filled
+                if (rightState == DateSelectFieldState.Focused) {
+                    rightState = DateSelectFieldState.Filled
                     rightText = "2월 1일 월"
                 }
             },

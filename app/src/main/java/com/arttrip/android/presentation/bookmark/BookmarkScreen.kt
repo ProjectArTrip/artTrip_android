@@ -346,7 +346,6 @@ fun <T> LocationChipSection(
                     text = labelOf(item),
                     case = AppFilterChipCase.Case02,
                     selected = item in selected,
-                    showBorder = false,
                     onClick = { onToggle(item) },
                 )
             }

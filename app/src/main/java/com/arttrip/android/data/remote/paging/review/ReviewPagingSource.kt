@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.mapper.review.toDomain
-import com.arttrip.android.domain.model.review.ReviewModel
+import com.arttrip.android.domain.model.review.Review
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -12,8 +12,8 @@ class ReviewPagingSource(
     private val dataSource: ReviewDataSource,
     private val exhibitId: Int,
     private val onTotalCount: (Int) -> Unit,
-) : PagingSource<Int, ReviewModel>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ReviewModel> {
+) : PagingSource<Int, Review>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Review> {
         return try {
             val cursor: Int? = params.key
             val loadSize: Int = params.loadSize
@@ -33,7 +33,7 @@ class ReviewPagingSource(
             if (cursor == null) {
                 onTotalCount(body.reviewTotalCount)
             }
-            val items: List<ReviewModel> =
+            val items: List<Review> =
                 body.reviews.map { it.toDomain() }
 
             val nextKey =
@@ -53,7 +53,7 @@ class ReviewPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ReviewModel>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Review>): Int? {
         // 새로고침은 첫 페이지부터 다시 (cursor=null)
         return null
     }

@@ -29,7 +29,7 @@ import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.userkeyword.KeywordModel
+import com.arttrip.android.domain.model.usertaste.Taste
 import com.arttrip.android.presentation.intro.contract.IntroIntent
 import com.arttrip.android.presentation.intro.contract.IntroState
 
@@ -134,7 +134,7 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
 private fun IntroGenreSection(
     modifier: Modifier = Modifier,
     selectedIds: Set<Int>,
-    genreList: List<KeywordModel>,
+    genreList: List<Taste>,
     onToggleGenre: (Int) -> Unit,
 ) {
     Column(
@@ -178,7 +178,7 @@ private fun IntroGenreSection(
 private fun IntroStyleSection(
     modifier: Modifier = Modifier,
     selectedIds: Set<Int>,
-    styleList: List<KeywordModel>,
+    styleList: List<Taste>,
     onToggleStyle: (Int) -> Unit,
 ) {
     Column(modifier = modifier) {

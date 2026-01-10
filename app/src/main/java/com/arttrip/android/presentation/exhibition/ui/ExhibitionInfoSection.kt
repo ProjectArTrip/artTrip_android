@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.exhibition.ExhibitionDetailModel
+import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
 
 @Composable
 fun ExhibitionInfoSection(
     modifier: Modifier = Modifier,
-    detail: ExhibitionDetailModel,
+    detail: ExhibitionDetail,
 ) {
     val context = LocalContext.current
     val url = detail.ticketUrl?.trim().orEmpty()
