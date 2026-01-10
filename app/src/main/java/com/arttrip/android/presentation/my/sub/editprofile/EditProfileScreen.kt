@@ -3,7 +3,6 @@ package com.arttrip.android.presentation.my.sub.editprofile
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -35,6 +32,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.dialog.AppDialog
+import com.arttrip.android.core.ui.component.input.AppTextField
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
@@ -99,7 +97,7 @@ fun EditProfileScreen(
                 )
             }
             Spacer(Modifier.height(8.dp))
-            TextField(
+            AppTextField(
                 value = state.userName,
                 readOnly = true,
             )
@@ -111,9 +109,9 @@ fun EditProfileScreen(
                 color = AppColor.TextPrimary,
             )
             Spacer(Modifier.height(8.dp))
-            TextField(
-                readOnly = true,
-                placeholder = state.email,
+            AppTextField(
+                value = state.email,
+                enabled = false,
             )
         }
         NicknameEditDialog(
@@ -193,60 +191,6 @@ private fun ProfileImage(
 }
 
 @Composable
-fun TextField(
-    modifier: Modifier = Modifier,
-    value: String = "",
-    onValueChange: (String) -> Unit = {},
-    readOnly: Boolean,
-    isError: Boolean = false,
-    placeholder: String? = null,
-) {
-    val borderColor =
-        when {
-            isError -> AppColor.SubRed
-            else -> AppColor.Gray100
-        }
-
-    val shape = RoundedCornerShape(8.dp)
-    Box(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clip(shape)
-                .background(AppColor.Gray0)
-                .height(48.dp)
-                .border(
-                    width = 1.dp,
-                    color = borderColor,
-                    shape = shape,
-                ).padding(horizontal = 16.dp, vertical = 12.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            enabled = true,
-            readOnly = readOnly,
-            singleLine = true,
-            textStyle =
-                AppTextStyle.Body01Regular.copy(
-                    color = AppColor.TextPrimary,
-                ),
-            decorationBox = { innerTextField ->
-                if (value.isEmpty() && placeholder != null) {
-                    Text(
-                        text = placeholder,
-                        style = AppTextStyle.Body01Regular,
-                        color = AppColor.TextTertiary,
-                    )
-                }
-                innerTextField()
-            },
-        )
-    }
-}
-
-@Composable
 private fun NicknameEditDialog(
     visible: Boolean,
     nickname: String,
@@ -272,10 +216,9 @@ private fun NicknameEditDialog(
             color = AppColor.TextPrimary,
         )
         Spacer(Modifier.height(16.dp))
-        TextField(
+        AppTextField(
             value = nickname,
             onValueChange = { onNicknameChange(it.take(10)) },
-            readOnly = false,
             isError = helperText != null,
             placeholder = "닉네임 입력 (최대 10자)",
         )
