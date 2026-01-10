@@ -1,6 +1,8 @@
 package com.arttrip.android.presentation.home.sub.region
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.arttrip.android.presentation.home.sub.notification.contract.NotificationEffect
 import com.arttrip.android.presentation.home.sub.region.contract.RegionEffect
 import com.arttrip.android.presentation.home.sub.region.contract.RegionIntent
 import com.arttrip.android.presentation.home.sub.region.contract.RegionState
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +29,11 @@ RegionViewModel@Inject
 
     fun onIntent(intent: RegionIntent) {
         when (intent) {
-            RegionIntent.BackIconClicked -> {}
+            RegionIntent.BackIconClicked -> {
+                viewModelScope.launch {
+                    _effect.emit(RegionEffect.NavigateBack)
+                }
+            }
             RegionIntent.DownIconClicked -> {}
             is RegionIntent.ExhibitionClicked -> {}
             is RegionIntent.LikeClicked -> {}

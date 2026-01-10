@@ -118,7 +118,8 @@ fun MainNavHost(
             val region = backStackEntry.arguments?.getSerializable("region") as? DomesticRegion ?: return@composable
             RegionRoute(
                 innerPadding = innerPadding,
-                region = region
+                region = region,
+                onBack = navController::popBackStack
             )
         }
 
