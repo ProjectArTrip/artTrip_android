@@ -1,3 +1,5 @@
 package com.arttrip.android.presentation.home.sub.notification.contract
 
-class NotificationIntent
+sealed interface NotificationIntent {
+    object BackClicked: NotificationIntent
+}

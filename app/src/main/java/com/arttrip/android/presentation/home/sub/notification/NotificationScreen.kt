@@ -27,9 +27,10 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.presentation.home.sub.notification.contract.NotificationIntent
 
 @Composable
-fun NotificationScreen(innerPadding: PaddingValues) {
+fun NotificationScreen(innerPadding: PaddingValues, onIntent: (NotificationIntent) -> Unit) {
     Box(
         modifier =
             Modifier
@@ -53,6 +54,7 @@ fun NotificationScreen(innerPadding: PaddingValues) {
                         iconResId = R.drawable.ic_back_24,
                         contentDescription = "Back Button",
                         onIconClick = {
+                            onIntent(NotificationIntent.BackClicked)
                         },
                     )
                 },
