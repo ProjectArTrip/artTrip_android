@@ -34,7 +34,7 @@ private val DUMMY_EXHIBITIONS =
         ),
         ExhibitionUiModel(
             id = 104,
-            title = "사진, 도시를 기록하다",
+            title = "사진, 도시를 기록하다사진, 도시를 기록하다사진, 도시를 기록하다사진, 도시를 기록하다사진, 도시를 기록하다사진, 도시를 기록하다",
             hallName = "예술의전당 한가람미술관",
             url = "https://picsum.photos/100/100",
         ),
