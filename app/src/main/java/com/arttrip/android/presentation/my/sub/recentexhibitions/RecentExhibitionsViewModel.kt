@@ -28,6 +28,10 @@ class RecentExhibitionsViewModel
                 RecentExhibitionsIntent.BackClicked -> {
                     viewModelScope.launch { _effect.emit(RecentExhibitionsEffect.NavigateBack) }
                 }
+
+                is RecentExhibitionsIntent.ExhibitionClicked -> {
+                    viewModelScope.launch { _effect.emit(RecentExhibitionsEffect.NavigateToExhibitionDetail(intent.exhibitId)) }
+                }
             }
         }
     }

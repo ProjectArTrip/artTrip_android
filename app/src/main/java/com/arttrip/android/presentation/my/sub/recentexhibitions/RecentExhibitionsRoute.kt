@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun RecentExhibitionsRoute(
     innerPadding: PaddingValues,
     onBack: () -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
     viewModel: RecentExhibitionsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -21,6 +22,7 @@ fun RecentExhibitionsRoute(
         viewModel.effect.collectLatest { eff ->
             when (eff) {
                 RecentExhibitionsEffect.NavigateBack -> onBack()
+                is RecentExhibitionsEffect.NavigateToExhibitionDetail -> onNavigateExhibitionDetail(eff.exhibitId)
             }
         }
     }
