@@ -15,6 +15,7 @@ import com.arttrip.android.core.navigation.main.navigateToReviewWrite
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
+import com.arttrip.android.presentation.my.sub.recentexhibitions.RecentExhibitionsRoute
 
 @Composable
 fun MyPageNavHost(
@@ -70,6 +71,10 @@ fun MyPageNavHost(
             )
         }
         composable(MyPageRoute.RECENT_EXHIBITIONS) {
+            RecentExhibitionsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
         }
         composable(MyPageRoute.MY_REVIEWS) {
             MyReviewsRoute(
