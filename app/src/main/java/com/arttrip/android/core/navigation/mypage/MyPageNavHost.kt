@@ -17,6 +17,7 @@ import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
 import com.arttrip.android.presentation.my.sub.recentexhibitions.RecentExhibitionsRoute
+import com.arttrip.android.presentation.my.sub.settings.SettingsRoute
 
 @Composable
 fun MyPageNavHost(
@@ -92,6 +93,12 @@ fun MyPageNavHost(
         composable(MyPageRoute.TASTE_ANALYSIS) {
         }
         composable(MyPageRoute.SETTINGS) {
+            SettingsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateNotice = {},
+                onNavigateNotificationSettings = { },
+            )
         }
     }
 }
