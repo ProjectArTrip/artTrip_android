@@ -14,7 +14,7 @@ fun SettingsRoute(
     innerPadding: PaddingValues,
     onBack: () -> Unit,
     onNavigateNotice: () -> Unit,
-    onNavigateNotificationSettings: () -> Unit,
+    onNavigateNotification: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -23,7 +23,7 @@ fun SettingsRoute(
             when (effect) {
                 SettingsEffect.NavigateBack -> onBack()
                 SettingsEffect.NavigateToNotice -> onNavigateNotice()
-                SettingsEffect.NavigateToNotificationSettings -> onNavigateNotificationSettings()
+                SettingsEffect.NavigateToNotification -> onNavigateNotification()
             }
         }
     }

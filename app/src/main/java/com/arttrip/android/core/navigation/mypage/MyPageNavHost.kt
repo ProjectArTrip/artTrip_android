@@ -97,7 +97,7 @@ fun MyPageNavHost(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
                 onNavigateNotice = {},
-                onNavigateNotificationSettings = { },
+                onNavigateNotification = { },
             )
         }
     }

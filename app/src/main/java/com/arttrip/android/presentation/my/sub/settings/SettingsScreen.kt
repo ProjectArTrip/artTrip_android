@@ -72,7 +72,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             SettingsSection(title = "권한 설정") {
-                MenuItem(title = "알림 설정") { onIntent(SettingsIntent.NotificationSettingsClick) }
+                MenuItem(title = "알림 설정") { onIntent(SettingsIntent.NotificationClick) }
             }
             Spacer(modifier = Modifier.height(56.dp))
 

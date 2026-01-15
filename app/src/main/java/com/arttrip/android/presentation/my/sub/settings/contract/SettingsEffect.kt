@@ -5,5 +5,5 @@ sealed interface SettingsEffect {
 
     data object NavigateToNotice : SettingsEffect
 
-    data object NavigateToNotificationSettings : SettingsEffect
+    data object NavigateToNotification : SettingsEffect
 }

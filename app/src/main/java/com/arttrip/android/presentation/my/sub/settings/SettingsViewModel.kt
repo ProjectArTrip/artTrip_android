@@ -35,10 +35,10 @@ class SettingsViewModel
                     _state.update { it.copy(isDeleteAccountDialogVisible = true) }
                 }
                 SettingsIntent.NoticeClick -> viewModelScope.launch { _effect.emit(SettingsEffect.NavigateToNotice) }
-                SettingsIntent.NotificationSettingsClick ->
+                SettingsIntent.NotificationClick ->
                     viewModelScope.launch {
                         _effect.emit(
-                            SettingsEffect.NavigateToNotificationSettings,
+                            SettingsEffect.NavigateToNotification,
                         )
                     }
                 SettingsIntent.PrivacyPolicyClick -> {
