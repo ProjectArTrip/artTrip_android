@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +30,18 @@ class NotificationViewModel
         fun onIntent(intent: NotificationIntent) {
             when (intent) {
                 NotificationIntent.BackClicked -> viewModelScope.launch { _effect.emit(NotificationEffect.NavigateBack) }
+                is NotificationIntent.ExhibitionInfoToggled -> {
+                    _state.update { it.copy(exhibitionInfoEnabled = intent.enabled) }
+                }
+                is NotificationIntent.MarketingPushToggled -> {
+                    _state.update { it.copy(marketingPushEnabled = intent.enabled) }
+                }
+                is NotificationIntent.SavedExhibitionOpenToggled -> {
+                    _state.update { it.copy(savedExhibitionOpenEnabled = intent.enabled) }
+                }
+                is NotificationIntent.StampIssuedToggled -> {
+                    _state.update { it.copy(stampIssuedEnabled = intent.enabled) }
+                }
             }
         }
     }
