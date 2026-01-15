@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.android.core.navigation.main.navigateToExhibitionDetail
 import com.arttrip.android.core.navigation.main.navigateToReviewWrite
+import com.arttrip.android.core.navigation.main.navigateToTaste
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
@@ -53,8 +54,8 @@ fun MyPageNavHost(
                         toEditProfile = { navController.navigate(MyPageRoute.EDIT_PROFILE) },
                         toRecentExhibitions = { navController.navigate(MyPageRoute.RECENT_EXHIBITIONS) },
                         toMyReviews = { navController.navigate(MyPageRoute.MY_REVIEWS) },
-                        toTasteAnalysis = { navController.navigate(MyPageRoute.TASTE_ANALYSIS) },
                         toSettings = { navController.navigate(MyPageRoute.SETTINGS) },
+                        toTasteAnalysis = { mainNavController.navigateToTaste() },
                     )
                 }
 
@@ -92,8 +93,7 @@ fun MyPageNavHost(
                 },
             )
         }
-        composable(MyPageRoute.TASTE_ANALYSIS) {
-        }
+
         composable(MyPageRoute.SETTINGS) {
             SettingsRoute(
                 innerPadding = innerPadding,

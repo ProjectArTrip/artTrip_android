@@ -20,6 +20,7 @@ import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.datefilter.DateFilterRoute
 import com.arttrip.android.presentation.map.MapRoute
+import com.arttrip.android.presentation.my.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.stamp.StampRoute
 
@@ -105,6 +106,13 @@ fun MainNavHost(
             ReviewWriteRoute(
                 innerPadding = innerPadding,
                 prefill = prefill,
+                onBack = navController::popBackStack,
+            )
+        }
+
+        composable(route = MainRoute.TASTE_ANALYSIS) {
+            TasteRoute(
+                innerPadding = innerPadding,
                 onBack = navController::popBackStack,
             )
         }

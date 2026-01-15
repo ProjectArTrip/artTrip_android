@@ -18,4 +18,6 @@ object MainRoute {
     const val REVIEW_WRITE = "$REVIEW_WRITE_ROUTE/{exhibitId}"
 
     fun reviewWrite(exhibitId: Int) = "$REVIEW_WRITE_ROUTE/$exhibitId"
+
+    const val TASTE_ANALYSIS = "mypage/taste_analysis"
 }
