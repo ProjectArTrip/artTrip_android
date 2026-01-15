@@ -32,12 +32,15 @@ class TasteViewModel
 
         fun onIntent(intent: TasteIntent) {
             when (intent) {
+                is TasteIntent.BackClicked -> {
+                    viewModelScope.launch { _effect.emit(TasteEffect.NavigateBack) }
+                }
                 is TasteIntent.Initialize -> {
-                    loadIntroOptions()
+                    // loadIntroOptions()
                 }
                 is TasteIntent.ToggleGenre -> handleToggleGenre(intent.id)
                 is TasteIntent.ToggleStyle -> handleToggleStyle(intent.id)
-                is TasteIntent.ClickNext -> handleClickNext()
+                is TasteIntent.SaveClicked -> handleClickSave()
             }
         }
 
@@ -96,7 +99,7 @@ class TasteViewModel
             }
         }
 
-        private fun handleClickNext() {
+        private fun handleClickSave() {
             val current = _state.value
             if (!current.isNextEnabled || current.isLoading) return
 

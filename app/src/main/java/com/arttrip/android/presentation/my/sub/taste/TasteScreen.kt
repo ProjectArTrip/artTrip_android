@@ -23,10 +23,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arttrip.android.R
+import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.domain.model.usertaste.Taste
@@ -42,56 +45,75 @@ fun TasteScreen(
     val buttonBottomMargin = 16.dp
     val bottomInset = AppButtonDefaults.Height + buttonBottomMargin
     val bottomContentPadding = 32.dp
+
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(AppColor.SubRed)
+                .background(AppColor.Gray0)
                 .padding(bottom = buttonBottomMargin),
     ) {
         Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(
-                        start = 24.dp,
-                        top = 40.dp,
-                        end = 24.dp,
-                        bottom = bottomInset,
-                    ),
+                    .fillMaxWidth(),
         ) {
-            IntroWelcomeSection(
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            IntroGenreSection(
-                modifier = Modifier.fillMaxWidth(),
-                genreList = state.genres,
-                selectedIds = state.selectedGenreIds,
-                onToggleGenre = { id ->
-                    onIntent(TasteIntent.ToggleGenre(id))
+            AppTopBar(
+                title = "나의 취향 분석",
+                leading = {
+                    AppIconButton(
+                        iconResId = R.drawable.ic_back_24,
+                        contentDescription = "뒤로가기",
+                        onIconClick = {
+                            onIntent(TasteIntent.BackClicked)
+                        },
+                    )
                 },
             )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = 24.dp,
+                            top = 12.dp,
+                            end = 24.dp,
+                            bottom = bottomInset,
+                        ),
+            ) {
+                TasteWelcomeSection(
+                    modifier = Modifier.fillMaxWidth(),
+                )
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            IntroStyleSection(
-                modifier = Modifier.fillMaxWidth(),
-                styleList = state.styles,
-                selectedIds = state.selectedStyleIds,
-                onToggleStyle = { id ->
-                    onIntent(TasteIntent.ToggleStyle(id))
-                },
-            )
+                TasteGenreSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    genreList = state.genres,
+                    selectedIds = state.selectedGenreIds,
+                    onToggleGenre = { id ->
+                        onIntent(TasteIntent.ToggleGenre(id))
+                    },
+                )
 
-            Spacer(modifier = Modifier.height(bottomContentPadding))
+                Spacer(modifier = Modifier.height(32.dp))
+
+                TasteStyleSection(
+                    modifier = Modifier.fillMaxWidth(),
+                    styleList = state.styles,
+                    selectedIds = state.selectedStyleIds,
+                    onToggleStyle = { id ->
+                        onIntent(TasteIntent.ToggleStyle(id))
+                    },
+                )
+
+                Spacer(modifier = Modifier.height(bottomContentPadding))
+            }
         }
 
-        IntroBottomCta(
+        TasteBottomCta(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
@@ -101,21 +123,20 @@ fun TasteScreen(
                         end = 24.dp,
                     ),
             enabled = state.isNextEnabled,
-            onClick = { onIntent(TasteIntent.ClickNext) },
+            onClick = { onIntent(TasteIntent.SaveClicked) },
         )
     }
 }
 
 @Composable
-private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
+private fun TasteWelcomeSection(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
     ) {
         Text(
             text =
-                "사용자님의 관심있는 키워드를 \n" +
-                    "골라주세요!",
-            style = AppTextStyle.Headline,
+                "이유지님의 관심있는 키워드를 골라주세요!",
+            style = AppTextStyle.Title02Bold,
             color = AppColor.TextPrimary,
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -131,7 +152,7 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun IntroGenreSection(
+private fun TasteGenreSection(
     modifier: Modifier = Modifier,
     selectedIds: Set<Int>,
     genreList: List<Taste>,
@@ -175,7 +196,7 @@ private fun IntroGenreSection(
 }
 
 @Composable
-private fun IntroStyleSection(
+private fun TasteStyleSection(
     modifier: Modifier = Modifier,
     selectedIds: Set<Int>,
     styleList: List<Taste>,
@@ -208,14 +229,14 @@ private fun IntroStyleSection(
 }
 
 @Composable
-private fun IntroBottomCta(
+private fun TasteBottomCta(
     modifier: Modifier = Modifier,
     enabled: Boolean,
     onClick: () -> Unit = {},
 ) {
     AppButton(
         modifier = modifier,
-        text = "다음으로",
+        text = "저장하기",
         onClick = onClick,
         enabled = enabled,
     )
