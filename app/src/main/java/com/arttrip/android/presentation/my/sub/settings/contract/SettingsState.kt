@@ -1,6 +1,8 @@
 package com.arttrip.android.presentation.my.sub.settings.contract
 
+import com.arttrip.android.BuildConfig
+
 data class SettingsState(
-    val appVersion: String = "1.0.0",
+    val appVersionName: String = BuildConfig.VERSION_NAME,
     val isDeleteAccountDialogVisible: Boolean = false,
 )

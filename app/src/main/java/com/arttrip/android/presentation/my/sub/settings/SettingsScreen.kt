@@ -82,7 +82,7 @@ fun SettingsScreen(
                 MenuItem(title = "서비스 이용약관") { onIntent(SettingsIntent.TermsOfServiceClick) }
                 MenuItem(title = "앱 버전", trailing = {
                     Text(
-                        text = state.appVersion,
+                        text = state.appVersionName,
                         style = AppTextStyle.Body01Bold,
                         color = AppColor.TextPrimary,
                     )
@@ -181,7 +181,7 @@ private fun DeleteAccountDialog(
                     "모두 삭제 됩니다.",
             style = AppTextStyle.Body01Regular,
             color = AppColor.TextPrimary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
