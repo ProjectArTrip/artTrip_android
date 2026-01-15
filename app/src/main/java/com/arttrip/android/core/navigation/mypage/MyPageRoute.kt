@@ -11,4 +11,6 @@ object MyPageRoute {
     const val MY_REVIEWS = "mypage/my_reviews"
     const val TASTE_ANALYSIS = "mypage/taste_analysis"
     const val SETTINGS = "mypage/settings"
+    const val NOTIFICATION = "mypage/settings/notification"
+    const val NOTICE = "mypage/settings/notice"
 }

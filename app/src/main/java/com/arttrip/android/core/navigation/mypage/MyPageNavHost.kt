@@ -18,6 +18,8 @@ import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
 import com.arttrip.android.presentation.my.sub.recentexhibitions.RecentExhibitionsRoute
 import com.arttrip.android.presentation.my.sub.settings.SettingsRoute
+import com.arttrip.android.presentation.my.sub.settings.sub.notice.NoticeRoute
+import com.arttrip.android.presentation.my.sub.settings.sub.notification.NotificationRoute
 
 @Composable
 fun MyPageNavHost(
@@ -96,8 +98,20 @@ fun MyPageNavHost(
             SettingsRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
-                onNavigateNotice = {},
-                onNavigateNotification = { },
+                onNavigateNotice = { navController.navigate(MyPageRoute.NOTICE) },
+                onNavigateNotification = { navController.navigate(MyPageRoute.NOTIFICATION) },
+            )
+        }
+        composable(MyPageRoute.NOTIFICATION) {
+            NotificationRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+        composable(MyPageRoute.NOTICE) {
+            NoticeRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
             )
         }
     }
