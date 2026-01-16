@@ -13,10 +13,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.android.core.navigation.main.navigateToExhibitionDetail
 import com.arttrip.android.core.navigation.main.navigateToReviewWrite
+import com.arttrip.android.core.navigation.main.navigateToTaste
 import com.arttrip.android.presentation.my.MyPageRoute
 import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
 import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
 import com.arttrip.android.presentation.my.sub.recentexhibitions.RecentExhibitionsRoute
+import com.arttrip.android.presentation.my.sub.settings.SettingsRoute
+import com.arttrip.android.presentation.my.sub.settings.sub.notice.NoticeRoute
+import com.arttrip.android.presentation.my.sub.settings.sub.notification.NotificationRoute
 
 @Composable
 fun MyPageNavHost(
@@ -50,8 +54,8 @@ fun MyPageNavHost(
                         toEditProfile = { navController.navigate(MyPageRoute.EDIT_PROFILE) },
                         toRecentExhibitions = { navController.navigate(MyPageRoute.RECENT_EXHIBITIONS) },
                         toMyReviews = { navController.navigate(MyPageRoute.MY_REVIEWS) },
-                        toTasteAnalysis = { navController.navigate(MyPageRoute.TASTE_ANALYSIS) },
                         toSettings = { navController.navigate(MyPageRoute.SETTINGS) },
+                        toTasteAnalysis = { mainNavController.navigateToTaste() },
                     )
                 }
 
@@ -89,9 +93,26 @@ fun MyPageNavHost(
                 },
             )
         }
-        composable(MyPageRoute.TASTE_ANALYSIS) {
-        }
+
         composable(MyPageRoute.SETTINGS) {
+            SettingsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateNotice = { navController.navigate(MyPageRoute.NOTICE) },
+                onNavigateNotification = { navController.navigate(MyPageRoute.NOTIFICATION) },
+            )
+        }
+        composable(MyPageRoute.NOTIFICATION) {
+            NotificationRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+        composable(MyPageRoute.NOTICE) {
+            NoticeRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
         }
     }
 }
