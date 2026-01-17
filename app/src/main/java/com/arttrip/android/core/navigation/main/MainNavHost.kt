@@ -112,9 +112,17 @@ fun MainNavHost(
             )
         }
 
-        composable(MainRoute.HOME_REGION, listOf(navArgument("region") {type = NavType.EnumType(
-            DomesticRegion::class.java)})) { backStackEntry ->
-            val region = backStackEntry.arguments?.getSerializable("region") as? DomesticRegion ?: return@composable
+        composable(
+            route = MainRoute.HOME_REGION,
+            arguments = listOf(
+                navArgument("region") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val regionName = backStackEntry.arguments?.getString("region") ?: return@composable
+
+            val region = runCatching { DomesticRegion.valueOf(regionName) }
+                .getOrNull() ?: return@composable
+
             RegionRoute(
                 innerPadding = innerPadding,
                 region = region,

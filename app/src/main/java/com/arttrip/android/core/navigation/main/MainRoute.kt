@@ -21,7 +21,7 @@ object MainRoute {
     private const val HOME_REGION_ROUTE = "home_region"
     const val HOME_REGION = "$HOME_REGION_ROUTE/{region}"
 
-    fun region(region: DomesticRegion) = "$HOME_REGION_ROUTE/$region"
+    fun region(region: DomesticRegion) = "$HOME_REGION_ROUTE/${region.name}"
 
     private const val HOME_GENRE_ROUTE = "home_genre"
     const val HOME_GENRE = "$HOME_GENRE_ROUTE?country={country}&genre={genre}"
