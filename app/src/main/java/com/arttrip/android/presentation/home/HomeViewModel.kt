@@ -203,6 +203,18 @@ class HomeViewModel
                         _effect.emit(NavigateToRegion(intent.region))
                     }
                 }
+
+                is HomeIntent.ForeignMoreGenreIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(NavigateToForeignGenre(intent.country, intent.genre))
+                    }
+                }
+
+                is HomeIntent.DomesticMoreGenreIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(NavigateToDomesticGenre(intent.genre))
+                    }
+                }
             }
         }
 

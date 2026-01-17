@@ -15,11 +15,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
+import com.arttrip.android.presentation.home.sub.genre.GenreRoute
 import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
 import com.arttrip.android.presentation.home.sub.region.RegionRoute
 import com.arttrip.android.presentation.home.sub.search.SearchRoute
@@ -64,8 +67,10 @@ fun MainNavHost(
                 },
                 onNavigateRegion = { region ->
                     navController.navigateToRegion(region)
+                },
+                onNavigateGenre = { country, genre ->
+                    navController.navigateToGenre(country, genre)
                 }
-
             )
         }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
@@ -100,12 +105,6 @@ fun MainNavHost(
             )
         }
 
-        composable(MainRoute.HOME_NOTIFICATION) {
-            NotificationRoute(
-                innerPadding = innerPadding
-            )
-        }
-
         composable(MainRoute.HOME_SEARCH) {
             SearchRoute(
                 innerPadding = innerPadding,
@@ -120,6 +119,34 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 region = region,
                 onBack = navController::popBackStack
+            )
+        }
+
+        composable(
+            route = MainRoute.HOME_GENRE,
+            arguments = listOf(
+                navArgument("country") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("genre") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val countryName = backStackEntry.arguments?.getString("country")
+            val country = countryName?.let { ForeignCountry.valueOf(it) }
+
+            val genre = ExhibitionGenre.valueOf(
+                backStackEntry.arguments?.getString("genre")!!
+            )
+
+            GenreRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                country = country,
+                genre = genre
             )
         }
 

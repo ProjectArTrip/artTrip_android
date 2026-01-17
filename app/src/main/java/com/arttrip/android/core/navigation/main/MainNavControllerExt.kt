@@ -3,6 +3,8 @@ package com.arttrip.android.core.navigation.main
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavHostController
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.NavKeys
 import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
@@ -29,6 +31,10 @@ fun NavHostController.navigateToSearch() {
 
 fun NavHostController.navigateToRegion(region: DomesticRegion) {
     navigate(MainRoute.region(region))
+}
+
+fun NavHostController.navigateToGenre(country: ForeignCountry?, genre: ExhibitionGenre) {
+    navigate(MainRoute.genre(country, genre))
 }
 
 fun NavHostController.navigateToReviewWrite(

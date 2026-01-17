@@ -1,6 +1,8 @@
 package com.arttrip.android.core.navigation.main
 
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 
 object MainRoute {
     const val HOME = "home"
@@ -20,6 +22,19 @@ object MainRoute {
     const val HOME_REGION = "$HOME_REGION_ROUTE/{region}"
 
     fun region(region: DomesticRegion) = "$HOME_REGION_ROUTE/$region"
+
+    private const val HOME_GENRE_ROUTE = "home_genre"
+    const val HOME_GENRE = "$HOME_GENRE_ROUTE?country={country}&genre={genre}"
+
+    fun genre(
+        country: ForeignCountry? = null,
+        genre: ExhibitionGenre
+    ): String =
+        if (country == null) {
+            "$HOME_GENRE_ROUTE?genre=${genre.name}"
+        } else {
+            "$HOME_GENRE_ROUTE?country=${country.name}&genre=${genre.name}"
+        }
 
     private const val EXHIBITION_DETAIL_ROUTE = "exhibition_detail"
     const val EXHIBITION_DETAIL = "$EXHIBITION_DETAIL_ROUTE/{exhibitId}"

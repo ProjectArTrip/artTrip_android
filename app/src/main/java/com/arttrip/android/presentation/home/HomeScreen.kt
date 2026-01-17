@@ -448,7 +448,9 @@ fun ForeignExhibitionSection(
 
                 onIntent(HomeIntent.LoadForeignGenreExhibitList(selectedCountry, genre))
             },
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.ForeignMoreGenreIconClicked(selectedCountry, selectedGenre))
+            },
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
@@ -561,7 +563,9 @@ fun DomesticExhibitionSection(
 
                 onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, genre))
             },
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.DomesticMoreGenreIconClicked(selectedGenre))
+            },
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
