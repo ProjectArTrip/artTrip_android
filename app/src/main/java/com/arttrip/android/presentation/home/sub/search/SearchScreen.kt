@@ -147,23 +147,26 @@ fun SearchIdleContent(
                 Modifier
                     .height(20.dp),
         )
-        RecentSearch(
-            recentKeywordList = state.recentKeywordList,
-            onChipClick = { keyword ->
-                onIntent(SearchIntent.RecentKeywordClicked(keyword))
-            },
-            onDismissClick = { keyword ->
-                onIntent(SearchIntent.RecentKeywordDismissClicked(keyword))
-            },
-            onDeleteAllClick = {
-                onIntent(SearchIntent.DeleteAllClicked)
-            },
-        )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(32.dp),
-        )
+        if (state.recentKeywordList.isNotEmpty()) {
+            RecentSearch(
+                recentKeywordList = state.recentKeywordList,
+                onChipClick = { keyword ->
+                    onIntent(SearchIntent.RecentKeywordClicked(keyword))
+                },
+                onDismissClick = { keyword ->
+                    onIntent(SearchIntent.RecentKeywordDismissClicked(keyword))
+                },
+                onDeleteAllClick = {
+                    onIntent(SearchIntent.DeleteAllClicked)
+                },
+            )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(32.dp),
+            )
+        }
+
         RecommendSearch(
             recommendKeywordList = state.recommendKeywordList,
             onChipClick = { keyword ->
@@ -237,7 +240,7 @@ fun RecommendSearch(
                 .fillMaxWidth(),
     ) {
         Text(
-            text = "최근 검색어",
+            text = "추천 검색어",
             style = AppTextStyle.Title02Bold,
             color = AppColor.TextPrimary,
         )

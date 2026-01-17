@@ -38,10 +38,18 @@ class SearchViewModel
                 is SearchIntent.SearchClicked -> {
 
                 }
-                is SearchIntent.RecentKeywordClicked -> {}
-                is SearchIntent.RecentKeywordDismissClicked -> {}
+                is SearchIntent.RecentKeywordClicked -> {
+
+                }
+                is SearchIntent.RecentKeywordDismissClicked -> {
+                    _state.update { it.copy(
+                        recentKeywordList = it.recentKeywordList - intent.keyword
+                    ) }
+                }
                 is SearchIntent.RecommendKeywordClicked -> {}
-                SearchIntent.DeleteAllClicked -> {}
+                SearchIntent.DeleteAllClicked -> {
+                    _state.update { it.copy(recentKeywordList = emptyList()) }
+                }
                 is SearchIntent.ExhibitionClicked -> {}
                 is SearchIntent.LikeClicked -> {}
 
