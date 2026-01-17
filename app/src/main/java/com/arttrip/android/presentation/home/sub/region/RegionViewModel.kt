@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,14 +30,32 @@ RegionViewModel@Inject
 
     fun onIntent(intent: RegionIntent) {
         when (intent) {
+            is RegionIntent.ScreenEntered -> {
+                _state.update { it.copy(selectedRegion = intent.region) }
+            }
             RegionIntent.BackIconClicked -> {
                 viewModelScope.launch {
                     _effect.emit(RegionEffect.NavigateBack)
                 }
             }
-            RegionIntent.DownIconClicked -> {}
+            RegionIntent.DropdownClicked -> {
+                _state.update { it.copy(isDropdownExpanded = !it.isDropdownExpanded) }
+            }
+            RegionIntent.DropdownDismissed -> {
+                _state.update { it.copy(isDropdownExpanded = false) }
+            }
+            is RegionIntent.RegionSelected -> {
+                _state.update {
+                    it.copy(
+                        selectedRegion = intent.region,
+                        isDropdownExpanded = false
+                    )
+                }
+            }
+
             is RegionIntent.ExhibitionClicked -> {}
             is RegionIntent.LikeClicked -> {}
+
         }
     }
     }

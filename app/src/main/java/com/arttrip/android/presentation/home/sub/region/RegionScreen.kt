@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home.sub.region
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +14,29 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
@@ -41,7 +58,6 @@ fun RegionScreen(
     innerPadding: PaddingValues,
     state: RegionState,
     onIntent: (RegionIntent) -> Unit,
-    region: DomesticRegion
 ) {
     Box(
         modifier =
@@ -53,56 +69,148 @@ fun RegionScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
         ) {
             Spacer(
                 modifier =
                     Modifier
                         .height(16.dp),
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .padding(vertical = 12.dp),
-            ) {
-                AppIconButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart),
-                    iconResId = R.drawable.ic_back_24,
-                    contentDescription = "Back Button",
-                    onIconClick = {
-                        onIntent(RegionIntent.BackIconClicked)
-                    }
-                )
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = region.label,
-                        style = AppTextStyle.Headline,
-                        color = AppColor.TextPrimary
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .width(4.dp)
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.ic_down_24),
-                        contentDescription = "DropDown Button"
-                    )
-                }
-            }
+            AppBar(
+                state = state,
+                onIntent = onIntent
+            )
+
             ExhibitionList(
                 onExhibitionClick = { id ->
                     onIntent(RegionIntent.ExhibitionClicked(id))
                 },
                 onLikeClick = { id ->
                     onIntent(RegionIntent.LikeClicked(id))
-                }
+                },
+                expanded = state.isDropdownExpanded
             )
+        }
+    }
+}
+
+@Composable
+fun AppBar(
+    state: RegionState,
+    onIntent: (RegionIntent) -> Unit
+) {
+    var appBarWidthPx by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+    val appBarWidthDp = with(density) { appBarWidthPx.toDp() }
+
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 11.dp)
+                .onGloballyPositioned { layout ->
+                    appBarWidthPx = layout.size.width
+                },
+        ) {
+            AppIconButton(
+                modifier = Modifier.align(Alignment.CenterStart),
+                iconResId = R.drawable.ic_back_24,
+                contentDescription = "Back Button",
+                onIconClick = { onIntent(RegionIntent.BackIconClicked) }
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .noRippleClickable { onIntent(RegionIntent.DropdownClicked) },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = state.selectedRegion.label,
+                    style = AppTextStyle.Headline,
+                    color = AppColor.TextPrimary
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(if (state.isDropdownExpanded) R.drawable.ic_up_24 else R.drawable.ic_down_24),
+                    contentDescription = "DropDown Button"
+                )
+            }
+            DropDown(
+                state = state,
+                onIntent = onIntent,
+                appBarWidthDp = appBarWidthDp
+            )
+        }
+
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = AppColor.Gray100
+        )
+    }
+}
+
+@Composable
+fun DropDown(state: RegionState,
+             onIntent: (RegionIntent) -> Unit,
+             appBarWidthDp: Dp) {
+    DropdownMenu(
+        expanded = state.isDropdownExpanded,
+        onDismissRequest = { onIntent(RegionIntent.DropdownDismissed) },
+        containerColor = AppColor.Gray0,
+        modifier = Modifier
+            .width(appBarWidthDp + 48.dp)
+            .padding(top = 0.dp, bottom = 0.dp),
+        offset = DpOffset(x = 0.dp, y = 12.dp),
+        shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 16.dp, bottomEnd = 16.dp),
+        shadowElevation = 0.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            DomesticRegion.entries.forEachIndexed { index, region ->
+                val height = if (index == 1 || index == DomesticRegion.entries.lastIndex) 44.dp
+                else 52.dp
+                if (region != DomesticRegion.Entire)
+                    DropdownMenuItem(
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(height)
+                            .background(color = AppColor.Gray0),
+                        text = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                if (index == DomesticRegion.entries.lastIndex) {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(8.dp)
+                                    )
+                                }
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = region.label,
+                                    style = AppTextStyle.Title01Light,
+                                    color = AppColor.TextPrimary,
+                                    textAlign = TextAlign.Center
+                                )
+                                if (index == 0) {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(8.dp)
+                                    )
+                                }
+                            }
+
+                        },
+                        onClick = { onIntent(RegionIntent.RegionSelected(region = region)) },
+                    )
+            }
         }
     }
 }
@@ -111,51 +219,66 @@ fun RegionScreen(
 fun ExhibitionList(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    expanded: Boolean
 ) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        val dummyExhibition =
-            Exhibition(
-                id = 1,
-                title = "DDP 매거진 라이브러리: 기록에 머물다",
-                posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                status = ExhibitionStatus.ONGOING,
-                period = "2025.01.01 - 2025.12.31",
-                hallName = "DDP 동대문디자인플라자",
-                place = "서울 · 중구",
-                isBookmarked = true,
-            )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(12.dp),
-        )
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            repeat(10) {
-                ExhibitionItem(
-                    exhibition = dummyExhibition,
-                    onExhibitionClick = { id ->
-                        onExhibitionClick(id)
-                    },
-                    onLikeClick = { id ->
-                        onLikeClick(id)
-                    }
-                )
-            }
-        }
-        Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
-        )
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .verticalScroll(rememberScrollState()),
+        ) {
+            val dummyExhibition =
+                Exhibition(
+                    id = 1,
+                    title = "DDP 매거진 라이브러리: 기록에 머물다",
+                    posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
+                    status = ExhibitionStatus.ONGOING,
+                    period = "2025.01.01 - 2025.12.31",
+                    hallName = "DDP 동대문디자인플라자",
+                    place = "서울 · 중구",
+                    isBookmarked = true,
+                )
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(12.dp),
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                repeat(10) {
+                    ExhibitionItem(
+                        exhibition = dummyExhibition,
+                        onExhibitionClick = { id ->
+                            onExhibitionClick(id)
+                        },
+                        onLikeClick = { id ->
+                            onLikeClick(id)
+                        }
+                    )
+                }
+            }
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(24.dp),
+            )
+        }
+        if (expanded) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Black.copy(alpha = 0.6f))
+            )
+        }
+
     }
 }
 
