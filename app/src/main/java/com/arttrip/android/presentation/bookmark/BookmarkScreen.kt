@@ -214,6 +214,7 @@ fun BookmarkScreen(
     }
 }
 
+    onSortChange: (BookmarkSort) -> Unit,
 @Composable
 private fun SortTextButton(
     text: String,

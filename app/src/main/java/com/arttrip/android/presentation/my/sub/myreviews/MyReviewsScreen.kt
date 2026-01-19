@@ -115,6 +115,7 @@ fun MyReviewsScreen(
     )
 }
 
+        exit = shrinkVertically() + fadeOut(),
 @Composable
 private fun ReviewItem(
     title: String,
