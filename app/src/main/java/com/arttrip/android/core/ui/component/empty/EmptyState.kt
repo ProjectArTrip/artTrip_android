@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -34,9 +32,9 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
  */
 @Composable
 fun AppEmptyState(
+    modifier: Modifier = Modifier,
     @DrawableRes iconResId: Int,
     message: String,
-    modifier: Modifier = Modifier,
     topPadding: Dp = 56.dp,
     messageTopSpacing: Dp = 8.dp,
 ) {
@@ -50,7 +48,9 @@ fun AppEmptyState(
             verticalArrangement = Arrangement.Top,
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(id = iconResId),
+                painter =
+                    androidx.compose.ui.res
+                        .painterResource(id = iconResId),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
@@ -76,13 +76,14 @@ fun AppEmptyState(
 @Composable
 private fun AppEmptyStatePhonePreview() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppColor.Gray0),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppColor.Gray0),
         contentAlignment = Alignment.Center,
     ) {
         AppEmptyState(
-            iconResId = R.drawable.ic_empty_favorite_96,
+            iconResId = R.drawable.ic_empty_bookmark_96,
             message = "즐겨찾기 항목이 없습니다.",
             modifier = Modifier.fillMaxSize(),
         )
