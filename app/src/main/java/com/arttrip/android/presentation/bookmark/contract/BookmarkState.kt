@@ -99,6 +99,8 @@ data class BookmarkState(
         get() =
             editingLocationFilter.foreignCountries.isNotEmpty() ||
                 editingLocationFilter.domesticRegions.isNotEmpty()
+    val isEmpty: Boolean
+        get() = bookmarkList.isEmpty()
 }
 
 enum class BookmarkSort {

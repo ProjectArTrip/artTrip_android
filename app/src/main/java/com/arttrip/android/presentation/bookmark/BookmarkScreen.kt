@@ -46,6 +46,7 @@ import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.empty.AppEmptyState
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.component.tag.AppTag
@@ -78,76 +79,36 @@ fun BookmarkScreen(
                 )
             },
         )
-
-        AnimatedVisibility(
+        BookmarkListTopBar(
             visible = countVisible,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut(),
-        ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            count = state.bookmarkList.size,
+            sort = state.sort,
+            onSortChange = { sort -> onIntent(BookmarkIntent.ChangeSort(sort)) },
+            onFilterClick = { onIntent(BookmarkIntent.FilterSheetOpened) },
+        )
+
+        if (state.isEmpty) {
+            AppEmptyState(
+                modifier = Modifier.fillMaxWidth(),
+                iconResId = R.drawable.ic_empty_bookmark_96,
+                message = "즐겨찾기 항목이 없습니다.",
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                state = listState,
+                contentPadding = PaddingValues(top = 8.dp, bottom = 48.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(
-                    "총 ${state.bookmarkList.size}개",
-                    style = AppTextStyle.Title02Bold,
-                    color = AppColor.TextPrimary,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                SortTextButton(
-                    text = "최신순",
-                    selected = state.sort == BookmarkSort.LATEST,
-                ) {
-                    if (state.sort != BookmarkSort.LATEST) {
-                        onIntent(BookmarkIntent.ChangeSort(BookmarkSort.LATEST))
-                    }
+                // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
+                items(state.bookmarkList) { exhibition ->
+                    ExhibitionItem(
+                        exhibition = exhibition,
+                        onItemClick = { id -> onIntent(BookmarkIntent.ClickItem(id)) },
+                        onLikeClick = { id -> onIntent(BookmarkIntent.ToggleBookmark(id)) },
+                        isLiked = state.bookmarkedMap[exhibition.id] ?: exhibition.isBookmarked,
+                    )
                 }
-
-                VerticalDivider(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 12.dp)
-                            .height(12.dp),
-                    thickness = 1.dp,
-                    color = AppColor.Gray100,
-                )
-
-                SortTextButton(
-                    text = "마감순",
-                    selected = state.sort == BookmarkSort.DEADLINE,
-                ) {
-                    if (state.sort != BookmarkSort.DEADLINE) {
-                        onIntent(BookmarkIntent.ChangeSort(BookmarkSort.DEADLINE))
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                AppIconButton(
-                    iconResId = R.drawable.ic_filter_24,
-                    onIconClick = { onIntent(BookmarkIntent.FilterSheetOpened) },
-                )
-            }
-        }
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 24.dp),
-            state = listState,
-            contentPadding = PaddingValues(top = 8.dp, bottom = 48.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
-            items(state.bookmarkList) { exhibition ->
-                ExhibitionItem(
-                    exhibition = exhibition,
-                    onItemClick = { id -> onIntent(BookmarkIntent.ClickItem(id)) },
-                    onLikeClick = { id -> onIntent(BookmarkIntent.ToggleBookmark(id)) },
-                    isLiked = state.bookmarkedMap[exhibition.id] ?: exhibition.isBookmarked,
-                )
             }
         }
 
@@ -214,7 +175,67 @@ fun BookmarkScreen(
     }
 }
 
+@Composable
+private fun BookmarkListTopBar(
+    visible: Boolean,
+    count: Int,
+    sort: BookmarkSort,
     onSortChange: (BookmarkSort) -> Unit,
+    onFilterClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = expandVertically() + fadeIn(),
+        exit = shrinkVertically() + fadeOut(),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                "총 ${count}개",
+                style = AppTextStyle.Title02Bold,
+                color = AppColor.TextPrimary,
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            SortTextButton(
+                text = "최신순",
+                selected = sort == BookmarkSort.LATEST,
+            ) {
+                if (sort != BookmarkSort.LATEST) onSortChange(BookmarkSort.LATEST)
+            }
+
+            VerticalDivider(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp)
+                        .height(12.dp),
+                thickness = 1.dp,
+                color = AppColor.Gray100,
+            )
+
+            SortTextButton(
+                text = "마감순",
+                selected = sort == BookmarkSort.DEADLINE,
+            ) {
+                if (sort != BookmarkSort.DEADLINE) onSortChange(BookmarkSort.DEADLINE)
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            AppIconButton(
+                iconResId = R.drawable.ic_filter_24,
+                onIconClick = onFilterClick,
+            )
+        }
+    }
+}
+
 @Composable
 private fun SortTextButton(
     text: String,
