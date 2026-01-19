@@ -96,7 +96,7 @@ private fun ExhibitionItem(
                 title,
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPrimary,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(4.dp))

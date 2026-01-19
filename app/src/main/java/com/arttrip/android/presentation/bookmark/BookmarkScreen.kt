@@ -269,7 +269,7 @@ fun ExhibitionItem(
                 text = exhibition.title,
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPrimary,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(

@@ -57,7 +57,7 @@ fun MyReviewsScreen(
 
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
-            title = "나의리뷰",
+            title = "나의 리뷰",
             leading = {
                 AppIconButton(
                     iconResId = R.drawable.ic_back_24,
@@ -137,6 +137,8 @@ private fun ReviewItem(
                     title,
                     style = AppTextStyle.Body01Bold,
                     color = AppColor.TextPrimary,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
