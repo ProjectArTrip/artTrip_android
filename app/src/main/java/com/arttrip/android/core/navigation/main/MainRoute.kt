@@ -7,7 +7,7 @@ object MainRoute {
     const val BOOKMARK = "bookmark"
     const val MY_PAGE = "my_page"
 
-    const val HOME_DATE_FILTER = "home_date_filter"
+    const val HOME_DATE_RESULT = "home_date_result"
 
     private const val EXHIBITION_DETAIL_ROUTE = "exhibition_detail"
     const val EXHIBITION_DETAIL = "$EXHIBITION_DETAIL_ROUTE/{exhibitId}"
