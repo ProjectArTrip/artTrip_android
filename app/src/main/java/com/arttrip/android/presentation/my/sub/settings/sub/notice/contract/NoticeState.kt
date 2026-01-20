@@ -2,7 +2,10 @@ package com.arttrip.android.presentation.my.sub.settings.sub.notice.contract
 
 data class NoticeState(
     val notices: List<NoticeUiModel> = dummyNotices,
-)
+) {
+    val isEmpty: Boolean
+        get() = notices.isEmpty()
+}
 
 data class NoticeUiModel(
     val id: Int,

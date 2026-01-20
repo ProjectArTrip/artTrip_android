@@ -35,6 +35,7 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.ReviewButton
 import com.arttrip.android.core.ui.component.dialog.AppDialog
+import com.arttrip.android.core.ui.component.empty.AppEmptyState
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
@@ -57,7 +58,7 @@ fun MyReviewsScreen(
 
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
-            title = "나의리뷰",
+            title = "나의 리뷰",
             leading = {
                 AppIconButton(
                     iconResId = R.drawable.ic_back_24,
@@ -68,43 +69,38 @@ fun MyReviewsScreen(
                 )
             },
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        AnimatedVisibility(
-            visible = countVisible,
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut(),
-        ) {
-            Column {
-                Text(
-                    "총 ${state.reviews.count()}개",
-                    modifier = Modifier.padding(horizontal = CONTENT_HORIZONTAL_PADDING),
-                    style = AppTextStyle.Title02Bold,
-                    color = AppColor.TextPrimary,
-                )
-                Spacer(Modifier.height(12.dp))
-            }
-        }
+        if (state.isEmpty) {
+            AppEmptyState(
+                modifier = Modifier.fillMaxWidth(),
+                iconResId = R.drawable.ic_empty_review_96,
+                message = "작성된 리뷰가 없습니다.",
+            )
+        } else {
+            ReviewListTopBar(
+                visible = countVisible,
+                count = state.reviews.size,
+            )
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
+                state = listState,
+                contentPadding = PaddingValues(top = 8.dp, bottom = BOTTOM_SCROLL_SPACER),
+                verticalArrangement = Arrangement.spacedBy(REVIEW_ITEM_GAP),
+            ) {
+                // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
 
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
-            state = listState,
-            contentPadding = PaddingValues(top = 8.dp, bottom = BOTTOM_SCROLL_SPACER),
-            verticalArrangement = Arrangement.spacedBy(REVIEW_ITEM_GAP),
-        ) {
-            // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
-
-            items(state.reviews) { review ->
-                ReviewItem(
-                    title = review.exhibitionTitle,
-                    visitedDate = review.visitedDate,
-                    thumbnailUrl = review.thumbnailUrl,
-                    content = review.content,
-                    onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked) },
-                    onEditedClick = { onIntent(MyReviewsIntent.EditReviewClicked(review)) },
-                )
+                items(state.reviews) { review ->
+                    ReviewItem(
+                        title = review.exhibitionTitle,
+                        visitedDate = review.visitedDate,
+                        thumbnailUrl = review.thumbnailUrl,
+                        content = review.content,
+                        onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked) },
+                        onEditedClick = { onIntent(MyReviewsIntent.EditReviewClicked(review)) },
+                    )
+                }
             }
         }
     }
@@ -113,6 +109,28 @@ fun MyReviewsScreen(
         onDismissRequest = { onIntent(MyReviewsIntent.RemoveDialogDismissed) },
         onConfirmClick = { onIntent(MyReviewsIntent.RemoveConfirmClicked) },
     )
+}
+
+@Composable
+private fun ReviewListTopBar(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    count: Int,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = expandVertically() + fadeIn(),
+        exit = shrinkVertically() + fadeOut(),
+    ) {
+        Column(modifier = modifier.padding(vertical = 12.dp)) {
+            Text(
+                "총 ${count}개",
+                modifier = Modifier.padding(horizontal = CONTENT_HORIZONTAL_PADDING),
+                style = AppTextStyle.Title02Bold,
+                color = AppColor.TextPrimary,
+            )
+        }
+    }
 }
 
 @Composable
@@ -137,6 +155,8 @@ private fun ReviewItem(
                     title,
                     style = AppTextStyle.Body01Bold,
                     color = AppColor.TextPrimary,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(

@@ -2,6 +2,7 @@ package com.arttrip.android.presentation.my.sub.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.model.config.AppLinks
 import com.arttrip.android.data.local.auth.SessionManager
 import com.arttrip.android.presentation.my.sub.settings.contract.SettingsEffect
 import com.arttrip.android.presentation.my.sub.settings.contract.SettingsIntent
@@ -42,8 +43,19 @@ class SettingsViewModel
                         )
                     }
                 SettingsIntent.PrivacyPolicyClick -> {
+                    viewModelScope.launch {
+                        _effect.emit(
+                            SettingsEffect.OpenWeb(AppLinks.PRIVACY_POLICY),
+                        )
+                    }
                 }
-                SettingsIntent.TermsOfServiceClick -> {}
+                SettingsIntent.TermsOfServiceClick -> {
+                    viewModelScope.launch {
+                        _effect.emit(
+                            SettingsEffect.OpenWeb(AppLinks.TERMS_OF_SERVICE),
+                        )
+                    }
+                }
                 SettingsIntent.DeleteAccountConfirmClick -> {
                     _state.update { it.copy(isDeleteAccountDialogVisible = false) }
 
