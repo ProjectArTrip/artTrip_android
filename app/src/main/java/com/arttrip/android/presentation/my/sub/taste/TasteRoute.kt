@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arttrip.android.core.util.LocalToastController
 import com.arttrip.android.presentation.my.sub.taste.contract.TasteEffect
 import com.arttrip.android.presentation.my.sub.taste.contract.TasteIntent
 
@@ -16,6 +17,7 @@ fun TasteRoute(
     viewModel: TasteViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val toast = LocalToastController.current
 
     LaunchedEffect(Unit) {
         viewModel.onIntent(TasteIntent.Initialize)
@@ -24,7 +26,13 @@ fun TasteRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                TasteEffect.NavigateBack -> onBack()
+                TasteEffect.NavigateBack -> {
+                    onBack()
+                }
+                is TasteEffect.ShowToastAndNavigateBack -> {
+                    toast.show(effect.message)
+                    onBack()
+                }
                 is TasteEffect.ShowError -> {
                     // 스낵바 / 토스트 등
                 }
