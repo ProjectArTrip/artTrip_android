@@ -74,8 +74,10 @@ import com.arttrip.android.presentation.home.ui.EmptyScheduleExhibition
 import com.arttrip.android.presentation.home.ui.GenreSectionLoading
 import com.arttrip.android.presentation.home.ui.RecommendSectionLoading
 import com.arttrip.android.presentation.home.ui.ScheduleSectionLoading
+import com.arttrip.android.presentation.home.ui.datefilter.DateFilterBottomSheet
 import java.time.DayOfWeek
 import java.time.LocalDate
+import kotlin.math.abs
 
 enum class PlaceTab(
     val title: String,
@@ -126,7 +128,7 @@ fun HomeScreen(
                 }
 
                 val delta = current - foreignLastScroll
-                if (kotlin.math.abs(delta) < thresholdPx) return@collect
+                if (abs(delta) < thresholdPx) return@collect
 
                 val now = SystemClock.elapsedRealtime()
                 if (now - foreignLastToggleTime < debounceMs) {
@@ -156,7 +158,7 @@ fun HomeScreen(
                 }
 
                 val delta = current - domesticLastScroll
-                if (kotlin.math.abs(delta) < thresholdPx) return@collect
+                if (abs(delta) < thresholdPx) return@collect
 
                 val now = SystemClock.elapsedRealtime()
                 if (now - domesticLastToggleTime < debounceMs) {
@@ -299,6 +301,11 @@ fun HomeBody(
             PlaceTab.Foreign -> ForeignExhibitionSection(state, onIntent, foreignScrollState)
             PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent, domesticScrollState)
         }
+
+        DateFilterBottomSheet(
+            visible = state.isDateFilterSheetVisible,
+            onDismissRequest = { onIntent(HomeIntent.DateFilterSheetDismissed) },
+        )
     }
 }
 

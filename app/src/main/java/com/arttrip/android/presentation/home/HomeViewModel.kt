@@ -96,9 +96,14 @@ class HomeViewModel
                 }
 
                 is HomeIntent.DateFilterIconClicked -> {
-                    viewModelScope.launch {
-                        _effect.emit(HomeEffect.NavigateToDateFilter)
-                    }
+//                    viewModelScope.launch {
+//                        _effect.emit(HomeEffect.NavigateToDateFilter)
+//                    }
+                    _state.update { it.copy(isDateFilterSheetVisible = true) }
+                }
+
+                is HomeIntent.DateFilterSheetDismissed -> {
+                    _state.update { it.copy(isDateFilterSheetVisible = false) }
                 }
 
                 is HomeIntent.SearchIconClicked -> {
