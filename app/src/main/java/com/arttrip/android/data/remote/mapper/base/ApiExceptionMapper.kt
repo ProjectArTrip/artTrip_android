@@ -18,17 +18,19 @@ fun Throwable.toAppError(): ApiError =
         is HttpException -> {
             val status = code()
             val errorBody = response()?.errorBody()?.string()
-            val errorDto =
-                if (!errorBody.isNullOrBlank()) {
-                    errorJson.decodeFromString(ErrorResponseDto.serializer(), errorBody)
-                } else {
-                    ErrorResponseDto(isSuccess = null, code = null, message = null)
-                }
+
+            val dto: ErrorResponseDto? =
+                errorBody
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let { body ->
+                        runCatching { errorJson.decodeFromString(ErrorResponseDto.serializer(), body) }
+                            .getOrNull()
+                    }
 
             ApiError.HttpError(
                 statusCode = status,
-                serverCode = errorDto.code,
-                serverMessage = errorDto.message,
+                serverCode = dto?.code,
+                serverMessage = dto?.message,
             )
         }
         else -> ApiError.Unknown(this)
