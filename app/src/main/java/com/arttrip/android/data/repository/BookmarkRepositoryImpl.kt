@@ -2,8 +2,6 @@ package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
-import com.arttrip.android.data.remote.mapper.favorite.toDomain
-import com.arttrip.android.domain.model.bookmark.BookmarkResult
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,19 +14,16 @@ class BookmarkRepositoryImpl
     constructor(
         private val dataSource: FavoriteDataSource,
     ) : BookmarkRepository {
-        override fun addBookmark(exhibitId: Int): Flow<ApiResult<BookmarkResult>> =
+        override fun addBookmark(exhibitId: Int): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    val dto =
-                        dataSource.postFavorite(
-                            exhibitId,
-                        )
+                    dataSource.postFavorite(
+                        exhibitId,
+                    )
 
-                    val domainModel = dto.toDomain()
-
-                    emit(ApiResult.Success(domainModel))
+                    emit(ApiResult.Success(Unit))
                 } catch (e: Exception) {
                     if (e is CancellationException) throw e
                     val error = e.toAppError()
