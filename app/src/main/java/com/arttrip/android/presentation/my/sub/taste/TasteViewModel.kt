@@ -40,7 +40,10 @@ class TasteViewModel
                 }
                 is TasteIntent.ToggleGenre -> handleToggleGenre(intent.id)
                 is TasteIntent.ToggleStyle -> handleToggleStyle(intent.id)
-                is TasteIntent.SaveClicked -> handleClickSave()
+                is TasteIntent.SaveClicked -> {
+                    // handleClickSave()
+                    viewModelScope.launch { _effect.emit(TasteEffect.ShowToastAndNavigateBack("장르 및 스타일이 저장되었습니다.")) }
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.my.sub.editprofile.picker
+package com.arttrip.android.core.ui.launcher
 
 import android.content.Context
 import android.net.Uri
@@ -13,17 +13,24 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 /**
- * EditProfile 전용: 카메라 촬영 → 미리 만든 Uri로 저장
+ * 카메라 촬영 결과를 지정한 Uri에 저장하는 런처를 반환.
  *
- * @param context FileProvider Uri 생성용
- * @param authority AndroidManifest의 FileProvider authority (예: "${applicationId}.fileprovider")
- * @param onCaptured 촬영 성공 시 Uri 전달
- * @param onFailed 촬영 실패/취소 시 호출(옵션)
+ * 내부에서 임시 이미지 Uri를 생성한 뒤 `TakePicture()`를 실행하며,
+ * 성공 시 해당 Uri를 [onCaptured]로 전달.
+ *
+ * @param context 임시 파일/Uri 생성을 위한 Context
+ * @param authority FileProvider authority (예: "${applicationId}.fileprovider")
+ * @param createTempUri 임시 저장 Uri 생성 함수(기본: cacheDir/camera 아래 jpg)
+ * @param onCaptured 촬영 성공 시 저장된 Uri
+ * @param onFailed 촬영 취소/실패 또는 Uri 생성 실패 시(옵션)
+ *
+ * @return 호출하면 카메라를 실행하는 lambda
  */
 @Composable
-fun rememberEditProfileCameraLauncher(
+fun rememberCameraLauncher(
     context: Context,
     authority: String,
+    createTempUri: (context: Context, authority: String) -> Uri? = ::defaultTempJpegUri,
     onCaptured: (Uri) -> Unit,
     onFailed: (() -> Unit)? = null,
 ): () -> Unit {
@@ -41,8 +48,7 @@ fun rememberEditProfileCameraLauncher(
         }
 
     return {
-        val uri = createTempImageUri(context, authority)
-
+        val uri = createTempUri(context, authority)
         if (uri != null) {
             pendingUriState.value = uri
             launcher.launch(uri)
@@ -52,12 +58,12 @@ fun rememberEditProfileCameraLauncher(
     }
 }
 
-private fun createTempImageUri(
+private fun defaultTempJpegUri(
     context: Context,
     authority: String,
 ): Uri? =
     runCatching {
         val dir = File(context.cacheDir, "camera").apply { mkdirs() }
-        val file = File(dir, "edit_profile_${System.currentTimeMillis()}.jpg")
+        val file = File(dir, "camera_${System.currentTimeMillis()}.jpg")
         FileProvider.getUriForFile(context, authority, file)
     }.getOrNull()

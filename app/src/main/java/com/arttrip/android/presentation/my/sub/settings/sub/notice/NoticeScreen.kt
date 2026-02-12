@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.empty.AppEmptyState
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.presentation.my.sub.settings.sub.notice.contract.NoticeIntent
@@ -65,29 +66,38 @@ fun NoticeScreen(
                 )
             },
         )
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxWidth(),
-            state = listState,
-            contentPadding = PaddingValues(top = 16.dp, bottom = BOTTOM_SCROLL_SPACER),
-        ) {
-            items(state.notices, key = { it.id }) { notice ->
-                val expanded = expandedIds.contains(notice.id)
-                NoticeMenuItem(
-                    title = notice.title,
-                    date = notice.date,
-                    content = notice.content,
-                    expanded = expanded,
-                    onMenuClick = {
-                        expandedIds =
-                            if (expanded) {
-                                expandedIds - notice.id
-                            } else {
-                                expandedIds + notice.id
-                            }
-                    },
-                )
+
+        if (state.isEmpty) {
+            AppEmptyState(
+                modifier = Modifier.fillMaxWidth(),
+                iconResId = R.drawable.ic_empty_notice_96,
+                message = "공지사항이 존재하지 않습니다.",
+            )
+        } else {
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                state = listState,
+                contentPadding = PaddingValues(top = 16.dp, bottom = BOTTOM_SCROLL_SPACER),
+            ) {
+                items(state.notices, key = { it.id }) { notice ->
+                    val expanded = expandedIds.contains(notice.id)
+                    NoticeMenuItem(
+                        title = notice.title,
+                        date = notice.date,
+                        content = notice.content,
+                        expanded = expanded,
+                        onMenuClick = {
+                            expandedIds =
+                                if (expanded) {
+                                    expandedIds - notice.id
+                                } else {
+                                    expandedIds + notice.id
+                                }
+                        },
+                    )
+                }
             }
         }
     }

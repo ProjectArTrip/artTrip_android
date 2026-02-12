@@ -3,7 +3,10 @@ package com.arttrip.android.presentation.my.sub.recentexhibitions.contract
 data class RecentExhibitionsState(
     val isLoading: Boolean = false,
     val exhibitions: List<ExhibitionUiModel> = DUMMY_EXHIBITIONS,
-)
+) {
+    val isEmpty: Boolean
+        get() = exhibitions.isEmpty()
+}
 
 data class ExhibitionUiModel(
     val id: Int,

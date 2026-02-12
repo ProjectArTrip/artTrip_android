@@ -27,6 +27,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.empty.AppEmptyState
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
@@ -60,22 +61,30 @@ fun RecentExhibitionsScreen(
             },
         )
 
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
-            state = listState,
-            contentPadding = PaddingValues(top = TOP_SCROLL_SPACER, bottom = BOTTOM_SCROLL_SPACER),
-            verticalArrangement = Arrangement.spacedBy(EXHIBITION_ITEM_GAP),
-        ) {
-            items(state.exhibitions) { exhibition ->
-                ExhibitionItem(
-                    title = exhibition.title,
-                    hallName = exhibition.hallName,
-                    url = exhibition.url,
-                    onExhibitionClick = { onIntent(RecentExhibitionsIntent.ExhibitionClicked(exhibition.id)) },
-                )
+        if (state.isEmpty) {
+            AppEmptyState(
+                modifier = Modifier.fillMaxWidth(),
+                iconResId = R.drawable.ic_empty_exhitbition_96,
+                message = "최근 본 전시가 없습니다.",
+            )
+        } else {
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
+                state = listState,
+                contentPadding = PaddingValues(top = TOP_SCROLL_SPACER, bottom = BOTTOM_SCROLL_SPACER),
+                verticalArrangement = Arrangement.spacedBy(EXHIBITION_ITEM_GAP),
+            ) {
+                items(state.exhibitions) { exhibition ->
+                    ExhibitionItem(
+                        title = exhibition.title,
+                        hallName = exhibition.hallName,
+                        url = exhibition.url,
+                        onExhibitionClick = { onIntent(RecentExhibitionsIntent.ExhibitionClicked(exhibition.id)) },
+                    )
+                }
             }
         }
     }
@@ -99,7 +108,7 @@ private fun ExhibitionItem(
                 title,
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPrimary,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(4.dp))
