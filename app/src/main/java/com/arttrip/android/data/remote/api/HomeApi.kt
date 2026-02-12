@@ -11,7 +11,6 @@ import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequest
 import com.arttrip.android.data.remote.model.home.ForeignPersonalizedExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
-import com.arttrip.android.data.remote.model.network.BaseResponseDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -23,7 +22,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: ForeignRecommendExhibitListRequestDto,
-    ): BaseResponseDto<List<ForeignExhibitResponseDto>>
+    ): List<ForeignExhibitResponseDto>
 
     @POST("${HOME_PATH}/recommend/today")
     suspend fun getHomeRecommendToday(
@@ -31,7 +30,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: DomesticRecommendExhibitListRequestDto,
-    ): BaseResponseDto<List<DomesticExhibitResponseDto>>
+    ): List<DomesticExhibitResponseDto>
 
     @POST("${HOME_PATH}/personalized/random")
     suspend fun getHomePersonalizedRandom(
@@ -39,7 +38,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: ForeignPersonalizedExhibitListRequestDto,
-    ): BaseResponseDto<List<ForeignExhibitResponseDto>>
+    ): List<ForeignExhibitResponseDto>
 
     @POST("${HOME_PATH}/personalized/random")
     suspend fun getHomePersonalizedRandom(
@@ -47,7 +46,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: DomesticPersonalizedExhibitListRequestDto,
-    ): BaseResponseDto<List<DomesticExhibitResponseDto>>
+    ): List<DomesticExhibitResponseDto>
 
     @POST("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
@@ -55,7 +54,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: ForeignScheduleExhibitListRequestDto,
-    ): BaseResponseDto<List<ForeignExhibitResponseDto>>
+    ): List<ForeignExhibitResponseDto>
 
     @POST("${HOME_PATH}/schedule")
     suspend fun getHomeSchedule(
@@ -63,7 +62,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: DomesticScheduleExhibitListRequestDto,
-    ): BaseResponseDto<List<DomesticExhibitResponseDto>>
+    ): List<DomesticExhibitResponseDto>
 
     @POST("${HOME_PATH}/genre/random")
     suspend fun getHomeGenreRandom(
@@ -71,7 +70,7 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: ForeignGenreExhibitListRequestDto,
-    ): BaseResponseDto<List<ForeignExhibitResponseDto>>
+    ): List<ForeignExhibitResponseDto>
 
     @POST("${HOME_PATH}/genre/random")
     suspend fun getHomeGenreRandom(
@@ -79,5 +78,5 @@ interface HomeApi {
         @Query("h") height: Int,
         @Query("f") format: String,
         @Body requestDto: DomesticGenreExhibitListRequestDto,
-    ): BaseResponseDto<List<DomesticExhibitResponseDto>>
+    ): List<DomesticExhibitResponseDto>
 }
