@@ -85,31 +85,33 @@ class TokenAuthenticator
                     authApi.refreshTokens(RefreshReqDto(refreshToken)).execute()
                 } catch (e: Exception) {
                     Log.e(TAG, "❗ Refresh 요청 실패 (네트워크 오류): ${e.message}")
-                    return null // 네트워크 오류 시 그냥 종료 (다음 요청 때 다시 시도)
+                    return null
                 }
 
             if (response.code() == 401) {
-                Log.e(TAG, "❌ Refresh Token 만료 → 로그아웃 처리")
+                val errStr = runCatching { response.errorBody()?.string() }.getOrNull()
+                Log.e(TAG, "❌ Refresh 401(만료/무효/블랙리스트) → 로그아웃 codeBody=$errStr")
                 performLogout()
                 return null
             }
 
             if (!response.isSuccessful) {
-                Log.e(TAG, "❗ Refresh 요청 HTTP 실패 (${response.code()}) → 토큰 제거")
-                clearTokens()
+                val err = runCatching { response.errorBody()?.string() }.getOrNull()
+                Log.e(TAG, "❗ Refresh 요청 HTTP 실패 (${response.code()}) err=$err → 로그아웃")
+                performLogout()
                 return null
             }
 
-            val body = response.body()
-
-            if (body == null || !body.isSuccess || body.result == null) {
-                Log.w(TAG, "⚠️ Refresh 비즈니스 실패 (code=${body?.code})")
-                handleBusinessFailure(body?.code)
-                return null
-            }
+            val body: RefreshResDto =
+                response.body()
+                    ?: run {
+                        Log.e(TAG, "❗ Refresh 성공(2xx)인데 body가 null → 강제 로그아웃")
+                        performLogout()
+                        return null
+                    }
 
             Log.d(TAG, "✅ Refresh 성공 → 새 토큰 저장 완료")
-            return saveNewTokens(body.result)
+            return saveNewTokens(body)
         }
 
         private fun rebuildRequest(
@@ -134,11 +136,6 @@ class TokenAuthenticator
         }
 
         // --- Cleanup Logic ---
-
-        private fun handleBusinessFailure(code: String?) {
-            Log.e(TAG, "⚠️ Refresh 비즈니스 로직 실패(code=$code) → 강제 로그아웃 진행")
-            performLogout()
-        }
 
         private fun performLogout() {
             tokenManager.clear() // 토큰 삭제
