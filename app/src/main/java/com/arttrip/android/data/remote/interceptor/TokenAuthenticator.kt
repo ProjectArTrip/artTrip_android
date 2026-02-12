@@ -128,7 +128,7 @@ class TokenAuthenticator
         private fun saveNewTokens(result: RefreshResDto): AuthTokens {
             val newTokens =
                 AuthTokens(
-                    accessToken = result.accessToken,
+                    accessToken = result.newAccessToken,
                     refreshToken = result.refreshToken,
                 )
             tokenManager.saveTokens(newTokens)

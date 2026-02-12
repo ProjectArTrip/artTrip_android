@@ -15,7 +15,7 @@ fun LoginResDto.toDomain(): LoginResult =
                 accessToken = accessToken,
                 refreshToken = refreshToken,
             ),
-        isFirstLogin = firstLogin,
+        isFirstLogin = isFirstLogin,
     )
 
 fun List<KeywordsResDto>.toDomain(): TasteGroup {
