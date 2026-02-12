@@ -13,8 +13,8 @@ class ReviewPagingSource(
     private val exhibitId: Int,
     private val onTotalCount: (Int) -> Unit,
 ) : PagingSource<Int, Review>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Review> {
-        return try {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Review> =
+        try {
             val cursor: Int? = params.key
             val loadSize: Int = params.loadSize
 
@@ -26,18 +26,14 @@ class ReviewPagingSource(
                     size = loadSize,
                 )
 
-            val body =
-                res.result
-                    ?: return LoadResult.Error(IllegalStateException("BaseResponseDto.result is null"))
-
             if (cursor == null) {
-                onTotalCount(body.reviewTotalCount)
+                onTotalCount(res.reviewTotalCount)
             }
             val items: List<Review> =
-                body.reviews.map { it.toDomain() }
+                res.reviews.map { it.toDomain() }
 
             val nextKey =
-                if (body.hasNext) body.nextCursor else null
+                if (res.hasNext) res.nextCursor else null
 
             LoadResult.Page(
                 data = items,
@@ -51,7 +47,6 @@ class ReviewPagingSource(
         } catch (e: Throwable) {
             LoadResult.Error(e)
         }
-    }
 
     override fun getRefreshKey(state: PagingState<Int, Review>): Int? {
         // 새로고침은 첫 페이지부터 다시 (cursor=null)

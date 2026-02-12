@@ -7,7 +7,6 @@ import com.arttrip.android.data.remote.model.auth.LoginReqDto
 import com.arttrip.android.data.remote.model.auth.UserKeywordsReqDto
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.auth.LoginResult
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.TasteGroup
 import com.arttrip.android.domain.repository.AuthRepository
@@ -28,7 +27,7 @@ class AuthRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse =
+                    val dto =
                         dataSource.postLogin(
                             loginReqDto =
                                 LoginReqDto(
@@ -36,20 +35,6 @@ class AuthRepositoryImpl
                                     idToken = idToken,
                                 ),
                         )
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domainModel = dto.toDomain()
 
@@ -65,22 +50,8 @@ class AuthRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse =
+                    val dto =
                         dataSource.getAllKeywords()
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val groups: TasteGroup = dto.toDomain()
 
@@ -96,17 +67,10 @@ class AuthRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse =
-                        dataSource.postUserKeywords(
-                            userKeywordsReqDto =
-                                UserKeywordsReqDto(
-                                    keywordIds = tasteIds,
-                                ),
-                        )
-
-                    if (baseResponse.isSuccess) {
-                        emit(ApiResult.Success(Unit))
-                    }
+                    dataSource.postUserKeywords(
+                        UserKeywordsReqDto(keywordIds = tasteIds),
+                    )
+                    emit(ApiResult.Success(Unit))
                 } catch (e: Exception) {
                     val error = e.toAppError()
                     emit(ApiResult.Error(error))

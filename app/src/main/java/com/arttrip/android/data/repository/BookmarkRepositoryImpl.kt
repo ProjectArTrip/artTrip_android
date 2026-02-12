@@ -4,7 +4,6 @@ import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.favorite.toDomain
 import com.arttrip.android.domain.model.bookmark.BookmarkResult
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,24 +21,10 @@ class BookmarkRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse =
+                    val dto =
                         dataSource.postFavorite(
                             exhibitId,
                         )
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domainModel = dto.toDomain()
 
@@ -56,14 +41,10 @@ class BookmarkRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val baseResponse =
-                        dataSource.deleteFavorite(
-                            exhibitId,
-                        )
-
-                    if (baseResponse.isSuccess) {
-                        emit(ApiResult.Success(Unit))
-                    }
+                    dataSource.deleteFavorite(
+                        exhibitId,
+                    )
+                    emit(ApiResult.Success(Unit))
                 } catch (e: Exception) {
                     if (e is CancellationException) throw e
                     val error = e.toAppError()

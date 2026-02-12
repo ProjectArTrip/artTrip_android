@@ -12,7 +12,6 @@ import com.arttrip.android.data.remote.mapper.home.toPersonalizedRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRecommendRequestDto
 import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
 import com.arttrip.android.domain.model.exhibition.ExhibitionModel
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
@@ -35,29 +34,15 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = country.toRecommendRequestDto()
 
-                    val baseResponse =
+                    val dto =
                         dataSource.getHomeRecommendToday(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
 
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domain = responseDto.toForeignDomain()
+                    val domain = dto.toForeignDomain()
 
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
@@ -76,29 +61,14 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = country.toPersonalizedRequestDto()
 
-                    val baseResponse =
+                    val dto =
                         dataSource.getHomePersonalizedRandom(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
-                    val domain = responseDto.toForeignDomain()
+                    val domain = dto.toForeignDomain()
 
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
@@ -118,21 +88,7 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = country.toScheduleRequestDto(date = date)
 
-                    val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
+                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
 
                     val domain = responseDto.toForeignDomain()
 
@@ -154,27 +110,13 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = country.toGenreRequestDto(genre = genre)
 
-                    val baseResponse =
+                    val responseDto =
                         dataSource.getHomeGenreRandom(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domain = responseDto.toForeignDomain()
 
@@ -195,27 +137,13 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = region.toRecommendRequestDto()
 
-                    val baseResponse =
+                    val responseDto =
                         dataSource.getHomeRecommendToday(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domain = responseDto.toDomesticDomain()
 
@@ -236,27 +164,13 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = region.toPersonalizedRequestDto()
 
-                    val baseResponse =
+                    val responseDto =
                         dataSource.getHomePersonalizedRandom(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domain = responseDto.toDomesticDomain()
 
@@ -278,21 +192,7 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = region.toScheduleRequestDto(date = date)
 
-                    val baseResponse = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
+                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
 
                     val domain = responseDto.toDomesticDomain()
 
@@ -314,27 +214,13 @@ class HomeRepositoryImpl
                 try {
                     val requestDto = region.toGenreRequestDto(genre = genre)
 
-                    val baseResponse =
+                    val responseDto =
                         dataSource.getHomeGenreRandom(
                             requestDto = requestDto,
                             width = width,
                             height = height,
                             format = format,
                         )
-                    val responseDto = baseResponse.result
-
-                    if (responseDto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = -1,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
 
                     val domain = responseDto.toDomesticDomain()
 
