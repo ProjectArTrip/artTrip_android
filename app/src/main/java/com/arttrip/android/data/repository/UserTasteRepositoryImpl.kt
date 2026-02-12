@@ -1,22 +1,21 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.KeywordDataSource
-import com.arttrip.android.data.remote.mapper.auth.toDomain
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.keyword.toDomain
 import com.arttrip.android.data.remote.model.keyword.UserKeywordsReqDto
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.TasteGroup
-import com.arttrip.android.domain.repository.KeywordRepository
+import com.arttrip.android.domain.repository.UserTasteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class KeywordRepositoryImpl
+class UserTasteRepositoryImpl
     @Inject
     constructor(
         private val dataSource: KeywordDataSource,
-    ) : KeywordRepository {
+    ) : UserTasteRepository {
         override fun getAllTasteGroups(): Flow<ApiResult<TasteGroup>> =
             flow {
                 emit(ApiResult.Loading)

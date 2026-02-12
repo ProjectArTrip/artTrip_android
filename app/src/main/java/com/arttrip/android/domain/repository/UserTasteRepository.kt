@@ -4,7 +4,7 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.TasteGroup
 import kotlinx.coroutines.flow.Flow
 
-interface KeywordRepository {
+interface UserTasteRepository {
     fun getAllTasteGroups(): Flow<ApiResult<TasteGroup>>
 
     fun getUserTasteGroups(): Flow<ApiResult<TasteGroup>>
