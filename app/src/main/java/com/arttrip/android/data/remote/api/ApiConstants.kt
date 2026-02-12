@@ -9,5 +9,5 @@ object ApiConstants {
 
     const val HOME_PATH = "/home"
 
-    const val EXHIBIT_PATH = "/exhibit"
+    const val EXHIBIT_PATH = "/exhibits"
 }

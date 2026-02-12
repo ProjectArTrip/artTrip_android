@@ -7,7 +7,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ReviewApi {
-    @GET("${REVIEW_PATH}/{exhibitId}/detail")
+    @GET("${REVIEW_PATH}/{exhibitId}")
     suspend fun getExhibitDetailReviews(
         @Path("exhibitId") exhibitId: Int,
         @Query("cursor") cursor: Int? = null,

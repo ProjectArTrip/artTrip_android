@@ -14,5 +14,5 @@ data class ExhibitDetailResponseDto(
     val hallPhone: String?,
     val hallLatitude: Double?,
     val hallLongitude: Double?,
-    val favorite: Boolean,
+    val isFavorite: Boolean,
 )
