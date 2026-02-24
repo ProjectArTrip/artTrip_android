@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.home.sub.datefilter
+package com.arttrip.android.presentation.home.sub.dateresult
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
 @Composable
-fun DateFilterScreen(innerPadding: PaddingValues) {
+fun DateResultScreen(innerPadding: PaddingValues) {
     Box(
         modifier =
             androidx.compose.ui.Modifier

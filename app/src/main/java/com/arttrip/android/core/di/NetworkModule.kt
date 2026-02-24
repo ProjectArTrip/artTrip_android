@@ -4,6 +4,7 @@ import com.arttrip.android.data.remote.api.AuthApi
 import com.arttrip.android.data.remote.api.ExhibitApi
 import com.arttrip.android.data.remote.api.FavoriteApi
 import com.arttrip.android.data.remote.api.HomeApi
+import com.arttrip.android.data.remote.api.KeywordApi
 import com.arttrip.android.data.remote.api.ReviewApi
 import com.arttrip.android.data.remote.interceptor.AuthInterceptor
 import com.arttrip.android.data.remote.interceptor.TokenAuthenticator
@@ -20,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
-    private const val BASE_URL = "https://dev.coffit.today"
+    private const val BASE_URL = "https://dev.08166.dev"
 
     @Provides
     @Singleton
@@ -83,6 +84,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideKeywordApi(retrofit: Retrofit): KeywordApi = retrofit.create(KeywordApi::class.java)
 
     @Provides
     @Singleton

@@ -1,12 +1,10 @@
 package com.arttrip.android.data.repository
 
-import android.util.Log
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
 import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.ExhibitRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,25 +24,8 @@ class ExhibitRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    Log.d("ExhibitDetail", "RepositoryImpl")
-
-                    val baseResponse =
+                    val dto =
                         dataSource.getExhibitDetail(exhibitId, imageQueryParams)
-
-                    val dto = baseResponse.result
-                    if (dto == null) {
-                        emit(
-                            ApiResult.Error(
-                                ApiError.HttpError(
-                                    statusCode = 200,
-                                    serverCode = "EMPTY_RESULT",
-                                    serverMessage = "empty result",
-                                ),
-                            ),
-                        )
-                        return@flow
-                    }
-
                     val exhibitDetail: ExhibitionDetail = dto.toDomain()
 
                     emit(ApiResult.Success(exhibitDetail))

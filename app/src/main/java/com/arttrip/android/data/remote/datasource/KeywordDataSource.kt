@@ -1,0 +1,17 @@
+package com.arttrip.android.data.remote.datasource
+
+import com.arttrip.android.data.remote.api.KeywordApi
+import com.arttrip.android.data.remote.model.keyword.UserKeywordsReqDto
+import javax.inject.Inject
+
+class KeywordDataSource
+    @Inject
+    constructor(
+        private val api: KeywordApi,
+    ) {
+        suspend fun getAllKeywords() = api.getAllKeywords()
+
+        suspend fun getUserKeywords() = api.getUserKeywords()
+
+        suspend fun postUserKeywords(userKeywordsReqDto: UserKeywordsReqDto) = api.postUserKeywords(body = userKeywordsReqDto)
+    }

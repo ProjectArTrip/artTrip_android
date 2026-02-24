@@ -30,7 +30,7 @@ class RecentExhibitionsViewModel
                 }
 
                 is RecentExhibitionsIntent.ExhibitionClicked -> {
-                    viewModelScope.launch { _effect.emit(RecentExhibitionsEffect.NavigateToExhibitionDetail(intent.exhibitId)) }
+                    viewModelScope.launch { _effect.emit(RecentExhibitionsEffect.NavigateToExhibitionDetail(314)) }
                 }
             }
         }

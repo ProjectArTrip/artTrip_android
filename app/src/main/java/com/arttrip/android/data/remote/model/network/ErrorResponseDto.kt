@@ -8,7 +8,6 @@ import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 @Serializable
 @JsonIgnoreUnknownKeys
 data class ErrorResponseDto(
-    val isSuccess: Boolean?,
-    val code: String?,
-    val message: String?,
+    val code: String? = null,
+    val message: String? = null,
 )

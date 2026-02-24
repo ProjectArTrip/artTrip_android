@@ -3,7 +3,6 @@ package com.arttrip.android.domain.repository
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.auth.LoginResult
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.usertaste.TasteGroup
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -11,8 +10,4 @@ interface AuthRepository {
         provider: LoginProvider,
         idToken: String,
     ): Flow<ApiResult<LoginResult>>
-
-    fun getTasteGroups(): Flow<ApiResult<TasteGroup>>
-
-    fun saveUserTaste(tasteIds: List<Int>): Flow<ApiResult<Unit>>
 }

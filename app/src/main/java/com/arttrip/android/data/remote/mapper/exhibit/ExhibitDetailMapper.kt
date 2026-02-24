@@ -19,7 +19,7 @@ fun ExhibitDetailResponseDto.toDomain(): ExhibitionDetail =
         hallPhone = hallPhone,
         hallLatitude = hallLatitude,
         hallLongitude = hallLongitude,
-        isBookmarked = favorite,
+        isBookmarked = isFavorite,
     )
 
 fun String.toExhibitStatus(): ExhibitionStatus =

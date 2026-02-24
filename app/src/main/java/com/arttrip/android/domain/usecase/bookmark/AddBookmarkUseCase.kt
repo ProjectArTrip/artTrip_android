@@ -1,6 +1,5 @@
 package com.arttrip.android.domain.usecase.bookmark
 
-import com.arttrip.android.domain.model.bookmark.BookmarkResult
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +10,7 @@ class AddBookmarkUseCase
     constructor(
         private val bookmarkRepository: BookmarkRepository,
     ) {
-        operator fun invoke(exhibitId: Int): Flow<ApiResult<BookmarkResult>> =
+        operator fun invoke(exhibitId: Int): Flow<ApiResult<Unit>> =
             bookmarkRepository.addBookmark(
                 exhibitId = exhibitId,
             )

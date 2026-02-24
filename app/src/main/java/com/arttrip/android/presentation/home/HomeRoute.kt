@@ -23,7 +23,7 @@ fun HomeRoute(
                 HomeEffect.NavigateToAlert -> {
                 }
                 HomeEffect.NavigateToDateFilter -> {
-                    onNavigate(MainRoute.HOME_DATE_FILTER)
+                    onNavigate(MainRoute.HOME_DATE_RESULT)
                 }
                 HomeEffect.NavigateToSearch -> {
                 }

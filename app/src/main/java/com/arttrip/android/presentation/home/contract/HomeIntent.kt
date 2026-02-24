@@ -19,6 +19,8 @@ sealed interface HomeIntent {
 
     object DateFilterIconClicked : HomeIntent
 
+    object DateFilterSheetDismissed : HomeIntent
+
     object SearchIconClicked : HomeIntent
 
     data class LoadForeignRecommendExhibitList(

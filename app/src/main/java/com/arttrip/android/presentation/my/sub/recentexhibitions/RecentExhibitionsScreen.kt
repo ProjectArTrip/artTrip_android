@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.my.sub.recentexhibitions
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -81,6 +82,7 @@ fun RecentExhibitionsScreen(
                         title = exhibition.title,
                         hallName = exhibition.hallName,
                         url = exhibition.url,
+                        onExhibitionClick = { onIntent(RecentExhibitionsIntent.ExhibitionClicked(exhibition.id)) },
                     )
                 }
             }
@@ -93,9 +95,10 @@ private fun ExhibitionItem(
     title: String,
     hallName: String,
     url: String?,
+    onExhibitionClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onExhibitionClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ExhibitionThumb(url = url)
