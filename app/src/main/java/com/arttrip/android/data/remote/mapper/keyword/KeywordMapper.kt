@@ -1,6 +1,5 @@
 package com.arttrip.android.data.remote.mapper.keyword
 
-import com.arttrip.android.data.remote.model.keyword.KeywordDto
 import com.arttrip.android.data.remote.model.keyword.KeywordType
 import com.arttrip.android.data.remote.model.keyword.KeywordsResDto
 import com.arttrip.android.domain.model.usertaste.Taste
@@ -11,10 +10,11 @@ fun KeywordsResDto.toDomain(): TasteGroup {
     val styles = mutableListOf<Taste>()
 
     for (dto in keywords) {
-        val taste = Taste(
-            id = dto.keywordId,
-            name = dto.name,
-        )
+        val taste =
+            Taste(
+                id = dto.keywordId,
+                name = dto.name,
+            )
 
         when (dto.type.toKeywordTypeOrNull()) {
             KeywordType.GENRE -> genres += taste
@@ -29,5 +29,4 @@ fun KeywordsResDto.toDomain(): TasteGroup {
     )
 }
 
-private fun String.toKeywordTypeOrNull(): KeywordType? =
-    runCatching { KeywordType.valueOf(this) }.getOrNull()
+private fun String.toKeywordTypeOrNull(): KeywordType? = runCatching { KeywordType.valueOf(this) }.getOrNull()

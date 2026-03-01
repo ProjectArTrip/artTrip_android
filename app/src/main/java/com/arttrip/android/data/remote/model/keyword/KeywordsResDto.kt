@@ -1,7 +1,7 @@
 package com.arttrip.android.data.remote.model.keyword
 
 data class KeywordsResDto(
- val keywords : List<KeywordDto>
+    val keywords: List<KeywordDto>,
 )
 
 data class KeywordDto(
