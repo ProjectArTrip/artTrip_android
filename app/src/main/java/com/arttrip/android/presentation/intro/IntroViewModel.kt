@@ -3,7 +3,7 @@ package com.arttrip.android.presentation.intro
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.usecase.userTaste.GetTasteGroupsUseCase
+import com.arttrip.android.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.android.domain.usecase.userTaste.SaveUserTasteUseCase
 import com.arttrip.android.presentation.intro.contract.IntroEffect
 import com.arttrip.android.presentation.intro.contract.IntroIntent
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class IntroViewModel
     @Inject
     constructor(
-        private val getTasteGroupsUseCase: GetTasteGroupsUseCase,
+        private val getAllTasteGroupsUseCase: GetAllTasteGroupsUseCase,
         private val saveUserTasteUseCase: SaveUserTasteUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(IntroState())
@@ -43,7 +43,7 @@ class IntroViewModel
 
         private fun loadIntroOptions() {
             viewModelScope.launch {
-                getTasteGroupsUseCase().collect { result ->
+                getAllTasteGroupsUseCase().collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
                             _state.update {
