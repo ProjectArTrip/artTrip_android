@@ -2,6 +2,9 @@ package com.arttrip.android.core.navigation.main
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavHostController
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.NavKeys
 import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
@@ -12,6 +15,29 @@ import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 
 fun NavHostController.navigateToExhibitionDetail(exhibitId: Int) {
     navigate(MainRoute.exhibitionDetail(exhibitId))
+}
+
+fun NavHostController.navigateToNotification() {
+    navigate(MainRoute.HOME_NOTIFICATION)
+}
+
+fun NavHostController.navigateToDateFilter() {
+    navigate(MainRoute.HOME_DATE_RESULT)
+}
+
+fun NavHostController.navigateToSearch() {
+    navigate(MainRoute.HOME_SEARCH)
+}
+
+fun NavHostController.navigateToRegion(region: DomesticRegion) {
+    navigate(MainRoute.region(region))
+}
+
+fun NavHostController.navigateToGenre(
+    country: ForeignCountry?,
+    genre: ExhibitionGenre,
+) {
+    navigate(MainRoute.genre(country, genre))
 }
 
 fun NavHostController.navigateToReviewWrite(

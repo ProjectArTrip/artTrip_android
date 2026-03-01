@@ -63,7 +63,7 @@ import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import com.arttrip.android.presentation.home.model.SectionLoadState
@@ -234,7 +234,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
                     iconResId = R.drawable.ic_alert_24,
                     contentDescription = "알림",
                 ) {
-                    onIntent(HomeIntent.AlertIconClicked)
+                    onIntent(HomeIntent.NotificationIconClicked)
                 }
                 AppIconButton(
                     modifier = Modifier,
@@ -377,7 +377,7 @@ fun ForeignExhibitionSection(
 
     val selectedDate =
         state.foreignSelectedDate[selectedCountry.ordinal]
-    val scheduleState: SectionLoadState<List<ExhibitionModel>> =
+    val scheduleState: SectionLoadState<List<Exhibition>> =
         homeSection.scheduleList[selectedDate] ?: SectionLoadState.Idle
 
     val selectedGenre = state.foreignSelectedGenre[selectedCountry.ordinal]
@@ -448,7 +448,9 @@ fun ForeignExhibitionSection(
 
                 onIntent(HomeIntent.LoadForeignGenreExhibitList(selectedCountry, genre))
             },
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.ForeignMoreGenreIconClicked(selectedCountry, selectedGenre))
+            },
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
@@ -457,7 +459,7 @@ fun ForeignExhibitionSection(
         Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
+                    .height(48.dp),
         )
     }
 }
@@ -512,7 +514,9 @@ fun DomesticExhibitionSection(
                 Modifier
                     .height(32.dp),
         )
-        DomesticRegionSection()
+        DomesticRegionSection(onRegionClick = { region ->
+            onIntent(HomeIntent.RegionClicked(region = region))
+        })
         Spacer(
             modifier =
                 Modifier
@@ -559,7 +563,9 @@ fun DomesticExhibitionSection(
 
                 onIntent(HomeIntent.LoadDomesticGenreExhibitList(DomesticRegion.Entire, genre))
             },
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.DomesticMoreGenreIconClicked(selectedGenre))
+            },
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
@@ -568,13 +574,13 @@ fun DomesticExhibitionSection(
         Spacer(
             modifier =
                 Modifier
-                    .height(24.dp),
+                    .height(48.dp),
         )
     }
 }
 
 @Composable
-fun DomesticRegionSection() {
+fun DomesticRegionSection(onRegionClick: (DomesticRegion) -> Unit) {
     Column {
         Row {
             Spacer(
@@ -607,7 +613,7 @@ fun DomesticRegionSection() {
 
             DomesticRegion.entries.forEach { region ->
                 if (region != DomesticRegion.Entire) {
-                    DomesticRegionItem(region = region)
+                    DomesticRegionItem(region = region, onRegionClick = { region -> onRegionClick(region) })
                 }
             }
 
@@ -621,7 +627,10 @@ fun DomesticRegionSection() {
 }
 
 @Composable
-fun DomesticRegionItem(region: DomesticRegion) {
+fun DomesticRegionItem(
+    region: DomesticRegion,
+    onRegionClick: (DomesticRegion) -> Unit,
+) {
     val painter =
         painterResource(
             when (region) {
@@ -638,6 +647,11 @@ fun DomesticRegionItem(region: DomesticRegion) {
     val name = region.label
 
     Column(
+        modifier =
+            Modifier
+                .noRippleClickable {
+                    onRegionClick(region)
+                },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
@@ -664,7 +678,7 @@ fun DomesticRegionItem(region: DomesticRegion) {
 
 @Composable
 fun RecommendSection(
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
@@ -727,7 +741,7 @@ fun RecommendSection(
 @Composable
 fun PersonalizedSection(
     name: String,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -806,7 +820,7 @@ fun PersonalizedSection(
 fun WeeklyExhibitSection(
     weekDates: List<LocalDate>,
     selectedDate: LocalDate,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onMoreClick: () -> Unit,
     onDateClick: (LocalDate) -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -890,7 +904,7 @@ fun WeeklyExhibitSection(
 @Composable
 fun ExhibitionByGenreSection(
     selectedGenre: ExhibitionGenre,
-    sectionState: SectionLoadState<List<ExhibitionModel>>,
+    sectionState: SectionLoadState<List<Exhibition>>,
     onGenreClick: (ExhibitionGenre) -> Unit,
     onMoreClick: () -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -1024,7 +1038,7 @@ fun SectionTitle(
 
 @Composable
 fun ExhibitionItemCase1(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
@@ -1045,7 +1059,7 @@ fun ExhibitionItemCase1(
                     Modifier
                         .align(Alignment.TopStart)
                         .offset(x = 10.dp, y = 16.dp),
-                label = exhibition.place,
+                label = exhibition.country,
             )
         }
         LikeButton(
@@ -1104,7 +1118,7 @@ fun ExhibitionItemCase1(
 
 @Composable
 fun ExhibitionItemCase2(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1142,7 +1156,7 @@ fun ExhibitionItemCase2(
 
 @Composable
 fun ExhibitItemCase3(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1181,7 +1195,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = exhibition.place,
+                text = if (exhibition.country == "대한민국") exhibition.region else exhibition.country,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )
@@ -1221,7 +1235,7 @@ fun ExhibitItemCase3(
 
 @Composable
 fun ExhibitionItemCase4(
-    exhibition: ExhibitionModel,
+    exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {

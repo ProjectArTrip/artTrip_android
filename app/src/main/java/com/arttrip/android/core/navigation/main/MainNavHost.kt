@@ -14,11 +14,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
+import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
 import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
+import com.arttrip.android.presentation.home.sub.genre.GenreRoute
+import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
+import com.arttrip.android.presentation.home.sub.region.RegionRoute
+import com.arttrip.android.presentation.home.sub.search.SearchRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.my.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
@@ -52,8 +59,17 @@ fun MainNavHost(
         composable(BottomNavItem.Home.route) {
             HomeRoute(
                 innerPadding,
-                onNavigate = { targetRoute ->
-                    navController.navigate(targetRoute)
+                onNavigateNotification = navController::navigateToNotification,
+                onNavigateDateFilter = navController::navigateToDateFilter,
+                onNavigateSearch = navController::navigateToSearch,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
+                },
+                onNavigateRegion = { region ->
+                    navController.navigateToRegion(region)
+                },
+                onNavigateGenre = { country, genre ->
+                    navController.navigateToGenre(country, genre)
                 },
             )
         }
@@ -80,6 +96,69 @@ fun MainNavHost(
         composable(MainRoute.HOME_DATE_RESULT) {
             DateResultRoute(
                 innerPadding = innerPadding,
+            )
+        }
+        composable(MainRoute.HOME_NOTIFICATION) {
+            NotificationRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+
+        composable(MainRoute.HOME_SEARCH) {
+            SearchRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+
+        composable(
+            route = MainRoute.HOME_REGION,
+            arguments =
+                listOf(
+                    navArgument("region") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            val regionName = backStackEntry.arguments?.getString("region") ?: return@composable
+
+            val region =
+                runCatching { DomesticRegion.valueOf(regionName) }
+                    .getOrNull() ?: return@composable
+
+            RegionRoute(
+                innerPadding = innerPadding,
+                region = region,
+                onBack = navController::popBackStack,
+            )
+        }
+
+        composable(
+            route = MainRoute.HOME_GENRE,
+            arguments =
+                listOf(
+                    navArgument("country") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                    navArgument("genre") {
+                        type = NavType.StringType
+                    },
+                ),
+        ) { backStackEntry ->
+            val countryName = backStackEntry.arguments?.getString("country")
+            val country = countryName?.let { ForeignCountry.valueOf(it) }
+
+            val genre =
+                ExhibitionGenre.valueOf(
+                    backStackEntry.arguments?.getString("genre")!!,
+                )
+
+            GenreRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                country = country,
+                genre = genre,
             )
         }
 

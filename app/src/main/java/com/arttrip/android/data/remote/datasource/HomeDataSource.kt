@@ -16,59 +16,35 @@ class HomeDataSource
     constructor(
         private val api: HomeApi,
     ) {
-        suspend fun getHomeRecommendToday(
-            requestDto: ForeignRecommendExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeRecommendToday(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeRecommendToday(requestDto: ForeignRecommendExhibitListRequestDto) =
+            api.getForeignHomeRecommendToday(isDomestic = requestDto.isDomestic, country = requestDto.country)
 
-        suspend fun getHomeRecommendToday(
-            requestDto: DomesticRecommendExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeRecommendToday(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeRecommendToday(requestDto: DomesticRecommendExhibitListRequestDto) =
+            api.getDomesticHomeRecommendToday(isDomestic = requestDto.isDomestic, region = requestDto.region)
 
-        suspend fun getHomePersonalizedRandom(
-            requestDto: ForeignPersonalizedExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomePersonalizedRandom(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomePersonalizedRandom(requestDto: ForeignPersonalizedExhibitListRequestDto) =
+            api.getForeignHomePersonalizedRandom(isDomestic = requestDto.isDomestic, country = requestDto.country)
 
-        suspend fun getHomePersonalizedRandom(
-            requestDto: DomesticPersonalizedExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomePersonalizedRandom(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomePersonalizedRandom(requestDto: DomesticPersonalizedExhibitListRequestDto) =
+            api.getDomesticHomePersonalizedRandom(isDomestic = requestDto.isDomestic, region = requestDto.region)
 
-        suspend fun getHomeSchedule(
-            requestDto: ForeignScheduleExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeSchedule(requestDto: ForeignScheduleExhibitListRequestDto) =
+            api.getForeignHomeSchedule(isDomestic = requestDto.isDomestic, date = requestDto.date, country = requestDto.country)
 
-        suspend fun getHomeSchedule(
-            requestDto: DomesticScheduleExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeSchedule(requestDto: DomesticScheduleExhibitListRequestDto) =
+            api.getDomesticHomeSchedule(isDomestic = requestDto.isDomestic, date = requestDto.date, region = requestDto.region)
 
-        suspend fun getHomeGenreRandom(
-            requestDto: ForeignGenreExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeGenreRandom(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeGenreRandom(requestDto: ForeignGenreExhibitListRequestDto) =
+            api.getForeignHomeGenreRandom(
+                isDomestic = requestDto.isDomestic,
+                singleGenre = requestDto.singleGenre,
+                country = requestDto.country,
+            )
 
-        suspend fun getHomeGenreRandom(
-            requestDto: DomesticGenreExhibitListRequestDto,
-            width: Int,
-            height: Int,
-            format: String,
-        ) = api.getHomeGenreRandom(requestDto = requestDto, width = width, height = height, format = format)
+        suspend fun getHomeGenreRandom(requestDto: DomesticGenreExhibitListRequestDto) =
+            api.getDomesticHomeGenreRandom(
+                isDomestic = requestDto.isDomestic,
+                singleGenre = requestDto.singleGenre,
+                region = requestDto.region,
+            )
     }

@@ -15,7 +15,7 @@ sealed interface HomeIntent {
         val country: ForeignCountry,
     ) : HomeIntent
 
-    object AlertIconClicked : HomeIntent
+    object NotificationIconClicked : HomeIntent
 
     object DateFilterIconClicked : HomeIntent
 
@@ -77,5 +77,18 @@ sealed interface HomeIntent {
 
     data class ExhibitionClicked(
         val id: Int,
+    ) : HomeIntent
+
+    data class RegionClicked(
+        val region: DomesticRegion,
+    ) : HomeIntent
+
+    data class ForeignMoreGenreIconClicked(
+        val country: ForeignCountry,
+        val genre: ExhibitionGenre,
+    ) : HomeIntent
+
+    data class DomesticMoreGenreIconClicked(
+        val genre: ExhibitionGenre,
     ) : HomeIntent
 }

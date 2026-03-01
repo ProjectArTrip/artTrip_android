@@ -1,7 +1,7 @@
 package com.arttrip.android.domain.usecase.exhibition
 
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +16,5 @@ class GetDomesticScheduleExhibitionListUseCase
         operator fun invoke(
             region: DomesticRegion,
             date: LocalDate,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
-            homeRepository.getDomesticScheduleExhibitList(region = region, date = date, width = 200, height = 200, format = "png")
+        ): Flow<ApiResult<List<Exhibition>>> = homeRepository.getDomesticScheduleExhibitList(region = region, date = date)
     }

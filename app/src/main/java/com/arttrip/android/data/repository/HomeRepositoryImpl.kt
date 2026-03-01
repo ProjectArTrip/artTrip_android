@@ -11,7 +11,7 @@ import com.arttrip.android.data.remote.mapper.home.toGenreRequestDto
 import com.arttrip.android.data.remote.mapper.home.toPersonalizedRequestDto
 import com.arttrip.android.data.remote.mapper.home.toRecommendRequestDto
 import com.arttrip.android.data.remote.mapper.home.toScheduleRequestDto
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
@@ -24,26 +24,12 @@ class HomeRepositoryImpl
     constructor(
         private val dataSource: HomeDataSource,
     ) : HomeRepository {
-        override fun getForeignRecommendExhibitList(
-            country: ForeignCountry,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getForeignRecommendExhibitList(country: ForeignCountry): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toRecommendRequestDto()
-
-                    val dto =
-                        dataSource.getHomeRecommendToday(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
-
+                    val dto = dataSource.getHomeRecommendToday(requestDto = requestDto)
                     val domain = dto.toForeignDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -51,25 +37,12 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getForeignPersonalizedExhibitList(
-            country: ForeignCountry,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getForeignPersonalizedExhibitList(country: ForeignCountry): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toPersonalizedRequestDto()
-
-                    val dto =
-                        dataSource.getHomePersonalizedRandom(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
+                    val dto = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
                     val domain = dto.toForeignDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -80,18 +53,12 @@ class HomeRepositoryImpl
         override fun getForeignScheduleExhibitList(
             country: ForeignCountry,
             date: LocalDate,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toScheduleRequestDto(date = date)
-
-                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
-
+                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto)
                     val domain = responseDto.toForeignDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -102,24 +69,12 @@ class HomeRepositoryImpl
         override fun getForeignGenreExhibitList(
             country: ForeignCountry,
             genre: ExhibitionGenre,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = country.toGenreRequestDto(genre = genre)
-
-                    val responseDto =
-                        dataSource.getHomeGenreRandom(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
-
+                    val responseDto = dataSource.getHomeGenreRandom(requestDto = requestDto)
                     val domain = responseDto.toForeignDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -127,26 +82,12 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticRecommendExhibitList(
-            region: DomesticRegion,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getDomesticRecommendExhibitList(region: DomesticRegion): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toRecommendRequestDto()
-
-                    val responseDto =
-                        dataSource.getHomeRecommendToday(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
-
+                    val responseDto = dataSource.getHomeRecommendToday(requestDto = requestDto)
                     val domain = responseDto.toDomesticDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -154,26 +95,12 @@ class HomeRepositoryImpl
                 }
             }
 
-        override fun getDomesticPersonalizedExhibitList(
-            region: DomesticRegion,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        override fun getDomesticPersonalizedExhibitList(region: DomesticRegion): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toPersonalizedRequestDto()
-
-                    val responseDto =
-                        dataSource.getHomePersonalizedRandom(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
-
+                    val responseDto = dataSource.getHomePersonalizedRandom(requestDto = requestDto)
                     val domain = responseDto.toDomesticDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -184,18 +111,12 @@ class HomeRepositoryImpl
         override fun getDomesticScheduleExhibitList(
             region: DomesticRegion,
             date: LocalDate,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toScheduleRequestDto(date = date)
-
-                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto, width = width, height = height, format = format)
-
+                    val responseDto = dataSource.getHomeSchedule(requestDto = requestDto)
                     val domain = responseDto.toDomesticDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()
@@ -206,24 +127,12 @@ class HomeRepositoryImpl
         override fun getDomesticGenreExhibitList(
             region: DomesticRegion,
             genre: ExhibitionGenre,
-            width: Int,
-            height: Int,
-            format: String,
-        ): Flow<ApiResult<List<ExhibitionModel>>> =
+        ): Flow<ApiResult<List<Exhibition>>> =
             flow {
                 try {
                     val requestDto = region.toGenreRequestDto(genre = genre)
-
-                    val responseDto =
-                        dataSource.getHomeGenreRandom(
-                            requestDto = requestDto,
-                            width = width,
-                            height = height,
-                            format = format,
-                        )
-
+                    val responseDto = dataSource.getHomeGenreRandom(requestDto = requestDto)
                     val domain = responseDto.toDomesticDomain()
-
                     emit(ApiResult.Success(domain))
                 } catch (e: Exception) {
                     val error = e.toAppError()

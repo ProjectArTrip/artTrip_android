@@ -4,46 +4,50 @@ import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.data.remote.model.home.DomesticExhibitListResponseDto
 import com.arttrip.android.data.remote.model.home.DomesticExhibitResponseDto
 import com.arttrip.android.data.remote.model.home.DomesticGenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticPersonalizedExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.DomesticScheduleExhibitListRequestDto
+import com.arttrip.android.data.remote.model.home.ForeignExhibitListResponseDto
 import com.arttrip.android.data.remote.model.home.ForeignExhibitResponseDto
 import com.arttrip.android.data.remote.model.home.ForeignGenreExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignPersonalizedExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignRecommendExhibitListRequestDto
 import com.arttrip.android.data.remote.model.home.ForeignScheduleExhibitListRequestDto
-import com.arttrip.android.domain.model.exhibition.ExhibitionModel
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-fun List<ForeignExhibitResponseDto>.toForeignDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
+fun ForeignExhibitListResponseDto.toForeignDomain(): List<Exhibition> = this.exhibits.map { it.toDomain() }
 
-fun ForeignExhibitResponseDto.toDomain(): ExhibitionModel =
-    ExhibitionModel(
+fun ForeignExhibitResponseDto.toDomain(): Exhibition =
+    Exhibition(
         id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = countryName ?: "",
-        isBookmarked = favorite,
+        country = countryName,
+        region = regionName,
+        isBookmarked = isFavorite,
     )
 
-fun List<DomesticExhibitResponseDto>.toDomesticDomain(): List<ExhibitionModel> = this.map { it.toDomain() }
+fun DomesticExhibitListResponseDto.toDomesticDomain(): List<Exhibition> = this.exhibits.map { it.toDomain() }
 
-fun DomesticExhibitResponseDto.toDomain(): ExhibitionModel =
-    ExhibitionModel(
+fun DomesticExhibitResponseDto.toDomain(): Exhibition =
+    Exhibition(
         id = exhibitId,
         title = title,
         posterUrl = posterUrl,
         status = status.toExhibitStatus(),
         period = exhibitPeriod,
         hallName = hallName,
-        place = regionName,
-        isBookmarked = favorite,
+        country = countryName,
+        region = regionName,
+        isBookmarked = isFavorite,
     )
 
 fun String.toExhibitStatus(): ExhibitionStatus =
