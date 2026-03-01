@@ -125,6 +125,7 @@ class IntroViewModel
                                     errorMessage = "키워드 설정에 실패하였습니다.",
                                 )
                             }
+                            _effect.emit(IntroEffect.ShowError("일시적인 오류로 저장에 실패했습니다.\n잠시 후 다시 시도해주세요."))
                         }
                     }
                 }
