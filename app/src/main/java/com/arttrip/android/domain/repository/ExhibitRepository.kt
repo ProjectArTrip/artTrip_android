@@ -2,6 +2,7 @@ package com.arttrip.android.domain.repository
 
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
+import com.arttrip.android.domain.model.exhibition.RecentExhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
@@ -10,4 +11,6 @@ interface ExhibitRepository {
         exhibitId: Int,
         imageQueryParams: ImageQueryParams,
     ): Flow<ApiResult<ExhibitionDetail>>
+
+    fun getUserRecentExhibits(imageQueryParams: ImageQueryParams): Flow<ApiResult<List<RecentExhibition>>>
 }

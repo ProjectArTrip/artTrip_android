@@ -1,5 +1,6 @@
 package com.arttrip.android.data.remote.datasource
 
+import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.api.UserApi
 import okhttp3.MultipartBody
 import javax.inject.Inject
@@ -15,5 +16,10 @@ class UserDataSource
 
         suspend fun patchProfileImage(part: MultipartBody.Part) = api.patchProfileImage(part)
 
-        suspend fun getUserRecentExhibits() = api.getUserRecentExhibits()
+        suspend fun getUserRecentExhibits(image: ImageQueryParams) =
+            api.getUserRecentExhibits(
+                w = image.widthPx,
+                h = image.heightPx,
+                f = image.format.value,
+            )
     }

@@ -9,6 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface UserApi {
     @GET(USER_PATH)
@@ -24,5 +25,9 @@ interface UserApi {
     ): Unit
 
     @GET("${USER_PATH}/recent-exhibits")
-    suspend fun getUserRecentExhibits(): UserRecentExhibitsResDto
+    suspend fun getUserRecentExhibits(
+        @Query("w") w: Int,
+        @Query("h") h: Int,
+        @Query("f") f: String,
+    ): UserRecentExhibitsResDto
 }
