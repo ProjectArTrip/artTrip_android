@@ -9,10 +9,10 @@ import retrofit2.http.POST
 
 interface KeywordApi {
     @GET("${KEYWORD_PATH}/all")
-    suspend fun getAllKeywords(): List<KeywordsResDto>
+    suspend fun getAllKeywords(): KeywordsResDto
 
     @GET(KEYWORD_PATH)
-    suspend fun getUserKeywords(): List<KeywordsResDto>
+    suspend fun getUserKeywords(): KeywordsResDto
 
     @POST(KEYWORD_PATH)
     suspend fun postUserKeywords(
