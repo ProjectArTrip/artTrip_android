@@ -16,6 +16,5 @@ class GetDomesticScheduleExhibitionListUseCase
         operator fun invoke(
             region: DomesticRegion,
             date: LocalDate,
-        ): Flow<ApiResult<List<Exhibition>>> =
-            homeRepository.getDomesticScheduleExhibitList(region = region, date = date, width = 200, height = 200, format = "png")
+        ): Flow<ApiResult<List<Exhibition>>> = homeRepository.getDomesticScheduleExhibitList(region = region, date = date)
     }

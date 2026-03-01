@@ -30,7 +30,10 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.presentation.home.sub.notification.contract.NotificationIntent
 
 @Composable
-fun NotificationScreen(innerPadding: PaddingValues, onIntent: (NotificationIntent) -> Unit) {
+fun NotificationScreen(
+    innerPadding: PaddingValues,
+    onIntent: (NotificationIntent) -> Unit,
+) {
     Box(
         modifier =
             Modifier

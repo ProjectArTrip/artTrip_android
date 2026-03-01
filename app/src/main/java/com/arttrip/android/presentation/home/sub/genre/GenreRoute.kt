@@ -15,7 +15,7 @@ fun GenreRoute(
     viewModel: GenreViewModel = hiltViewModel(),
     onBack: () -> Unit,
     country: ForeignCountry?,
-    genre: ExhibitionGenre
+    genre: ExhibitionGenre,
 ) {
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -29,6 +29,6 @@ fun GenreRoute(
         innerPadding = innerPadding,
         onIntent = viewModel::onIntent,
         country = country,
-        genre = genre
+        genre = genre,
     )
 }

@@ -21,10 +21,10 @@ sealed interface HomeEffect {
 
     data class NavigateToForeignGenre(
         val country: ForeignCountry,
-        val genre: ExhibitionGenre
+        val genre: ExhibitionGenre,
     ) : HomeEffect
 
     data class NavigateToDomesticGenre(
-        val genre: ExhibitionGenre
+        val genre: ExhibitionGenre,
     ) : HomeEffect
 }

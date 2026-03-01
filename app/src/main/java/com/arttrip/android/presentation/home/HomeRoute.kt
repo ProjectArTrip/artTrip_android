@@ -9,7 +9,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
-import com.arttrip.android.core.navigation.main.MainRoute
 import com.arttrip.android.presentation.home.contract.HomeEffect
 
 @Composable
@@ -18,7 +17,7 @@ fun HomeRoute(
     onNavigateNotification: () -> Unit,
     onNavigateDateFilter: () -> Unit,
     onNavigateSearch: () -> Unit,
-    onNavigateExhibitionDetail:(Int) -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
     onNavigateRegion: (DomesticRegion) -> Unit,
     onNavigateGenre: (ForeignCountry?, ExhibitionGenre) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -29,10 +28,10 @@ fun HomeRoute(
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeEffect.NavigateToNotification -> {
-                   onNavigateNotification()
+                    onNavigateNotification()
                 }
                 HomeEffect.NavigateToDateFilter -> {
-                    onNavigate(MainRoute.HOME_DATE_RESULT)
+                    onNavigateDateFilter()
                 }
                 HomeEffect.NavigateToSearch -> {
                     onNavigateSearch()

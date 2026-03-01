@@ -16,7 +16,7 @@ fun RegionRoute(
     innerPadding: PaddingValues,
     viewModel: RegionViewModel = hiltViewModel(),
     region: DomesticRegion,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -35,6 +35,6 @@ fun RegionRoute(
     RegionScreen(
         innerPadding = innerPadding,
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
     )
 }

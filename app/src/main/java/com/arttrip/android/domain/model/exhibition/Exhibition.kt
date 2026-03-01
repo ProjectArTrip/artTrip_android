@@ -9,6 +9,7 @@ data class Exhibition(
     val status: ExhibitionStatus,
     val period: String,
     val hallName: String,
-    val place: String,
+    val country: String,
+    val region: String,
     val isBookmarked: Boolean,
 )

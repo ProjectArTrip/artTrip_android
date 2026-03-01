@@ -22,7 +22,7 @@ fun NavHostController.navigateToNotification() {
 }
 
 fun NavHostController.navigateToDateFilter() {
-    navigate(MainRoute.HOME_DATE_FILTER)
+    navigate(MainRoute.HOME_DATE_RESULT)
 }
 
 fun NavHostController.navigateToSearch() {
@@ -33,7 +33,10 @@ fun NavHostController.navigateToRegion(region: DomesticRegion) {
     navigate(MainRoute.region(region))
 }
 
-fun NavHostController.navigateToGenre(country: ForeignCountry?, genre: ExhibitionGenre) {
+fun NavHostController.navigateToGenre(
+    country: ForeignCountry?,
+    genre: ExhibitionGenre,
+) {
     navigate(MainRoute.genre(country, genre))
 }
 

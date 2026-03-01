@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
@@ -81,9 +79,10 @@ fun SearchScreen(
             )
 
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
             ) {
                 AppTextField(
                     value = state.inputText,
@@ -97,9 +96,9 @@ fun SearchScreen(
                             contentDescription = "Search Button",
                             onIconClick = {
                                 onIntent(SearchIntent.SearchClicked(state.inputText))
-                            }
+                            },
                         )
-                    }
+                    },
                 )
             }
 
@@ -316,7 +315,8 @@ fun SearchResultContent(
                     status = ExhibitionStatus.ONGOING,
                     period = "2025.01.01 - 2025.12.31",
                     hallName = "DDP 동대문디자인플라자",
-                    place = "서울 · 중구",
+                    country = "대한민국",
+                    region = "서울",
                     isBookmarked = true,
                 )
 
@@ -381,7 +381,7 @@ fun ExhibitionItem(
         )
         Column {
             Text(
-                text = exhibition.place,
+                text = exhibition.country,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )

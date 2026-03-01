@@ -16,7 +16,6 @@ import com.arttrip.android.domain.usecase.exhibition.GetForeignPersonalizedExhib
 import com.arttrip.android.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetForeignScheduledExhibitionListUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
-import com.arttrip.android.presentation.home.contract.HomeEffect.*
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
 import com.arttrip.android.presentation.home.model.SectionLoadState
@@ -194,25 +193,30 @@ class HomeViewModel
                 }
                 is HomeIntent.ExhibitionClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(NavigateToExhibitionDetail(intent.id))
+                        _effect.emit(HomeEffect.NavigateToExhibitionDetail(intent.id))
                     }
                 }
 
                 is HomeIntent.RegionClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(NavigateToRegion(intent.region))
+                        _effect.emit(HomeEffect.NavigateToRegion(intent.region))
                     }
                 }
 
                 is HomeIntent.ForeignMoreGenreIconClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(NavigateToForeignGenre(intent.country, intent.genre))
+                        _effect.emit(
+                            HomeEffect.NavigateToForeignGenre(
+                                intent.country,
+                                intent.genre,
+                            ),
+                        )
                     }
                 }
 
                 is HomeIntent.DomesticMoreGenreIconClicked -> {
                     viewModelScope.launch {
-                        _effect.emit(NavigateToDomesticGenre(intent.genre))
+                        _effect.emit(HomeEffect.NavigateToDomesticGenre(intent.genre))
                     }
                 }
             }

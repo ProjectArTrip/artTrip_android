@@ -613,7 +613,7 @@ fun DomesticRegionSection(onRegionClick: (DomesticRegion) -> Unit) {
 
             DomesticRegion.entries.forEach { region ->
                 if (region != DomesticRegion.Entire) {
-                    DomesticRegionItem(region = region, onRegionClick = { region -> onRegionClick(region)})
+                    DomesticRegionItem(region = region, onRegionClick = { region -> onRegionClick(region) })
                 }
             }
 
@@ -627,7 +627,10 @@ fun DomesticRegionSection(onRegionClick: (DomesticRegion) -> Unit) {
 }
 
 @Composable
-fun DomesticRegionItem(region: DomesticRegion, onRegionClick: (DomesticRegion) -> Unit) {
+fun DomesticRegionItem(
+    region: DomesticRegion,
+    onRegionClick: (DomesticRegion) -> Unit,
+) {
     val painter =
         painterResource(
             when (region) {
@@ -644,10 +647,11 @@ fun DomesticRegionItem(region: DomesticRegion, onRegionClick: (DomesticRegion) -
     val name = region.label
 
     Column(
-        modifier = Modifier
-            .noRippleClickable {
-                onRegionClick(region)
-            },
+        modifier =
+            Modifier
+                .noRippleClickable {
+                    onRegionClick(region)
+                },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
@@ -1055,7 +1059,7 @@ fun ExhibitionItemCase1(
                     Modifier
                         .align(Alignment.TopStart)
                         .offset(x = 10.dp, y = 16.dp),
-                label = exhibition.place,
+                label = exhibition.country,
             )
         }
         LikeButton(
@@ -1191,7 +1195,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = exhibition.place,
+                text = if (exhibition.country == "대한민국") exhibition.region else exhibition.country,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )

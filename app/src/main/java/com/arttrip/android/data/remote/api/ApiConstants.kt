@@ -7,7 +7,7 @@ object ApiConstants {
 
     const val REVIEW_PATH = "/reviews"
 
-    const val HOME_PATH = "/home"
+    const val HOME_PATH = "/home/exhibits"
 
     const val EXHIBIT_PATH = "/exhibits"
 }

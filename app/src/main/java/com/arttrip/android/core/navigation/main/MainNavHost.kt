@@ -70,7 +70,7 @@ fun MainNavHost(
                 },
                 onNavigateGenre = { country, genre ->
                     navController.navigateToGenre(country, genre)
-                }
+                },
             )
         }
         composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
@@ -101,60 +101,64 @@ fun MainNavHost(
         composable(MainRoute.HOME_NOTIFICATION) {
             NotificationRoute(
                 innerPadding = innerPadding,
-                onBack = navController::popBackStack
+                onBack = navController::popBackStack,
             )
         }
 
         composable(MainRoute.HOME_SEARCH) {
             SearchRoute(
                 innerPadding = innerPadding,
-                onBack = navController::popBackStack
+                onBack = navController::popBackStack,
             )
         }
 
         composable(
             route = MainRoute.HOME_REGION,
-            arguments = listOf(
-                navArgument("region") { type = NavType.StringType }
-            )
+            arguments =
+                listOf(
+                    navArgument("region") { type = NavType.StringType },
+                ),
         ) { backStackEntry ->
             val regionName = backStackEntry.arguments?.getString("region") ?: return@composable
 
-            val region = runCatching { DomesticRegion.valueOf(regionName) }
-                .getOrNull() ?: return@composable
+            val region =
+                runCatching { DomesticRegion.valueOf(regionName) }
+                    .getOrNull() ?: return@composable
 
             RegionRoute(
                 innerPadding = innerPadding,
                 region = region,
-                onBack = navController::popBackStack
+                onBack = navController::popBackStack,
             )
         }
 
         composable(
             route = MainRoute.HOME_GENRE,
-            arguments = listOf(
-                navArgument("country") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                },
-                navArgument("genre") {
-                    type = NavType.StringType
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument("country") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                    navArgument("genre") {
+                        type = NavType.StringType
+                    },
+                ),
         ) { backStackEntry ->
             val countryName = backStackEntry.arguments?.getString("country")
             val country = countryName?.let { ForeignCountry.valueOf(it) }
 
-            val genre = ExhibitionGenre.valueOf(
-                backStackEntry.arguments?.getString("genre")!!
-            )
+            val genre =
+                ExhibitionGenre.valueOf(
+                    backStackEntry.arguments?.getString("genre")!!,
+                )
 
             GenreRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
                 country = country,
-                genre = genre
+                genre = genre,
             )
         }
 

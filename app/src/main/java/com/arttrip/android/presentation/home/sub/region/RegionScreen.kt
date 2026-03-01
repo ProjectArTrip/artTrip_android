@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,7 +66,7 @@ fun RegionScreen(
         Column(
             modifier =
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
         ) {
             Spacer(
                 modifier =
@@ -77,7 +75,7 @@ fun RegionScreen(
             )
             AppBar(
                 state = state,
-                onIntent = onIntent
+                onIntent = onIntent,
             )
 
             ExhibitionList(
@@ -87,7 +85,7 @@ fun RegionScreen(
                 onLikeClick = { id ->
                     onIntent(RegionIntent.LikeClicked(id))
                 },
-                expanded = state.isDropdownExpanded
+                expanded = state.isDropdownExpanded,
             )
         }
     }
@@ -96,7 +94,7 @@ fun RegionScreen(
 @Composable
 fun AppBar(
     state: RegionState,
-    onIntent: (RegionIntent) -> Unit
+    onIntent: (RegionIntent) -> Unit,
 ) {
     var appBarWidthPx by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
@@ -104,92 +102,105 @@ fun AppBar(
 
     Column {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 11.dp)
-                .onGloballyPositioned { layout ->
-                    appBarWidthPx = layout.size.width
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 11.dp)
+                    .onGloballyPositioned { layout ->
+                        appBarWidthPx = layout.size.width
+                    },
         ) {
             AppIconButton(
                 modifier = Modifier.align(Alignment.CenterStart),
                 iconResId = R.drawable.ic_back_24,
                 contentDescription = "Back Button",
-                onIconClick = { onIntent(RegionIntent.BackIconClicked) }
+                onIconClick = { onIntent(RegionIntent.BackIconClicked) },
             )
 
             Row(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .noRippleClickable { onIntent(RegionIntent.DropdownClicked) },
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .noRippleClickable { onIntent(RegionIntent.DropdownClicked) },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = state.selectedRegion.label,
                     style = AppTextStyle.Headline,
-                    color = AppColor.TextPrimary
+                    color = AppColor.TextPrimary,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     painter = painterResource(if (state.isDropdownExpanded) R.drawable.ic_up_24 else R.drawable.ic_down_24),
-                    contentDescription = "DropDown Button"
+                    contentDescription = "DropDown Button",
                 )
             }
             DropDown(
                 state = state,
                 onIntent = onIntent,
-                appBarWidthDp = appBarWidthDp
+                appBarWidthDp = appBarWidthDp,
             )
         }
 
         HorizontalDivider(
             thickness = 1.dp,
-            color = AppColor.Gray100
+            color = AppColor.Gray100,
         )
     }
 }
 
 @Composable
-fun DropDown(state: RegionState,
-             onIntent: (RegionIntent) -> Unit,
-             appBarWidthDp: Dp) {
+fun DropDown(
+    state: RegionState,
+    onIntent: (RegionIntent) -> Unit,
+    appBarWidthDp: Dp,
+) {
     DropdownMenu(
         expanded = state.isDropdownExpanded,
         onDismissRequest = { onIntent(RegionIntent.DropdownDismissed) },
         containerColor = AppColor.Gray0,
-        modifier = Modifier
-            .width(appBarWidthDp + 48.dp)
-            .padding(top = 0.dp, bottom = 0.dp),
+        modifier =
+            Modifier
+                .width(appBarWidthDp + 48.dp)
+                .padding(top = 0.dp, bottom = 0.dp),
         offset = DpOffset(x = 0.dp, y = 12.dp),
         shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 16.dp, bottomEnd = 16.dp),
-        shadowElevation = 0.dp
+        shadowElevation = 0.dp,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             DomesticRegion.entries.forEachIndexed { index, region ->
-                val height = if (index == 1 || index == DomesticRegion.entries.lastIndex) 44.dp
-                else 52.dp
-                if (region != DomesticRegion.Entire)
+                val height =
+                    if (index == 1 || index == DomesticRegion.entries.lastIndex) {
+                        44.dp
+                    } else {
+                        52.dp
+                    }
+                if (region != DomesticRegion.Entire) {
                     DropdownMenuItem(
                         contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(height)
-                            .background(color = AppColor.Gray0),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(height)
+                                .background(color = AppColor.Gray0),
                         text = {
                             Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth(),
                             ) {
                                 if (index == DomesticRegion.entries.lastIndex) {
                                     Spacer(
-                                        modifier = Modifier
-                                            .height(8.dp)
+                                        modifier =
+                                            Modifier
+                                                .height(8.dp),
                                     )
                                 }
                                 Text(
@@ -197,19 +208,20 @@ fun DropDown(state: RegionState,
                                     text = region.label,
                                     style = AppTextStyle.Title01Light,
                                     color = AppColor.TextPrimary,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
                                 )
                                 if (index == 0) {
                                     Spacer(
-                                        modifier = Modifier
-                                            .height(8.dp)
+                                        modifier =
+                                            Modifier
+                                                .height(8.dp),
                                     )
                                 }
                             }
-
                         },
                         onClick = { onIntent(RegionIntent.RegionSelected(region = region)) },
                     )
+                }
             }
         }
     }
@@ -219,11 +231,12 @@ fun DropDown(state: RegionState,
 fun ExhibitionList(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
-    expanded: Boolean
+    expanded: Boolean,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Column(
             modifier =
@@ -240,7 +253,8 @@ fun ExhibitionList(
                     status = ExhibitionStatus.ONGOING,
                     period = "2025.01.01 - 2025.12.31",
                     hallName = "DDP 동대문디자인플라자",
-                    place = "서울 · 중구",
+                    country = "대한민국",
+                    region = "서울",
                     isBookmarked = true,
                 )
             Spacer(
@@ -249,8 +263,9 @@ fun ExhibitionList(
                         .height(12.dp),
             )
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 repeat(10) {
@@ -261,7 +276,7 @@ fun ExhibitionList(
                         },
                         onLikeClick = { id ->
                             onLikeClick(id)
-                        }
+                        },
                     )
                 }
             }
@@ -273,12 +288,12 @@ fun ExhibitionList(
         }
         if (expanded) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Black.copy(alpha = 0.6f))
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(color = Color.Black.copy(alpha = 0.6f)),
             )
         }
-
     }
 }
 

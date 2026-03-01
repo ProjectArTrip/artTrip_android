@@ -11,7 +11,6 @@ object MainRoute {
     const val BOOKMARK = "bookmark"
     const val MY_PAGE = "my_page"
 
-
     const val HOME_DATE_RESULT = "home_date_result"
 
     const val HOME_NOTIFICATION = "home_notification"
@@ -28,7 +27,7 @@ object MainRoute {
 
     fun genre(
         country: ForeignCountry? = null,
-        genre: ExhibitionGenre
+        genre: ExhibitionGenre,
     ): String =
         if (country == null) {
             "$HOME_GENRE_ROUTE?genre=${genre.name}"

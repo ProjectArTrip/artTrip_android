@@ -36,7 +36,12 @@ import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.genre.contract.GenreIntent
 
 @Composable
-fun GenreScreen(innerPadding: PaddingValues, onIntent: (GenreIntent) -> Unit, country: ForeignCountry?, genre: ExhibitionGenre) {
+fun GenreScreen(
+    innerPadding: PaddingValues,
+    onIntent: (GenreIntent) -> Unit,
+    country: ForeignCountry?,
+    genre: ExhibitionGenre,
+) {
     Box(
         modifier =
             Modifier
@@ -69,33 +74,32 @@ fun GenreScreen(innerPadding: PaddingValues, onIntent: (GenreIntent) -> Unit, co
                         iconResId = R.drawable.ic_alert_badge_24,
                         contentDescription = "Notification Button",
                         onIconClick = {
-
-                        }
+                        },
                     )
-                }
-
+                },
             )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = "총 N개",
                     style = AppTextStyle.Title02Bold,
-                    color = AppColor.TextPrimary
+                    color = AppColor.TextPrimary,
                 )
                 AppIconButton(
                     iconResId = R.drawable.ic_filter_24,
                     contentDescription = "Filter Button",
-                    onIconClick = {}
+                    onIconClick = {},
                 )
             }
             ExhibitionList(
                 onExhibitionClick = {},
-                onLikeClick = {}
+                onLikeClick = {},
             )
         }
     }
@@ -107,8 +111,9 @@ fun ExhibitionList(
     onLikeClick: (Int) -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Column(
             modifier =
@@ -125,7 +130,8 @@ fun ExhibitionList(
                     status = ExhibitionStatus.ONGOING,
                     period = "2025.01.01 - 2025.12.31",
                     hallName = "DDP 동대문디자인플라자",
-                    place = "서울 · 중구",
+                    country = "대한민국",
+                    region = "서울",
                     isBookmarked = true,
                 )
             Spacer(
@@ -134,8 +140,9 @@ fun ExhibitionList(
                         .height(8.dp),
             )
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 repeat(10) {
@@ -146,7 +153,7 @@ fun ExhibitionList(
                         },
                         onLikeClick = { id ->
                             onLikeClick(id)
-                        }
+                        },
                     )
                 }
             }

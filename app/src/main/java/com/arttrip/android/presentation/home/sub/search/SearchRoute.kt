@@ -7,14 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.presentation.home.sub.search.contract.SearchEffect
-import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SearchRoute(
     innerPadding: PaddingValues,
     viewModel: SearchViewModel = hiltViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

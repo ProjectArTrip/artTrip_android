@@ -2,7 +2,6 @@ package com.arttrip.android.presentation.home.sub.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.android.presentation.home.sub.search.contract.SearchState
@@ -36,15 +35,15 @@ class SearchViewModel
                     _state.update { it.copy(inputText = intent.text) }
                 }
                 is SearchIntent.SearchClicked -> {
-
                 }
                 is SearchIntent.RecentKeywordClicked -> {
-
                 }
                 is SearchIntent.RecentKeywordDismissClicked -> {
-                    _state.update { it.copy(
-                        recentKeywordList = it.recentKeywordList - intent.keyword
-                    ) }
+                    _state.update {
+                        it.copy(
+                            recentKeywordList = it.recentKeywordList - intent.keyword,
+                        )
+                    }
                 }
                 is SearchIntent.RecommendKeywordClicked -> {}
                 SearchIntent.DeleteAllClicked -> {
@@ -52,7 +51,6 @@ class SearchViewModel
                 }
                 is SearchIntent.ExhibitionClicked -> {}
                 is SearchIntent.LikeClicked -> {}
-
             }
         }
     }
