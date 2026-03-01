@@ -10,4 +10,6 @@ object ApiConstants {
     const val HOME_PATH = "/home/exhibits"
 
     const val EXHIBIT_PATH = "/exhibits"
+
+    const val USER_PATH = "/me"
 }
