@@ -6,10 +6,10 @@ import com.arttrip.android.domain.repository.UserTasteRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetTasteGroupsUseCase
+class GetUserTasteGroupsUseCase
     @Inject
     constructor(
         private val userTasteRepository: UserTasteRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<TasteGroup>> = userTasteRepository.getAllTasteGroups()
+        operator fun invoke(): Flow<ApiResult<TasteGroup>> = userTasteRepository.getUserTasteGroups()
     }

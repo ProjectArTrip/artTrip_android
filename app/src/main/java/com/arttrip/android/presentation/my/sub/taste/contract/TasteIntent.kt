@@ -4,11 +4,11 @@ sealed interface TasteIntent {
     data object BackClicked : TasteIntent
 
     data class ToggleGenre(
-        val id: Int,
+        val name: String,
     ) : TasteIntent
 
     data class ToggleStyle(
-        val id: Int,
+        val name: String,
     ) : TasteIntent
 
     data object Initialize : TasteIntent

@@ -2,11 +2,11 @@ package com.arttrip.android.presentation.intro.contract
 
 sealed interface IntroIntent {
     data class ToggleGenre(
-        val id: Int,
+        val name: String,
     ) : IntroIntent
 
     data class ToggleStyle(
-        val id: Int,
+        val name: String,
     ) : IntroIntent
 
     data object Initialize : IntroIntent

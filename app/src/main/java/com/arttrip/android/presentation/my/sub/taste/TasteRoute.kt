@@ -34,7 +34,7 @@ fun TasteRoute(
                     onBack()
                 }
                 is TasteEffect.ShowError -> {
-                    // 스낵바 / 토스트 등
+                    toast.show(effect.message)
                 }
             }
         }

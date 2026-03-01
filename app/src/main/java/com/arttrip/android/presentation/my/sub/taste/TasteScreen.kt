@@ -92,9 +92,9 @@ fun TasteScreen(
                 TasteGenreSection(
                     modifier = Modifier.fillMaxWidth(),
                     genreList = state.genres,
-                    selectedIds = state.selectedGenreIds,
-                    onToggleGenre = { id ->
-                        onIntent(TasteIntent.ToggleGenre(id))
+                    selectedIds = state.selectedGenresNames,
+                    onToggleGenre = { name ->
+                        onIntent(TasteIntent.ToggleGenre(name))
                     },
                 )
 
@@ -103,9 +103,9 @@ fun TasteScreen(
                 TasteStyleSection(
                     modifier = Modifier.fillMaxWidth(),
                     styleList = state.styles,
-                    selectedIds = state.selectedStyleIds,
-                    onToggleStyle = { id ->
-                        onIntent(TasteIntent.ToggleStyle(id))
+                    selectedNames = state.selectedStyleNames,
+                    onToggleStyle = { name ->
+                        onIntent(TasteIntent.ToggleStyle(name))
                     },
                 )
 
@@ -154,9 +154,9 @@ private fun TasteWelcomeSection(modifier: Modifier = Modifier) {
 @Composable
 private fun TasteGenreSection(
     modifier: Modifier = Modifier,
-    selectedIds: Set<Int>,
+    selectedIds: Set<String>,
     genreList: List<Taste>,
-    onToggleGenre: (Int) -> Unit,
+    onToggleGenre: (String) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -183,12 +183,12 @@ private fun TasteGenreSection(
             itemVerticalAlignment = Alignment.Top,
         ) {
             genreList.forEach { genre ->
-                val selected = genre.id in selectedIds
+                val selected = genre.name in selectedIds
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
                     text = genre.name,
                     selected = selected,
-                    onClick = { onToggleGenre(genre.id) },
+                    onClick = { onToggleGenre(genre.name) },
                 )
             }
         }
@@ -198,9 +198,9 @@ private fun TasteGenreSection(
 @Composable
 private fun TasteStyleSection(
     modifier: Modifier = Modifier,
-    selectedIds: Set<Int>,
+    selectedNames: Set<String>,
     styleList: List<Taste>,
-    onToggleStyle: (Int) -> Unit,
+    onToggleStyle: (String) -> Unit,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -216,12 +216,12 @@ private fun TasteStyleSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             styleList.map { style ->
-                val selected = style.id in selectedIds
+                val selected = style.name in selectedNames
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
                     text = style.name,
                     selected = selected,
-                    onClick = { onToggleStyle(style.id) },
+                    onClick = { onToggleStyle(style.name) },
                 )
             }
         }

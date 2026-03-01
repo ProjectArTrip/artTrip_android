@@ -1,15 +1,16 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.KeywordDataSource
-import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.keyword.toDomain
 import com.arttrip.android.data.remote.model.keyword.UserKeywordsReqDto
+import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.TasteGroup
 import com.arttrip.android.domain.repository.UserTasteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class UserTasteRepositoryImpl
     @Inject
@@ -27,9 +28,9 @@ class UserTasteRepositoryImpl
                     val groups: TasteGroup = dto.toDomain()
 
                     emit(ApiResult.Success(groups))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(ApiError.Unknown(t)))
                 }
             }
 
@@ -44,24 +45,24 @@ class UserTasteRepositoryImpl
                     val groups: TasteGroup = dto.toDomain()
 
                     emit(ApiResult.Success(groups))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(ApiError.Unknown(t)))
                 }
             }
 
-        override fun saveUserTaste(tasteIds: List<Int>): Flow<ApiResult<Unit>> =
+        override fun saveUserTaste(tastes: List<String>): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
                     dataSource.postUserKeywords(
-                        UserKeywordsReqDto(keywordIds = tasteIds),
+                        UserKeywordsReqDto(keywords = tastes),
                     )
                     emit(ApiResult.Success(Unit))
-                } catch (e: Exception) {
-                    val error = e.toAppError()
-                    emit(ApiResult.Error(error))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(ApiError.Unknown(t)))
                 }
             }
     }
