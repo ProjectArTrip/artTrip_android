@@ -36,10 +36,10 @@ class TasteViewModel
                     viewModelScope.launch { _effect.emit(TasteEffect.NavigateBack) }
                 }
                 is TasteIntent.Initialize -> {
-                    // loadIntroOptions()
+                    loadIntroOptions()
                 }
-                is TasteIntent.ToggleGenre -> handleToggleGenre(intent.id)
-                is TasteIntent.ToggleStyle -> handleToggleStyle(intent.id)
+                is TasteIntent.ToggleGenre -> handleToggleGenre(intent.name)
+                is TasteIntent.ToggleStyle -> handleToggleStyle(intent.name)
                 is TasteIntent.SaveClicked -> {
                     // handleClickSave()
                     viewModelScope.launch { _effect.emit(TasteEffect.ShowToastAndNavigateBack("장르 및 스타일이 저장되었습니다.")) }
@@ -84,20 +84,20 @@ class TasteViewModel
             }
         }
 
-        private fun handleToggleGenre(id: Int) {
+        private fun handleToggleGenre(name: String) {
             _state.update { state ->
-                val newGenres = toggleId(state.selectedGenreIds, id)
+                val newGenres = toggleTaste(state.selectedGenresNames, name)
                 state.copy(
-                    selectedGenreIds = newGenres,
+                    selectedGenresNames = newGenres,
                 )
             }
         }
 
-        private fun handleToggleStyle(id: Int) {
+        private fun handleToggleStyle(name: String) {
             _state.update { state ->
-                val newStyles = toggleId(state.selectedStyleIds, id)
+                val newStyles = toggleTaste(state.selectedStyleNames, name)
                 state.copy(
-                    selectedStyleIds = newStyles,
+                    selectedStyleNames = newStyles,
                 )
             }
         }
@@ -108,8 +108,8 @@ class TasteViewModel
 
             viewModelScope.launch {
                 saveUserTasteUseCase(
-                    genreIds = current.selectedGenreIds,
-                    styleIds = current.selectedStyleIds,
+                    genres = current.selectedGenresNames,
+                    styles = current.selectedStyleNames,
                 ).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
@@ -137,8 +137,8 @@ class TasteViewModel
             }
         }
 
-        private fun toggleId(
-            set: Set<Int>,
-            id: Int,
-        ): Set<Int> = if (id in set) set - id else set + id
+        private fun toggleTaste(
+            set: Set<String>,
+            name: String,
+        ): Set<String> = if (name in set) set - name else set + name
     }

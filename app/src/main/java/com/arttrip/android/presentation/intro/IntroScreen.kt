@@ -71,9 +71,9 @@ fun IntroScreen(
             IntroGenreSection(
                 modifier = Modifier.fillMaxWidth(),
                 genreList = state.genres,
-                selectedIds = state.selectedGenreIds,
-                onToggleGenre = { id ->
-                    onIntent(IntroIntent.ToggleGenre(id))
+                selectedNames = state.selectedGenreNames,
+                onToggleGenre = { name ->
+                    onIntent(IntroIntent.ToggleGenre(name))
                 },
             )
 
@@ -82,9 +82,9 @@ fun IntroScreen(
             IntroStyleSection(
                 modifier = Modifier.fillMaxWidth(),
                 styleList = state.styles,
-                selectedIds = state.selectedStyleIds,
-                onToggleStyle = { id ->
-                    onIntent(IntroIntent.ToggleStyle(id))
+                selectedNames = state.selectedStyleNames,
+                onToggleStyle = { name ->
+                    onIntent(IntroIntent.ToggleStyle(name))
                 },
             )
 
@@ -133,9 +133,9 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
 @Composable
 private fun IntroGenreSection(
     modifier: Modifier = Modifier,
-    selectedIds: Set<Int>,
+    selectedNames: Set<String>,
     genreList: List<Taste>,
-    onToggleGenre: (Int) -> Unit,
+    onToggleGenre: (String) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -162,12 +162,12 @@ private fun IntroGenreSection(
             itemVerticalAlignment = Alignment.Top,
         ) {
             genreList.forEach { genre ->
-                val selected = genre.id in selectedIds
+                val selected = genre.name in selectedNames
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
                     text = genre.name,
                     selected = selected,
-                    onClick = { onToggleGenre(genre.id) },
+                    onClick = { onToggleGenre(genre.name) },
                 )
             }
         }
@@ -177,9 +177,9 @@ private fun IntroGenreSection(
 @Composable
 private fun IntroStyleSection(
     modifier: Modifier = Modifier,
-    selectedIds: Set<Int>,
+    selectedNames: Set<String>,
     styleList: List<Taste>,
-    onToggleStyle: (Int) -> Unit,
+    onToggleStyle: (String) -> Unit,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -195,12 +195,12 @@ private fun IntroStyleSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             styleList.map { style ->
-                val selected = style.id in selectedIds
+                val selected = style.name in selectedNames
                 AppFilterChip(
                     case = AppFilterChipCase.Case01,
                     text = style.name,
                     selected = selected,
-                    onClick = { onToggleStyle(style.id) },
+                    onClick = { onToggleStyle(style.name) },
                 )
             }
         }

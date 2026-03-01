@@ -50,13 +50,13 @@ class UserTasteRepositoryImpl
                 }
             }
 
-        override fun saveUserTaste(tasteIds: List<Int>): Flow<ApiResult<Unit>> =
+        override fun saveUserTaste(tastes: List<String>): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
                     dataSource.postUserKeywords(
-                        UserKeywordsReqDto(keywordIds = tasteIds),
+                        UserKeywordsReqDto(keywords = tastes),
                     )
                     emit(ApiResult.Success(Unit))
                 } catch (e: Exception) {

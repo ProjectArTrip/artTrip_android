@@ -35,8 +35,8 @@ class IntroViewModel
                 is IntroIntent.Initialize -> {
                     loadIntroOptions()
                 }
-                is IntroIntent.ToggleGenre -> handleToggleGenre(intent.id)
-                is IntroIntent.ToggleStyle -> handleToggleStyle(intent.id)
+                is IntroIntent.ToggleGenre -> handleToggleGenre(intent.name)
+                is IntroIntent.ToggleStyle -> handleToggleStyle(intent.name)
                 is IntroIntent.ClickNext -> handleClickNext()
             }
         }
@@ -78,20 +78,20 @@ class IntroViewModel
             }
         }
 
-        private fun handleToggleGenre(id: Int) {
+        private fun handleToggleGenre(name: String) {
             _state.update { state ->
-                val newGenres = toggleId(state.selectedGenreIds, id)
+                val newGenres = toggleTaste(state.selectedGenreNames, name)
                 state.copy(
-                    selectedGenreIds = newGenres,
+                    selectedGenreNames = newGenres,
                 )
             }
         }
 
-        private fun handleToggleStyle(id: Int) {
+        private fun handleToggleStyle(name: String) {
             _state.update { state ->
-                val newStyles = toggleId(state.selectedStyleIds, id)
+                val newStyles = toggleTaste(state.selectedStyleNames, name)
                 state.copy(
-                    selectedStyleIds = newStyles,
+                    selectedStyleNames = newStyles,
                 )
             }
         }
@@ -102,8 +102,8 @@ class IntroViewModel
 
             viewModelScope.launch {
                 saveUserTasteUseCase(
-                    genreIds = current.selectedGenreIds,
-                    styleIds = current.selectedStyleIds,
+                    genres = current.selectedGenreNames,
+                    styles = current.selectedStyleNames,
                 ).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
@@ -131,8 +131,8 @@ class IntroViewModel
             }
         }
 
-        private fun toggleId(
-            set: Set<Int>,
-            id: Int,
-        ): Set<Int> = if (id in set) set - id else set + id
+        private fun toggleTaste(
+            set: Set<String>,
+            name: String,
+        ): Set<String> = if (name in set) set - name else set + name
     }

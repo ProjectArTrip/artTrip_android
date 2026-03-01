@@ -9,5 +9,5 @@ interface UserTasteRepository {
 
     fun getUserTasteGroups(): Flow<ApiResult<TasteGroup>>
 
-    fun saveUserTaste(tasteIds: List<Int>): Flow<ApiResult<Unit>>
+    fun saveUserTaste(tastes: List<String>): Flow<ApiResult<Unit>>
 }

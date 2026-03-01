@@ -11,10 +11,10 @@ class SaveUserTasteUseCase
         private val userTasteRepository: UserTasteRepository,
     ) {
         operator fun invoke(
-            genreIds: Set<Int>,
-            styleIds: Set<Int>,
+            genres: Set<String>,
+            styles: Set<String>,
         ): Flow<ApiResult<Unit>> =
             userTasteRepository.saveUserTaste(
-                (genreIds + styleIds).toList(),
+                (genres + styles).toList(),
             )
     }
