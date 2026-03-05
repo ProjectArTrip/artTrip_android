@@ -8,4 +8,5 @@ data class RecentExhibitDto(
     val exhibitId: Int,
     val title: String,
     val exhibitHallName: String,
+    val exhibitImage: String,
 )

@@ -9,5 +9,6 @@ fun UserRecentExhibitsResDto.toDomain(): List<RecentExhibition> =
             exhibitId = dto.exhibitId,
             title = dto.title,
             hallName = dto.exhibitHallName,
+            posterUrl = dto.exhibitImage,
         )
     }
