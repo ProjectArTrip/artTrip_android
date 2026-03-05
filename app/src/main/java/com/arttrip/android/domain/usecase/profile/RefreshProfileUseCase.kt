@@ -7,11 +7,11 @@ import com.arttrip.android.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetProfileUseCase
+class RefreshProfileUseCase
     @Inject
     constructor(
         private val profileRepository: ProfileRepository,
     ) {
         operator fun invoke(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>> =
-            profileRepository.getProfile(imageQueryParams)
+            profileRepository.refreshProfile(imageQueryParams)
     }

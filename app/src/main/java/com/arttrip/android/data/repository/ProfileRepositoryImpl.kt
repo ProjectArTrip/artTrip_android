@@ -10,7 +10,10 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.profile.UserProfile
 import com.arttrip.android.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -20,7 +23,10 @@ class ProfileRepositoryImpl
     constructor(
         private val dataSource: UserDataSource,
     ) : ProfileRepository {
-        override fun getProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>> =
+        private val _profileState = MutableStateFlow<UserProfile?>(null)
+        override val profileState: StateFlow<UserProfile?> = _profileState
+
+        override fun refreshProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -29,7 +35,7 @@ class ProfileRepositoryImpl
                         dataSource.getUserInfo(imageQueryParams)
 
                     val userProfile: UserProfile = dto.toDomain()
-
+                    _profileState.value = userProfile
                     emit(ApiResult.Success(userProfile))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
@@ -47,7 +53,7 @@ class ProfileRepositoryImpl
                             nickName = nickname,
                         )
                     dataSource.patchUserNickname(reqDto)
-
+                    _profileState.update { it?.copy(nickname = nickname) ?: it }
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
@@ -61,7 +67,7 @@ class ProfileRepositoryImpl
 
                 try {
                     dataSource.deleteProfileImage()
-
+                    _profileState.update { it?.copy(profileImageUrl = null) ?: it }
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
@@ -75,6 +81,7 @@ class ProfileRepositoryImpl
                 try {
                     val part = file.toMultipartPart(fieldName = "image")
                     dataSource.patchProfileImage(part)
+                    // TODO url 응답 내려달라 하거나 refresh 호출
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
