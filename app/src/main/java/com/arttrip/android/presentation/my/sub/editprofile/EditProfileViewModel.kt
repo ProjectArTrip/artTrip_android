@@ -1,16 +1,22 @@
 package com.arttrip.android.presentation.my.sub.editprofile
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.util.copyToCacheFile
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.profile.DeleteProfileImageUseCase
 import com.arttrip.android.domain.usecase.profile.ObserveProfileUseCase
+import com.arttrip.android.domain.usecase.profile.UpdateProfileImageUseCase
 import com.arttrip.android.domain.usecase.profile.UpdateUserNicknameUseCase
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileEffect
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileIntent
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,8 +29,11 @@ import javax.inject.Inject
 class EditProfileViewModel
     @Inject
     constructor(
+        @param:ApplicationContext private val appContext: Context,
         private val observeProfile: ObserveProfileUseCase,
         private val updateUserNicknameUseCase: UpdateUserNicknameUseCase,
+        private val updateProfileImageUseCase: UpdateProfileImageUseCase,
+        private val deleteProfileImageUseCase: DeleteProfileImageUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(EditProfileState())
         val state = _state.asStateFlow()
@@ -73,24 +82,13 @@ class EditProfileViewModel
                 }
 
                 EditProfileIntent.RemovePhotoClicked -> {
-                    _state.update {
-                        it.copy(
-                            isImageSheetVisible = false,
-                            profileImageUrl = null, // TODO API
-                        )
-                    }
+                    _state.update { it.copy(isImageSheetVisible = false) }
+                    deleteProfileImage()
                 }
 
-                is EditProfileIntent.PhotoPickerResult -> {
+                is EditProfileIntent.HasUri -> {
                     val uri = intent.uri ?: return
-                    // TODO API 및 로딩
-                    _state.update { it.copy(profileImageUrl = uri.toString()) }
-                }
-
-                is EditProfileIntent.CameraResult -> {
-                    val uri = intent.uri ?: return
-                    // TODO API 및 로딩
-                    _state.update { it.copy(profileImageUrl = uri.toString()) }
+                    uploadProfileImage(uri)
                 }
 
                 EditProfileIntent.NicknameEditClicked -> {
@@ -174,6 +172,56 @@ class EditProfileViewModel
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun uploadProfileImage(uri: Uri) {
+            viewModelScope.launch {
+                val file =
+                    uri.copyToCacheFile(
+                        context = appContext,
+                        subDir = "profile_upload",
+                        filePrefix = "edit_profile_",
+                    )
+
+                if (file == null) {
+                    // TODO: 토스트/에러 이펙트
+                    return@launch
+                }
+
+                updateProfileImageUseCase(file).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update { it.copy(isLoading = true) }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isLoading = false) }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(isLoading = false) }
+                            // TODO: 토스트/에러 이펙트
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun deleteProfileImage() {
+            viewModelScope.launch {
+                deleteProfileImageUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update { it.copy(isLoading = true) }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isLoading = false) }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(isLoading = false) }
+                            // TODO: 토스트/에러 이펙트
                         }
                     }
                 }
