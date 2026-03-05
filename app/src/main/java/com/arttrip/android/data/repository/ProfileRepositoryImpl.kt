@@ -2,10 +2,9 @@ package com.arttrip.android.data.repository
 
 import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.UserDataSource
-import com.arttrip.android.data.remote.mapper.keyword.toDomain
+import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.user.toDomain
 import com.arttrip.android.data.remote.model.user.UserNicknameReqDto
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.profile.UserProfile
 import com.arttrip.android.domain.repository.ProfileRepository
@@ -33,7 +32,7 @@ class ProfileRepositoryImpl
                     emit(ApiResult.Success(userProfile))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 
@@ -42,7 +41,7 @@ class ProfileRepositoryImpl
                 emit(ApiResult.Loading)
 
                 try {
-                    val reqDto: UserNicknameReqDto =
+                    val reqDto =
                         UserNicknameReqDto(
                             nickName = nickname,
                         )
@@ -51,7 +50,7 @@ class ProfileRepositoryImpl
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 
@@ -65,7 +64,7 @@ class ProfileRepositoryImpl
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 
@@ -78,7 +77,7 @@ class ProfileRepositoryImpl
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
     }
