@@ -15,7 +15,11 @@ import retrofit2.http.Query
 
 interface UserApi {
     @GET(USER_PATH)
-    suspend fun getUserInfo(): UserInfoResDto
+    suspend fun getUserInfo(
+        @Query("w") w: Int,
+        @Query("h") h: Int,
+        @Query("f") f: String,
+    ): UserInfoResDto
 
     @PATCH(USER_PATH)
     suspend fun patchUserNickname(

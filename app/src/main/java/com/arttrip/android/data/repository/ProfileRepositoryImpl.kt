@@ -1,5 +1,6 @@
 package com.arttrip.android.data.repository
 
+import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.UserDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
@@ -19,13 +20,13 @@ class ProfileRepositoryImpl
     constructor(
         private val dataSource: UserDataSource,
     ) : ProfileRepository {
-        override fun getProfile(): Flow<ApiResult<UserProfile>> =
+        override fun getProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
                     val dto =
-                        dataSource.getUserInfo()
+                        dataSource.getUserInfo(imageQueryParams)
 
                     val userProfile: UserProfile = dto.toDomain()
 

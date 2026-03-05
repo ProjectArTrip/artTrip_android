@@ -11,7 +11,12 @@ class UserDataSource
     constructor(
         private val api: UserApi,
     ) {
-        suspend fun getUserInfo() = api.getUserInfo()
+        suspend fun getUserInfo(image: ImageQueryParams) =
+            api.getUserInfo(
+                w = image.widthPx,
+                h = image.heightPx,
+                f = image.format.value,
+            )
 
         suspend fun patchUserNickname(userNicknameReqDto: UserNicknameReqDto) = api.patchUserNickname(userNicknameReqDto)
 
