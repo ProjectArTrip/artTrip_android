@@ -1,7 +1,12 @@
 package com.arttrip.android.presentation.my.sub.editprofile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.domain.model.network.ApiError
+import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.profile.ObserveProfileUseCase
+import com.arttrip.android.domain.usecase.profile.UpdateUserNicknameUseCase
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileEffect
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileIntent
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileState
@@ -17,12 +22,31 @@ import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel
     @Inject
-    constructor() : ViewModel() {
+    constructor(
+        private val observeProfile: ObserveProfileUseCase,
+        private val updateUserNicknameUseCase: UpdateUserNicknameUseCase,
+    ) : ViewModel() {
         private val _state = MutableStateFlow(EditProfileState())
         val state = _state.asStateFlow()
 
         private val _effect = MutableSharedFlow<EditProfileEffect>()
         val effect = _effect.asSharedFlow()
+
+        init {
+            viewModelScope.launch {
+                observeProfile().collect { profile ->
+                    if (profile != null) {
+                        _state.update {
+                            it.copy(
+                                nickname = profile.nickname ?: "사용자",
+                                profileImageUrl = profile.profileImageUrl,
+                                email = profile.email,
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         fun onIntent(intent: EditProfileIntent) {
             when (intent) {
@@ -73,7 +97,7 @@ class EditProfileViewModel
                     _state.update {
                         it.copy(
                             isNicknameDialogVisible = true,
-                            nicknameInput = it.userName,
+                            nicknameInput = it.nickname,
                             nicknameHelperText = null,
                         )
                     }
@@ -98,34 +122,61 @@ class EditProfileViewModel
                 }
 
                 EditProfileIntent.NicknameConfirmClicked -> {
-                    viewModelScope.launch {
-                        val nickname = state.value.nicknameInput.trim()
-
-                        val isDuplicated = checkNicknameDuplicate(nickname)
-
-                        if (isDuplicated) {
-                            _state.update { it.copy(nicknameHelperText = "이미 사용 중인 닉네임이에요.") }
-                            return@launch
-                        }
-
-                        _state.update {
-                            it.copy(
-                                userName = nickname,
-                                isNicknameDialogVisible = false,
-                                nicknameHelperText = null,
-                            )
-                        }
-                    }
+                    val nickname = state.value.nicknameInput.trim()
+                    submitNicknameChange(nickname)
                 }
             }
         }
 
-        /**
-         * TODO: 실제 API 연동 포인트
-         * - true면 중복, false면 사용 가능
-         */
-        private fun checkNicknameDuplicate(nickname: String): Boolean {
-            // 임시: "test"면 중복
-            return nickname.equals("test", ignoreCase = true)
+        private fun submitNicknameChange(nickname: String) {
+            viewModelScope.launch {
+                updateUserNicknameUseCase(
+                    nickname = nickname,
+                ).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = true,
+                                )
+                            }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isNicknameDialogVisible = false,
+                                    nicknameHelperText = null,
+                                )
+                            }
+                        }
+                        is ApiResult.Error -> {
+                            val isNicknameConflict =
+                                (result.error as? ApiError.HttpError)?.let { e ->
+                                    e.statusCode == 409 || e.serverCode == "USER409-CONFLICT"
+                                } == true
+
+                            if (isNicknameConflict) {
+                                _state.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        nicknameHelperText = "이미 사용 중인 닉네임이에요.",
+                                    )
+                                }
+                            } else {
+                                // TODO Toast
+                                Log.d("EditProfile", "${result.error}")
+                                _state.update {
+                                    it.copy(
+                                        nicknameHelperText = null,
+                                        isNicknameDialogVisible = true,
+                                        isLoading = false,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }

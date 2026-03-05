@@ -98,7 +98,7 @@ fun EditProfileScreen(
             }
             Spacer(Modifier.height(8.dp))
             AppTextField(
-                value = state.userName,
+                value = state.nickname,
                 readOnly = true,
             )
             Spacer(Modifier.height(24.dp))
