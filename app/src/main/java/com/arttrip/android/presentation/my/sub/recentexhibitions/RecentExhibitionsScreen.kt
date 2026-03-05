@@ -81,8 +81,8 @@ fun RecentExhibitionsScreen(
                     ExhibitionItem(
                         title = exhibition.title,
                         hallName = exhibition.hallName,
-                        url = exhibition.url,
-                        onExhibitionClick = { onIntent(RecentExhibitionsIntent.ExhibitionClicked(exhibition.id)) },
+                        url = exhibition.posterUrl,
+                        onExhibitionClick = { onIntent(RecentExhibitionsIntent.ExhibitionClicked(exhibition.exhibitId)) },
                     )
                 }
             }
