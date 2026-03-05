@@ -81,11 +81,18 @@ class ProfileRepositoryImpl
                 try {
                     val part = file.toMultipartPart(fieldName = "image")
                     dataSource.patchProfileImage(part)
-                    // TODO url 응답 내려달라 하거나 refresh 호출
+                    fetchProfile()
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
                     emit(ApiResult.Error(t.toAppError()))
                 }
             }
+
+        private suspend fun fetchProfile(): UserProfile {
+            val dto = dataSource.getUserInfo(ImageQueryParams(widthPx = 96, heightPx = 96))
+            val profile = dto.toDomain()
+            _profileState.value = profile
+            return profile
+        }
     }
