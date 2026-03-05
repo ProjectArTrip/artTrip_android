@@ -8,6 +8,8 @@ import java.io.File
 interface ProfileRepository {
     fun getProfile(): Flow<ApiResult<UserProfile>>
 
+    fun updateUserNickname(nickname: String): Flow<ApiResult<Unit>>
+
     fun deleteProfileImage(): Flow<ApiResult<Unit>>
 
     fun updateProfileImage(file: File): Flow<ApiResult<Unit>>

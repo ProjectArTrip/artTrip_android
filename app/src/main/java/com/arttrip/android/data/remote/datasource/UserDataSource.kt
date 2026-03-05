@@ -2,6 +2,7 @@ package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.api.UserApi
+import com.arttrip.android.data.remote.model.user.UserNicknameReqDto
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -11,6 +12,8 @@ class UserDataSource
         private val api: UserApi,
     ) {
         suspend fun getUserInfo() = api.getUserInfo()
+
+        suspend fun patchUserNickname(userNicknameReqDto: UserNicknameReqDto) = api.patchUserNickname(userNicknameReqDto)
 
         suspend fun deleteProfileImage() = api.deleteProfileImage()
 
