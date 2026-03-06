@@ -1,7 +1,9 @@
 package com.arttrip.android.data.remote.api
 
 import com.arttrip.android.data.remote.api.ApiConstants.REVIEW_PATH
+import com.arttrip.android.data.remote.model.review.ExhibitReviewDto
 import com.arttrip.android.data.remote.model.review.ReviewPageResDto
+import com.arttrip.android.data.remote.model.review.UserReviewDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,7 +17,7 @@ interface ReviewApi {
         @Query("w") w: Int = 200,
         @Query("h") h: Int = 200,
         @Query("f") f: String = "webp",
-    ): ReviewPageResDto
+    ): ReviewPageResDto<ExhibitReviewDto>
 
     @GET("${REVIEW_PATH}/all")
     suspend fun getUserReviews(
@@ -24,5 +26,5 @@ interface ReviewApi {
         @Query("w") w: Int = 200,
         @Query("h") h: Int = 200,
         @Query("f") f: String = "webp",
-    ): ReviewPageResDto
+    ): ReviewPageResDto<UserReviewDto>
 }

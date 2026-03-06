@@ -6,7 +6,8 @@ import androidx.paging.PagingData
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
-import com.arttrip.android.domain.model.review.Review
+import com.arttrip.android.domain.model.review.ExhibitionReview
+import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class ReviewRepositoryImpl
             exhibitId: Int,
             pageSize: Int,
             initialLoadSize: Int,
-        ): Flow<PagingData<Review>> =
+        ): Flow<PagingData<ExhibitionReview>> =
             Pager(
                 config =
                     PagingConfig(
@@ -60,7 +61,7 @@ class ReviewRepositoryImpl
         override fun getUserReviews(
             pageSize: Int,
             initialLoadSize: Int,
-        ): Flow<PagingData<Review>> =
+        ): Flow<PagingData<UserReview>> =
             Pager(
                 config =
                     PagingConfig(

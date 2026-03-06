@@ -1,6 +1,6 @@
 package com.arttrip.android.domain.model.review
 
-data class Review(
+data class ExhibitionReview(
     val id: Int,
     val writer: String,
     val visitDate: String,

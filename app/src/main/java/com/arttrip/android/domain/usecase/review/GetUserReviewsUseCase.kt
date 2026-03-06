@@ -1,7 +1,7 @@
 package com.arttrip.android.domain.usecase.review
 
 import androidx.paging.PagingData
-import com.arttrip.android.domain.model.review.Review
+import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,5 +16,5 @@ class GetUserReviewsUseCase
 
         fun clearReviewTotalCount() = reviewRepository.clearUserReviewTotalCount()
 
-        operator fun invoke(): Flow<PagingData<Review>> = reviewRepository.getUserReviews()
+        operator fun invoke(): Flow<PagingData<UserReview>> = reviewRepository.getUserReviews()
     }

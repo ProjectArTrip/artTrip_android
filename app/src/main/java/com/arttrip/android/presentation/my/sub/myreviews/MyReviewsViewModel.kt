@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.android.core.model.image.ImageQueryParams
-import com.arttrip.android.domain.model.review.Review
+import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.domain.usecase.review.GetUserReviewsUseCase
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsEffect
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsIntent
@@ -77,7 +77,7 @@ class MyReviewsViewModel
             }
         }
 
-        val reviewsFlow: Flow<PagingData<Review>> =
+        val reviewsFlow: Flow<PagingData<UserReview>> =
             getUserReviewsUseCase().cachedIn(viewModelScope)
 
         private fun loadReviews() {
