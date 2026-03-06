@@ -2,7 +2,7 @@ package com.arttrip.android.presentation.my.sub.editprofile.contract
 
 data class EditProfileState(
     val isLoading: Boolean = false,
-    val nickname: String = "사용자",
+    val nickname: String = "",
     val profileImageUrl: String? = null,
     val isUploadingProfileImage: Boolean = false,
     val email: String = "",
