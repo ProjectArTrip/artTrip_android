@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface ReviewRepository {
     val exhibitReviewTotalCount: StateFlow<Int?>
+    val userReviewTotalCount: StateFlow<Int?>
 
     fun getExhibitionReviews(
         exhibitId: Int,
@@ -14,5 +15,12 @@ interface ReviewRepository {
         initialLoadSize: Int = 10,
     ): Flow<PagingData<Review>>
 
-    fun clearReviewTotalCount()
+    fun getUserReviews(
+        pageSize: Int = 10,
+        initialLoadSize: Int = 10,
+    ): Flow<PagingData<Review>>
+
+    fun clearExhibitReviewTotalCount()
+
+    fun clearUserReviewTotalCount()
 }

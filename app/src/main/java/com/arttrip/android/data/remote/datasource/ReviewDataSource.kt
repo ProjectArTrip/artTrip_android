@@ -17,4 +17,12 @@ class ReviewDataSource
             cursor = cursor,
             size = size,
         )
+
+        suspend fun getUserReviews(
+            cursor: Int?,
+            size: Int,
+        ) = api.getUserReviews(
+            cursor = cursor,
+            size = size,
+        )
     }

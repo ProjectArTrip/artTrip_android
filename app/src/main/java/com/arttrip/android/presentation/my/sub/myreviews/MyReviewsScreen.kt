@@ -29,6 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -40,8 +42,10 @@ import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.rememberScrollUpVisible
+import com.arttrip.android.domain.model.review.Review
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsIntent
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsState
+import kotlinx.coroutines.flow.Flow
 
 private val CONTENT_HORIZONTAL_PADDING = 24.dp
 private val REVIEW_ITEM_GAP = 24.dp
@@ -52,9 +56,11 @@ fun MyReviewsScreen(
     innerPadding: PaddingValues,
     state: MyReviewsState,
     onIntent: (MyReviewsIntent) -> Unit,
+    reviewsFlow: Flow<PagingData<Review>>,
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
+    val reviewItems = reviewsFlow.collectAsLazyPagingItems()
 
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(

@@ -38,9 +38,13 @@ fun MyReviewsRoute(
             }
         }
     }
+
+    val reviewsFlow = viewModel.reviewsFlow
+
     MyReviewsScreen(
         innerPadding = innerPadding,
         state = state,
         onIntent = viewModel::onIntent,
+        reviewsFlow = reviewsFlow,
     )
 }

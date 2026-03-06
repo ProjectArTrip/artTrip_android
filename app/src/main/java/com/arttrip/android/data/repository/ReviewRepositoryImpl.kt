@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
+import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
 import com.arttrip.android.domain.model.review.Review
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +22,15 @@ class ReviewRepositoryImpl
         private val _exhibitReviewTotalCount = MutableStateFlow<Int?>(null)
         override val exhibitReviewTotalCount: StateFlow<Int?> = _exhibitReviewTotalCount.asStateFlow()
 
+        private val _userReviewTotalCount = MutableStateFlow<Int?>(null)
+        override val userReviewTotalCount: StateFlow<Int?> = _userReviewTotalCount.asStateFlow()
+
         override fun clearExhibitReviewTotalCount() {
             _exhibitReviewTotalCount.value = null
+        }
+
+        override fun clearUserReviewTotalCount() {
+            _userReviewTotalCount.value = null
         }
 
         override fun getExhibitionReviews(
@@ -45,6 +53,26 @@ class ReviewRepositoryImpl
                         onTotalCount = { count ->
                             _exhibitReviewTotalCount.value = count
                         },
+                    )
+                },
+            ).flow
+
+        override fun getUserReviews(
+            pageSize: Int,
+            initialLoadSize: Int,
+        ): Flow<PagingData<Review>> =
+            Pager(
+                config =
+                    PagingConfig(
+                        pageSize = pageSize,
+                        initialLoadSize = initialLoadSize,
+                        prefetchDistance = 1,
+                        enablePlaceholders = false,
+                    ),
+                pagingSourceFactory = {
+                    UserReviewPagingSource(
+                        dataSource = reviewDataSource,
+                        onTotalCount = { count -> _userReviewTotalCount.value = count },
                     )
                 },
             ).flow
