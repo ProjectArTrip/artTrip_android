@@ -47,7 +47,7 @@ class EditProfileViewModel
                     if (profile != null) {
                         _state.update {
                             it.copy(
-                                nickname = profile.nickname ?: "사용자",
+                                nickname = profile.nickname,
                                 profileImageUrl = profile.profileImageUrl,
                                 email = profile.email,
                             )

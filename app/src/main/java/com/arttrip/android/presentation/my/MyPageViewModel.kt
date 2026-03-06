@@ -48,7 +48,7 @@ class MyPageViewModel
                     if (profile != null) {
                         _state.update {
                             it.copy(
-                                userName = profile.nickname ?: "사용자",
+                                userName = profile.nickname,
                                 profileImageUrl = profile.profileImageUrl,
                             )
                         }
@@ -91,14 +91,6 @@ class MyPageViewModel
                         is ApiResult.Loading -> {
                         }
                         is ApiResult.Success -> {
-                            val result = result.data
-
-                            _state.update {
-                                it.copy(
-                                    userName = result.nickname ?: "사용자",
-                                    profileImageUrl = result.profileImageUrl,
-                                )
-                            }
                         }
                         is ApiResult.Error -> {
                             Log.d("MyPage", "${result.error}")

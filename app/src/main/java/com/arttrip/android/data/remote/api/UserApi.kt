@@ -1,9 +1,9 @@
 package com.arttrip.android.data.remote.api
 
 import com.arttrip.android.data.remote.api.ApiConstants.USER_PATH
-import com.arttrip.android.data.remote.model.user.UserInfoResDto
 import com.arttrip.android.data.remote.model.user.UserNicknameReqDto
 import com.arttrip.android.data.remote.model.user.UserRecentExhibitsResDto
+import com.arttrip.android.data.remote.model.user.UserResDto
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,12 +19,12 @@ interface UserApi {
         @Query("w") w: Int,
         @Query("h") h: Int,
         @Query("f") f: String,
-    ): UserInfoResDto
+    ): UserResDto
 
     @PATCH(USER_PATH)
     suspend fun patchUserNickname(
         @Body body: UserNicknameReqDto,
-    ): Unit
+    ): UserResDto
 
     @DELETE("${USER_PATH}/image")
     suspend fun deleteProfileImage(): Unit
@@ -33,7 +33,7 @@ interface UserApi {
     @PATCH("${USER_PATH}/image")
     suspend fun patchProfileImage(
         @Part image: MultipartBody.Part,
-    ): Unit
+    ): UserResDto
 
     @GET("${USER_PATH}/recent-exhibits")
     suspend fun getUserRecentExhibits(
