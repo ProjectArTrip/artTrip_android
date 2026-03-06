@@ -12,9 +12,9 @@ class GetExhibitionReviewsUseCase
     constructor(
         private val reviewRepository: ReviewRepository,
     ) {
-        val reviewTotalCount: StateFlow<Int?> = reviewRepository.reviewTotalCount
+        val reviewTotalCount: StateFlow<Int?> = reviewRepository.exhibitReviewTotalCount
 
-        fun clearReviewTotalCount() = reviewRepository.clearReviewTotalCount()
+        fun clearReviewTotalCount() = reviewRepository.clearExhibitReviewTotalCount()
 
         operator fun invoke(exhibitId: Int): Flow<PagingData<Review>> =
             reviewRepository.getExhibitionReviews(

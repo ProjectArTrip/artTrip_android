@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
-import com.arttrip.android.data.remote.paging.review.ReviewPagingSource
+import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.domain.model.review.Review
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +18,11 @@ class ReviewRepositoryImpl
     constructor(
         private val reviewDataSource: ReviewDataSource,
     ) : ReviewRepository {
-        private val _reviewTotalCount = MutableStateFlow<Int?>(null)
-        override val reviewTotalCount: StateFlow<Int?> = _reviewTotalCount.asStateFlow()
+        private val _exhibitReviewTotalCount = MutableStateFlow<Int?>(null)
+        override val exhibitReviewTotalCount: StateFlow<Int?> = _exhibitReviewTotalCount.asStateFlow()
 
-        override fun clearReviewTotalCount() {
-            _reviewTotalCount.value = null
+        override fun clearExhibitReviewTotalCount() {
+            _exhibitReviewTotalCount.value = null
         }
 
         override fun getExhibitionReviews(
@@ -39,11 +39,11 @@ class ReviewRepositoryImpl
                         enablePlaceholders = false,
                     ),
                 pagingSourceFactory = {
-                    ReviewPagingSource(
+                    ExhibitReviewPagingSource(
                         dataSource = reviewDataSource,
                         exhibitId = exhibitId,
                         onTotalCount = { count ->
-                            _reviewTotalCount.value = count
+                            _exhibitReviewTotalCount.value = count
                         },
                     )
                 },

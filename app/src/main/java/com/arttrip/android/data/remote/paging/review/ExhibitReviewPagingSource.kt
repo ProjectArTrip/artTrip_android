@@ -8,7 +8,7 @@ import com.arttrip.android.domain.model.review.Review
 import retrofit2.HttpException
 import java.io.IOException
 
-class ReviewPagingSource(
+class ExhibitReviewPagingSource(
     private val dataSource: ReviewDataSource,
     private val exhibitId: Int,
     private val onTotalCount: (Int) -> Unit,

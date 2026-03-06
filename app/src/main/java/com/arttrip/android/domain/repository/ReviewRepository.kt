@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface ReviewRepository {
-    val reviewTotalCount: StateFlow<Int?>
+    val exhibitReviewTotalCount: StateFlow<Int?>
 
     fun getExhibitionReviews(
         exhibitId: Int,
