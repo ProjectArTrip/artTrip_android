@@ -10,7 +10,7 @@ import java.io.File
 interface ProfileRepository {
     val profileState: StateFlow<UserProfile?>
 
-    fun refreshProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>>
+    fun refreshProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<Unit>>
 
     fun updateUserNickname(nickname: String): Flow<ApiResult<Unit>>
 

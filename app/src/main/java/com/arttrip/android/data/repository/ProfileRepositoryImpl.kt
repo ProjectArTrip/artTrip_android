@@ -26,7 +26,7 @@ class ProfileRepositoryImpl
         private val _profileState = MutableStateFlow<UserProfile?>(null)
         override val profileState: StateFlow<UserProfile?> = _profileState
 
-        override fun refreshProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<UserProfile>> =
+        override fun refreshProfile(imageQueryParams: ImageQueryParams): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
@@ -36,7 +36,7 @@ class ProfileRepositoryImpl
 
                     val userProfile: UserProfile = dto.toDomain()
                     _profileState.value = userProfile
-                    emit(ApiResult.Success(userProfile))
+                    emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
                     emit(ApiResult.Error(t.toAppError()))
@@ -52,8 +52,10 @@ class ProfileRepositoryImpl
                         UserNicknameReqDto(
                             nickName = nickname,
                         )
-                    dataSource.patchUserNickname(reqDto)
-                    _profileState.update { it?.copy(nickname = nickname) ?: it }
+                    val dto = dataSource.patchUserNickname(reqDto)
+
+                    val userProfile: UserProfile = dto.toDomain()
+                    _profileState.value = userProfile
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
@@ -80,19 +82,13 @@ class ProfileRepositoryImpl
                 emit(ApiResult.Loading)
                 try {
                     val part = file.toMultipartPart(fieldName = "image")
-                    dataSource.patchProfileImage(part)
-                    fetchProfile()
+                    val dto = dataSource.patchProfileImage(part)
+                    val userProfile: UserProfile = dto.toDomain()
+                    _profileState.value = userProfile
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
                     emit(ApiResult.Error(t.toAppError()))
                 }
             }
-
-        private suspend fun fetchProfile(): UserProfile {
-            val dto = dataSource.getUserInfo(ImageQueryParams(widthPx = 96, heightPx = 96))
-            val profile = dto.toDomain()
-            _profileState.value = profile
-            return profile
-        }
     }
