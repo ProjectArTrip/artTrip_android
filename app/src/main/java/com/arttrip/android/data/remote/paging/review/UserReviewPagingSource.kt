@@ -6,8 +6,6 @@ import androidx.paging.PagingState
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.mapper.review.toDomain
 import com.arttrip.android.domain.model.review.UserReview
-import retrofit2.HttpException
-import java.io.IOException
 
 class UserReviewPagingSource(
     private val dataSource: ReviewDataSource,
@@ -29,7 +27,9 @@ class UserReviewPagingSource(
                 onTotalCount(res.reviewTotalCount)
             }
             val items: List<UserReview> =
-                res.reviews.map { it.toDomain() }
+                res.reviewList.map { it.toDomain() }
+            Log.d("UserReviewPagingSource", "mapped items size=${items.size}")
+            Log.d("UserReviewPagingSource", "mapped items=$items")
 
             val nextKey =
                 if (res.hasNext) res.nextCursor else null
@@ -39,11 +39,8 @@ class UserReviewPagingSource(
                 prevKey = null,
                 nextKey = nextKey,
             )
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
-            LoadResult.Error(e)
         } catch (e: Throwable) {
+            Log.e("UserReviewPagingSource", "load error", e)
             LoadResult.Error(e)
         }
 

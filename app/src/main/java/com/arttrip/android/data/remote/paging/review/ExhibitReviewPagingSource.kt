@@ -30,7 +30,7 @@ class ExhibitReviewPagingSource(
                 onTotalCount(res.reviewTotalCount)
             }
             val items: List<ExhibitionReview> =
-                res.reviews.map { it.toDomain() }
+                res.reviewList.map { it.toDomain() }
 
             val nextKey =
                 if (res.hasNext) res.nextCursor else null
