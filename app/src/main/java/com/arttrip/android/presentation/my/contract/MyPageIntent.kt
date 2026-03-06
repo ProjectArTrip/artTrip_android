@@ -1,8 +1,6 @@
 package com.arttrip.android.presentation.my.contract
 
 sealed interface MyPageIntent {
-    data object Initialize : MyPageIntent
-
     data object ClickProfileMore : MyPageIntent
 
     data object ClickRecentExhibitions : MyPageIntent

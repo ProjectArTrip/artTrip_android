@@ -1,10 +1,12 @@
 package com.arttrip.android.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
@@ -15,6 +17,8 @@ import com.arttrip.android.domain.usecase.exhibition.GetForeignGenreExhibitionLi
 import com.arttrip.android.domain.usecase.exhibition.GetForeignPersonalizedExhibitionListUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetForeignScheduledExhibitionListUseCase
+import com.arttrip.android.domain.usecase.profile.ObserveProfileUseCase
+import com.arttrip.android.domain.usecase.profile.RefreshProfileUseCase
 import com.arttrip.android.presentation.home.contract.HomeEffect
 import com.arttrip.android.presentation.home.contract.HomeIntent
 import com.arttrip.android.presentation.home.contract.HomeState
@@ -29,6 +33,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+private val PROFILE_THUMB_QUERY =
+    ImageQueryParams(
+        widthPx = 96,
+        heightPx = 96,
+    )
+
 @HiltViewModel
 class HomeViewModel
     @Inject
@@ -41,6 +51,8 @@ class HomeViewModel
         private val getDomesticPersonalizedExhibitionListUseCase: GetDomesticPersonalizedExhibitionListUseCase,
         private val getDomesticScheduleExhibitionListUseCase: GetDomesticScheduleExhibitionListUseCase,
         private val getDomesticGenreExhibitionListUseCase: GetDomesticGenreExhibitionListUseCase,
+        private val refreshProfileUseCase: RefreshProfileUseCase,
+        private val observeProfile: ObserveProfileUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
@@ -57,6 +69,17 @@ class HomeViewModel
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(country))
             onIntent(HomeIntent.LoadForeignScheduledExhibitList(country, today))
             onIntent(HomeIntent.LoadForeignGenreExhibitList(country, firstGenre))
+
+            loadProfile() // TODO intent로 변경
+
+            viewModelScope.launch {
+                observeProfile().collect { profile ->
+                    if (profile != null) {
+                        // TODO state update
+                        Log.d("Home", "사용자명: ${ profile.nickname}")
+                    }
+                }
+            }
         }
 
         fun onIntent(intent: HomeIntent) {
@@ -237,6 +260,22 @@ class HomeViewModel
                         is ApiResult.Loading -> Unit
                         is ApiResult.Success -> setRecommendState(country, SectionLoadState.Success(result.data))
                         is ApiResult.Error -> setRecommendState(country, SectionLoadState.Error(result.error))
+                    }
+                }
+            }
+        }
+
+        private fun loadProfile() {
+            viewModelScope.launch {
+                refreshProfileUseCase(PROFILE_THUMB_QUERY).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+                        is ApiResult.Success -> {
+                        }
+                        is ApiResult.Error -> {
+                            Log.d("Home", "${result.error}")
+                        }
                     }
                 }
             }
