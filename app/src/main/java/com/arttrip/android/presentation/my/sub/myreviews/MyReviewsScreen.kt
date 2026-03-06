@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
@@ -269,10 +270,12 @@ private fun RemoveReviewDialog(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "삭제한 리뷰는 복구할 수 없으며,\n" +
+                modifier = Modifier.fillMaxWidth(),
+                text = "삭제한 리뷰는 복구할 수 없으며,\n" +
                     "스탬프도 함께 삭제됩니다.",
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextTertiary,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
         },
