@@ -226,6 +226,27 @@ class HomeViewModel
                     }
                 }
 
+                is HomeIntent.ForeignMoreScheduleIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(
+                            HomeEffect.NavigateToForeignSchedule(
+                                intent.country,
+                                intent.date
+                            )
+                        )
+                    }
+                }
+
+                is HomeIntent.DomesticMoreScheduleIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(
+                            HomeEffect.NavigateToDomesticSchedule(
+                                intent.date
+                            )
+                        )
+                    }
+                }
+
                 is HomeIntent.ForeignMoreGenreIconClicked -> {
                     viewModelScope.launch {
                         _effect.emit(

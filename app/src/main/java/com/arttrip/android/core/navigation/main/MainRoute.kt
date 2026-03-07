@@ -3,6 +3,7 @@ package com.arttrip.android.core.navigation.main
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import java.time.LocalDate
 
 object MainRoute {
     const val HOME = "home"
@@ -21,6 +22,19 @@ object MainRoute {
     const val HOME_REGION = "$HOME_REGION_ROUTE/{region}"
 
     fun region(region: DomesticRegion) = "$HOME_REGION_ROUTE/${region.name}"
+
+    private const val HOME_SCHEDULE_ROUTE = "home_schedule"
+    const val HOME_SCHEDULE = "$HOME_SCHEDULE_ROUTE?country={country}&date={date}"
+
+    fun schedule(
+        country: ForeignCountry? = null,
+        date: LocalDate,
+    ): String =
+        if (country == null) {
+            "$HOME_SCHEDULE_ROUTE?date=$date"
+        } else {
+            "$HOME_SCHEDULE_ROUTE?country=${country.name}&date=$date"
+        }
 
     private const val HOME_GENRE_ROUTE = "home_genre"
     const val HOME_GENRE = "$HOME_GENRE_ROUTE?country={country}&genre={genre}"

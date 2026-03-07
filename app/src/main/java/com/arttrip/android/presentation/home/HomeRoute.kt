@@ -10,6 +10,7 @@ import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.presentation.home.contract.HomeEffect
+import java.time.LocalDate
 
 @Composable
 fun HomeRoute(
@@ -19,6 +20,7 @@ fun HomeRoute(
     onNavigateSearch: () -> Unit,
     onNavigateExhibitionDetail: (Int) -> Unit,
     onNavigateRegion: (DomesticRegion) -> Unit,
+    onNavigateSchedule: (ForeignCountry?, LocalDate) -> Unit,
     onNavigateGenre: (ForeignCountry?, ExhibitionGenre) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -42,6 +44,13 @@ fun HomeRoute(
 
                 is HomeEffect.NavigateToRegion -> {
                     onNavigateRegion(effect.region)
+                }
+
+                is HomeEffect.NavigateToForeignSchedule -> {
+                    onNavigateSchedule(effect.country, effect.date)
+                }
+                is HomeEffect.NavigateToDomesticSchedule -> {
+                    onNavigateSchedule(null, effect.date)
                 }
 
                 is HomeEffect.NavigateToForeignGenre -> {

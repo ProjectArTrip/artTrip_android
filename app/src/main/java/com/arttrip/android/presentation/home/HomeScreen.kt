@@ -424,7 +424,9 @@ fun ForeignExhibitionSection(
             weekDates = getThisWeekDates(),
             selectedDate = selectedDate,
             sectionState = scheduleState,
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.ForeignMoreScheduleIconClicked(selectedCountry, selectedDate))
+            },
             onDateClick = { date ->
                 onIntent(HomeIntent.SelectForeignDate(date))
 
@@ -539,7 +541,9 @@ fun DomesticExhibitionSection(
             weekDates = getThisWeekDates(),
             selectedDate = selectedDate,
             sectionState = scheduleState,
-            onMoreClick = {},
+            onMoreClick = {
+                onIntent(HomeIntent.DomesticMoreScheduleIconClicked(selectedDate))
+            },
             onDateClick = { date ->
                 onIntent(HomeIntent.SelectDomesticDate(date))
 
