@@ -8,7 +8,6 @@ import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.review.toRequestBody
 import com.arttrip.android.data.remote.model.review.CreateReviewReqDto
-import com.arttrip.android.data.remote.model.review.toRequestBody
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
 import com.arttrip.android.domain.model.network.ApiResult

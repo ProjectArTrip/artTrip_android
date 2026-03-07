@@ -271,8 +271,9 @@ private fun RemoveReviewDialog(
             Spacer(Modifier.height(8.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "삭제한 리뷰는 복구할 수 없으며,\n" +
-                    "스탬프도 함께 삭제됩니다.",
+                text =
+                    "삭제한 리뷰는 복구할 수 없으며,\n" +
+                        "스탬프도 함께 삭제됩니다.",
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextTertiary,
                 textAlign = TextAlign.Center,
