@@ -3,9 +3,15 @@ package com.arttrip.android.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
+import com.arttrip.android.data.remote.mapper.base.toAppError
+import com.arttrip.android.data.remote.mapper.review.toRequestBody
+import com.arttrip.android.data.remote.model.review.CreateReviewReqDto
+import com.arttrip.android.data.remote.model.review.toRequestBody
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
+import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.ExhibitionReview
 import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.domain.repository.ReviewRepository
@@ -13,7 +19,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class ReviewRepositoryImpl
     @Inject
@@ -57,6 +66,54 @@ class ReviewRepositoryImpl
                     )
                 },
             ).flow
+
+        override fun createReview(
+            exhibitId: Int,
+            date: String,
+            content: String,
+            files: List<File>,
+        ): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val requestBody =
+                        CreateReviewReqDto(
+                            date = date,
+                            content = content,
+                        ).toRequestBody()
+
+                    val parts =
+                        files
+                            .takeIf { it.isNotEmpty() }
+                            ?.map { file ->
+                                file.toMultipartPart(fieldName = "images")
+                            }
+
+                    reviewDataSource.postReview(
+                        exhibitId = exhibitId,
+                        request = requestBody,
+                        parts = parts,
+                    )
+                    emit(ApiResult.Success(Unit))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
+
+        override fun deleteReview(exhibitId: Int): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    reviewDataSource.deleteReview(exhibitId)
+                    emit(ApiResult.Success(Unit))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
 
         override fun getUserReviews(
             pageSize: Int,
