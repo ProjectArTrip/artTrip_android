@@ -5,7 +5,9 @@ import com.arttrip.android.domain.model.review.UserReview
 sealed interface MyReviewsIntent {
     data object BackClicked : MyReviewsIntent
 
-    data object DeleteReviewClicked : MyReviewsIntent
+    data class DeleteReviewClicked(
+        val reviewId: Int,
+    ) : MyReviewsIntent
 
     data class EditReviewClicked(
         val review: UserReview,

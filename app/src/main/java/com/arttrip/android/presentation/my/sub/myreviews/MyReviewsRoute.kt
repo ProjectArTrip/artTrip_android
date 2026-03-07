@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsEffect
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +37,7 @@ fun MyReviewsRoute(
                         ),
                     )
                 }
+                MyReviewsEffect.RefreshReviews -> reviewItems.refresh()
             }
         }
     }

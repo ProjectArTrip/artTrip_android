@@ -108,7 +108,7 @@ fun MyReviewsScreen(
                             visitedDate = item.visitedDate,
                             thumbnailUrl = item.thumbnailUrl,
                             content = item.content,
-                            onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked) },
+                            onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked(item.id)) },
                             onEditedClick = { onIntent(MyReviewsIntent.EditReviewClicked(item)) },
                         )
                     }

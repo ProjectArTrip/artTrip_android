@@ -10,4 +10,6 @@ sealed interface MyReviewsEffect {
         val posterUrl: String?,
         val reviewText: String,
     ) : MyReviewsEffect
+
+    data object RefreshReviews : MyReviewsEffect
 }

@@ -1,11 +1,14 @@
 package com.arttrip.android.presentation.my.sub.myreviews
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.android.core.model.image.ImageQueryParams
+import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.UserReview
+import com.arttrip.android.domain.usecase.review.DeleteReviewUseCase
 import com.arttrip.android.domain.usecase.review.GetUserReviewsUseCase
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsEffect
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsIntent
@@ -33,12 +36,16 @@ class MyReviewsViewModel
     @Inject
     constructor(
         private val getUserReviewsUseCase: GetUserReviewsUseCase,
+        private val deleteReviewUseCase: DeleteReviewUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(MyReviewsState())
         val state = _state.asStateFlow()
 
         private val _effect = MutableSharedFlow<MyReviewsEffect>()
         val effect = _effect.asSharedFlow()
+
+        val reviewsFlow: Flow<PagingData<UserReview>> =
+            getUserReviewsUseCase().cachedIn(viewModelScope)
 
         init {
             loadReviews()
@@ -51,8 +58,13 @@ class MyReviewsViewModel
                 MyReviewsIntent.BackClicked -> {
                     viewModelScope.launch { _effect.emit(MyReviewsEffect.NavigateBack) }
                 }
-                MyReviewsIntent.DeleteReviewClicked -> {
-                    _state.update { it.copy(isRemoveDialogVisible = true) }
+                is MyReviewsIntent.DeleteReviewClicked -> {
+                    _state.update {
+                        it.copy(
+                            isRemoveDialogVisible = true,
+                            selectedReviewId = intent.reviewId,
+                        )
+                    }
                 }
                 is MyReviewsIntent.EditReviewClicked -> {
                     val review = intent.review
@@ -69,16 +81,15 @@ class MyReviewsViewModel
                     }
                 }
                 MyReviewsIntent.RemoveConfirmClicked -> {
+                    val reviewId = _state.value.selectedReviewId ?: return
+
                     _state.update { it.copy(isRemoveDialogVisible = false) }
 
-                    // TODO 리뷰삭제API
+                    deleteReview(reviewId)
                 }
                 MyReviewsIntent.RemoveDialogDismissed -> _state.update { it.copy(isRemoveDialogVisible = false) }
             }
         }
-
-        val reviewsFlow: Flow<PagingData<UserReview>> =
-            getUserReviewsUseCase().cachedIn(viewModelScope)
 
         private fun loadReviews() {
             getUserReviewsUseCase.clearReviewTotalCount()
@@ -91,5 +102,39 @@ class MyReviewsViewModel
                         _state.update { it.copy(reviewTotalCount = count) }
                     }
                 }
+        }
+
+        private fun deleteReview(reviewId: Int) {
+            viewModelScope.launch {
+                deleteReviewUseCase(reviewId).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = true,
+                                )
+                            }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    selectedReviewId = null,
+                                )
+                            }
+                            _effect.emit(MyReviewsEffect.RefreshReviews)
+                        }
+                        is ApiResult.Error -> {
+                            Log.d("MyReviews", "${result.error}")
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    selectedReviewId = null,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
