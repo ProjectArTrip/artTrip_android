@@ -3,6 +3,7 @@ package com.arttrip.android.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.arttrip.android.core.util.compressImageForUpload
 import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
@@ -86,7 +87,9 @@ class ReviewRepositoryImpl
                         files
                             .takeIf { it.isNotEmpty() }
                             ?.map { file ->
-                                file.toMultipartPart(fieldName = "images")
+                                file
+                                    .compressImageForUpload(targetMaxBytes = 1_500_000L)
+                                    .toMultipartPart(fieldName = "images")
                             }
 
                     reviewDataSource.postReview(

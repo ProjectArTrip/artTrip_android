@@ -1,6 +1,7 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.core.model.image.ImageQueryParams
+import com.arttrip.android.core.util.compressImageForUpload
 import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.UserDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
@@ -81,7 +82,8 @@ class ProfileRepositoryImpl
             flow {
                 emit(ApiResult.Loading)
                 try {
-                    val part = file.toMultipartPart(fieldName = "image")
+                    val uploadFile = file.compressImageForUpload(targetMaxBytes = 1_500_000L)
+                    val part = uploadFile.toMultipartPart(fieldName = "image")
                     val dto = dataSource.patchProfileImage(part)
                     val userProfile: UserProfile = dto.toDomain()
                     _profileState.value = userProfile
