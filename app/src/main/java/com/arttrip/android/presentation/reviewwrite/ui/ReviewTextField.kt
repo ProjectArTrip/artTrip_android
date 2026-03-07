@@ -1,9 +1,12 @@
 package com.arttrip.android.presentation.reviewwrite.ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,17 +19,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.ui.theme.ArtTripTheme
+import org.w3c.dom.Text
 
 @Composable
 fun ReviewTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
     maxChars: Int,
     placeholder: String = "리뷰 작성해주세요.",
+    showError: Boolean = false,
     enabled: Boolean = true,
 ) {
     val countStr = value.length.toString()
@@ -76,28 +83,57 @@ fun ReviewTextField(
                 },
             )
 
-            Text(
-                text =
-                    buildAnnotatedString {
-                        withStyle(
-                            style =
-                                AppTextStyle.Body02Bold
-                                    .toSpanStyle()
-                                    .copy(color = AppColor.TextSecondary),
-                        ) {
-                            append(countStr)
-                        }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (showError) {
+                    Text(
+                        "최소 20자 이상 입력해주세요.",
+                        style = AppTextStyle.Body03Regular,
+                        color = AppColor.SubRed,
+                    )
+                } else {
+                    Spacer(Modifier)
+                }
+                Text(
+                    text =
+                        buildAnnotatedString {
+                            withStyle(
+                                style =
+                                    AppTextStyle.Body02Bold
+                                        .toSpanStyle()
+                                        .copy(color = AppColor.TextSecondary),
+                            ) {
+                                append(countStr)
+                            }
 
-                        withStyle(
-                            style =
-                                AppTextStyle.Body02Regular
-                                    .toSpanStyle()
-                                    .copy(color = AppColor.TextTertiary),
-                        ) {
-                            append("/$maxChars")
-                        }
-                    },
-            )
+                            withStyle(
+                                style =
+                                    AppTextStyle.Body02Regular
+                                        .toSpanStyle()
+                                        .copy(color = AppColor.TextTertiary),
+                            ) {
+                                append("/$maxChars")
+                            }
+                        },
+                )
+            }
         }
+    }
+}
+
+@Preview(name = "ReviewTextField - Error", showBackground = true)
+@Composable
+private fun PreviewReviewTextField_Filled() {
+    ArtTripTheme {
+        ReviewTextField(
+            value = "전시 구성도..",
+            onValueChange = {},
+            showError = true,
+            modifier = Modifier.padding(24.dp),
+            maxChars = 300,
+        )
     }
 }

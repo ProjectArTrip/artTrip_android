@@ -3,6 +3,9 @@ package com.arttrip.android.presentation.reviewwrite
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
+import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
+import com.arttrip.android.presentation.reviewwrite.contract.MIN_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
@@ -99,7 +102,7 @@ class ReviewWriteViewModel
 
                 is ReviewWriteIntent.PhotoPickerResult -> {
                     _state.update { s ->
-                        s.copy(photoUris = mergePhotos(s.photoUris, intent.uris, s.maxPhotoCount))
+                        s.copy(photoUris = mergePhotos(s.photoUris, intent.uris, MAX_REVIEW_PHOTO_COUNT))
                     }
                 }
 
@@ -115,10 +118,15 @@ class ReviewWriteViewModel
 
                 is ReviewWriteIntent.ReviewTextChanged -> {
                     _state.update { s ->
-                        s.copy(reviewText = intent.text.take(s.maxTextLength))
+                        val newText = intent.text.take(MAX_REVIEW_TEXT_LENGTH)
+                        s.copy(
+                            reviewText = newText,
+                            showReviewLengthError =
+                                s.showReviewLengthError &&
+                                    newText.length < MIN_REVIEW_TEXT_LENGTH,
+                        )
                     }
                 }
-
                 ReviewWriteIntent.SubmitClicked -> {
                     submit()
                 }
@@ -127,7 +135,17 @@ class ReviewWriteViewModel
 
         private fun submit() {
             val snapshot = _state.value
-            if (!snapshot.canSubmit) return
+
+            if (snapshot.reviewText.isBlank() || snapshot.visitDate == null || snapshot.isSubmitting) {
+                return
+            }
+
+            if (snapshot.reviewText.length < MIN_REVIEW_TEXT_LENGTH) {
+                _state.update { it.copy(showReviewLengthError = true) }
+                return
+            }
+
+            _state.update { it.copy(showReviewLengthError = false) }
 
             viewModelScope.launch {
                 _state.update { it.copy(isSubmitting = true) }

@@ -20,8 +20,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.UploadButton
 import com.arttrip.android.core.util.noRippleClickable
-
-private const val MAX_REVIEW_PHOTO_COUNT = 4
+import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
 
 @Composable
 fun ReviewPhotoRow(
