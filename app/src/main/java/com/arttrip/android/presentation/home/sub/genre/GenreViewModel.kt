@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,10 +26,41 @@ GenreViewModel@Inject
 
         fun onIntent(intent: GenreIntent) {
             when (intent) {
+                is GenreIntent.Initialize -> {
+                    _state.update {
+                        if (it.selectedGenre != null) return@update it
+
+                        it.copy(
+                            selectedGenre = intent.genre
+                        )
+                    }
+                }
                 GenreIntent.BackClicked -> {
                     viewModelScope.launch {
                         _effect.emit(GenreEffect.NavigateBack)
                     }
+                }
+
+                GenreIntent.NotificationIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(GenreEffect.NavigateToNotification)
+                    }
+                }
+
+                GenreIntent.OpenFilterSheet -> {
+                    _state.update { it.copy(isFilterSheetVisible = true) }
+                }
+
+                GenreIntent.CloseFilterSheet -> {
+                    _state.update { it.copy(isFilterSheetVisible = false) }
+                }
+
+                is GenreIntent.SelectSortType -> {
+                    _state.update { it.copy(selectedSortType = intent.type) }
+                }
+
+                is GenreIntent.SelectGenre -> {
+                    _state.update { it.copy(selectedGenre = intent.genre) }
                 }
             }
         }
