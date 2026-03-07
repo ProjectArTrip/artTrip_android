@@ -31,17 +31,19 @@ fun File.toMultipartPart(
  * 업로드 제한 용량에 맞추기 위해 이미지 파일을 리사이즈 및 압축.
  *
  * 처리 방식
- * - 원본 이미지의 긴 변이 [maxLongSide]를 초과하면 먼저 리사이즈한다.
+ * - 원본 이미지의 EXIF orientation 값을 반영해 회전/반전이 필요한 경우 먼저 보정한다.
+ * - 긴 변이 [maxLongSide]를 초과하면 업로드 용량 절감을 위해 먼저 리사이즈한다.
  * - 이후 JPEG 품질을 단계적으로 낮추며 결과 파일 크기를 [targetMaxBytes] 이하로 맞춘다.
  * - 압축 결과는 원본 파일을 덮어쓰지 않고 별도의 새 파일로 생성한다.
  *
  * 사용 목적
  * - 서버의 multipart 업로드 용량 제한(2MB) 대응
  * - 모바일 네트워크 환경에서 불필요하게 큰 이미지 업로드 방지
+ * - 촬영 이미지 업로드 시 EXIF orientation 미반영으로 인한 회전 문제 방지
  *
  * 주의 사항
  * - 결과 파일은 JPEG로 저장되므로 투명도(alpha)는 유지되지 않음.
- */
+*/
 fun File.compressImageForUpload(
     targetMaxBytes: Long = 1_500_000L,
     maxLongSide: Int = 1280,
