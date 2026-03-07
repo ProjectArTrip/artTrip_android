@@ -101,12 +101,12 @@ class ReviewRepositoryImpl
                 }
             }
 
-        override fun deleteReview(exhibitId: Int): Flow<ApiResult<Unit>> =
+        override fun deleteReview(reviewId: Int): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
 
                 try {
-                    reviewDataSource.deleteReview(exhibitId)
+                    reviewDataSource.deleteReview(reviewId)
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t

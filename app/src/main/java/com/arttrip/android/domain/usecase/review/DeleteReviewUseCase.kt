@@ -10,5 +10,5 @@ class DeleteReviewUseCase
     constructor(
         private val reviewRepository: ReviewRepository,
     ) {
-        operator fun invoke(exhibitId: Int): Flow<ApiResult<Unit>> = reviewRepository.deleteReview(exhibitId)
+        operator fun invoke(reviewId: Int): Flow<ApiResult<Unit>> = reviewRepository.deleteReview(reviewId)
     }

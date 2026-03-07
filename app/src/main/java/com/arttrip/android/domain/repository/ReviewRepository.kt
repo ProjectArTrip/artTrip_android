@@ -25,7 +25,7 @@ interface ReviewRepository {
         files: List<File> = emptyList(),
     ): Flow<ApiResult<Unit>>
 
-    fun deleteReview(exhibitId: Int): Flow<ApiResult<Unit>>
+    fun deleteReview(reviewId: Int): Flow<ApiResult<Unit>>
 
     fun getUserReviews(
         pageSize: Int = 10,
