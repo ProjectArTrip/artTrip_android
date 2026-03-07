@@ -103,6 +103,111 @@ fun GenreScreen(
             )
         }
     }
+    GenreFilterBottomSheet(
+        visible = state.isFilterSheetVisible,
+        onIntent = onIntent,
+        state = state
+    )
+}
+
+@Composable
+fun GenreFilterBottomSheet(
+    visible : Boolean,
+    onIntent: (GenreIntent) -> Unit,
+    state: GenreState
+) {
+    AppModalBottomSheet(
+        visible = visible,
+        topBar = AppBottomSheetTopBar.Header(),
+        onDismissRequest = {
+            onIntent(GenreIntent.CloseFilterSheet)
+        },
+        content = {
+            Spacer(
+                modifier = Modifier
+                    .height(16.dp)
+            )
+            Text("정렬",
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextPrimary)
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                AppFilterChip(
+                    case = AppFilterChipCase.Case02,
+                    text = SortType.LATEST.label,
+                    selected = state.selectedSortType == SortType.LATEST,
+                    onClick = {
+                        onIntent(GenreIntent.SelectSortType(SortType.LATEST))
+                    }
+                )
+                AppFilterChip(
+                    case = AppFilterChipCase.Case02,
+                    text = SortType.DEADLINE.label,
+                    selected = state.selectedSortType == SortType.DEADLINE,
+                    onClick = {
+                        onIntent(GenreIntent.SelectSortType(SortType.DEADLINE))
+                    }
+                )
+                AppFilterChip(
+                    case = AppFilterChipCase.Case02,
+                    text = SortType.POPULAR.label,
+                    selected = state.selectedSortType == SortType.POPULAR,
+                    onClick = {
+                        onIntent(GenreIntent.SelectSortType(SortType.POPULAR))
+                    }
+                )
+            }
+            Spacer(
+                modifier = Modifier
+                    .height(15.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(color = AppColor.Gray100)
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+            )
+            Text("전시 장르",
+                style = AppTextStyle.Body01Bold,
+                color = AppColor.TextPrimary)
+            Spacer(
+                modifier = Modifier
+                    .height(8.dp)
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                ExhibitionGenre.entries.forEach { genre ->
+                    AppFilterChip(
+                        case = AppFilterChipCase.Case02,
+                        text = genre.label,
+                        selected = state.selectedGenre == genre,
+                        onClick = {
+                            onIntent(GenreIntent.SelectGenre(genre))
+                        }
+                    )
+                }
+            }
+            Spacer(
+                modifier = Modifier
+                    .height(16.dp)
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(36.dp)
+            )
+        }
+    )
 }
 
 @Composable
