@@ -18,7 +18,8 @@ fun MyReviewsRoute(
     viewModel: MyReviewsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    val reviewsFlow = viewModel.reviewsFlow
+    val reviewItems = reviewsFlow.collectAsLazyPagingItems()
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { eff ->
             when (eff) {
@@ -39,12 +40,10 @@ fun MyReviewsRoute(
         }
     }
 
-    val reviewsFlow = viewModel.reviewsFlow
-
     MyReviewsScreen(
         innerPadding = innerPadding,
         state = state,
         onIntent = viewModel::onIntent,
-        reviewsFlow = reviewsFlow,
+        reviewItems = reviewItems,
     )
 }
