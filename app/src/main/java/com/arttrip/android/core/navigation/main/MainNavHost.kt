@@ -162,6 +162,7 @@ fun MainNavHost(
             GenreRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateNotification = navController::navigateToNotification,
                 country = country,
                 genre = genre,
             )

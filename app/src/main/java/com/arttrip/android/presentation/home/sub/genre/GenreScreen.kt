@@ -1,8 +1,10 @@
 package com.arttrip.android.presentation.home.sub.genre
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +24,15 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
+import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
+import com.arttrip.android.core.ui.component.button.AppFilterChip
+import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
+import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
+import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
@@ -34,10 +41,12 @@ import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.presentation.home.ExhibitionImage
 import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.genre.contract.GenreIntent
+import com.arttrip.android.presentation.home.sub.genre.contract.GenreState
 
 @Composable
 fun GenreScreen(
     innerPadding: PaddingValues,
+    state: GenreState,
     onIntent: (GenreIntent) -> Unit,
     country: ForeignCountry?,
     genre: ExhibitionGenre,
@@ -59,7 +68,7 @@ fun GenreScreen(
                         .height(16.dp),
             )
             AppTopBar(
-                title = "${genre.label} 전시 추천",
+                title = "${state.selectedGenre?.label} 전시 추천",
                 leading = {
                     AppIconButton(
                         iconResId = R.drawable.ic_back_24,
@@ -74,6 +83,7 @@ fun GenreScreen(
                         iconResId = R.drawable.ic_alert_badge_24,
                         contentDescription = "Notification Button",
                         onIconClick = {
+                            onIntent(GenreIntent.NotificationIconClicked)
                         },
                     )
                 },
@@ -94,7 +104,9 @@ fun GenreScreen(
                 AppIconButton(
                     iconResId = R.drawable.ic_filter_24,
                     contentDescription = "Filter Button",
-                    onIconClick = {},
+                    onIconClick = {
+                        onIntent(GenreIntent.OpenFilterSheet)
+                    },
                 )
             }
             ExhibitionList(
