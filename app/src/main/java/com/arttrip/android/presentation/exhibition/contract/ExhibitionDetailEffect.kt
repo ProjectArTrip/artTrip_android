@@ -13,4 +13,6 @@ sealed interface ExhibitionDetailEffect {
     data class ShowError(
         val message: String,
     ) : ExhibitionDetailEffect
+
+    data object RefreshReviews : ExhibitionDetailEffect
 }

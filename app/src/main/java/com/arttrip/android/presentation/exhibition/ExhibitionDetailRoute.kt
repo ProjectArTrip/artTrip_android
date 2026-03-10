@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
@@ -27,6 +28,8 @@ fun ExhibitionDetailRoute(
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val reviewsFlow = viewModel.reviewsFlow(exhibitId)
+    val reviewItems = reviewsFlow.collectAsLazyPagingItems()
 
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val density = LocalDensity.current
@@ -68,17 +71,23 @@ fun ExhibitionDetailRoute(
                     is ExhibitionDetailEffect.ShowError -> {
                         // error 처리
                     }
+
+                    ExhibitionDetailEffect.RefreshReviews -> reviewItems.refresh()
                 }
             }
         }
 
-        val reviewsFlow = remember(exhibitId) { viewModel.reviewsFlow(exhibitId) }
+        LaunchedEffect(reviewWriteSuccessTick) {
+            if (reviewWriteSuccessTick > 0) {
+                viewModel.onIntent(ExhibitionDetailIntent.OnReviewWriteSuccess)
+            }
+        }
 
         ExhibitionDetailScreen(
             innerPadding = innerPadding,
             state = state,
             onIntent = viewModel::onIntent,
-            reviewsFlow = reviewsFlow,
+            reviewItems = reviewItems,
         )
     }
 }

@@ -104,6 +104,10 @@ class ExhibitionDetailViewModel
                         )
                     }
                 }
+
+                ExhibitionDetailIntent.OnReviewWriteSuccess -> {
+                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.RefreshReviews) }
+                }
             }
         }
 
