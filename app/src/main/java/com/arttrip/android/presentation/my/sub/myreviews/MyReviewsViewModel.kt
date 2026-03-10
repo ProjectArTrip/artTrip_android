@@ -74,7 +74,7 @@ class MyReviewsViewModel
                                 id = review.id,
                                 title = review.exhibitionTitle,
                                 hallName = "예시 hallName",
-                                posterUrl = review.thumbnailUrl,
+                                posterUrl = review.posterUrl,
                                 reviewText = review.content,
                             ),
                         )

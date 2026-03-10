@@ -27,7 +27,7 @@ class UserReviewPagingSource(
                 onTotalCount(res.reviewTotalCount)
             }
             val items: List<UserReview> =
-                res.reviewList.map { it.toDomain() }
+                res.reviews.map { it.toDomain() }
             Log.d("UserReviewPagingSource", "mapped items size=${items.size}")
             Log.d("UserReviewPagingSource", "mapped items=$items")
 

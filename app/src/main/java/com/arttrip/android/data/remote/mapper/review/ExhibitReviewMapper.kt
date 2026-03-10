@@ -9,8 +9,5 @@ fun ExhibitReviewDto.toDomain(): ExhibitionReview =
         writer = nickname ?: "nickname",
         visitDate = visitDate,
         content = content,
-        photoUrls =
-            thumbnailUrl
-                ?.let { url -> List(4) { url } }
-                ?: emptyList(),
+        photoUrls = photoUrls.orEmpty(),
     )

@@ -5,5 +5,6 @@ data class UserReview(
     val exhibitionTitle: String,
     val visitedDate: String,
     val content: String,
-    val thumbnailUrl: String,
+    val posterUrl: String,
+    val photoUrls: List<String>,
 )

@@ -9,5 +9,6 @@ fun UserReviewDto.toDomain(): UserReview =
         exhibitionTitle = reviewTitle,
         visitedDate = visitDate,
         content = content,
-        thumbnailUrl = "",
+        photoUrls = photoUrls.orEmpty(),
+        posterUrl = posterUrl,
     )
