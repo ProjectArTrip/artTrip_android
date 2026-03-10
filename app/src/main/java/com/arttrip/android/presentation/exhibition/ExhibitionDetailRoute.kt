@@ -23,6 +23,7 @@ fun ExhibitionDetailRoute(
     exhibitId: Int,
     onBack: () -> Unit,
     onNavigateReviewWrite: (prefill: ReviewWritePrefill) -> Unit,
+    reviewWriteSuccessTick: Int,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

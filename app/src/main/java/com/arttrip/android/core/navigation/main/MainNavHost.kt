@@ -6,12 +6,17 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
@@ -164,6 +169,15 @@ fun MainNavHost(
 
         composable(MainRoute.EXHIBITION_DETAIL, listOf(navArgument("exhibitId") { type = NavType.IntType })) { backStackEntry ->
             val exhibitId = backStackEntry.arguments?.getInt("exhibitId") ?: return@composable
+            var reviewWriteSuccessTick by remember { mutableIntStateOf(0) }
+            val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+            LaunchedEffect(currentBackStackEntry) {
+                if (navController.consumeReviewWriteSuccessResult()) {
+                    reviewWriteSuccessTick++
+                }
+            }
+
             ExhibitionDetailRoute(
                 innerPadding,
                 exhibitId,
@@ -174,6 +188,7 @@ fun MainNavHost(
                         prefill,
                     )
                 },
+                reviewWriteSuccessTick = reviewWriteSuccessTick,
             )
         }
 
@@ -186,6 +201,10 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 prefill = prefill,
                 onBack = navController::popBackStack,
+                onSuccessBack = {
+                    navController.setReviewWriteSuccessResult()
+                    navController.popBackStack()
+                },
             )
         }
 

@@ -61,12 +61,23 @@ fun NavHostController.consumeReviewWritePrefill(): ReviewWritePrefill? {
     return handle.consume<ReviewWritePrefill>(NavKeys.REVIEW_WRITE_PREFILL)
 }
 
+fun NavHostController.consumeReviewWriteSuccessResult(): Boolean {
+    val handle = currentBackStackEntry?.savedStateHandle ?: return false
+    return handle.consume<Boolean>(NavKeys.REVIEW_WRITE_RESULT) ?: false
+}
+
 /* ================================
  * Private helpers
  * ================================ */
 
 private fun NavHostController.setReviewWritePrefill(prefill: ReviewWritePrefill) {
     currentBackStackEntry?.savedStateHandle?.set(NavKeys.REVIEW_WRITE_PREFILL, prefill)
+}
+
+fun NavHostController.setReviewWriteSuccessResult() {
+    previousBackStackEntry
+        ?.savedStateHandle
+        ?.set(NavKeys.REVIEW_WRITE_RESULT, true)
 }
 
 /**
