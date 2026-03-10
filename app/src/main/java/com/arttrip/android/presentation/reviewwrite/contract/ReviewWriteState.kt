@@ -11,6 +11,7 @@ const val MIN_REVIEW_TEXT_LENGTH = 20
 private val VISIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd")
 
 data class ReviewWriteState(
+    val exhibitId: Int = -1,
     val appTopBarTitle: String = "리뷰 작성",
     val buttonText: String = "등록하기",
     val title: String = "",

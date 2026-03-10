@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.reviewwrite
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,7 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ReviewWriteViewModel
     @Inject
-    constructor() : ViewModel() {
+    constructor(
+        @param:ApplicationContext private val appContext: Context,
+        private val createReviewUseCase: CreateReviewUseCase,
+    ) : ViewModel() {
         private val _state =
             MutableStateFlow(ReviewWriteState())
         val state: StateFlow<ReviewWriteState> = _state
@@ -41,6 +46,7 @@ class ReviewWriteViewModel
                     _state.update {
                         if (intent.prefill.content != null) {
                             it.copy(
+                                exhibitId = intent.prefill.exhibitId,
                                 appTopBarTitle = "리뷰 수정하기",
                                 buttonText = "수정하기",
                                 visitDate = LocalDate.of(2025, 12, 11), // TODO
@@ -51,6 +57,7 @@ class ReviewWriteViewModel
                             )
                         } else {
                             it.copy(
+                                exhibitId = intent.prefill.exhibitId,
                                 title = intent.prefill.title,
                                 hallName = intent.prefill.hallName,
                                 posterUrl = intent.prefill.posterUrl,
