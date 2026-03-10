@@ -20,6 +20,7 @@ fun ReviewWriteRoute(
     innerPadding: PaddingValues,
     prefill: ReviewWritePrefill?,
     onBack: () -> Unit,
+    onSuccessBack: () -> Unit,
     viewModel: ReviewWriteViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -43,6 +44,7 @@ fun ReviewWriteRoute(
                     latestLaunchPicker()
                 }
                 ReviewWriteEffect.NavigateBack -> onBack()
+                ReviewWriteEffect.NavigateBackWithSuccess -> onSuccessBack()
             }
         }
     }

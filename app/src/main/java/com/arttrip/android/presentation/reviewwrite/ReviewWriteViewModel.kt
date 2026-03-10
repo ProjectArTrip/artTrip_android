@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.util.copyToCacheFile
+import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.MIN_REVIEW_TEXT_LENGTH
@@ -109,7 +112,7 @@ class ReviewWriteViewModel
 
                 is ReviewWriteIntent.PhotoPickerResult -> {
                     _state.update { s ->
-                        s.copy(photoUris = mergePhotos(s.photoUris, intent.uris, MAX_REVIEW_PHOTO_COUNT))
+                        s.copy(photoUris = mergePhotos(s.photoUris, intent.uris))
                     }
                 }
 
@@ -156,10 +159,37 @@ class ReviewWriteViewModel
 
             viewModelScope.launch {
                 _state.update { it.copy(isSubmitting = true) }
-                try {
-                    // TODO: 서버 호출
-                } finally {
+                val files =
+                    snapshot.photoUris.mapNotNull { uri ->
+                        uri.copyToCacheFile(
+                            context = appContext,
+                            subDir = "review_upload",
+                            filePrefix = "review_",
+                        )
+                    }
+
+                if ((snapshot.photoUris.isNotEmpty() && files.isEmpty()) || snapshot.exhibitId <= 0) {
                     _state.update { it.copy(isSubmitting = false) }
+                    return@launch
+                }
+                createReviewUseCase(
+                    exhibitId = snapshot.exhibitId,
+                    date = snapshot.visitDate.toString(),
+                    content = snapshot.reviewText,
+                    files = files,
+                ).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            // TODO 전체 로딩 추가
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isSubmitting = false) }
+                            _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(isSubmitting = false) }
+                        }
+                    }
                 }
             }
         }
@@ -167,6 +197,6 @@ class ReviewWriteViewModel
         private fun mergePhotos(
             current: List<Uri>,
             incoming: List<Uri>,
-            max: Int,
+            max: Int = MAX_REVIEW_PHOTO_COUNT,
         ): List<Uri> = (current + incoming).take(max)
     }

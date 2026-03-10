@@ -30,7 +30,7 @@ interface ReviewApi {
     suspend fun postReview(
         @Path("exhibitId") exhibitId: Int,
         @Part("request") request: RequestBody,
-        @Part images: List<MultipartBody.Part>? = emptyList(),
+        @Part images: List<MultipartBody.Part>? = null,
     ): Unit
 
     @DELETE("${REVIEW_PATH}/{reviewId}")
