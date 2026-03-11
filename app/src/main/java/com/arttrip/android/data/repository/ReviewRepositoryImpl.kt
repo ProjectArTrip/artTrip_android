@@ -10,6 +10,7 @@ import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.review.toDomain
 import com.arttrip.android.data.remote.mapper.review.toRequestBody
 import com.arttrip.android.data.remote.model.review.CreateReviewReqDto
+import com.arttrip.android.data.remote.model.review.UpdateReviewReqDto
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
 import com.arttrip.android.domain.model.network.ApiResult
@@ -128,6 +129,45 @@ class ReviewRepositoryImpl
 
                 try {
                     reviewDataSource.deleteReview(reviewId)
+                    emit(ApiResult.Success(Unit))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
+
+        override fun updateReview(
+            reviewId: Int,
+            date: String,
+            content: String,
+            deletedImageIds: List<Int>,
+            files: List<File>,
+        ): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val requestBody =
+                        UpdateReviewReqDto(
+                            date = date,
+                            content = content,
+                            deleteImageIds = deletedImageIds.takeIf { it.isNotEmpty() },
+                        ).toRequestBody()
+
+                    val parts =
+                        files
+                            .takeIf { it.isNotEmpty() }
+                            ?.map { file ->
+                                file
+                                    .compressImageForUpload(targetMaxBytes = 1_500_000L)
+                                    .toMultipartPart(fieldName = "images")
+                            }
+
+                    reviewDataSource.patchReview(
+                        reviewId = reviewId,
+                        request = requestBody,
+                        parts = parts,
+                    )
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t

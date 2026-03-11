@@ -39,6 +39,16 @@ class ReviewDataSource
 
         suspend fun deleteReview(reviewId: Int) = api.deleteReview(reviewId = reviewId)
 
+        suspend fun patchReview(
+            reviewId: Int,
+            request: RequestBody,
+            parts: List<MultipartBody.Part>?,
+        ) = api.patchReview(
+            reviewId = reviewId,
+            request = request,
+            images = parts,
+        )
+
         suspend fun getUserReviews(
             cursor: Int?,
             size: Int,

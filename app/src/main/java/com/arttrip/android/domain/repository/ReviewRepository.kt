@@ -30,6 +30,14 @@ interface ReviewRepository {
 
     fun deleteReview(reviewId: Int): Flow<ApiResult<Unit>>
 
+    fun updateReview(
+        reviewId: Int,
+        date: String,
+        content: String,
+        deletedImageIds: List<Int> = emptyList(),
+        files: List<File> = emptyList(),
+    ): Flow<ApiResult<Unit>>
+
     fun getUserReviews(
         pageSize: Int = 10,
         initialLoadSize: Int = 10,
