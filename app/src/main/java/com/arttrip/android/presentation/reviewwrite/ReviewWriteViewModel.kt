@@ -1,7 +1,7 @@
 package com.arttrip.android.presentation.reviewwrite
 
 import android.content.Context
-import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.util.copyToCacheFile
@@ -12,6 +12,7 @@ import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_CO
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.MIN_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewModeUi
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewPhotoItem
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -91,17 +93,35 @@ class ReviewWriteViewModel
 
                 is ReviewWriteIntent.PhotoPickerResult -> {
                     _state.update { s ->
-                        s.copy(photoUris = mergePhotos(s.photoUris, intent.uris))
+                        val incoming =
+                            intent.uris.map { uri ->
+                                ReviewPhotoItem.Local(uri)
+                            }
+
+                        s.copy(
+                            photos = mergePhotos(s.photos, incoming),
+                        )
                     }
                 }
 
                 is ReviewWriteIntent.RemovePhotoClicked -> {
                     _state.update { s ->
-                        val next =
-                            s.photoUris.toMutableList().also { list ->
-                                if (intent.index in list.indices) list.removeAt(intent.index)
+                        val target = s.photos.getOrNull(intent.index) ?: return@update s
+
+                        when (target) {
+                            is ReviewPhotoItem.Remote -> {
+                                s.copy(
+                                    photos = s.photos.filterIndexed { index, _ -> index != intent.index },
+                                    deletedImageIds = s.deletedImageIds + target.imageId,
+                                )
                             }
-                        s.copy(photoUris = next)
+
+                            is ReviewPhotoItem.Local -> {
+                                s.copy(
+                                    photos = s.photos.filterIndexed { index, _ -> index != intent.index },
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -161,14 +181,40 @@ class ReviewWriteViewModel
 
         private fun fetchReviewDetail(reviewId: Int) {
             viewModelScope.launch {
-                // usecase 호출
-                _state.update {
-                    it.copy(isInitializing = false)
+                getReviewDetailUseCase(reviewId = reviewId).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                        }
+                        is ApiResult.Success -> {
+                            val review = result.data
+                            _state.update {
+                                it.copy(
+                                    visitDate = LocalDate.parse(review.visitDate),
+                                    reviewText = review.content,
+                                    photos =
+                                        review.images.map { image ->
+                                            ReviewPhotoItem.Remote(
+                                                imageId = image.imageId,
+                                                imageUrl = image.imageUrl,
+                                            )
+                                        },
+                                    deletedImageIds = emptyList(),
+                                    isInitializing = false,
+                                )
+                            }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update {
+                                it.copy(isInitializing = false)
+                            }
+                        }
+                    }
                 }
             }
         }
 
         private fun submit() {
+            // TODO edit vs create
             val snapshot = _state.value
 
             if (snapshot.reviewText.isBlank() || snapshot.visitDate == null || snapshot.isSubmitting) {
@@ -184,44 +230,69 @@ class ReviewWriteViewModel
 
             viewModelScope.launch {
                 _state.update { it.copy(isSubmitting = true) }
-                val files =
-                    snapshot.photoUris.mapNotNull { uri ->
-                        uri.copyToCacheFile(
-                            context = appContext,
-                            subDir = "review_upload",
-                            filePrefix = "review_",
-                        )
+
+                val newFiles =
+                    snapshot.photos
+                        .filterIsInstance<ReviewPhotoItem.Local>()
+                        .mapNotNull { local ->
+                            local.uri.copyToCacheFile(
+                                context = appContext,
+                                subDir = "review_upload",
+                                filePrefix = "review_",
+                            )
+                        }
+
+                when (snapshot.mode) {
+                    ReviewModeUi.CREATE -> {
+                        if ((snapshot.photos.isNotEmpty() && newFiles.isEmpty()) || snapshot.exhibitId <= 0) {
+                            _state.update { it.copy(isSubmitting = false) }
+                            return@launch
+                        }
+
+                        createReviewUseCase(
+                            exhibitId = snapshot.exhibitId,
+                            date = snapshot.visitDate.toString(),
+                            content = snapshot.reviewText,
+                            files = newFiles,
+                        ).collect { result ->
+                            when (result) {
+                                is ApiResult.Loading -> Unit
+                                is ApiResult.Success -> {
+                                    _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                }
+                                is ApiResult.Error -> {
+                                    _state.update { it.copy(isSubmitting = false) }
+                                }
+                            }
+                        }
                     }
 
-                if ((snapshot.photoUris.isNotEmpty() && files.isEmpty()) || snapshot.exhibitId <= 0) {
-                    _state.update { it.copy(isSubmitting = false) }
-                    return@launch
-                }
-                createReviewUseCase(
-                    exhibitId = snapshot.exhibitId,
-                    date = snapshot.visitDate.toString(),
-                    content = snapshot.reviewText,
-                    files = files,
-                ).collect { result ->
-                    when (result) {
-                        is ApiResult.Loading -> {
-                            // TODO 전체 로딩 추가
-                        }
-                        is ApiResult.Success -> {
-                            _state.update { it.copy(isSubmitting = false) }
-                            _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
-                        }
-                        is ApiResult.Error -> {
-                            _state.update { it.copy(isSubmitting = false) }
-                        }
+                    ReviewModeUi.EDIT -> {
+                        val addedLocalPhotos =
+                            snapshot.photos.filterIsInstance<ReviewPhotoItem.Local>()
+
+                        Log.d(
+                            "ReviewWrite",
+                            """
+                            EDIT submit debug
+                            - reviewId: ${snapshot.reviewId}
+                            - deletedImageIds: ${snapshot.deletedImageIds}
+                            - addedLocalPhotoCount: ${addedLocalPhotos.size}
+                            - addedLocalPhotoUris: ${addedLocalPhotos.joinToString { it.uri.toString() }}
+                            - newFilePaths: ${newFiles.joinToString { it.absolutePath }}
+                            """.trimIndent(),
+                        )
+
+                        _state.update { it.copy(isSubmitting = false) }
                     }
                 }
             }
         }
 
         private fun mergePhotos(
-            current: List<Uri>,
-            incoming: List<Uri>,
+            current: List<ReviewPhotoItem>,
+            incoming: List<ReviewPhotoItem>,
             max: Int = MAX_REVIEW_PHOTO_COUNT,
-        ): List<Uri> = (current + incoming).take(max)
+        ): List<ReviewPhotoItem> = (current + incoming).take(max)
     }

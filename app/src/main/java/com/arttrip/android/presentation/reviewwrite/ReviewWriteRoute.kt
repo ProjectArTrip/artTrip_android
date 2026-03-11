@@ -27,7 +27,7 @@ fun ReviewWriteRoute(
 
     val photoPickerLauncher =
         rememberRemainingPhotoPickerLauncher(
-            currentCount = state.photoUris.size,
+            currentCount = state.photos.size,
             onPicked = { viewModel.onIntent(ReviewWriteIntent.PhotoPickerResult(it)) },
         )
     val latestLaunchPicker by rememberUpdatedState(newValue = photoPickerLauncher)

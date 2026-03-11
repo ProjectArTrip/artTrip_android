@@ -129,7 +129,7 @@ fun ReviewWriteScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             ReviewPhotoRow(
-                photoUris = state.photoUris,
+                photos = state.photos,
                 modifier = Modifier.fillMaxWidth(),
                 onUploadClick = {
                     if (!state.canAddPhoto) return@ReviewPhotoRow

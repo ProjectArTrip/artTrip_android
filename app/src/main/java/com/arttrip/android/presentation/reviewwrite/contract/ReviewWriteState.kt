@@ -30,10 +30,11 @@ data class ReviewWriteState(
     val isVisitDateSheetVisible: Boolean = false,
     val calendarMonth: YearMonth = YearMonth.now(),
     val reviewText: String = "",
-    val photoUris: List<Uri> = emptyList(),
+    val photos: List<ReviewPhotoItem> = emptyList(),
+    val deletedImageIds: List<Int> = emptyList(),
     val showReviewLengthError: Boolean = false,
 ) {
-    val canAddPhoto: Boolean get() = photoUris.size < MAX_REVIEW_PHOTO_COUNT
+    val canAddPhoto: Boolean get() = photos.size < MAX_REVIEW_PHOTO_COUNT
     val canSubmit: Boolean
         get() =
             !isSubmitting &&
@@ -42,4 +43,21 @@ data class ReviewWriteState(
 
     val visitDateText: String?
         get() = visitDate?.format(VISIT_DATE_FORMATTER)
+}
+
+sealed interface ReviewPhotoItem {
+    val key: String
+
+    data class Remote(
+        val imageId: Int,
+        val imageUrl: String,
+    ) : ReviewPhotoItem {
+        override val key: String = "remote_$imageId"
+    }
+
+    data class Local(
+        val uri: Uri,
+    ) : ReviewPhotoItem {
+        override val key: String = "local_$uri"
+    }
 }
