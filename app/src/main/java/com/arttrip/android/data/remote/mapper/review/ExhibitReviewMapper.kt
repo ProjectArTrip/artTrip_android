@@ -1,9 +1,9 @@
 package com.arttrip.android.data.remote.mapper.review
 
-import com.arttrip.android.data.remote.model.review.ExhibitReviewDto
+import com.arttrip.android.data.remote.model.review.ExhibitReviewResDto
 import com.arttrip.android.domain.model.review.ExhibitionReview
 
-fun ExhibitReviewDto.toDomain(): ExhibitionReview =
+fun ExhibitReviewResDto.toDomain(): ExhibitionReview =
     ExhibitionReview(
         id = reviewId,
         reviewer = reviewer ?: "사용자",

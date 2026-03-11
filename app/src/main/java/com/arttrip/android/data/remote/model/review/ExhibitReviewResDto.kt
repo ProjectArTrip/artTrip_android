@@ -1,6 +1,6 @@
 package com.arttrip.android.data.remote.model.review
 
-data class ExhibitReviewDto(
+data class ExhibitReviewResDto(
     val reviewId: Int,
     val visitDate: String, // "2025-12-16"
     val content: String,

@@ -1,9 +1,9 @@
 package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.ReviewApi
-import com.arttrip.android.data.remote.model.review.ExhibitReviewDto
+import com.arttrip.android.data.remote.model.review.ExhibitReviewResDto
 import com.arttrip.android.data.remote.model.review.ReviewPageResDto
-import com.arttrip.android.data.remote.model.review.UserReviewDto
+import com.arttrip.android.data.remote.model.review.UserReviewResDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class ReviewDataSource
             exhibitId: Int,
             cursor: Int?,
             size: Int,
-        ): ReviewPageResDto<ExhibitReviewDto> =
+        ): ReviewPageResDto<ExhibitReviewResDto> =
             api.getExhibitDetailReviews(
                 exhibitId = exhibitId,
                 cursor = cursor,
@@ -39,7 +39,7 @@ class ReviewDataSource
         suspend fun getUserReviews(
             cursor: Int?,
             size: Int,
-        ): ReviewPageResDto<UserReviewDto> =
+        ): ReviewPageResDto<UserReviewResDto> =
             api.getUserReviews(
                 cursor = cursor,
                 size = size,
