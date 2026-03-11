@@ -5,6 +5,9 @@ sealed interface MyReviewsEffect {
 
     data class NavigateToReviewEdit(
         val reviewId: Int,
+        val title: String,
+        val hallName: String,
+        val posterUrl: String?,
     ) : MyReviewsEffect
 
     data object RefreshReviews : MyReviewsEffect

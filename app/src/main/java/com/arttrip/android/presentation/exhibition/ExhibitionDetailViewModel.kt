@@ -45,7 +45,10 @@ class ExhibitionDetailViewModel
 
         private var reviewCountJob: Job? = null
 
+        private var initializedExhibitId: Int? = null
+
         init {
+
             viewModelScope.launch {
                 state
                     .map { it.detail?.exhibitId }
@@ -118,6 +121,10 @@ class ExhibitionDetailViewModel
             exhibitId: Int,
             imageQueryParams: ImageQueryParams,
         ) {
+            if (initializedExhibitId == exhibitId) return
+
+            initializedExhibitId = exhibitId
+
             fetchExhibitionDetail(exhibitId, imageQueryParams)
 
             getExhibitionReviewsUseCase.clearReviewTotalCount()

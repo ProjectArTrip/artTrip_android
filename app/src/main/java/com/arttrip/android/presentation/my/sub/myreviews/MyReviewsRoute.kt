@@ -8,6 +8,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsEffect
+import com.arttrip.android.presentation.reviewwrite.model.ReviewEditPrefill
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 import kotlinx.coroutines.flow.collectLatest
 
@@ -29,7 +30,13 @@ fun MyReviewsRoute(
                 is MyReviewsEffect.NavigateToReviewEdit -> {
                     onNavigateReviewWrite(
                         ReviewWriteMode.Edit(
-                            reviewId = eff.reviewId,
+                            prefill =
+                                ReviewEditPrefill(
+                                    reviewId = eff.reviewId,
+                                    title = eff.title,
+                                    hallName = eff.hallName,
+                                    posterUrl = eff.posterUrl,
+                                ),
                         ),
                     )
                 }

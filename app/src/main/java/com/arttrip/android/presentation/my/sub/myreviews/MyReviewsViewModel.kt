@@ -72,6 +72,9 @@ class MyReviewsViewModel
                         _effect.emit(
                             MyReviewsEffect.NavigateToReviewEdit(
                                 reviewId = review.id,
+                                title = review.exhibitionTitle,
+                                hallName = review.hallName,
+                                posterUrl = review.posterUrl,
                             ),
                         )
                     }

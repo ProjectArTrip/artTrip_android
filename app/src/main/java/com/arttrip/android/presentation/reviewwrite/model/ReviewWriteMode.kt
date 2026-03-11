@@ -11,13 +11,21 @@ sealed interface ReviewWriteMode : Parcelable {
 
     @Parcelize
     data class Edit(
-        val reviewId: Int,
+        val prefill: ReviewEditPrefill,
     ) : ReviewWriteMode
 }
 
 @Parcelize
 data class ReviewCreatePrefill(
     val exhibitId: Int,
+    val title: String,
+    val hallName: String,
+    val posterUrl: String?,
+) : Parcelable
+
+@Parcelize
+data class ReviewEditPrefill(
+    val reviewId: Int,
     val title: String,
     val hallName: String,
     val posterUrl: String?,

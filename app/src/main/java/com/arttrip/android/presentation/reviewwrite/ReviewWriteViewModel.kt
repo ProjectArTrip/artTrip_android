@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.util.copyToCacheFile
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
+import com.arttrip.android.domain.usecase.review.GetReviewDetailUseCase
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.MIN_REVIEW_TEXT_LENGTH
@@ -31,6 +32,7 @@ class ReviewWriteViewModel
     @Inject
     constructor(
         @param:ApplicationContext private val appContext: Context,
+        private val getReviewDetailUseCase: GetReviewDetailUseCase,
         private val createReviewUseCase: CreateReviewUseCase,
     ) : ViewModel() {
         private val _state =
@@ -139,16 +141,20 @@ class ReviewWriteViewModel
                 }
 
                 is ReviewWriteMode.Edit -> {
+                    val prefill = mode.prefill
                     _state.update {
                         it.copy(
                             mode = ReviewModeUi.EDIT,
-                            reviewId = mode.reviewId,
+                            reviewId = prefill.reviewId,
+                            title = prefill.title,
+                            hallName = prefill.hallName,
+                            posterUrl = prefill.posterUrl,
                             appTopBarTitle = "리뷰 수정하기",
                             buttonText = "수정하기",
                             isInitializing = true,
                         )
                     }
-                    fetchReviewDetail(mode.reviewId)
+                    fetchReviewDetail(prefill.reviewId)
                 }
             }
         }
