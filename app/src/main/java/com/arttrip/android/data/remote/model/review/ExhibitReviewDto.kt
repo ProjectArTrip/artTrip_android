@@ -5,5 +5,5 @@ data class ExhibitReviewDto(
     val visitDate: String, // "2025-12-16"
     val content: String,
     val photoUrls: List<String>?,
-    val nickname: String?,
+    val reviewer: String?,
 )

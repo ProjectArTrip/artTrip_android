@@ -112,7 +112,7 @@ private fun ReviewListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = model.writer,
+                text = model.reviewer,
                 style = AppTextStyle.Body01Bold,
                 color = AppColor.TextTertiary,
             )

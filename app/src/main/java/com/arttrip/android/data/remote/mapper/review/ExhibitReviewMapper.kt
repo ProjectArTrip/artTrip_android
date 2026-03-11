@@ -6,7 +6,7 @@ import com.arttrip.android.domain.model.review.ExhibitionReview
 fun ExhibitReviewDto.toDomain(): ExhibitionReview =
     ExhibitionReview(
         id = reviewId,
-        writer = nickname ?: "nickname",
+        reviewer = reviewer ?: "사용자",
         visitDate = visitDate,
         content = content,
         photoUrls = photoUrls.orEmpty(),
