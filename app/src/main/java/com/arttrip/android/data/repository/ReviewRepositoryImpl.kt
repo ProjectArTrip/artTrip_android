@@ -7,12 +7,14 @@ import com.arttrip.android.core.util.compressImageForUpload
 import com.arttrip.android.core.util.toMultipartPart
 import com.arttrip.android.data.remote.datasource.ReviewDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
+import com.arttrip.android.data.remote.mapper.review.toDomain
 import com.arttrip.android.data.remote.mapper.review.toRequestBody
 import com.arttrip.android.data.remote.model.review.CreateReviewReqDto
 import com.arttrip.android.data.remote.paging.review.ExhibitReviewPagingSource
 import com.arttrip.android.data.remote.paging.review.UserReviewPagingSource
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.ExhibitionReview
+import com.arttrip.android.domain.model.review.ReviewDetail
 import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
@@ -66,6 +68,22 @@ class ReviewRepositoryImpl
                     )
                 },
             ).flow
+
+        override fun getReview(reviewId: Int): Flow<ApiResult<ReviewDetail>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    val dto =
+                        reviewDataSource.getReviewDetail(
+                            reviewId = reviewId,
+                        )
+                    emit(ApiResult.Success(dto.toDomain()))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
 
         override fun createReview(
             exhibitId: Int,

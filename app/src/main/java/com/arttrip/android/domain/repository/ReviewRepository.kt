@@ -3,6 +3,7 @@ package com.arttrip.android.domain.repository
 import androidx.paging.PagingData
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.review.ExhibitionReview
+import com.arttrip.android.domain.model.review.ReviewDetail
 import com.arttrip.android.domain.model.review.UserReview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,8 @@ interface ReviewRepository {
         pageSize: Int = 10,
         initialLoadSize: Int = 10,
     ): Flow<PagingData<ExhibitionReview>>
+
+    fun getReview(reviewId: Int): Flow<ApiResult<ReviewDetail>>
 
     fun createReview(
         exhibitId: Int,

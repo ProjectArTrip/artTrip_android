@@ -1,9 +1,10 @@
 package com.arttrip.android.data.remote.api
 
 import com.arttrip.android.data.remote.api.ApiConstants.REVIEW_PATH
-import com.arttrip.android.data.remote.model.review.ExhibitReviewDto
+import com.arttrip.android.data.remote.model.review.ExhibitReviewResDto
+import com.arttrip.android.data.remote.model.review.ReviewDetailResDto
 import com.arttrip.android.data.remote.model.review.ReviewPageResDto
-import com.arttrip.android.data.remote.model.review.UserReviewDto
+import com.arttrip.android.data.remote.model.review.UserReviewResDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.DELETE
@@ -24,6 +25,11 @@ interface ReviewApi {
         @Query("h") h: Int = 200,
         @Query("f") f: String = "webp",
     ): ReviewPageResDto<ExhibitReviewResDto>
+
+    @GET("${REVIEW_PATH}/{reviewId}")
+    suspend fun getReview(
+        @Path("reviewId") reviewId: Int,
+    ): ReviewDetailResDto
 
     @Multipart
     @POST("${REVIEW_PATH}/{exhibitId}")

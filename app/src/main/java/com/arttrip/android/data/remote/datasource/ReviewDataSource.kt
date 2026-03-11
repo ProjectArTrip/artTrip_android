@@ -2,6 +2,7 @@ package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.ReviewApi
 import com.arttrip.android.data.remote.model.review.ExhibitReviewResDto
+import com.arttrip.android.data.remote.model.review.ReviewDetailResDto
 import com.arttrip.android.data.remote.model.review.ReviewPageResDto
 import com.arttrip.android.data.remote.model.review.UserReviewResDto
 import okhttp3.MultipartBody
@@ -23,6 +24,8 @@ class ReviewDataSource
                 cursor = cursor,
                 size = size,
             )
+
+        suspend fun getReviewDetail(reviewId: Int): ReviewDetailResDto = api.getReview(reviewId = reviewId)
 
         suspend fun postReview(
             exhibitId: Int,
