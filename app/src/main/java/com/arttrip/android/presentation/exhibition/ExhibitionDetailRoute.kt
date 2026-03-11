@@ -16,14 +16,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewCreatePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 
 @Composable
 fun ExhibitionDetailRoute(
     innerPadding: PaddingValues,
     exhibitId: Int,
     onBack: () -> Unit,
-    onNavigateReviewWrite: (prefill: ReviewWritePrefill) -> Unit,
+    onNavigateReviewWrite: (mode: ReviewWriteMode) -> Unit,
     reviewWriteSuccessTick: Int,
     viewModel: ExhibitionDetailViewModel = hiltViewModel(),
 ) {
@@ -60,11 +61,14 @@ fun ExhibitionDetailRoute(
                     ExhibitionDetailEffect.NavigateBack -> onBack()
                     is ExhibitionDetailEffect.NavigateToWriteReview -> {
                         onNavigateReviewWrite(
-                            ReviewWritePrefill(
-                                effect.exhibitId,
-                                effect.title,
-                                effect.hallName,
-                                effect.posterUrl,
+                            ReviewWriteMode.Create(
+                                prefill =
+                                    ReviewCreatePrefill(
+                                        exhibitId = effect.exhibitId,
+                                        title = effect.title,
+                                        hallName = effect.hallName,
+                                        posterUrl = effect.posterUrl,
+                                    ),
                             ),
                         )
                     }

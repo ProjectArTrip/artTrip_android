@@ -10,7 +10,16 @@ const val MAX_REVIEW_TEXT_LENGTH = 500
 const val MIN_REVIEW_TEXT_LENGTH = 20
 private val VISIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd")
 
+enum class ReviewModeUi {
+    CREATE,
+    EDIT,
+}
+
 data class ReviewWriteState(
+    val isInitializing: Boolean = false,
+    val isSubmitting: Boolean = false,
+    val mode: ReviewModeUi = ReviewModeUi.CREATE,
+    val reviewId: Int? = null,
     val exhibitId: Int = -1,
     val appTopBarTitle: String = "리뷰 작성",
     val buttonText: String = "등록하기",
@@ -22,7 +31,6 @@ data class ReviewWriteState(
     val calendarMonth: YearMonth = YearMonth.now(),
     val reviewText: String = "",
     val photoUris: List<Uri> = emptyList(),
-    val isSubmitting: Boolean = false,
     val showReviewLengthError: Boolean = false,
 ) {
     val canAddPhoto: Boolean get() = photoUris.size < MAX_REVIEW_PHOTO_COUNT

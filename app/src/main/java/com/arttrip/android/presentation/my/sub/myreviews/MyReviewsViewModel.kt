@@ -71,11 +71,7 @@ class MyReviewsViewModel
                     viewModelScope.launch {
                         _effect.emit(
                             MyReviewsEffect.NavigateToReviewEdit(
-                                id = review.id,
-                                title = review.exhibitionTitle,
-                                hallName = "예시 hallName",
-                                posterUrl = review.posterUrl,
-                                reviewText = review.content,
+                                reviewId = review.id,
                             ),
                         )
                     }

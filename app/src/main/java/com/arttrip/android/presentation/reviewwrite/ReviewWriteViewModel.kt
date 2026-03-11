@@ -10,9 +10,11 @@ import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.MIN_REVIEW_TEXT_LENGTH
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewModeUi
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +23,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -39,34 +40,10 @@ class ReviewWriteViewModel
         private val _effect = MutableSharedFlow<ReviewWriteEffect>()
         val effect: SharedFlow<ReviewWriteEffect> = _effect
 
-        private var initialized = false
-
         fun onIntent(intent: ReviewWriteIntent) {
             when (intent) {
                 is ReviewWriteIntent.Initialize -> {
-                    if (initialized) return
-                    initialized = true
-                    _state.update {
-                        if (intent.prefill.content != null) {
-                            it.copy(
-                                exhibitId = intent.prefill.exhibitId,
-                                appTopBarTitle = "리뷰 수정하기",
-                                buttonText = "수정하기",
-                                visitDate = LocalDate.of(2025, 12, 11), // TODO
-                                title = intent.prefill.title,
-                                hallName = intent.prefill.hallName,
-                                posterUrl = intent.prefill.posterUrl,
-                                reviewText = intent.prefill.content,
-                            )
-                        } else {
-                            it.copy(
-                                exhibitId = intent.prefill.exhibitId,
-                                title = intent.prefill.title,
-                                hallName = intent.prefill.hallName,
-                                posterUrl = intent.prefill.posterUrl,
-                            )
-                        }
-                    }
+                    handleInitialize(intent.mode)
                 }
 
                 ReviewWriteIntent.BackClicked -> {
@@ -139,6 +116,48 @@ class ReviewWriteViewModel
                 }
                 ReviewWriteIntent.SubmitClicked -> {
                     submit()
+                }
+            }
+        }
+
+        private fun handleInitialize(mode: ReviewWriteMode) {
+            when (mode) {
+                is ReviewWriteMode.Create -> {
+                    val prefill = mode.prefill
+                    _state.update {
+                        it.copy(
+                            mode = ReviewModeUi.CREATE,
+                            exhibitId = prefill.exhibitId,
+                            title = prefill.title,
+                            hallName = prefill.hallName,
+                            posterUrl = prefill.posterUrl,
+                            appTopBarTitle = "리뷰 작성하기",
+                            buttonText = "등록하기",
+                            isInitializing = false,
+                        )
+                    }
+                }
+
+                is ReviewWriteMode.Edit -> {
+                    _state.update {
+                        it.copy(
+                            mode = ReviewModeUi.EDIT,
+                            reviewId = mode.reviewId,
+                            appTopBarTitle = "리뷰 수정하기",
+                            buttonText = "수정하기",
+                            isInitializing = true,
+                        )
+                    }
+                    fetchReviewDetail(mode.reviewId)
+                }
+            }
+        }
+
+        private fun fetchReviewDetail(reviewId: Int) {
+            viewModelScope.launch {
+                // usecase 호출
+                _state.update {
+                    it.copy(isInitializing = false)
                 }
             }
         }

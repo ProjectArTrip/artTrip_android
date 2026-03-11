@@ -88,8 +88,8 @@ fun MyPageNavHost(
             MyReviewsRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
-                onNavigateReviewWrite = { exhibitId, prefill ->
-                    mainNavController.navigateToReviewWrite(exhibitId, prefill)
+                onNavigateReviewWrite = { mode ->
+                    mainNavController.navigateToReviewWrite(mode)
                 },
             )
         }

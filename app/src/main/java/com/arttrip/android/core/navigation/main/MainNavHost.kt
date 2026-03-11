@@ -182,11 +182,8 @@ fun MainNavHost(
                 innerPadding,
                 exhibitId,
                 onBack = navController::popBackStack,
-                onNavigateReviewWrite = { prefill ->
-                    navController.navigateToReviewWrite(
-                        exhibitId,
-                        prefill,
-                    )
+                onNavigateReviewWrite = { mode ->
+                    navController.navigateToReviewWrite(mode)
                 },
                 reviewWriteSuccessTick = reviewWriteSuccessTick,
             )
@@ -195,11 +192,11 @@ fun MainNavHost(
         composable(
             route = MainRoute.REVIEW_WRITE,
         ) { _ ->
-            val prefill = remember { navController.consumeReviewWritePrefill() }
+            val mode = remember { navController.consumeReviewWriteMode() } ?: return@composable
 
             ReviewWriteRoute(
                 innerPadding = innerPadding,
-                prefill = prefill,
+                mode = mode,
                 onBack = navController::popBackStack,
                 onSuccessBack = {
                     navController.setReviewWriteSuccessResult()
