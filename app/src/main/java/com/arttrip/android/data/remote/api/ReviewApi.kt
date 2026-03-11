@@ -15,7 +15,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ReviewApi {
-    @GET("${REVIEW_PATH}/{exhibitId}")
+    @GET("${REVIEW_PATH}/exhibit/{exhibitId}")
     suspend fun getExhibitDetailReviews(
         @Path("exhibitId") exhibitId: Int,
         @Query("cursor") cursor: Int? = null,
@@ -23,7 +23,7 @@ interface ReviewApi {
         @Query("w") w: Int = 200,
         @Query("h") h: Int = 200,
         @Query("f") f: String = "webp",
-    ): ReviewPageResDto<ExhibitReviewDto>
+    ): ReviewPageResDto<ExhibitReviewResDto>
 
     @Multipart
     @POST("${REVIEW_PATH}/{exhibitId}")
@@ -45,5 +45,5 @@ interface ReviewApi {
         @Query("w") w: Int = 200,
         @Query("h") h: Int = 200,
         @Query("f") f: String = "webp",
-    ): ReviewPageResDto<UserReviewDto>
+    ): ReviewPageResDto<UserReviewResDto>
 }
