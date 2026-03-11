@@ -6,6 +6,7 @@ data class UserReviewResDto(
     val content: String,
     val photoUrls: List<String>?,
     val posterUrl: String,
+    val hallName: String,
     val visitDate: String,
     val createdAt: String,
 )

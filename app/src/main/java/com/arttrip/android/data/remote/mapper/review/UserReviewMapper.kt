@@ -10,5 +10,6 @@ fun UserReviewResDto.toDomain(): UserReview =
         visitedDate = visitDate,
         content = content,
         photoUrls = photoUrls.orEmpty(),
+        hallName = hallName,
         posterUrl = posterUrl,
     )
