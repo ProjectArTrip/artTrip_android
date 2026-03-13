@@ -1,10 +1,11 @@
 package com.arttrip.android.domain.model.review
 
-data class MyReview(
+data class UserReview(
     val id: Int,
-    val exhibitionId: Int,
     val exhibitionTitle: String,
     val visitedDate: String,
     val content: String,
-    val thumbnailUrl: String,
+    val hallName: String,
+    val posterUrl: String,
+    val photoUrls: List<String>,
 )

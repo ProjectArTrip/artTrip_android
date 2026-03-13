@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.ui.launcher.PhotoPickerMode
 import com.arttrip.android.core.ui.launcher.rememberCameraLauncher
 import com.arttrip.android.core.ui.launcher.rememberPhotoPickerLauncher
+import com.arttrip.android.core.util.LocalToastController
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileEffect
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileIntent
 import kotlinx.coroutines.flow.collectLatest
@@ -26,6 +27,7 @@ fun EditProfileRoute(
     viewModel: EditProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val toast = LocalToastController.current
 
     val photoPickerLauncher =
         rememberSinglePhotoPickerLauncher(
@@ -54,6 +56,7 @@ fun EditProfileRoute(
                 EditProfileEffect.NavigateBack -> onBack()
                 EditProfileEffect.LaunchAlbumPicker -> latestLaunchAlbumPicker()
                 EditProfileEffect.LaunchCamera -> latestLaunchCamera()
+                is EditProfileEffect.ShowToast -> toast.show(eff.message)
             }
         }
     }

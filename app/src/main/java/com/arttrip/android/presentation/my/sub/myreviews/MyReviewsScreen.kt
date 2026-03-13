@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -27,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -40,6 +41,7 @@ import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.rememberScrollUpVisible
+import com.arttrip.android.domain.model.review.UserReview
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsIntent
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsState
 
@@ -52,9 +54,13 @@ fun MyReviewsScreen(
     innerPadding: PaddingValues,
     state: MyReviewsState,
     onIntent: (MyReviewsIntent) -> Unit,
+    reviewItems: LazyPagingItems<UserReview>,
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
+
+    android.util.Log.d("MyReviewsScreen", "itemCount=${reviewItems.itemCount}")
+    val totalCount = state.reviewTotalCount
 
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
@@ -69,37 +75,43 @@ fun MyReviewsScreen(
                 )
             },
         )
-        if (state.isEmpty) {
-            AppEmptyState(
-                modifier = Modifier.fillMaxWidth(),
-                iconResId = R.drawable.ic_empty_review_96,
-                message = "작성된 리뷰가 없습니다.",
-            )
-        } else {
-            ReviewListTopBar(
-                visible = countVisible,
-                count = state.reviews.size,
-            )
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
-                state = listState,
-                contentPadding = PaddingValues(top = 8.dp, bottom = BOTTOM_SCROLL_SPACER),
-                verticalArrangement = Arrangement.spacedBy(REVIEW_ITEM_GAP),
-            ) {
-                // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
 
-                items(state.reviews) { review ->
-                    ReviewItem(
-                        title = review.exhibitionTitle,
-                        visitedDate = review.visitedDate,
-                        thumbnailUrl = review.thumbnailUrl,
-                        content = review.content,
-                        onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked) },
-                        onEditedClick = { onIntent(MyReviewsIntent.EditReviewClicked(review)) },
-                    )
+        when (totalCount) {
+            null -> {
+            }
+            0 -> {
+                AppEmptyState(
+                    modifier = Modifier.fillMaxWidth(),
+                    iconResId = R.drawable.ic_empty_review_96,
+                    message = "작성된 리뷰가 없습니다.",
+                )
+            }
+            else -> {
+                ReviewListTopBar(
+                    visible = countVisible,
+                    count = totalCount,
+                )
+
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = CONTENT_HORIZONTAL_PADDING),
+                    state = listState,
+                    contentPadding = PaddingValues(top = 8.dp, bottom = BOTTOM_SCROLL_SPACER),
+                    verticalArrangement = Arrangement.spacedBy(REVIEW_ITEM_GAP),
+                ) {
+                    items(reviewItems.itemCount) { idx ->
+                        val item = reviewItems[idx] ?: return@items
+                        ReviewItem(
+                            title = item.exhibitionTitle,
+                            visitedDate = item.visitedDate,
+                            thumbnailUrl = item.posterUrl,
+                            content = item.content,
+                            onDeleteClick = { onIntent(MyReviewsIntent.DeleteReviewClicked(item.id)) },
+                            onEditedClick = { onIntent(MyReviewsIntent.EditReviewClicked(item)) },
+                        )
+                    }
                 }
             }
         }
@@ -255,10 +267,13 @@ private fun RemoveReviewDialog(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "삭제한 리뷰는 복구할 수 없으며,\n" +
-                    "스탬프도 함께 삭제됩니다.",
+                modifier = Modifier.fillMaxWidth(),
+                text =
+                    "삭제한 리뷰는 복구할 수 없으며,\n" +
+                        "스탬프도 함께 삭제됩니다.",
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextTertiary,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
         },

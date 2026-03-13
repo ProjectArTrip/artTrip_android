@@ -15,13 +15,17 @@ sealed interface EditProfileIntent {
 
     data object TakePhotoClicked : EditProfileIntent
 
+    interface HasUri : EditProfileIntent {
+        val uri: Uri?
+    }
+
     data class PhotoPickerResult(
-        val uri: Uri?,
-    ) : EditProfileIntent
+        override val uri: Uri?,
+    ) : HasUri
 
     data class CameraResult(
-        val uri: Uri?,
-    ) : EditProfileIntent
+        override val uri: Uri?,
+    ) : HasUri
 
     data object NicknameEditClicked : EditProfileIntent
 

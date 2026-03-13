@@ -45,6 +45,7 @@ import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.ui.theme.ArtTripTheme
+import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteState
 import com.arttrip.android.presentation.reviewwrite.ui.ReviewPhotoRow
@@ -128,7 +129,7 @@ fun ReviewWriteScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             ReviewPhotoRow(
-                photoUris = state.photoUris,
+                photos = state.photos,
                 modifier = Modifier.fillMaxWidth(),
                 onUploadClick = {
                     if (!state.canAddPhoto) return@ReviewPhotoRow
@@ -148,13 +149,14 @@ fun ReviewWriteScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             ReviewTextField(
-                value = state.reviewText,
-                onValueChange = { onIntent(ReviewWriteIntent.ReviewTextChanged(it)) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                maxChars = state.maxTextLength,
+                value = state.reviewText,
+                onValueChange = { onIntent(ReviewWriteIntent.ReviewTextChanged(it)) },
+                showError = state.showReviewLengthError,
+                maxChars = MAX_REVIEW_TEXT_LENGTH,
             )
 
             Spacer(modifier = Modifier.height(bottomContentPadding))

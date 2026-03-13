@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.core.util.bookmark.BookmarkStore
 import com.arttrip.android.domain.model.network.ApiResult
-import com.arttrip.android.domain.model.review.Review
+import com.arttrip.android.domain.model.review.ExhibitionReview
 import com.arttrip.android.domain.usecase.exhibition.GetExhibitionDetailUseCase
 import com.arttrip.android.domain.usecase.review.GetExhibitionReviewsUseCase
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailEffect
@@ -45,7 +45,10 @@ class ExhibitionDetailViewModel
 
         private var reviewCountJob: Job? = null
 
+        private var initializedExhibitId: Int? = null
+
         init {
+
             viewModelScope.launch {
                 state
                     .map { it.detail?.exhibitId }
@@ -104,15 +107,24 @@ class ExhibitionDetailViewModel
                         )
                     }
                 }
+
+                ExhibitionDetailIntent.OnReviewWriteSuccess -> {
+                    viewModelScope.launch { _effect.emit(ExhibitionDetailEffect.RefreshReviews) }
+                }
             }
         }
 
-        fun reviewsFlow(exhibitId: Int): Flow<PagingData<Review>> = getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
+        fun reviewsFlow(exhibitId: Int): Flow<PagingData<ExhibitionReview>> =
+            getExhibitionReviewsUseCase(exhibitId).cachedIn(viewModelScope)
 
         private fun initialize(
             exhibitId: Int,
             imageQueryParams: ImageQueryParams,
         ) {
+            if (initializedExhibitId == exhibitId) return
+
+            initializedExhibitId = exhibitId
+
             fetchExhibitionDetail(exhibitId, imageQueryParams)
 
             getExhibitionReviewsUseCase.clearReviewTotalCount()

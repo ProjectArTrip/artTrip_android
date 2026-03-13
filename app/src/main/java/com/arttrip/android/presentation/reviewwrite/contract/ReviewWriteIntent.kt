@@ -1,13 +1,13 @@
 package com.arttrip.android.presentation.reviewwrite.contract
 
 import android.net.Uri
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 import java.time.LocalDate
 import java.time.YearMonth
 
 sealed interface ReviewWriteIntent {
     data class Initialize(
-        val prefill: ReviewWritePrefill,
+        val mode: ReviewWriteMode,
     ) : ReviewWriteIntent
 
     data object BackClicked : ReviewWriteIntent

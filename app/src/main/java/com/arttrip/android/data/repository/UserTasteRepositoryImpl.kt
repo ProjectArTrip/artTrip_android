@@ -1,9 +1,9 @@
 package com.arttrip.android.data.repository
 
 import com.arttrip.android.data.remote.datasource.KeywordDataSource
+import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.keyword.toDomain
 import com.arttrip.android.data.remote.model.keyword.UserKeywordsReqDto
-import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.TasteGroup
 import com.arttrip.android.domain.repository.UserTasteRepository
@@ -30,7 +30,7 @@ class UserTasteRepositoryImpl
                     emit(ApiResult.Success(groups))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 
@@ -47,7 +47,7 @@ class UserTasteRepositoryImpl
                     emit(ApiResult.Success(groups))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 
@@ -62,7 +62,7 @@ class UserTasteRepositoryImpl
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
     }

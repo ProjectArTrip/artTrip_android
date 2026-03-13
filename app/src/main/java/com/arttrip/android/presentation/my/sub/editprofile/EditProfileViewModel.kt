@@ -1,11 +1,22 @@
 package com.arttrip.android.presentation.my.sub.editprofile
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.util.copyToCacheFile
+import com.arttrip.android.domain.model.network.ApiError
+import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.profile.DeleteProfileImageUseCase
+import com.arttrip.android.domain.usecase.profile.ObserveProfileUseCase
+import com.arttrip.android.domain.usecase.profile.UpdateProfileImageUseCase
+import com.arttrip.android.domain.usecase.profile.UpdateUserNicknameUseCase
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileEffect
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileIntent
 import com.arttrip.android.presentation.my.sub.editprofile.contract.EditProfileState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -17,12 +28,34 @@ import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel
     @Inject
-    constructor() : ViewModel() {
+    constructor(
+        @param:ApplicationContext private val appContext: Context,
+        private val observeProfile: ObserveProfileUseCase,
+        private val updateUserNicknameUseCase: UpdateUserNicknameUseCase,
+        private val updateProfileImageUseCase: UpdateProfileImageUseCase,
+        private val deleteProfileImageUseCase: DeleteProfileImageUseCase,
+    ) : ViewModel() {
         private val _state = MutableStateFlow(EditProfileState())
         val state = _state.asStateFlow()
 
         private val _effect = MutableSharedFlow<EditProfileEffect>()
         val effect = _effect.asSharedFlow()
+
+        init {
+            viewModelScope.launch {
+                observeProfile().collect { profile ->
+                    if (profile != null) {
+                        _state.update {
+                            it.copy(
+                                nickname = profile.nickname,
+                                profileImageUrl = profile.profileImageUrl,
+                                email = profile.email,
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         fun onIntent(intent: EditProfileIntent) {
             when (intent) {
@@ -49,31 +82,20 @@ class EditProfileViewModel
                 }
 
                 EditProfileIntent.RemovePhotoClicked -> {
-                    _state.update {
-                        it.copy(
-                            isImageSheetVisible = false,
-                            profileImageUrl = null, // TODO API
-                        )
-                    }
+                    _state.update { it.copy(isImageSheetVisible = false) }
+                    deleteProfileImage()
                 }
 
-                is EditProfileIntent.PhotoPickerResult -> {
+                is EditProfileIntent.HasUri -> {
                     val uri = intent.uri ?: return
-                    // TODO API 및 로딩
-                    _state.update { it.copy(profileImageUrl = uri.toString()) }
-                }
-
-                is EditProfileIntent.CameraResult -> {
-                    val uri = intent.uri ?: return
-                    // TODO API 및 로딩
-                    _state.update { it.copy(profileImageUrl = uri.toString()) }
+                    uploadProfileImage(uri)
                 }
 
                 EditProfileIntent.NicknameEditClicked -> {
                     _state.update {
                         it.copy(
                             isNicknameDialogVisible = true,
-                            nicknameInput = it.userName,
+                            nicknameInput = it.nickname,
                             nicknameHelperText = null,
                         )
                     }
@@ -98,34 +120,111 @@ class EditProfileViewModel
                 }
 
                 EditProfileIntent.NicknameConfirmClicked -> {
-                    viewModelScope.launch {
-                        val nickname = state.value.nicknameInput.trim()
+                    val nickname = state.value.nicknameInput.trim()
+                    submitNicknameChange(nickname)
+                }
+            }
+        }
 
-                        val isDuplicated = checkNicknameDuplicate(nickname)
-
-                        if (isDuplicated) {
-                            _state.update { it.copy(nicknameHelperText = "이미 사용 중인 닉네임이에요.") }
-                            return@launch
+        private fun submitNicknameChange(nickname: String) {
+            viewModelScope.launch {
+                updateUserNicknameUseCase(
+                    nickname = nickname,
+                ).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = true,
+                                )
+                            }
                         }
+                        is ApiResult.Success -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isNicknameDialogVisible = false,
+                                    nicknameHelperText = null,
+                                )
+                            }
+                        }
+                        is ApiResult.Error -> {
+                            val isNicknameConflict =
+                                (result.error as? ApiError.HttpError)?.let { e ->
+                                    e.statusCode == 409 || e.serverCode == "USER409-CONFLICT"
+                                } == true
 
-                        _state.update {
-                            it.copy(
-                                userName = nickname,
-                                isNicknameDialogVisible = false,
-                                nicknameHelperText = null,
-                            )
+                            if (isNicknameConflict) {
+                                _state.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        nicknameHelperText = "이미 사용 중인 닉네임이에요.",
+                                    )
+                                }
+                            } else {
+                                _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                                Log.d("EditProfile", "${result.error}")
+                                _state.update {
+                                    it.copy(
+                                        nicknameHelperText = null,
+                                        isNicknameDialogVisible = false,
+                                        isLoading = false,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        /**
-         * TODO: 실제 API 연동 포인트
-         * - true면 중복, false면 사용 가능
-         */
-        private fun checkNicknameDuplicate(nickname: String): Boolean {
-            // 임시: "test"면 중복
-            return nickname.equals("test", ignoreCase = true)
+        private fun uploadProfileImage(uri: Uri) {
+            viewModelScope.launch {
+                val file =
+                    uri.copyToCacheFile(
+                        context = appContext,
+                        subDir = "profile_upload",
+                        filePrefix = "edit_profile_",
+                    )
+
+                if (file == null) {
+                    // TODO: 토스트/에러 이펙트
+                    return@launch
+                }
+
+                updateProfileImageUseCase(file).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update { it.copy(isLoading = true) }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isLoading = false) }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(isLoading = false) }
+                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun deleteProfileImage() {
+            viewModelScope.launch {
+                deleteProfileImageUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {
+                            _state.update { it.copy(isLoading = true) }
+                        }
+                        is ApiResult.Success -> {
+                            _state.update { it.copy(isLoading = false) }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(isLoading = false) }
+                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        }
+                    }
+                }
+            }
         }
     }

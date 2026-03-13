@@ -12,28 +12,28 @@ import com.arttrip.android.core.ui.launcher.PhotoPickerMode
 import com.arttrip.android.core.ui.launcher.rememberPhotoPickerLauncher
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ReviewWriteRoute(
     innerPadding: PaddingValues,
-    prefill: ReviewWritePrefill?,
+    mode: ReviewWriteMode,
     onBack: () -> Unit,
+    onSuccessBack: () -> Unit,
     viewModel: ReviewWriteViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val photoPickerLauncher =
         rememberRemainingPhotoPickerLauncher(
-            currentCount = state.photoUris.size,
+            currentCount = state.photos.size,
             onPicked = { viewModel.onIntent(ReviewWriteIntent.PhotoPickerResult(it)) },
         )
     val latestLaunchPicker by rememberUpdatedState(newValue = photoPickerLauncher)
 
-    LaunchedEffect(prefill) {
-        if (prefill == null) return@LaunchedEffect
-        viewModel.onIntent(ReviewWriteIntent.Initialize(prefill = prefill))
+    LaunchedEffect(mode) {
+        viewModel.onIntent(ReviewWriteIntent.Initialize(mode = mode))
     }
 
     LaunchedEffect(Unit) {
@@ -43,6 +43,7 @@ fun ReviewWriteRoute(
                     latestLaunchPicker()
                 }
                 ReviewWriteEffect.NavigateBack -> onBack()
+                ReviewWriteEffect.NavigateBackWithSuccess -> onSuccessBack()
             }
         }
     }

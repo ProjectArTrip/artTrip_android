@@ -3,6 +3,7 @@ package com.arttrip.android.presentation.my
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.data.local.auth.SessionManager
+import com.arttrip.android.domain.usecase.profile.ObserveProfileUseCase
 import com.arttrip.android.presentation.my.contract.MyPageEffect
 import com.arttrip.android.presentation.my.contract.MyPageIntent
 import com.arttrip.android.presentation.my.contract.MyPageState
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class MyPageViewModel
     @Inject
     constructor(
+        private val observeProfile: ObserveProfileUseCase,
         private val sessionManager: SessionManager,
     ) : ViewModel() {
         private val _state = MutableStateFlow(MyPageState())
@@ -25,6 +28,22 @@ class MyPageViewModel
 
         private val _effect = MutableSharedFlow<MyPageEffect>()
         val effect: SharedFlow<MyPageEffect> = _effect
+
+        init {
+
+            viewModelScope.launch {
+                observeProfile().collect { profile ->
+                    if (profile != null) {
+                        _state.update {
+                            it.copy(
+                                userName = profile.nickname,
+                                profileImageUrl = profile.profileImageUrl,
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         fun onIntent(intent: MyPageIntent) {
             when (intent) {

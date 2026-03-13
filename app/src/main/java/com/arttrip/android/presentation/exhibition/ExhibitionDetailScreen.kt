@@ -14,23 +14,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -43,28 +40,26 @@ import com.arttrip.android.core.ui.component.tab.AppTabRow
 import com.arttrip.android.core.ui.component.tag.AppTagL
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.domain.model.review.Review
+import com.arttrip.android.domain.model.review.ExhibitionReview
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailIntent
 import com.arttrip.android.presentation.exhibition.contract.ExhibitionDetailState
 import com.arttrip.android.presentation.exhibition.ui.ExhibitionInfoSection
 import com.arttrip.android.presentation.exhibition.ui.tab.ExhibitionDetailInfoTab
 import com.arttrip.android.presentation.exhibition.ui.tab.ExhibitionMapTab
 import com.arttrip.android.presentation.exhibition.ui.tab.exhibitionReviewTab
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun ExhibitionDetailScreen(
     innerPadding: PaddingValues,
     state: ExhibitionDetailState,
     onIntent: (ExhibitionDetailIntent) -> Unit,
-    reviewsFlow: Flow<PagingData<Review>>,
+    reviewItems: LazyPagingItems<ExhibitionReview>,
 ) {
     val heroVisibleHeight = 264.dp
     val contentRadius = 16.dp
 
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val reviewItems = reviewsFlow.collectAsLazyPagingItems()
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+
     Column(
         modifier =
             Modifier
@@ -292,40 +287,5 @@ private fun ExhibitHeroImage(
         ) {
             chip()
         }
-    }
-}
-
-@Preview(showBackground = true, name = "Exhibition Detail Preview")
-@Composable
-private fun ExhibitionDetailScreenPreview() {
-    val dummyReviewsFlow =
-        flowOf(
-            PagingData.from(
-                listOf(
-                    Review(
-                        id = 1,
-                        writer = "김하늘",
-                        visitDate = "2025-11-12",
-                        content = "전시 동선이 깔끔하고 작품 설명이 친절해서 몰입하기 좋았어요.",
-                        photoUrls = emptyList(),
-                    ),
-                    Review(
-                        id = 2,
-                        writer = "이서연",
-                        visitDate = "2025-09-03",
-                        content = "테마가 명확해서 좋았고, 마지막 섹션이 특히 인상 깊었어요.",
-                        photoUrls = listOf("https://i.ibb.co/nsRDL64B/detail.png"),
-                    ),
-                ),
-            ),
-        )
-
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        ExhibitionDetailScreen(
-            innerPadding = innerPadding,
-            state = ExhibitionDetailState(),
-            onIntent = {},
-            reviewsFlow = dummyReviewsFlow,
-        )
     }
 }

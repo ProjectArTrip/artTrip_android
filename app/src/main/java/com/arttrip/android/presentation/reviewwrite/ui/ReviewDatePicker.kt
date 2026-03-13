@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,11 +30,11 @@ import java.time.YearMonth
 /**
  * 단일 선택 DatePicker (월 이동 + 요일 라인 + 7열 그리드)
  *
- * - 첫 주: 이전 달 날짜로 채움(흐리게)
- * - 마지막 주: 다음 달 날짜로 채움(흐리게)
- * - 선택: 한 날짜만 선택 가능
- * - 옆달 날짜 클릭: 해당 월로 이동 + 선택(일반 캘린더 UX)
- *
+ * - 첫/마지막 주는 인접 월 날짜를 함께 표시
+ * - 날짜는 1개만 선택 가능
+ * - 인접 월 날짜 클릭 시 해당 월로 이동만 하고 선택되지는 않음
+ * - 오늘 포함 과거 날짜만 선택 가능
+ * - 미래 날짜는 비활성 스타일로 표시
  */
 @Composable
 fun SingleSelectDatePicker(
@@ -48,8 +47,10 @@ fun SingleSelectDatePicker(
 ) {
     var month by remember { mutableStateOf(initialMonth) }
     var selected by remember { mutableStateOf(initialSelected) }
-    LaunchedEffect(initialMonth) { month = initialMonth }
-    LaunchedEffect(initialSelected) { selected = initialSelected }
+
+    val today = LocalDate.now()
+    val currentMonth = YearMonth.from(today)
+    val canGoNextMonth = month < currentMonth
 
     val cells = remember(month) { buildMonthCellsWithAdjacent(month) }
 
@@ -68,12 +69,14 @@ fun SingleSelectDatePicker(
                 CalendarHeader(
                     year = month.year,
                     month = month.monthValue,
+                    canGoNext = canGoNextMonth,
                     onPrev = {
                         val newMonth = month.minusMonths(1)
                         month = newMonth
                         onMonthChanged(newMonth)
                     },
                     onNext = {
+                        if (!canGoNextMonth) return@CalendarHeader
                         val newMonth = month.plusMonths(1)
                         month = newMonth
                         onMonthChanged(newMonth)
@@ -104,28 +107,29 @@ fun SingleSelectDatePicker(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     week.forEach { cell ->
+                        val isFutureDate = cell.date.isAfter(today)
                         val state =
                             resolveDayState(
                                 date = cell.date,
                                 selected = selected,
                                 inMonth = cell.inMonth,
+                                today = today,
                             )
                         DayChipCase02(
                             dayOfMonth = cell.date.dayOfMonth,
                             state = state,
                             onClick = {
-                                if (cell.inMonth) {
-                                    selected = cell.date
-                                    onDateSelected(cell.date)
-                                } else {
-                                    // 옆달 날짜 클릭 시: 해당 달로 이동 + 선택
+                                if (isFutureDate) return@DayChipCase02
+
+                                if (!cell.inMonth) {
                                     val newMonth = YearMonth.from(cell.date)
                                     month = newMonth
                                     onMonthChanged(newMonth)
-
-                                    selected = cell.date
-                                    onDateSelected(cell.date)
+                                    return@DayChipCase02
                                 }
+
+                                selected = cell.date
+                                onDateSelected(cell.date)
                             },
                         )
                     }
@@ -143,6 +147,7 @@ fun SingleSelectDatePicker(
 private fun CalendarHeader(
     year: Int,
     month: Int,
+    canGoNext: Boolean,
     onPrev: () -> Unit,
     onNext: () -> Unit,
 ) {
@@ -164,7 +169,9 @@ private fun CalendarHeader(
         Spacer(modifier = Modifier.width(4.dp))
         AppIconButton(
             iconResId = R.drawable.ic_more_24,
+            enabled = canGoNext,
             onIconClick = onNext,
+            tint = if (canGoNext) AppColor.Gray900 else AppColor.Gray100,
         )
     }
 }
@@ -172,7 +179,7 @@ private fun CalendarHeader(
 @Composable
 private fun WeekdayRow(modifier: Modifier = Modifier) {
     val labels = listOf("일", "월", "화", "수", "목", "금", "토")
-    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         labels.forEach { label ->
             Text(
                 text = label,
@@ -232,9 +239,11 @@ private fun resolveDayState(
     date: LocalDate,
     selected: LocalDate?,
     inMonth: Boolean,
+    today: LocalDate,
 ): DayChipStateCase02 =
     when {
         !inMonth -> DayChipStateCase02.Disabled
+        date.isAfter(today) -> DayChipStateCase02.Disabled
         selected == date -> DayChipStateCase02.Selected
         else -> DayChipStateCase02.Unselected
     }

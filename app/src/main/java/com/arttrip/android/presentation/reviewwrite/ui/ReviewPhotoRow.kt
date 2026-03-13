@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.reviewwrite.ui
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,18 +19,18 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.UploadButton
 import com.arttrip.android.core.util.noRippleClickable
-
-private const val MAX_REVIEW_PHOTO_COUNT = 4
+import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
+import com.arttrip.android.presentation.reviewwrite.contract.ReviewPhotoItem
 
 @Composable
 fun ReviewPhotoRow(
-    photoUris: List<Uri>,
+    photos: List<ReviewPhotoItem>,
     modifier: Modifier = Modifier,
     onUploadClick: () -> Unit,
     onRemoveClick: (index: Int) -> Unit,
     onPhotoClick: (index: Int) -> Unit,
 ) {
-    val shown = photoUris.take(MAX_REVIEW_PHOTO_COUNT)
+    val shown = photos.take(MAX_REVIEW_PHOTO_COUNT)
     val canAddMore = shown.size < MAX_REVIEW_PHOTO_COUNT
 
     Row(
@@ -41,13 +40,13 @@ fun ReviewPhotoRow(
                 .padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        shown.forEachIndexed { index, uri ->
+        shown.forEachIndexed { index, photo ->
             ReviewPhotoThumbnail(
                 modifier =
                     Modifier
                         .weight(1f)
                         .aspectRatio(1f),
-                uri = uri,
+                photo = photo,
                 onClick = { onPhotoClick(index) },
                 onRemoveClick = { onRemoveClick(index) },
             )
@@ -83,7 +82,7 @@ fun ReviewPhotoRow(
 @Composable
 private fun ReviewPhotoThumbnail(
     modifier: Modifier,
-    uri: Uri,
+    photo: ReviewPhotoItem,
     onClick: () -> Unit,
     onRemoveClick: () -> Unit,
 ) {
@@ -97,7 +96,7 @@ private fun ReviewPhotoThumbnail(
     ) {
         ReviewPhotoImage(
             modifier = Modifier.matchParentSize(),
-            uri = uri,
+            photo = photo,
         )
         AppIconButton(
             modifier =
@@ -114,11 +113,16 @@ private fun ReviewPhotoThumbnail(
 @Composable
 private fun ReviewPhotoImage(
     modifier: Modifier = Modifier,
-    uri: Uri,
+    photo: ReviewPhotoItem,
 ) {
+    val model =
+        when (photo) {
+            is ReviewPhotoItem.Local -> photo.uri
+            is ReviewPhotoItem.Remote -> photo.imageUrl
+        }
     AsyncImage(
         modifier = modifier,
-        model = uri,
+        model = model,
         contentDescription = "리뷰 사진",
         contentScale = ContentScale.Crop,
     )

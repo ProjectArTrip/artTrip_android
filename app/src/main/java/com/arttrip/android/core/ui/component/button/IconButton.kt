@@ -47,6 +47,7 @@ import com.arttrip.android.core.util.noRippleClickable
  * @param iconResId 표시할 드로어블 리소스 ID
  * @param contentDescription 접근성용 설명. 필요 없으면 `null`
  * @param tint 아이콘 색상. 기본값은 [Color.Unspecified] 로 원본 색상을 사용
+ * @param enabled 클릭 가능 여부. `false`면 클릭 불가
  * @param onIconClick 아이콘 클릭 시 호출되는 콜백
  */
 @Composable
@@ -55,6 +56,7 @@ fun AppIconButton(
     @DrawableRes iconResId: Int,
     contentDescription: String? = null,
     tint: Color = Color.Unspecified,
+    enabled: Boolean = true,
     onIconClick: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -70,6 +72,7 @@ fun AppIconButton(
             Modifier
                 .size(24.dp)
                 .clickable(
+                    enabled = enabled,
                     interactionSource = interactionSource,
                     indication = rippleIndication,
                     onClick = onIconClick,

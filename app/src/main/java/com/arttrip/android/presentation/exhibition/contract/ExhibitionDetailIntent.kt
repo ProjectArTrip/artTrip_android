@@ -17,4 +17,6 @@ sealed interface ExhibitionDetailIntent {
     data object WriteReviewDialogDismissClicked : ExhibitionDetailIntent
 
     data object WriteReviewConfirmClicked : ExhibitionDetailIntent
+
+    data object OnReviewWriteSuccess : ExhibitionDetailIntent
 }

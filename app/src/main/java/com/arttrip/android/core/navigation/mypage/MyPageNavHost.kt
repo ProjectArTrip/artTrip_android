@@ -6,11 +6,17 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.arttrip.android.core.navigation.main.consumeReviewWriteSuccessResult
 import com.arttrip.android.core.navigation.main.navigateToExhibitionDetail
 import com.arttrip.android.core.navigation.main.navigateToReviewWrite
 import com.arttrip.android.core.navigation.main.navigateToTaste
@@ -85,11 +91,20 @@ fun MyPageNavHost(
             )
         }
         composable(MyPageRoute.MY_REVIEWS) {
+            var reviewWriteSuccessTick by remember { mutableIntStateOf(0) }
+            val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+            LaunchedEffect(currentBackStackEntry) {
+                if (mainNavController.consumeReviewWriteSuccessResult()) {
+                    reviewWriteSuccessTick++
+                }
+            }
             MyReviewsRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
-                onNavigateReviewWrite = { exhibitId, prefill ->
-                    mainNavController.navigateToReviewWrite(exhibitId, prefill)
+                reviewWriteSuccessTick = reviewWriteSuccessTick,
+                onNavigateReviewWrite = { mode ->
+                    mainNavController.navigateToReviewWrite(mode)
                 },
             )
         }

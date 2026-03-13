@@ -6,8 +6,7 @@ import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.NavKeys
-import com.arttrip.android.core.navigation.main.MainRoute
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
+import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 
 /* ================================
  * Public API
@@ -40,12 +39,9 @@ fun NavHostController.navigateToGenre(
     navigate(MainRoute.genre(country, genre))
 }
 
-fun NavHostController.navigateToReviewWrite(
-    exhibitId: Int,
-    prefill: ReviewWritePrefill,
-) {
-    setReviewWritePrefill(prefill)
-    navigate(MainRoute.reviewWrite(exhibitId))
+fun NavHostController.navigateToReviewWrite(mode: ReviewWriteMode) {
+    setReviewWriteMode(mode)
+    navigate(MainRoute.REVIEW_WRITE)
 }
 
 fun NavHostController.navigateToTaste() {
@@ -56,17 +52,28 @@ fun NavHostController.navigateToTaste() {
  * 이전 backStackEntry에서 ReviewWritePrefill을 꺼내오고(consume) 즉시 삭제
  * - ReviewWriteRoute에서 remember로 1회만 읽도록 감싸서 쓰는 걸 권장
  */
-fun NavHostController.consumeReviewWritePrefill(): ReviewWritePrefill? {
+fun NavHostController.consumeReviewWriteMode(): ReviewWriteMode? {
     val handle = previousBackStackEntry?.savedStateHandle ?: return null
-    return handle.consume<ReviewWritePrefill>(NavKeys.REVIEW_WRITE_PREFILL)
+    return handle.consume<ReviewWriteMode>(NavKeys.REVIEW_WRITE_MODE)
+}
+
+fun NavHostController.consumeReviewWriteSuccessResult(): Boolean {
+    val handle = currentBackStackEntry?.savedStateHandle ?: return false
+    return handle.consume<Boolean>(NavKeys.REVIEW_WRITE_RESULT) ?: false
 }
 
 /* ================================
  * Private helpers
  * ================================ */
 
-private fun NavHostController.setReviewWritePrefill(prefill: ReviewWritePrefill) {
-    currentBackStackEntry?.savedStateHandle?.set(NavKeys.REVIEW_WRITE_PREFILL, prefill)
+private fun NavHostController.setReviewWriteMode(mode: ReviewWriteMode) {
+    currentBackStackEntry?.savedStateHandle?.set(NavKeys.REVIEW_WRITE_MODE, mode)
+}
+
+fun NavHostController.setReviewWriteSuccessResult() {
+    previousBackStackEntry
+        ?.savedStateHandle
+        ?.set(NavKeys.REVIEW_WRITE_RESULT, true)
 }
 
 /**

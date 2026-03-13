@@ -1,6 +1,12 @@
 package com.arttrip.android.data.remote.datasource
 
 import com.arttrip.android.data.remote.api.ReviewApi
+import com.arttrip.android.data.remote.model.review.ExhibitReviewResDto
+import com.arttrip.android.data.remote.model.review.ReviewDetailResDto
+import com.arttrip.android.data.remote.model.review.ReviewPageResDto
+import com.arttrip.android.data.remote.model.review.UserReviewResDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class ReviewDataSource
@@ -12,9 +18,43 @@ class ReviewDataSource
             exhibitId: Int,
             cursor: Int?,
             size: Int,
-        ) = api.getExhibitDetailReviews(
+        ): ReviewPageResDto<ExhibitReviewResDto> =
+            api.getExhibitDetailReviews(
+                exhibitId = exhibitId,
+                cursor = cursor,
+                size = size,
+            )
+
+        suspend fun getReviewDetail(reviewId: Int): ReviewDetailResDto = api.getReview(reviewId = reviewId)
+
+        suspend fun postReview(
+            exhibitId: Int,
+            request: RequestBody,
+            parts: List<MultipartBody.Part>?,
+        ) = api.postReview(
             exhibitId = exhibitId,
-            cursor = cursor,
-            size = size,
+            request = request,
+            images = parts,
         )
+
+        suspend fun deleteReview(reviewId: Int) = api.deleteReview(reviewId = reviewId)
+
+        suspend fun patchReview(
+            reviewId: Int,
+            request: RequestBody,
+            parts: List<MultipartBody.Part>?,
+        ) = api.patchReview(
+            reviewId = reviewId,
+            request = request,
+            images = parts,
+        )
+
+        suspend fun getUserReviews(
+            cursor: Int?,
+            size: Int,
+        ): ReviewPageResDto<UserReviewResDto> =
+            api.getUserReviews(
+                cursor = cursor,
+                size = size,
+            )
     }
