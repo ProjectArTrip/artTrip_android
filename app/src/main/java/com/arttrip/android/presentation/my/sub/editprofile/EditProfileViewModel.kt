@@ -162,12 +162,12 @@ class EditProfileViewModel
                                     )
                                 }
                             } else {
-                                // TODO Toast
+                                _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
                                 Log.d("EditProfile", "${result.error}")
                                 _state.update {
                                     it.copy(
                                         nicknameHelperText = null,
-                                        isNicknameDialogVisible = true,
+                                        isNicknameDialogVisible = false,
                                         isLoading = false,
                                     )
                                 }
@@ -202,7 +202,7 @@ class EditProfileViewModel
                         }
                         is ApiResult.Error -> {
                             _state.update { it.copy(isLoading = false) }
-                            // TODO: 토스트/에러 이펙트
+                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
                         }
                     }
                 }
@@ -221,7 +221,7 @@ class EditProfileViewModel
                         }
                         is ApiResult.Error -> {
                             _state.update { it.copy(isLoading = false) }
-                            // TODO: 토스트/에러 이펙트
+                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
                         }
                     }
                 }

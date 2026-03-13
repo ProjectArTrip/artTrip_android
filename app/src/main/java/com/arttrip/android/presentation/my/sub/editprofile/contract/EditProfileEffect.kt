@@ -6,4 +6,8 @@ sealed interface EditProfileEffect {
     data object LaunchAlbumPicker : EditProfileEffect
 
     data object LaunchCamera : EditProfileEffect
+
+    data class ShowToast(
+        val message: String,
+    ) : EditProfileEffect
 }
