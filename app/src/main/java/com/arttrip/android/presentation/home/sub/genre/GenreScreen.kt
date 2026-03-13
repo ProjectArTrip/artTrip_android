@@ -18,6 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,7 @@ import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
+import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
@@ -128,6 +133,9 @@ fun GenreFilterBottomSheet(
     onIntent: (GenreIntent) -> Unit,
     state: GenreState
 ) {
+    var selectedSortType by remember { mutableStateOf(state.selectedSortType) }
+    var selectedGenre by remember { mutableStateOf(state.selectedGenre) }
+
     AppModalBottomSheet(
         visible = visible,
         topBar = AppBottomSheetTopBar.Header(),
@@ -149,30 +157,16 @@ fun GenreFilterBottomSheet(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                AppFilterChip(
-                    case = AppFilterChipCase.Case02,
-                    text = SortType.LATEST.label,
-                    selected = state.selectedSortType == SortType.LATEST,
-                    onClick = {
-                        onIntent(GenreIntent.SelectSortType(SortType.LATEST))
-                    }
-                )
-                AppFilterChip(
-                    case = AppFilterChipCase.Case02,
-                    text = SortType.DEADLINE.label,
-                    selected = state.selectedSortType == SortType.DEADLINE,
-                    onClick = {
-                        onIntent(GenreIntent.SelectSortType(SortType.DEADLINE))
-                    }
-                )
-                AppFilterChip(
-                    case = AppFilterChipCase.Case02,
-                    text = SortType.POPULAR.label,
-                    selected = state.selectedSortType == SortType.POPULAR,
-                    onClick = {
-                        onIntent(GenreIntent.SelectSortType(SortType.POPULAR))
-                    }
-                )
+                SortType.entries.forEach { sortType ->
+                    AppFilterChip(
+                        case = AppFilterChipCase.Case02,
+                        text = sortType.label,
+                        selected = selectedSortType == sortType,
+                        onClick = {
+                            selectedSortType = sortType
+                        }
+                    )
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -203,20 +197,28 @@ fun GenreFilterBottomSheet(
                     AppFilterChip(
                         case = AppFilterChipCase.Case02,
                         text = genre.label,
-                        selected = state.selectedGenre == genre,
+                        selected = selectedGenre == genre,
                         onClick = {
-                            onIntent(GenreIntent.SelectGenre(genre))
+                            selectedGenre = genre
                         }
                     )
                 }
             }
             Spacer(
                 modifier = Modifier
-                    .height(16.dp)
+                    .height(48.dp)
+            )
+            AppButton(
+                text = "적용하기",
+                onClick = {
+                    onIntent(GenreIntent.CloseFilterSheet)
+                    onIntent(GenreIntent.SelectSortType(selectedSortType))
+                    onIntent(GenreIntent.SelectGenre(selectedGenre!!))
+                }
             )
             Spacer(
                 modifier = Modifier
-                    .height(36.dp)
+                    .height(16.dp)
             )
         }
     )

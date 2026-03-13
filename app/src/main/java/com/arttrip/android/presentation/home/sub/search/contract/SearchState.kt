@@ -26,4 +26,5 @@ data class SearchState(
             "해외",
         ),
     val inputText: String = "",
+    val isSearchResultVisible: Boolean = false,
 )

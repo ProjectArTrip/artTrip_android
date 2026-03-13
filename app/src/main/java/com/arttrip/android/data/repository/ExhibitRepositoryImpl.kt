@@ -1,11 +1,17 @@
 package com.arttrip.android.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.datasource.UserDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
 import com.arttrip.android.data.remote.mapper.user.toDomain
+import com.arttrip.android.data.remote.paging.exhibit.ExhibitListPagingSource
+import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
 import com.arttrip.android.domain.model.exhibition.RecentExhibition
 import com.arttrip.android.domain.model.network.ApiResult
@@ -54,4 +60,40 @@ class ExhibitRepositoryImpl
                     emit(ApiResult.Error(error))
                 }
             }
+        override fun getExhibits(
+            query: String?,
+            startDate: String?,
+            endDate: String?,
+            isDomestic: Boolean?,
+            country: String?,
+            region: String?,
+            genres: List<String>?,
+            styles: List<String>?,
+            sortType: SortType?,
+            pageSize: Int,
+            initialLoadSize: Int,
+        ): Flow<PagingData<Exhibition>> =
+            Pager(
+                config =
+                    PagingConfig(
+                        pageSize = pageSize,
+                        initialLoadSize = initialLoadSize,
+                        prefetchDistance = 1,
+                        enablePlaceholders = false,
+                    ),
+                pagingSourceFactory = {
+                    ExhibitListPagingSource(
+                        dataSource = dataSource,
+                        query = query,
+                        startDate = startDate,
+                        endDate = endDate,
+                        isDomestic = isDomestic,
+                        country = country,
+                        region = region,
+                        genres = genres,
+                        styles = styles,
+                        sortType = sortType,
+                    )
+                },
+            ).flow
     }

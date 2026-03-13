@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home.sub.search
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -43,6 +48,7 @@ fun SearchScreen(
     innerPadding: PaddingValues,
     state: SearchState,
     onIntent: (SearchIntent) -> Unit,
+    exhibitionList : LazyPagingItems<Exhibition>
 ) {
     Box(
         modifier =
@@ -108,24 +114,29 @@ fun SearchScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
             ) {
-                // 초기 섹션
-                SearchIdleContent(
-                    state = state,
-                    onIntent = onIntent,
-                )
+                if (!state.isSearchResultVisible) {
+                    SearchIdleContent(
+                        state = state,
+                        onIntent = onIntent,
+                    )
 
-//                // 검색 결과 X 섹션
-//                EmptySearchResultContent()
-//
-//                // 검색 결과 O 섹션
-//                SearchResultContent(
-//                    onExhibitionClick = { id ->
-//                        onIntent(SearchIntent.ExhibitionClicked(id))
-//                    },
-//                    onLikeClick = { id ->
-//                        onIntent(SearchIntent.LikeClicked(id))
-//                    },
-//                )
+                } else {
+                    if (exhibitionList.itemCount == 0 &&
+                        exhibitionList.loadState.refresh is LoadState.NotLoading
+                    ) {
+                        EmptySearchResultContent()
+                    } else {
+                        SearchResultContent(
+                            exhibitions = exhibitionList,
+                            onExhibitionClick = { id ->
+                                onIntent(SearchIntent.ExhibitionClicked(id))
+                            },
+                            onLikeClick = { id ->
+                                onIntent(SearchIntent.LikeClicked(id))
+                            },
+                        )
+                    }
+                }
             }
         }
     }
@@ -287,55 +298,41 @@ fun EmptySearchResultContent() {
 
 @Composable
 fun SearchResultContent(
+    exhibitions: LazyPagingItems<Exhibition>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+    Log.d("hyunjun", "${exhibitions.itemCount}")
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Spacer(
-            modifier =
-                Modifier
-                    .height(24.dp),
-        )
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            val dummyExhibition =
-                Exhibition(
-                    id = 1,
-                    title = "DDP 매거진 라이브러리: 기록에 머물다",
-                    posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                    status = ExhibitionStatus.ONGOING,
-                    period = "2025.01.01 - 2025.12.31",
-                    hallName = "DDP 동대문디자인플라자",
-                    country = "대한민국",
-                    region = "서울",
-                    isBookmarked = true,
+
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        items(exhibitions.itemCount) { index ->
+
+            exhibitions[index]?.let { exhibition ->
+
+                ExhibitionItem(
+                    exhibition = exhibition,
+                    onExhibitionClick = onExhibitionClick,
+                    onLikeClick = onLikeClick,
                 )
 
-            repeat(10) {
-                ExhibitionItem(
-                    exhibition = dummyExhibition,
-                    onExhibitionClick = { id ->
-                        onExhibitionClick(id)
-                    },
-                    onLikeClick = { id ->
-                        onLikeClick(id)
-                    },
-                )
             }
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(24.dp),
-            )
+        }
+
+        if (exhibitions.loadState.append is LoadState.Loading) {
+            item {
+                CircularProgressIndicator()
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
