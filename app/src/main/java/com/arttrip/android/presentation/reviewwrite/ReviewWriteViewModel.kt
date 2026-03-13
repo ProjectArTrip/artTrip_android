@@ -1,12 +1,12 @@
 package com.arttrip.android.presentation.reviewwrite
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.util.copyToCacheFile
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
+import com.arttrip.android.domain.usecase.review.EditReviewUseCase
 import com.arttrip.android.domain.usecase.review.GetReviewDetailUseCase
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_PHOTO_COUNT
 import com.arttrip.android.presentation.reviewwrite.contract.MAX_REVIEW_TEXT_LENGTH
@@ -36,6 +36,7 @@ class ReviewWriteViewModel
         @param:ApplicationContext private val appContext: Context,
         private val getReviewDetailUseCase: GetReviewDetailUseCase,
         private val createReviewUseCase: CreateReviewUseCase,
+        private val editReviewUseCase: EditReviewUseCase,
     ) : ViewModel() {
         private val _state =
             MutableStateFlow(ReviewWriteState())
@@ -269,20 +270,26 @@ class ReviewWriteViewModel
                     }
 
                     ReviewModeUi.EDIT -> {
-                        val addedLocalPhotos =
-                            snapshot.photos.filterIsInstance<ReviewPhotoItem.Local>()
+                        if (snapshot.reviewId == null) return@launch
 
-                        Log.d(
-                            "ReviewWrite",
-                            """
-                            EDIT submit debug
-                            - reviewId: ${snapshot.reviewId}
-                            - deletedImageIds: ${snapshot.deletedImageIds}
-                            - addedLocalPhotoCount: ${addedLocalPhotos.size}
-                            - addedLocalPhotoUris: ${addedLocalPhotos.joinToString { it.uri.toString() }}
-                            - newFilePaths: ${newFiles.joinToString { it.absolutePath }}
-                            """.trimIndent(),
-                        )
+                        editReviewUseCase(
+                            reviewId = snapshot.reviewId,
+                            date = snapshot.visitDate.toString(),
+                            content = snapshot.reviewText,
+                            files = newFiles,
+                            deletedImageIds = snapshot.deletedImageIds,
+                        ).collect { result ->
+                            when (result) {
+                                is ApiResult.Loading -> Unit
+                                is ApiResult.Success -> {
+                                    _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                }
+                                is ApiResult.Error -> {
+                                    _state.update { it.copy(isSubmitting = false) }
+                                }
+                            }
+                        }
 
                         _state.update { it.copy(isSubmitting = false) }
                     }

@@ -87,6 +87,8 @@ class MyReviewsViewModel
                     deleteReview(reviewId)
                 }
                 MyReviewsIntent.RemoveDialogDismissed -> _state.update { it.copy(isRemoveDialogVisible = false) }
+
+                MyReviewsIntent.OnReviewEditSuccess -> viewModelScope.launch { _effect.emit(MyReviewsEffect.RefreshReviews) }
             }
         }
 

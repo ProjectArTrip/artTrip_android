@@ -8,6 +8,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsEffect
+import com.arttrip.android.presentation.my.sub.myreviews.contract.MyReviewsIntent
 import com.arttrip.android.presentation.reviewwrite.model.ReviewEditPrefill
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
 import kotlinx.coroutines.flow.collectLatest
@@ -17,6 +18,7 @@ fun MyReviewsRoute(
     innerPadding: PaddingValues,
     onBack: () -> Unit,
     onNavigateReviewWrite: (mode: ReviewWriteMode) -> Unit,
+    reviewWriteSuccessTick: Int,
     viewModel: MyReviewsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -45,6 +47,11 @@ fun MyReviewsRoute(
         }
     }
 
+    LaunchedEffect(reviewWriteSuccessTick) {
+        if (reviewWriteSuccessTick > 0) {
+            viewModel.onIntent(MyReviewsIntent.OnReviewEditSuccess)
+        }
+    }
     MyReviewsScreen(
         innerPadding = innerPadding,
         state = state,

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 import javax.inject.Inject
 
-class UpdateReviewUseCase
+class EditReviewUseCase
     @Inject
     constructor(
         private val reviewRepository: ReviewRepository,
