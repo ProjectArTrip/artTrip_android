@@ -1,10 +1,19 @@
 package com.arttrip.android.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
+import com.arttrip.android.data.remote.paging.favorite.FavoritePagingSource
+import com.arttrip.android.domain.model.favorite.BookmarkSortType
+import com.arttrip.android.domain.model.favorite.Favorite
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -14,6 +23,9 @@ class BookmarkRepositoryImpl
     constructor(
         private val dataSource: FavoriteDataSource,
     ) : BookmarkRepository {
+        private val _favoriteTotalCount = MutableStateFlow<Int?>(null)
+        override val bookmarkTotalCount: StateFlow<Int?> = _favoriteTotalCount.asStateFlow()
+
         override fun addBookmark(exhibitId: Int): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
@@ -46,4 +58,37 @@ class BookmarkRepositoryImpl
                     emit(ApiResult.Error(error))
                 }
             }
+
+        override fun getBookmarks(
+            pageSize: Int,
+            initialLoadSize: Int,
+            sortType: BookmarkSortType,
+            regions: List<String>?,
+            countries: List<String>?,
+            cursor: Int?,
+        ): Flow<PagingData<Favorite>> =
+            Pager(
+                config =
+                    PagingConfig(
+                        pageSize = pageSize,
+                        initialLoadSize = initialLoadSize,
+                        prefetchDistance = 1,
+                        enablePlaceholders = false,
+                    ),
+                pagingSourceFactory = {
+                    FavoritePagingSource(
+                        dataSource = dataSource,
+                        sortType = sortType,
+                        regions = regions,
+                        countries = countries,
+                        onTotalCount = { count ->
+                            _favoriteTotalCount.value = count
+                        },
+                    )
+                },
+            ).flow
+
+        override fun clearBookmarkTotalCount() {
+            _favoriteTotalCount.value = null
+        }
     }
