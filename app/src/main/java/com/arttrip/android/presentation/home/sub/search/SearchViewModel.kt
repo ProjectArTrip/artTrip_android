@@ -69,11 +69,20 @@ class SearchViewModel
                     }
                 }
                 is SearchIntent.RecentKeywordClicked -> {
+                    viewModelScope.launch {
+                        _state.update { it.copy(inputText = intent.keyword, isSearchResultVisible = true) }
+                        _searchTrigger.emit(intent.keyword)
+                    }
                 }
                 is SearchIntent.RecentKeywordDismissClicked -> {
                     deleteRecentSearch(intent.id)
                 }
-                is SearchIntent.RecommendKeywordClicked -> {}
+                is SearchIntent.RecommendKeywordClicked -> {
+                    viewModelScope.launch {
+                        _state.update { it.copy(inputText = intent.keyword, isSearchResultVisible = true) }
+                        _searchTrigger.emit(intent.keyword)
+                    }
+                }
                 SearchIntent.DeleteAllClicked -> {
                     _state.update { it.copy(recentKeywordList = emptyList()) }
                 }
