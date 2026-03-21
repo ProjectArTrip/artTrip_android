@@ -6,9 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
-import com.arttrip.android.core.navigation.main.navigateToNotification
 import com.arttrip.android.presentation.home.sub.genre.contract.GenreEffect
 import com.arttrip.android.presentation.home.sub.genre.contract.GenreIntent
 import kotlinx.coroutines.flow.collectLatest
@@ -19,15 +19,18 @@ fun GenreRoute(
     viewModel: GenreViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onNavigateNotification: () -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
     country: ForeignCountry?,
     genre: ExhibitionGenre,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
     LaunchedEffect(genre) {
         viewModel.onIntent(
             GenreIntent.Initialize(
-                genre = genre
+                country = country,
+                genre = genre,
             )
         )
     }
@@ -37,6 +40,7 @@ fun GenreRoute(
             when (effect) {
                 GenreEffect.NavigateBack -> onBack()
                 GenreEffect.NavigateToNotification -> onNavigateNotification()
+                is GenreEffect.NavigateToDetail -> onNavigateExhibitionDetail(effect.exhibitId)
             }
         }
     }
@@ -47,5 +51,6 @@ fun GenreRoute(
         onIntent = viewModel::onIntent,
         country = country,
         genre = genre,
+        exhibitionList = exhibitionList,
     )
 }

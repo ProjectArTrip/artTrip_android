@@ -2,10 +2,12 @@ package com.arttrip.android.presentation.home.sub.genre.contract
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.exhibition.SortType
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 
 sealed interface GenreIntent {
     data class Initialize(
-        val genre: ExhibitionGenre
+        val country: ForeignCountry?,
+        val genre: ExhibitionGenre,
     ) : GenreIntent
 
     object BackClicked : GenreIntent
@@ -21,5 +23,9 @@ sealed interface GenreIntent {
 
     data class SelectGenre(
         val genre: ExhibitionGenre,
+    ) : GenreIntent
+
+    data class ExhibitionClicked(
+        val id: Int,
     ) : GenreIntent
 }

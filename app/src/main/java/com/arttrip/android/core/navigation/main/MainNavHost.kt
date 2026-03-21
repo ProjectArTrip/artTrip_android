@@ -200,6 +200,7 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
+                onNavigateExhibitionDetail = { id -> navController.navigateToExhibitionDetail(id) },
                 country = country,
                 genre = genre,
             )

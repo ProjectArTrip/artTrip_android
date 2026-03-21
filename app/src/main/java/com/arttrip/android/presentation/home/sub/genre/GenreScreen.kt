@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -55,6 +58,7 @@ fun GenreScreen(
     onIntent: (GenreIntent) -> Unit,
     country: ForeignCountry?,
     genre: ExhibitionGenre,
+    exhibitionList: LazyPagingItems<Exhibition>,
 ) {
     Box(
         modifier =
@@ -102,7 +106,7 @@ fun GenreScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "총 N개",
+                    text = "총 ${state.exhibitTotalCount}개",
                     style = AppTextStyle.Title02Bold,
                     color = AppColor.TextPrimary,
                 )
@@ -115,7 +119,8 @@ fun GenreScreen(
                 )
             }
             ExhibitionList(
-                onExhibitionClick = {},
+                exhibitionList = exhibitionList,
+                onExhibitionClick = { id -> onIntent(GenreIntent.ExhibitionClicked(id)) },
                 onLikeClick = {},
             )
         }
@@ -226,61 +231,34 @@ fun GenreFilterBottomSheet(
 
 @Composable
 fun ExhibitionList(
+    exhibitionList: LazyPagingItems<Exhibition>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize(),
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(exhibitionList.loadState.refresh) {
+        if (exhibitionList.loadState.refresh is LoadState.Loading) {
+            listState.scrollToItem(0)
+        }
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .verticalScroll(rememberScrollState()),
-        ) {
-            val dummyExhibition =
-                Exhibition(
-                    id = 1,
-                    title = "DDP 매거진 라이브러리: 기록에 머물다",
-                    posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                    status = ExhibitionStatus.ONGOING,
-                    period = "2025.01.01 - 2025.12.31",
-                    hallName = "DDP 동대문디자인플라자",
-                    country = "대한민국",
-                    region = "서울",
-                    isBookmarked = true,
+        items(exhibitionList.itemCount) { index ->
+            exhibitionList[index]?.let { exhibition ->
+                ExhibitionItem(
+                    exhibition = exhibition,
+                    onExhibitionClick = onExhibitionClick,
+                    onLikeClick = onLikeClick,
                 )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(8.dp),
-            )
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                repeat(10) {
-                    ExhibitionItem(
-                        exhibition = dummyExhibition,
-                        onExhibitionClick = { id ->
-                            onExhibitionClick(id)
-                        },
-                        onLikeClick = { id ->
-                            onLikeClick(id)
-                        },
-                    )
-                }
             }
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(24.dp),
-            )
         }
     }
 }
