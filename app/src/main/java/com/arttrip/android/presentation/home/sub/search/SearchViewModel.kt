@@ -3,7 +3,10 @@ package com.arttrip.android.presentation.home.sub.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetSearchExhibitionUseCase
+import com.arttrip.android.domain.usecase.search.DeleteRecentSearchUseCase
+import com.arttrip.android.domain.usecase.search.GetRecentSearchUseCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.android.presentation.home.sub.search.contract.SearchState
@@ -22,7 +25,9 @@ import javax.inject.Inject
 class SearchViewModel
     @Inject
     constructor(
-        private val getSearchExhibitionUseCase: GetSearchExhibitionUseCase
+        private val getSearchExhibitionUseCase: GetSearchExhibitionUseCase,
+        private val getRecentSearchUseCase: GetRecentSearchUseCase,
+        private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SearchState())
         val state: StateFlow<SearchState> = _state
@@ -30,15 +35,19 @@ class SearchViewModel
         private val _effect = MutableSharedFlow<SearchEffect>()
         val effect: SharedFlow<SearchEffect> = _effect
 
-    private val _searchTrigger = MutableSharedFlow<String>()
+        private val _searchTrigger = MutableSharedFlow<String>()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val exhibitions =
-        _searchTrigger
-            .flatMapLatest { keyword ->
-                getSearchExhibitionUseCase(keyword)
-            }
-            .cachedIn(viewModelScope)
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val exhibitions =
+            _searchTrigger
+                .flatMapLatest { keyword ->
+                    getSearchExhibitionUseCase(keyword)
+                }
+                .cachedIn(viewModelScope)
+
+        init {
+            loadRecentSearch()
+        }
 
         fun onIntent(intent: SearchIntent) {
             when (intent) {
@@ -59,11 +68,7 @@ class SearchViewModel
                 is SearchIntent.RecentKeywordClicked -> {
                 }
                 is SearchIntent.RecentKeywordDismissClicked -> {
-                    _state.update {
-                        it.copy(
-                            recentKeywordList = it.recentKeywordList - intent.keyword,
-                        )
-                    }
+                    deleteRecentSearch(intent.id)
                 }
                 is SearchIntent.RecommendKeywordClicked -> {}
                 SearchIntent.DeleteAllClicked -> {
@@ -71,6 +76,32 @@ class SearchViewModel
                 }
                 is SearchIntent.ExhibitionClicked -> {}
                 is SearchIntent.LikeClicked -> {}
+            }
+        }
+
+        private fun deleteRecentSearch(id: Int) {
+            viewModelScope.launch {
+                deleteRecentSearchUseCase(id).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> _state.update {
+                            it.copy(recentKeywordList = it.recentKeywordList.filter { item -> item.id != id })
+                        }
+                        is ApiResult.Error -> Unit
+                    }
+                }
+            }
+        }
+
+        private fun loadRecentSearch() {
+            viewModelScope.launch {
+                getRecentSearchUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> _state.update { it.copy(recentKeywordList = result.data) }
+                        is ApiResult.Error -> Unit
+                    }
+                }
             }
         }
     }

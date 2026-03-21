@@ -16,7 +16,7 @@ sealed interface SearchIntent {
     ) : SearchIntent
 
     data class RecentKeywordDismissClicked(
-        val keyword: String,
+        val id: Int,
     ) : SearchIntent
 
     data class RecommendKeywordClicked(

@@ -1,18 +1,9 @@
 package com.arttrip.android.presentation.home.sub.search.contract
 
+import com.arttrip.android.domain.model.recentsearch.RecentSearch
+
 data class SearchState(
-    val recentKeywordList: List<String> =
-        listOf(
-            "현대미술",
-            "사진",
-            "무료",
-            "예약필수",
-            "가족추천",
-            "야간개장",
-            "굿즈",
-            "전시해설",
-            "DDP",
-        ),
+    val recentKeywordList: List<RecentSearch> = emptyList(),
     val recommendKeywordList: List<String> =
         listOf(
             "국내",

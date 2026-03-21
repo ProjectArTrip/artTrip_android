@@ -36,6 +36,7 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
+import com.arttrip.android.domain.model.recentsearch.RecentSearch
 import com.arttrip.android.presentation.home.ExhibitionImage
 import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
@@ -162,13 +163,13 @@ fun SearchIdleContent(
                     .height(20.dp),
         )
         if (state.recentKeywordList.isNotEmpty()) {
-            RecentSearch(
+            RecentSearchSection(
                 recentKeywordList = state.recentKeywordList,
                 onChipClick = { keyword ->
                     onIntent(SearchIntent.RecentKeywordClicked(keyword))
                 },
-                onDismissClick = { keyword ->
-                    onIntent(SearchIntent.RecentKeywordDismissClicked(keyword))
+                onDismissClick = { id ->
+                    onIntent(SearchIntent.RecentKeywordDismissClicked(id))
                 },
                 onDeleteAllClick = {
                     onIntent(SearchIntent.DeleteAllClicked)
@@ -191,10 +192,10 @@ fun SearchIdleContent(
 }
 
 @Composable
-fun RecentSearch(
-    recentKeywordList: List<String>,
+fun RecentSearchSection(
+    recentKeywordList: List<RecentSearch>,
     onChipClick: (String) -> Unit,
-    onDismissClick: (String) -> Unit,
+    onDismissClick: (Int) -> Unit,
     onDeleteAllClick: () -> Unit,
 ) {
     Row(
@@ -229,14 +230,14 @@ fun RecentSearch(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        recentKeywordList.forEach { label ->
+        recentKeywordList.forEach { item ->
             RecentSearchChip(
-                label = label,
+                label = item.content,
                 onChipClick = {
-                    onChipClick(label)
+                    onChipClick(item.content)
                 },
                 onDismissClick = {
-                    onDismissClick(label)
+                    onDismissClick(item.id)
                 },
             )
         }
