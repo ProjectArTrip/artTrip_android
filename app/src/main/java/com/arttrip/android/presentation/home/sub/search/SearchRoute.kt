@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.home.sub.search
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,17 +15,18 @@ fun SearchRoute(
     innerPadding: PaddingValues,
     viewModel: SearchViewModel = hiltViewModel(),
     onBack: () -> Unit,
+    onNavigateExhibitionDetail: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
-    
+
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SearchEffect.NavigateBack -> onBack()
-                is SearchEffect.NavigateToDetail -> TODO()
+                is SearchEffect.NavigateToDetail -> onNavigateExhibitionDetail(effect.exhibitId)
             }
         }
     }

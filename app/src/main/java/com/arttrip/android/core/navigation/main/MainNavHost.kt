@@ -119,6 +119,9 @@ fun MainNavHost(
             SearchRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
+                },
             )
         }
 

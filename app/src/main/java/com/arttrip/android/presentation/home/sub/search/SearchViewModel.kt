@@ -86,7 +86,11 @@ class SearchViewModel
                 SearchIntent.DeleteAllClicked -> {
                     _state.update { it.copy(recentKeywordList = emptyList()) }
                 }
-                is SearchIntent.ExhibitionClicked -> {}
+                is SearchIntent.ExhibitionClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(SearchEffect.NavigateToDetail(intent.id))
+                    }
+                }
                 is SearchIntent.LikeClicked -> {}
             }
         }
