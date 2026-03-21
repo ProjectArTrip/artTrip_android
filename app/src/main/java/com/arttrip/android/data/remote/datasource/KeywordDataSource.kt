@@ -13,5 +13,7 @@ class KeywordDataSource
 
         suspend fun getUserKeywords() = api.getUserKeywords()
 
+        suspend fun getRecommendKeywords() = api.getRecommendKeywords()
+
         suspend fun postUserKeywords(userKeywordsReqDto: UserKeywordsReqDto) = api.postUserKeywords(body = userKeywordsReqDto)
     }

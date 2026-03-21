@@ -14,6 +14,9 @@ interface KeywordApi {
     @GET(KEYWORD_PATH)
     suspend fun getUserKeywords(): KeywordsResDto
 
+    @GET("${KEYWORD_PATH}/recommand")
+    suspend fun getRecommendKeywords(): KeywordsResDto
+
     @POST(KEYWORD_PATH)
     suspend fun postUserKeywords(
         @Body body: UserKeywordsReqDto,
