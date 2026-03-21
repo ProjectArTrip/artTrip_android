@@ -4,4 +4,5 @@ data class ExhibitListPageResDto(
     val exhibits: List<ForeignExhibitResponseDto> = emptyList(),
     val nextCursor: Int?,
     val hasNext: Boolean,
+    val exhibitTotalCount: Int
 )
