@@ -1,7 +1,9 @@
 package com.arttrip.android.domain.repository
 
 import androidx.paging.PagingData
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.SortType
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.exhibition.ExhibitionDetail
@@ -21,12 +23,13 @@ interface ExhibitRepository {
         startDate: String? = null,
         endDate: String? = null,
         isDomestic: Boolean? = null,
-        country: String? = null,
-        region: String? = null,
+        country: ForeignCountry? = null,
+        region: DomesticRegion? = null,
         genres: List<String>? = null,
         styles: List<String>? = null,
         sortType: SortType? = null,
         pageSize: Int = 20,
         initialLoadSize: Int = 20,
+        onTotalCountLoaded: (Int) -> Unit = {},
     ): Flow<PagingData<Exhibition>>
 }

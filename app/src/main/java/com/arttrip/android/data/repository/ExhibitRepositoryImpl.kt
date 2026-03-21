@@ -3,7 +3,9 @@ package com.arttrip.android.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.SortType
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.datasource.UserDataSource
@@ -65,13 +67,14 @@ class ExhibitRepositoryImpl
             startDate: String?,
             endDate: String?,
             isDomestic: Boolean?,
-            country: String?,
-            region: String?,
+            country: ForeignCountry?,
+            region: DomesticRegion?,
             genres: List<String>?,
             styles: List<String>?,
             sortType: SortType?,
             pageSize: Int,
             initialLoadSize: Int,
+            onTotalCountLoaded: (Int) -> Unit,
         ): Flow<PagingData<Exhibition>> =
             Pager(
                 config =
@@ -93,6 +96,7 @@ class ExhibitRepositoryImpl
                         genres = genres,
                         styles = styles,
                         sortType = sortType,
+                        onTotalCountLoaded = onTotalCountLoaded,
                     )
                 },
             ).flow

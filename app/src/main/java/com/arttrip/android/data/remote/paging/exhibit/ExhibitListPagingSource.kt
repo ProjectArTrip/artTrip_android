@@ -2,7 +2,9 @@ package com.arttrip.android.data.remote.paging.exhibit
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.SortType
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.data.remote.datasource.ExhibitDataSource
 import com.arttrip.android.data.remote.mapper.exhibit.toDomain
 import com.arttrip.android.domain.model.exhibition.Exhibition
@@ -15,11 +17,12 @@ class ExhibitListPagingSource(
     private val startDate: String?,
     private val endDate: String?,
     private val isDomestic: Boolean?,
-    private val country: String?,
-    private val region: String?,
+    private val country: ForeignCountry?,
+    private val region: DomesticRegion?,
     private val genres: List<String>?,
     private val styles: List<String>?,
     private val sortType: SortType?,
+    private val onTotalCountLoaded: (Int) -> Unit = {},
 ) : PagingSource<Int, Exhibition>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Exhibition> =
         try {
@@ -39,6 +42,8 @@ class ExhibitListPagingSource(
                 styles = styles,
                 sortType = sortType,
             )
+
+            onTotalCountLoaded(res.exhibitTotalCount)
 
             val items: List<Exhibition> = res.exhibits.map { it.toDomain() }
             val nextKey = if (res.hasNext) res.nextCursor else null
