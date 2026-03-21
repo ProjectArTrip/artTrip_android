@@ -7,6 +7,7 @@ import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetSearchExhibitionUseCase
 import com.arttrip.android.domain.usecase.search.DeleteRecentSearchUseCase
 import com.arttrip.android.domain.usecase.search.GetRecentSearchUseCase
+import com.arttrip.android.domain.usecase.search.GetRecommendKeywordUseCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchEffect
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.android.presentation.home.sub.search.contract.SearchState
@@ -28,6 +29,7 @@ class SearchViewModel
         private val getSearchExhibitionUseCase: GetSearchExhibitionUseCase,
         private val getRecentSearchUseCase: GetRecentSearchUseCase,
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
+        private val getRecommendKeywordUseCase: GetRecommendKeywordUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SearchState())
         val state: StateFlow<SearchState> = _state
@@ -47,6 +49,7 @@ class SearchViewModel
 
         init {
             loadRecentSearch()
+            loadRecommendKeywords()
         }
 
         fun onIntent(intent: SearchIntent) {
@@ -87,6 +90,18 @@ class SearchViewModel
                         is ApiResult.Success -> _state.update {
                             it.copy(recentKeywordList = it.recentKeywordList.filter { item -> item.id != id })
                         }
+                        is ApiResult.Error -> Unit
+                    }
+                }
+            }
+        }
+
+        private fun loadRecommendKeywords() {
+            viewModelScope.launch {
+                getRecommendKeywordUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> _state.update { it.copy(recommendKeywordList = result.data) }
                         is ApiResult.Error -> Unit
                     }
                 }

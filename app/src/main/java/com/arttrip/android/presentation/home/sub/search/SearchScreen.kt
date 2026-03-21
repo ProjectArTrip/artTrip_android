@@ -37,6 +37,7 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.recentsearch.RecentSearch
+import com.arttrip.android.domain.model.usertaste.Taste
 import com.arttrip.android.presentation.home.ExhibitionImage
 import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
@@ -246,7 +247,7 @@ fun RecentSearchSection(
 
 @Composable
 fun RecommendSearch(
-    recommendKeywordList: List<String>,
+    recommendKeywordList: List<Taste>,
     onChipClick: (String) -> Unit,
 ) {
     Column(
@@ -268,11 +269,11 @@ fun RecommendSearch(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            recommendKeywordList.forEach { keyword ->
+            recommendKeywordList.forEach { taste ->
                 SuggestionChip(
-                    label = keyword,
+                    label = taste.name,
                     onChipClick = {
-                        onChipClick(keyword)
+                        onChipClick(taste.name)
                     },
                 )
             }
