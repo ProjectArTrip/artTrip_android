@@ -4,6 +4,6 @@ enum class SortType(
     val label: String
 ) {
     LATEST("최신순"),
-    DEADLINE("마감순"),
+    ENDING_SOON("마감순"),
     POPULAR("인기순")
 }
