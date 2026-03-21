@@ -20,13 +20,7 @@ fun SearchRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
-
-    LaunchedEffect(exhibitionList.loadState, exhibitionList.itemCount) {
-        Log.d(
-            "SearchPaging",
-            "refresh=${exhibitionList.loadState.refresh}, append=${exhibitionList.loadState.append}, count=${exhibitionList.itemCount}"
-        )
-    }
+    
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
