@@ -76,7 +76,7 @@ fun MainNavHost(
                     navController.navigateToRegion(region)
                 },
                 onNavigateSchedule = {country, date ->
-
+                    navController.navigateToSchedule(country, date)
                 },
                 onNavigateGenre = { country, genre ->
                     navController.navigateToGenre(country, genre)
