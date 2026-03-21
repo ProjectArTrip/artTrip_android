@@ -13,15 +13,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +41,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.tag.AppTag
@@ -56,6 +58,7 @@ fun RegionScreen(
     innerPadding: PaddingValues,
     state: RegionState,
     onIntent: (RegionIntent) -> Unit,
+    exhibitionList: LazyPagingItems<Exhibition>,
 ) {
     Box(
         modifier =
@@ -79,6 +82,7 @@ fun RegionScreen(
             )
 
             ExhibitionList(
+                exhibitionList = exhibitionList,
                 onExhibitionClick = { id ->
                     onIntent(RegionIntent.ExhibitionClicked(id))
                 },
@@ -229,62 +233,45 @@ fun DropDown(
 
 @Composable
 fun ExhibitionList(
+    exhibitionList: LazyPagingItems<Exhibition>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     expanded: Boolean,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(exhibitionList.loadState.refresh) {
+        if (exhibitionList.loadState.refresh is LoadState.Loading) {
+            listState.scrollToItem(0)
+        }
+    }
+
     Box(
         modifier =
             Modifier
                 .fillMaxSize(),
     ) {
-        Column(
+        LazyColumn(
+            state = listState,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .padding(horizontal = 24.dp),
         ) {
-            val dummyExhibition =
-                Exhibition(
-                    id = 1,
-                    title = "DDP 매거진 라이브러리: 기록에 머물다",
-                    posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                    status = ExhibitionStatus.ONGOING,
-                    period = "2025.01.01 - 2025.12.31",
-                    hallName = "DDP 동대문디자인플라자",
-                    country = "대한민국",
-                    region = "서울",
-                    isBookmarked = true,
-                )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(12.dp),
-            )
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                repeat(10) {
+            item { Spacer(modifier = Modifier.height(12.dp)) }
+
+            items(count = exhibitionList.itemCount) { index ->
+                exhibitionList[index]?.let { exhibition ->
                     ExhibitionItem(
-                        exhibition = dummyExhibition,
-                        onExhibitionClick = { id ->
-                            onExhibitionClick(id)
-                        },
-                        onLikeClick = { id ->
-                            onLikeClick(id)
-                        },
+                        exhibition = exhibition,
+                        onExhibitionClick = onExhibitionClick,
+                        onLikeClick = onLikeClick,
                     )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(24.dp),
-            )
+
+            item { Spacer(modifier = Modifier.height(24.dp)) }
         }
         if (expanded) {
             Box(

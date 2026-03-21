@@ -142,6 +142,9 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 region = region,
                 onBack = navController::popBackStack,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
+                },
             )
         }
 
