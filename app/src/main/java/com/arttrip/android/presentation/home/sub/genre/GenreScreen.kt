@@ -133,8 +133,8 @@ fun GenreFilterBottomSheet(
     onIntent: (GenreIntent) -> Unit,
     state: GenreState
 ) {
-    var selectedSortType by remember { mutableStateOf(state.selectedSortType) }
-    var selectedGenre by remember { mutableStateOf(state.selectedGenre) }
+    var selectedSortType by remember(state.selectedSortType) { mutableStateOf(state.selectedSortType) }
+    var selectedGenre by remember(state.selectedGenre) { mutableStateOf(state.selectedGenre) }
 
     AppModalBottomSheet(
         visible = visible,

@@ -1,6 +1,8 @@
 package com.arttrip.android.data.remote.datasource
 
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.SortType
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.model.image.ImageQueryParams
 import com.arttrip.android.data.remote.api.ExhibitApi
 import javax.inject.Inject
@@ -27,8 +29,8 @@ class ExhibitDataSource
             startDate: String?,
             endDate: String?,
             isDomestic: Boolean?,
-            country: String?,
-            region: String?,
+            country: ForeignCountry?,
+            region: DomesticRegion?,
             genres: List<String>?,
             styles: List<String>?,
             sortType: SortType?,
@@ -39,8 +41,8 @@ class ExhibitDataSource
             startDate = startDate,
             endDate = endDate,
             isDomestic = isDomestic,
-            country = country,
-            region = region,
+            country = country?.label,
+            region = region?.label,
             genres = genres,
             styles = styles,
             sortType = sortType,
