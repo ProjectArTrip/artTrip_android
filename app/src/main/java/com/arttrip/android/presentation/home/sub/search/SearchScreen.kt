@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.home.sub.search
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,18 +14,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
@@ -50,11 +48,16 @@ fun SearchScreen(
     onIntent: (SearchIntent) -> Unit,
     exhibitionList : LazyPagingItems<Exhibition>
 ) {
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .noRippleClickable {
+                    focusManager.clearFocus()
+                },
     ) {
         Column(
             modifier =
@@ -84,29 +87,30 @@ fun SearchScreen(
                         .height(16.dp),
             )
 
-            Box(
+            AppTextField(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-            ) {
-                AppTextField(
-                    value = state.inputText,
-                    onValueChange = { text ->
-                        onIntent(SearchIntent.InputTextChanged(text))
-                    },
-                    placeholder = "새로 오픈한 12월 독일 전시가 있어요",
-                    trailing = {
-                        AppIconButton(
-                            iconResId = R.drawable.ic_search_24,
-                            contentDescription = "Search Button",
-                            onIconClick = {
+                value = state.inputText,
+                onValueChange = { text ->
+                    onIntent(SearchIntent.InputTextChanged(text))
+                },
+                placeholder = "새로 오픈한 12월 독일 전시가 있어요",
+                trailing = {
+                    AppIconButton(
+                        iconResId = R.drawable.ic_search_24,
+                        contentDescription = "Search Button",
+                        onIconClick = {
+                            focusManager.clearFocus()
+
+                            if (state.inputText.trim().isNotBlank()) {
                                 onIntent(SearchIntent.SearchClicked(state.inputText))
-                            },
-                        )
-                    },
-                )
-            }
+                            }
+                        },
+                    )
+                },
+            )
 
             Box(
                 modifier =
@@ -302,37 +306,44 @@ fun SearchResultContent(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
-    Log.d("hyunjun", "${exhibitions.itemCount}")
+    val listState = rememberLazyListState()
 
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    LaunchedEffect(exhibitions.loadState.refresh) {
+        if (exhibitions.loadState.refresh is LoadState.Loading) {
+            listState.scrollToItem(0)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
+        Spacer(
+            modifier = Modifier
+                .height(24.dp)
+        )
+        LazyColumn(
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(exhibitions.itemCount) { index ->
 
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
+                exhibitions[index]?.let { exhibition ->
 
-        items(exhibitions.itemCount) { index ->
+                    ExhibitionItem(
+                        exhibition = exhibition,
+                        onExhibitionClick = onExhibitionClick,
+                        onLikeClick = onLikeClick,
+                    )
 
-            exhibitions[index]?.let { exhibition ->
-
-                ExhibitionItem(
-                    exhibition = exhibition,
-                    onExhibitionClick = onExhibitionClick,
-                    onLikeClick = onLikeClick,
-                )
-
+                }
             }
-        }
-
-        if (exhibitions.loadState.append is LoadState.Loading) {
             item {
-                CircularProgressIndicator()
+                Spacer(
+                    modifier = Modifier
+                        .height(12.dp)
+                )
             }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
