@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.exhibition.GetSearchExhibitionUseCase
+import com.arttrip.android.domain.usecase.search.DeleteAllRecentSearchUseCase
 import com.arttrip.android.domain.usecase.search.DeleteRecentSearchUseCase
 import com.arttrip.android.domain.usecase.search.GetRecentSearchUseCase
 import com.arttrip.android.domain.usecase.search.GetRecommendKeywordUseCase
@@ -29,6 +30,7 @@ class SearchViewModel
         private val getSearchExhibitionUseCase: GetSearchExhibitionUseCase,
         private val getRecentSearchUseCase: GetRecentSearchUseCase,
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
+        private val deleteAllRecentSearchUseCase: DeleteAllRecentSearchUseCase,
         private val getRecommendKeywordUseCase: GetRecommendKeywordUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SearchState())
@@ -84,7 +86,7 @@ class SearchViewModel
                     }
                 }
                 SearchIntent.DeleteAllClicked -> {
-                    _state.update { it.copy(recentKeywordList = emptyList()) }
+                    deleteAllRecentSearch()
                 }
                 is SearchIntent.ExhibitionClicked -> {
                     viewModelScope.launch {
@@ -92,6 +94,18 @@ class SearchViewModel
                     }
                 }
                 is SearchIntent.LikeClicked -> {}
+            }
+        }
+
+        private fun deleteAllRecentSearch() {
+            viewModelScope.launch {
+                deleteAllRecentSearchUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> _state.update { it.copy(recentKeywordList = emptyList()) }
+                        is ApiResult.Error -> Unit
+                    }
+                }
             }
         }
 

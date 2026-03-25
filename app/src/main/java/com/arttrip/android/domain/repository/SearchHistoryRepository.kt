@@ -8,4 +8,6 @@ interface SearchHistoryRepository {
     fun getRecentSearchList(): Flow<ApiResult<List<RecentSearch>>>
 
     fun deleteRecentSearch(id: Int): Flow<ApiResult<Unit>>
+
+    fun deleteAllRecentSearch(): Flow<ApiResult<Unit>>
 }

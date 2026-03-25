@@ -41,4 +41,17 @@ class SearchHistoryRepositoryImpl
                     emit(ApiResult.Error(e.toAppError()))
                 }
             }
+
+        override fun deleteAllRecentSearch(): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+
+                try {
+                    dataSource.deleteAllSearchHistory()
+                    emit(ApiResult.Success(Unit))
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    emit(ApiResult.Error(e.toAppError()))
+                }
+            }
     }

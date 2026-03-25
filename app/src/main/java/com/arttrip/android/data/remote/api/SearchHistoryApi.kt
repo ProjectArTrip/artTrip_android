@@ -14,4 +14,7 @@ interface SearchHistoryApi {
     suspend fun deleteSearchHistory(
         @Path("id") id: Int,
     ): Unit
+
+    @DELETE(SEARCH_KEYWORD_PATH)
+    suspend fun deleteAllSearchHistory(): Unit
 }

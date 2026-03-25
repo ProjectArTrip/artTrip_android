@@ -11,4 +11,6 @@ class SearchHistoryDataSource
         suspend fun getSearchHistory() = api.getSearchHistory()
 
         suspend fun deleteSearchHistory(id: Int) = api.deleteSearchHistory(id = id)
+
+        suspend fun deleteAllSearchHistory() = api.deleteAllSearchHistory()
     }
