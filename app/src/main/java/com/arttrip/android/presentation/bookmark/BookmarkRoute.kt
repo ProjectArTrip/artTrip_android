@@ -1,6 +1,7 @@
 package com.arttrip.android.presentation.bookmark
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,10 +22,12 @@ fun BookmarkRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val bookmarks = viewModel.bookmarksFlow.collectAsLazyPagingItems()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val listState = rememberLazyListState()
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             bookmarks.refresh()
+            listState.scrollToItem(0)
         }
     }
 

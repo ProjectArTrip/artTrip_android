@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
@@ -75,6 +76,16 @@ fun BookmarkScreen(
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
+
+    LaunchedEffect(state.sort) {
+        listState.scrollToItem(0)
+    }
+
+    LaunchedEffect(bookmarks.loadState.refresh) {
+        if (bookmarks.loadState.refresh is LoadState.NotLoading) {
+            listState.animateScrollToItem(0)
+        }
+    }
 
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(

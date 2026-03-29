@@ -14,9 +14,11 @@ import com.arttrip.android.domain.usecase.bookmark.GetBookmarksUseCase
 import com.arttrip.android.domain.usecase.bookmark.ObserveBookmarkCountUseCase
 import com.arttrip.android.presentation.bookmark.contract.BookmarkEffect
 import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
+import com.arttrip.android.presentation.bookmark.contract.BookmarkSort
 import com.arttrip.android.presentation.bookmark.contract.BookmarkState
 import com.arttrip.android.presentation.bookmark.model.BookmarkLocationFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,12 +46,18 @@ class BookmarkViewModel
         private val _effect = MutableSharedFlow<BookmarkEffect>()
         val effect: SharedFlow<BookmarkEffect> = _effect
 
+        private val sortTypeFlow = MutableStateFlow(BookmarkSortType.NONE)
+
+        @OptIn(ExperimentalCoroutinesApi::class)
         val bookmarksFlow: Flow<PagingData<Bookmark>> =
-            getBookmarksUseCase(
-                sortType = BookmarkSortType.NONE,
-                regions = null,
-                countries = null,
-            ).cachedIn(viewModelScope)
+            sortTypeFlow
+                .flatMapLatest { sortType ->
+                    getBookmarksUseCase(
+                        sortType = sortType,
+                        regions = null,
+                        countries = null,
+                    )
+                }.cachedIn(viewModelScope)
 
         private var bookmarkCountJob: Job? = null
 
@@ -71,18 +80,15 @@ class BookmarkViewModel
 
         fun onIntent(intent: BookmarkIntent) {
             when (intent) {
-                // TODO bookstore binding 추가
                 is BookmarkIntent.ChangeSort -> {
                     _state.update { it.copy(sort = intent.sort) }
+                    sortTypeFlow.value = intent.sort.toSortType()
                 }
                 is BookmarkIntent.ClickItem -> {
                     viewModelScope.launch { _effect.emit(BookmarkEffect.NavigateToDetail(intent.exhibitId)) }
                 }
                 is BookmarkIntent.ToggleBookmark -> {
-                    viewModelScope.launch {
-                        // TODO: 서버 연동 시 API 호출 후 성공 시 store 업데이트
-                        //  bookmarkStore.toggle(intent.exhibitId)
-                    }
+                    bookmarkStore.toggle(intent.exhibitId)
                 }
 
                 BookmarkIntent.FilterSheetOpened -> {
@@ -156,6 +162,12 @@ class BookmarkViewModel
         }
 
         fun bookmarkedFlow(exhibitId: Int): Flow<Boolean> = bookmarkStore.bookmarkedFlow(exhibitId)
+
+        private fun BookmarkSort.toSortType(): BookmarkSortType =
+            when (this) {
+                BookmarkSort.LATEST -> BookmarkSortType.LATEST
+                BookmarkSort.DEADLINE -> BookmarkSortType.ENDING_SOON
+            }
 
         fun setBookmarkFromRemote(
             exhibitId: Int,

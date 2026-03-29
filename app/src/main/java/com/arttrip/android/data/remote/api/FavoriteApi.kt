@@ -22,7 +22,7 @@ interface FavoriteApi {
 
     @GET(FAVORITE_PATH)
     suspend fun getFavorites(
-        @Query("sortOption") sortType: String,
+        @Query("sortOption") sortOption: String,
         @Query("regions") regions: List<String>? = null,
         @Query("countries") countries: List<String>? = null,
         @Query("cursor") cursor: Int? = null,
