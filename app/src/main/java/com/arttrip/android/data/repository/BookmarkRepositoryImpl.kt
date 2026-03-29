@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import com.arttrip.android.data.remote.datasource.FavoriteDataSource
 import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.paging.favorite.FavoritePagingSource
+import com.arttrip.android.domain.model.favorite.Bookmark
 import com.arttrip.android.domain.model.favorite.BookmarkSortType
-import com.arttrip.android.domain.model.favorite.Favorite
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +66,7 @@ class BookmarkRepositoryImpl
             regions: List<String>?,
             countries: List<String>?,
             cursor: Int?,
-        ): Flow<PagingData<Favorite>> =
+        ): Flow<PagingData<Bookmark>> =
             Pager(
                 config =
                     PagingConfig(

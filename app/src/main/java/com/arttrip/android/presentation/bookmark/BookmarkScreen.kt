@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +25,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +35,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
@@ -54,16 +58,20 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.core.util.rememberScrollUpVisible
-import com.arttrip.android.domain.model.exhibition.Exhibition
+import com.arttrip.android.domain.model.favorite.Bookmark
 import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
 import com.arttrip.android.presentation.bookmark.contract.BookmarkSort
 import com.arttrip.android.presentation.bookmark.contract.BookmarkState
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun BookmarkScreen(
     innerPadding: PaddingValues,
     state: BookmarkState,
+    bookmarks: LazyPagingItems<Bookmark>,
     onIntent: (BookmarkIntent) -> Unit,
+    onSetBookmarkFromRemote: (exhibitId: Int, isBookmarked: Boolean) -> Unit,
+    bookmarkedFlow: (exhibitId: Int) -> Flow<Boolean>,
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
@@ -81,7 +89,7 @@ fun BookmarkScreen(
         )
         BookmarkListTopBar(
             visible = countVisible,
-            count = state.bookmarkList.size,
+            count = state.bookmarkTotalCount ?: 0,
             sort = state.sort,
             onSortChange = { sort -> onIntent(BookmarkIntent.ChangeSort(sort)) },
             onFilterClick = { onIntent(BookmarkIntent.FilterSheetOpened) },
@@ -100,13 +108,20 @@ fun BookmarkScreen(
                 contentPadding = PaddingValues(top = 8.dp, bottom = 48.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                // TODO: 서버 연동 후 stable key(exhibitId 등) 적용
-                items(state.bookmarkList) { exhibition ->
-                    ExhibitionItem(
-                        exhibition = exhibition,
-                        onItemClick = { id -> onIntent(BookmarkIntent.ClickItem(id)) },
-                        onLikeClick = { id -> onIntent(BookmarkIntent.ToggleBookmark(id)) },
-                        isLiked = state.bookmarkedMap[exhibition.id] ?: exhibition.isBookmarked,
+                items(
+                    count = bookmarks.itemCount,
+                    key = bookmarks.itemKey { it.exhibitId },
+                ) { index ->
+                    val item = bookmarks[index] ?: return@items
+                    LaunchedEffect(item.exhibitId) {
+                        onSetBookmarkFromRemote(item.exhibitId, true)
+                    }
+                    val isLiked by bookmarkedFlow(item.exhibitId).collectAsStateWithLifecycle(true)
+                    BookmarkItem(
+                        bookmark = item,
+                        isLiked = isLiked,
+                        onItemClick = { onIntent(BookmarkIntent.ClickItem(item.exhibitId)) },
+                        onLikeClick = { onIntent(BookmarkIntent.ToggleBookmark(item.exhibitId)) },
                     )
                 }
             }
@@ -251,66 +266,51 @@ private fun SortTextButton(
 }
 
 @Composable
-fun ExhibitionItem(
-    exhibition: Exhibition,
-    onItemClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
+fun BookmarkItem(
+    bookmark: Bookmark,
     isLiked: Boolean,
+    onItemClick: () -> Unit,
+    onLikeClick: () -> Unit,
 ) {
     Row(
         modifier =
             Modifier
-                .noRippleClickable {
-                    onItemClick(exhibition.id)
-                }.padding(end = 20.dp),
+                .noRippleClickable { onItemClick() }
+                .padding(end = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ExhibitionThumbWithActions(
-            url = "https://picsum.photos/100/100",
+            url = bookmark.posterUrl,
             isLiked = isLiked,
-            status = exhibition.status,
-            onLikeClick = { onLikeClick(exhibition.id) },
+            status = bookmark.status,
+            onLikeClick = onLikeClick,
         )
-        Spacer(
-            modifier =
-                Modifier
-                    .width(10.dp),
-        )
+        Spacer(modifier = Modifier.width(10.dp))
         Column {
+            bookmark.country?.let {
+                Text(
+                    text = it,
+                    style = AppTextStyle.Body01Regular,
+                    color = AppColor.TextPoint,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+            }
             Text(
-                text = "프랑스",
-                style = AppTextStyle.Body01Regular,
-                color = AppColor.TextPoint,
-            )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(6.dp),
-            )
-            Text(
-                text = exhibition.title,
+                text = bookmark.title,
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPrimary,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
             )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(6.dp),
-            )
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = exhibition.hallName,
+                text = bookmark.hallName,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(2.dp),
-            )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = exhibition.period,
+                text = bookmark.period,
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )

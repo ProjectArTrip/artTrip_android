@@ -2,20 +2,28 @@ package com.arttrip.android.presentation.bookmark
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.util.bookmark.BookmarkStore
+import com.arttrip.android.domain.model.favorite.Bookmark
+import com.arttrip.android.domain.model.favorite.BookmarkSortType
+import com.arttrip.android.domain.usecase.bookmark.ClearBookmarkCountUseCase
+import com.arttrip.android.domain.usecase.bookmark.GetBookmarksUseCase
+import com.arttrip.android.domain.usecase.bookmark.ObserveBookmarkCountUseCase
 import com.arttrip.android.presentation.bookmark.contract.BookmarkEffect
 import com.arttrip.android.presentation.bookmark.contract.BookmarkIntent
 import com.arttrip.android.presentation.bookmark.contract.BookmarkState
 import com.arttrip.android.presentation.bookmark.model.BookmarkLocationFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,6 +33,9 @@ class BookmarkViewModel
     @Inject
     constructor(
         private val bookmarkStore: BookmarkStore,
+        private val getBookmarksUseCase: GetBookmarksUseCase,
+        private val observeBookmarkCountUseCase: ObserveBookmarkCountUseCase,
+        private val clearBookmarkCountUseCase: ClearBookmarkCountUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(BookmarkState())
         val state: StateFlow<BookmarkState> = _state
@@ -32,8 +43,30 @@ class BookmarkViewModel
         private val _effect = MutableSharedFlow<BookmarkEffect>()
         val effect: SharedFlow<BookmarkEffect> = _effect
 
+        val bookmarksFlow: Flow<PagingData<Bookmark>> =
+            getBookmarksUseCase(
+                sortType = BookmarkSortType.NONE,
+                regions = null,
+                countries = null,
+            ).cachedIn(viewModelScope)
+
+        private var bookmarkCountJob: Job? = null
+
         init {
-            observeBookmarkListFlags()
+            initialize()
+        }
+
+        private fun initialize() {
+            clearBookmarkCountUseCase()
+            _state.update { it.copy(bookmarkTotalCount = null) }
+
+            bookmarkCountJob?.cancel()
+            bookmarkCountJob =
+                viewModelScope.launch {
+                    observeBookmarkCountUseCase().collectLatest { count ->
+                        _state.update { it.copy(bookmarkTotalCount = count) }
+                    }
+                }
         }
 
         fun onIntent(intent: BookmarkIntent) {
@@ -122,19 +155,12 @@ class BookmarkViewModel
             }
         }
 
-        private fun observeBookmarkListFlags() {
-            viewModelScope.launch {
-                bookmarkStore
-                    .bookmarkedByIdsFlow(
-                        state
-                            .map { state ->
-                                state.bookmarkList.map { item -> item.id }
-                            },
-                    ).collectLatest { map ->
-                        _state.update { it.copy(bookmarkedMap = map) }
-                    }
-            }
-        }
+        fun bookmarkedFlow(exhibitId: Int): Flow<Boolean> = bookmarkStore.bookmarkedFlow(exhibitId)
+
+        fun setBookmarkFromRemote(
+            exhibitId: Int,
+            isBookmarked: Boolean,
+        ) = bookmarkStore.setFromRemote(exhibitId, isBookmarked)
 
         private fun <T> toggleWithAllAllowEmpty(
             current: Set<T>,

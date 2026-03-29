@@ -1,8 +1,8 @@
 package com.arttrip.android.domain.repository
 
 import androidx.paging.PagingData
+import com.arttrip.android.domain.model.favorite.Bookmark
 import com.arttrip.android.domain.model.favorite.BookmarkSortType
-import com.arttrip.android.domain.model.favorite.Favorite
 import com.arttrip.android.domain.model.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +21,7 @@ interface BookmarkRepository {
         regions: List<String>? = null,
         countries: List<String>? = null,
         cursor: Int? = null,
-    ): Flow<PagingData<Favorite>>
+    ): Flow<PagingData<Bookmark>>
 
     fun clearBookmarkTotalCount()
 }

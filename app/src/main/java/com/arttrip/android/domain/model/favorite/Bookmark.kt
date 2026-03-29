@@ -2,7 +2,7 @@ package com.arttrip.android.domain.model.favorite
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 
-data class Favorite(
+data class Bookmark(
     val favoriteId: Int,
     val exhibitId: Int,
     val title: String,

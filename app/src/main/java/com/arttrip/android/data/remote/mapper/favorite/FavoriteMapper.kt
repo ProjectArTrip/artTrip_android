@@ -2,10 +2,10 @@ package com.arttrip.android.data.remote.mapper.favorite
 
 import com.arttrip.android.data.remote.mapper.exhibit.toExhibitStatus
 import com.arttrip.android.data.remote.model.favorite.FavoriteResDto
-import com.arttrip.android.domain.model.favorite.Favorite
+import com.arttrip.android.domain.model.favorite.Bookmark
 
-fun FavoriteResDto.toDomain(): Favorite =
-    Favorite(
+fun FavoriteResDto.toDomain(): Bookmark =
+    Bookmark(
         favoriteId = favoriteId,
         exhibitId = exhibitId,
         title = title,
