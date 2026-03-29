@@ -4,8 +4,8 @@ import com.arttrip.android.data.remote.api.FavoriteApi
 import com.arttrip.android.domain.model.favorite.BookmarkSortType
 import javax.inject.Inject
 
-class
-FavoriteDataSource@Inject
+class FavoriteDataSource
+    @Inject
     constructor(
         private val api: FavoriteApi,
     ) {

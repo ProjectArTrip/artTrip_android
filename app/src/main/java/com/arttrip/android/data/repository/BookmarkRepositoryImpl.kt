@@ -23,8 +23,8 @@ class BookmarkRepositoryImpl
     constructor(
         private val dataSource: FavoriteDataSource,
     ) : BookmarkRepository {
-        private val _favoriteTotalCount = MutableStateFlow<Int?>(null)
-        override val bookmarkTotalCount: StateFlow<Int?> = _favoriteTotalCount.asStateFlow()
+        private val _bookmarkTotalCount = MutableStateFlow<Int?>(null)
+        override val bookmarkTotalCount: StateFlow<Int?> = _bookmarkTotalCount.asStateFlow()
 
         override fun addBookmark(exhibitId: Int): Flow<ApiResult<Unit>> =
             flow {
@@ -82,13 +82,13 @@ class BookmarkRepositoryImpl
                         regions = regions,
                         countries = countries,
                         onTotalCount = { count ->
-                            _favoriteTotalCount.value = count
+                            _bookmarkTotalCount.value = count
                         },
                     )
                 },
             ).flow
 
         override fun clearBookmarkTotalCount() {
-            _favoriteTotalCount.value = null
+            _bookmarkTotalCount.value = null
         }
     }
