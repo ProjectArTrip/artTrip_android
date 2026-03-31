@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -46,18 +47,22 @@ class BookmarkViewModel
         private val _effect = MutableSharedFlow<BookmarkEffect>()
         val effect: SharedFlow<BookmarkEffect> = _effect
 
-        private val sortTypeFlow = MutableStateFlow(BookmarkSortType.NONE)
+        private val sortTypeFlow = MutableStateFlow(BookmarkSortType.LATEST)
+        private val filterParamsFlow: MutableStateFlow<Pair<List<String>?, List<String>?>> =
+            MutableStateFlow(listOf(ForeignCountry.Entire.label) to listOf(DomesticRegion.Entire.label))
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val bookmarksFlow: Flow<PagingData<Bookmark>> =
-            sortTypeFlow
-                .flatMapLatest { sortType ->
-                    getBookmarksUseCase(
-                        sortType = sortType,
-                        regions = null,
-                        countries = null,
-                    )
-                }.cachedIn(viewModelScope)
+            combine(sortTypeFlow, filterParamsFlow) { sortType, filterParams ->
+                sortType to filterParams
+            }.flatMapLatest { (sortType, filterParams) ->
+                val (countries, regions) = filterParams
+                getBookmarksUseCase(
+                    sortType = sortType,
+                    countries = countries,
+                    regions = regions,
+                )
+            }.cachedIn(viewModelScope)
 
         private var bookmarkCountJob: Job? = null
 
@@ -150,13 +155,16 @@ class BookmarkViewModel
                 BookmarkIntent.ClickSearch -> {
                     val cur = _state.value
                     if (!cur.isSearchEnabled) return
-                    // TODO: repository.fetchBookmarks(filter) 연결
+                    val filter = cur.editingLocationFilter
+                    val countries = filter.foreignCountries.map { it.label }
+                    val regions = filter.domesticRegions.map { it.label }
                     _state.update { s ->
                         s.copy(
                             isFilterSheetVisible = false,
                             appliedLocationFilter = s.editingLocationFilter,
                         )
                     }
+                    filterParamsFlow.value = countries to regions
                 }
             }
         }
