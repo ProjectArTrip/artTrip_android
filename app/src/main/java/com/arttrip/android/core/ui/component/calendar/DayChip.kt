@@ -1,10 +1,13 @@
 package com.arttrip.android.core.ui.component.calendar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -205,6 +208,80 @@ internal data class DayChipCase02Metrics(
     val height: Dp,
 )
 
+// ============================================================
+// Case03
+// ============================================================
+
+/**
+ * DayChip case03 상태
+ *
+ * - [Past] : 오늘 이전 — 회색 글자, 배경/테두리 없음
+ * - [Today] : 오늘 — 연회색 배경, 회색 원형 테두리, 검정 글자
+ * - [Future] : 이후 날짜 — 검정 글자, 배경/테두리 없음
+ * - [Selected] : 선택됨 — 보라색 배경, 흰색 글자, 테두리 없음
+ */
+enum class DayChipStateCase03 {
+    Past,
+    Today,
+    Future,
+    Selected,
+}
+
+/**
+ * DayChip case03 컴포넌트
+ *
+ * 날짜 바텀시트 전용 컴포넌트.
+ *
+ * @param dayOfMonth 표시할 일(day). 유효 범위는 1~31.
+ */
+@Composable
+fun DayChipCase03(
+    modifier: Modifier = Modifier,
+    dayOfMonth: Int,
+    state: DayChipStateCase03,
+    onClick: () -> Unit = {},
+) {
+    require(dayOfMonth in 1..31) {
+        "dayOfMonth must be in 1..31, but was $dayOfMonth"
+    }
+
+    val colors = DayChipDefaults.colors(state)
+    val metrics = DayChipDefaults.metrics(state)
+
+    Box(
+        modifier =
+            modifier
+                .size(metrics.size)
+                .background(colors.backgroundColor, shape = CircleShape)
+                .then(
+                    if (colors.borderColor != Color.Transparent) {
+                        Modifier.border(1.dp, colors.borderColor, CircleShape)
+                    } else {
+                        Modifier
+                    },
+                ).noRippleClickable { onClick() },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = dayOfMonth.toString(),
+            style = AppTextStyle.Body01Bold,
+            color = colors.dayTextColor,
+        )
+    }
+}
+
+@Stable
+internal data class DayChipCase03Colors(
+    val backgroundColor: Color,
+    val borderColor: Color,
+    val dayTextColor: Color,
+)
+
+@Stable
+internal data class DayChipCase03Metrics(
+    val size: Dp,
+)
+
 internal object DayChipDefaults {
     @Composable
     fun colors(state: DayChipStateCase01): DayChipCase01Colors =
@@ -290,6 +367,38 @@ internal object DayChipDefaults {
             width = 28.dp,
             height = 24.dp,
         )
+
+    @Composable
+    fun colors(state: DayChipStateCase03): DayChipCase03Colors =
+        when (state) {
+            DayChipStateCase03.Past ->
+                DayChipCase03Colors(
+                    backgroundColor = Color.Transparent,
+                    borderColor = Color.Transparent,
+                    dayTextColor = AppColor.TextTertiary,
+                )
+            DayChipStateCase03.Today ->
+                DayChipCase03Colors(
+                    backgroundColor = AppColor.SubLightGray,
+                    borderColor = AppColor.Gray100,
+                    dayTextColor = AppColor.TextSecondary,
+                )
+            DayChipStateCase03.Future ->
+                DayChipCase03Colors(
+                    backgroundColor = Color.Transparent,
+                    borderColor = Color.Transparent,
+                    dayTextColor = AppColor.TextPrimary,
+                )
+            DayChipStateCase03.Selected ->
+                DayChipCase03Colors(
+                    backgroundColor = AppColor.Primary300,
+                    borderColor = Color.Transparent,
+                    dayTextColor = AppColor.TextWhite,
+                )
+        }
+
+    @Composable
+    fun metrics(state: DayChipStateCase03): DayChipCase03Metrics = DayChipCase03Metrics(size = 28.dp)
 }
 
 @Preview
@@ -305,6 +414,39 @@ fun SampleDayChip_Case01() {
                 when (state) {
                     DayChipStateCase01.Unselected -> DayChipStateCase01.Selected
                     DayChipStateCase01.Selected -> DayChipStateCase01.Unselected
+                }
+        },
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+fun SampleDayChip_Case03_All() {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        DayChipCase03(dayOfMonth = 10, state = DayChipStateCase03.Past)
+        DayChipCase03(dayOfMonth = 11, state = DayChipStateCase03.Today)
+        DayChipCase03(dayOfMonth = 12, state = DayChipStateCase03.Future)
+        DayChipCase03(dayOfMonth = 13, state = DayChipStateCase03.Selected)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SampleDayChip_Case03() {
+    var state by remember { mutableStateOf(DayChipStateCase03.Past) }
+    DayChipCase03(
+        dayOfMonth = 15,
+        state = state,
+        onClick = {
+            state =
+                when (state) {
+                    DayChipStateCase03.Past -> DayChipStateCase03.Today
+                    DayChipStateCase03.Today -> DayChipStateCase03.Future
+                    DayChipStateCase03.Future -> DayChipStateCase03.Selected
+                    DayChipStateCase03.Selected -> DayChipStateCase03.Past
                 }
         },
     )
