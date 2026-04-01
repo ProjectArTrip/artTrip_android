@@ -20,13 +20,13 @@ import com.arttrip.android.core.navigation.main.consumeReviewWriteSuccessResult
 import com.arttrip.android.core.navigation.main.navigateToExhibitionDetail
 import com.arttrip.android.core.navigation.main.navigateToReviewWrite
 import com.arttrip.android.core.navigation.main.navigateToTaste
-import com.arttrip.android.presentation.my.MyPageRoute
-import com.arttrip.android.presentation.my.sub.editprofile.EditProfileRoute
-import com.arttrip.android.presentation.my.sub.myreviews.MyReviewsRoute
-import com.arttrip.android.presentation.my.sub.recentexhibitions.RecentExhibitionsRoute
-import com.arttrip.android.presentation.my.sub.settings.SettingsRoute
-import com.arttrip.android.presentation.my.sub.settings.sub.notice.NoticeRoute
-import com.arttrip.android.presentation.my.sub.settings.sub.notification.NotificationRoute
+import com.arttrip.android.presentation.mypage.MyPageRoute
+import com.arttrip.android.presentation.mypage.sub.editprofile.EditProfileRoute
+import com.arttrip.android.presentation.mypage.sub.myreviews.MyReviewsRoute
+import com.arttrip.android.presentation.mypage.sub.recentexhibitions.RecentExhibitionsRoute
+import com.arttrip.android.presentation.mypage.sub.settings.SettingsRoute
+import com.arttrip.android.presentation.mypage.sub.settings.sub.notice.NoticeRoute
+import com.arttrip.android.presentation.mypage.sub.settings.sub.notification.NotificationRoute
 
 @Composable
 fun MyPageNavHost(

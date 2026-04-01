@@ -32,7 +32,7 @@ import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
 import com.arttrip.android.presentation.home.sub.region.RegionRoute
 import com.arttrip.android.presentation.home.sub.search.SearchRoute
 import com.arttrip.android.presentation.map.MapRoute
-import com.arttrip.android.presentation.my.sub.taste.TasteRoute
+import com.arttrip.android.presentation.mypage.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.stamp.StampRoute
 

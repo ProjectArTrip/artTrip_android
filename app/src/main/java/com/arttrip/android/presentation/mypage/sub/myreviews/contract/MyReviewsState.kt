@@ -1,0 +1,11 @@
+package com.arttrip.android.presentation.mypage.sub.myreviews.contract
+
+data class MyReviewsState(
+    val isLoading: Boolean = false,
+    val reviewTotalCount: Int? = null,
+    val isRemoveDialogVisible: Boolean = false,
+    val selectedReviewId: Int? = null,
+) {
+    val isEmpty: Boolean
+        get() = !isLoading && reviewTotalCount == null
+}

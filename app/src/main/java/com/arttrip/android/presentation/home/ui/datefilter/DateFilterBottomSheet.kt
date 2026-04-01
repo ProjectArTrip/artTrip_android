@@ -1,16 +1,11 @@
 package com.arttrip.android.presentation.home.ui.datefilter
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
@@ -19,8 +14,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -33,10 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.core.ui.component.button.AppButton
+import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
@@ -57,6 +58,10 @@ fun DateFilterBottomSheet(
 
     var dateDesc by rememberSaveable { mutableStateOf<String?>(null) }
 
+    val buttonBottomMargin = 16.dp
+    val bottomContentPadding = 32.dp
+    val bottomInset = AppButtonDefaults.Height + buttonBottomMargin
+
     fun toggleMenu(menu: FilterMenu) {
         expandedMenu = if (expandedMenu == menu) null else menu
     }
@@ -65,65 +70,94 @@ fun DateFilterBottomSheet(
         expandedMenu = null
     }
 
+    val density = LocalDensity.current
+
     AppModalBottomSheet(
         visible = visible,
         onDismissRequest = onDismissRequest,
         topBar = AppBottomSheetTopBar.DragHandle,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(668.dp),
         ) {
-            Spacer(Modifier.height(18.dp))
-            Text(
-                text = "국가 및 날짜 선택",
-                style = AppTextStyle.Title02Bold,
-                color = AppColor.TextPrimary,
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    text = "국가 및 날짜 선택",
+                    style = AppTextStyle.Title02Bold,
+                    color = AppColor.TextPrimary,
+                )
+                Spacer(Modifier.height(24.dp))
+
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                            .padding(bottom = bottomInset),
+                ) {
+                    CountryFilterMenuItem(
+                        title = "국가 선택",
+                        description = selectedCountry?.label,
+                        iconResId = R.drawable.ic_calendar_24,
+                        expanded = expandedMenu == FilterMenu.Country,
+                        onHeaderClick = {
+                            toggleMenu(FilterMenu.Country)
+                        },
+                    ) {
+                        CountryFilterChips(
+                            selectedCountry = selectedCountry,
+                            onCountryClick = { country ->
+                                selectedCountry = country
+                                closeMenu()
+                            },
+                        )
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    DateFilterMenuItem(
+                        title = "날짜 선택",
+                        description = dateDesc,
+                        iconResId = R.drawable.ic_calendar_24,
+                        expanded = expandedMenu == FilterMenu.Date,
+                        onHeaderClick = {
+                            toggleMenu(FilterMenu.Date)
+                        },
+                    ) {
+                        DateFilterContent(
+                            onPickPreset = { preset ->
+                                dateDesc = preset
+                                closeMenu()
+                            },
+                        )
+                    }
+
+                    Spacer(Modifier.height(bottomContentPadding))
+                }
+            }
+            AppButton(
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(bottom = buttonBottomMargin),
+                text = "적용하기",
+                onClick = {},
             )
-            Spacer(Modifier.height(24.dp))
-
-            FilterMenuItem(
-                title = "국가 선택",
-                description = selectedCountry?.label,
-                iconResId = R.drawable.ic_calendar_24,
-                expanded = expandedMenu == FilterMenu.Country,
-                onHeaderClick = {
-                    toggleMenu(FilterMenu.Country)
-                },
-            ) {
-                CountryFilterChips(
-                    selectedCountry = selectedCountry,
-                    onCountryClick = { country ->
-                        selectedCountry = country
-                        closeMenu()
-                    },
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            FilterMenuItem(
-                title = "날짜 선택",
-                description = dateDesc,
-                iconResId = R.drawable.ic_calendar_24,
-                expanded = expandedMenu == FilterMenu.Date,
-                onHeaderClick = {
-                    toggleMenu(FilterMenu.Date)
-                },
-            ) {
-                DateFilterContent(
-                    onPickPreset = { preset ->
-                        dateDesc = preset
-                        closeMenu()
-                    },
-                )
-            }
         }
     }
 }
 
 @Composable
-private fun FilterMenuItem(
+private fun CountryFilterMenuItem(
     modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
@@ -132,13 +166,94 @@ private fun FilterMenuItem(
     onHeaderClick: () -> Unit,
     expandedContent: @Composable ColumnScope.() -> Unit,
 ) {
+    FilterMenuCard(
+        modifier = modifier,
+        expanded = expanded,
+    ) {
+        Spacer(Modifier.height(16.dp))
+
+        FilterMenuHeader(
+            title = title,
+            description = description,
+            iconResId = iconResId,
+            onClick = onHeaderClick,
+        )
+
+        if (expanded) {
+            Spacer(Modifier.height(15.dp))
+
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                thickness = 1.dp,
+                color = AppColor.Gray50,
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                content = expandedContent,
+            )
+
+            Spacer(Modifier.height(16.dp))
+        } else {
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun DateFilterMenuItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String? = null,
+    @DrawableRes iconResId: Int,
+    expanded: Boolean,
+    onHeaderClick: () -> Unit,
+    expandedContent: @Composable ColumnScope.() -> Unit,
+) {
+    FilterMenuCard(
+        modifier = modifier,
+        expanded = expanded,
+    ) {
+        Spacer(Modifier.height(16.dp))
+
+        FilterMenuHeader(
+            title = title,
+            description = description,
+            iconResId = iconResId,
+            onClick = onHeaderClick,
+        )
+
+        if (expanded) {
+            Spacer(Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                content = expandedContent,
+            )
+
+//            Spacer(Modifier.height(10.dp))
+        } else {
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun FilterMenuCard(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     val shape = RoundedCornerShape(8.dp)
+
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = 4.dp,
                     shape = shape,
                     clip = false,
                 ).background(
@@ -154,38 +269,9 @@ private fun FilterMenuItem(
                     } else {
                         Modifier
                     },
-                ).padding(top = 16.dp, bottom = 15.dp),
-    ) {
-        FilterMenuHeader(
-            title = title,
-            description = description,
-            iconResId = iconResId,
-            onClick = onHeaderClick,
-        )
-        if (expanded) {
-            HorizontalDivider(
-                modifier.padding(horizontal = 12.dp),
-                thickness = 1.dp,
-                color = AppColor.Gray50,
-            )
-        } else {
-            Spacer(Modifier.height(1.dp))
-        }
-
-        AnimatedVisibility(
-            visible = expanded,
-            enter = expandVertically(tween(220)) + fadeIn(tween(220)),
-            exit = shrinkVertically(tween(180)) + fadeOut(tween(180)),
-        ) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                content = expandedContent,
-            )
-        }
-    }
+                ),
+        content = content,
+    )
 }
 
 @Composable
@@ -205,6 +291,7 @@ private fun FilterMenuHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
+            modifier = Modifier.size(20.dp),
             painter = painterResource(iconResId),
             contentDescription = null,
             tint = Color.Unspecified,
@@ -236,7 +323,10 @@ private fun CountryFilterChips(
     val countries = ForeignCountry.entries.toList()
 
     FlowRow(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemVerticalAlignment = Alignment.Top,
@@ -255,5 +345,14 @@ private fun CountryFilterChips(
 
 @Composable
 private fun DateFilterContent(onPickPreset: (String) -> Unit) {
-    // 커스텀 데이트피커 or 버튼들 등
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(390.dp)
+                .background(
+                    color = AppColor.Gray50,
+                    shape = RoundedCornerShape(8.dp),
+                ),
+    )
 }
