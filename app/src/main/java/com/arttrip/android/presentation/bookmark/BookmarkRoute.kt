@@ -26,8 +26,11 @@ fun BookmarkRoute(
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            bookmarks.refresh()
-            listState.scrollToItem(0)
+            if (!viewModel.isInitialLoad) {
+                bookmarks.refresh()
+                listState.scrollToItem(0)
+            }
+            viewModel.onResumed()
         }
     }
 

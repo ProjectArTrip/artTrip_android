@@ -66,8 +66,15 @@ class BookmarkViewModel
 
         private var bookmarkCountJob: Job? = null
 
+        var isInitialLoad: Boolean = true
+            private set
+
         init {
             initialize()
+        }
+
+        fun onResumed() {
+            if (isInitialLoad) isInitialLoad = false
         }
 
         private fun initialize() {
