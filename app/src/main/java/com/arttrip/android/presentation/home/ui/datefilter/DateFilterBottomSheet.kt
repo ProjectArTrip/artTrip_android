@@ -1,6 +1,11 @@
 package com.arttrip.android.presentation.home.ui.datefilter
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -66,10 +71,6 @@ fun DateFilterBottomSheet(
         expandedMenu = if (expandedMenu == menu) null else menu
     }
 
-    fun closeMenu() {
-        expandedMenu = null
-    }
-
     val density = LocalDensity.current
 
     AppModalBottomSheet(
@@ -116,7 +117,6 @@ fun DateFilterBottomSheet(
                             selectedCountry = selectedCountry,
                             onCountryClick = { country ->
                                 selectedCountry = country
-                                closeMenu()
                             },
                         )
                     }
@@ -135,7 +135,6 @@ fun DateFilterBottomSheet(
                         DateFilterContent(
                             onPickPreset = { preset ->
                                 dateDesc = preset
-                                closeMenu()
                             },
                         )
                     }
@@ -179,25 +178,29 @@ private fun CountryFilterMenuItem(
             onClick = onHeaderClick,
         )
 
-        if (expanded) {
-            Spacer(Modifier.height(15.dp))
+        Spacer(Modifier.height(16.dp))
 
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                thickness = 1.dp,
-                color = AppColor.Gray50,
-            )
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    thickness = 1.dp,
+                    color = AppColor.Gray50,
+                )
 
-            Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                content = expandedContent,
-            )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    content = expandedContent,
+                )
 
-            Spacer(Modifier.height(16.dp))
-        } else {
-            Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
+            }
         }
     }
 }
@@ -225,17 +228,17 @@ private fun DateFilterMenuItem(
             onClick = onHeaderClick,
         )
 
-        if (expanded) {
-            Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
 
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
+        ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 content = expandedContent,
             )
-
-//            Spacer(Modifier.height(10.dp))
-        } else {
-            Spacer(Modifier.height(16.dp))
         }
     }
 }
