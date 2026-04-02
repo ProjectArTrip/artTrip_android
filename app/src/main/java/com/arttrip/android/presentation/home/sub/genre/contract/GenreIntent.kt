@@ -15,6 +15,7 @@ sealed interface GenreIntent {
     object NotificationIconClicked : GenreIntent
 
     object OpenFilterSheet : GenreIntent
+
     object CloseFilterSheet : GenreIntent
 
     data class SelectSortType(

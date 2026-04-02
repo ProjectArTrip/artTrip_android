@@ -1,9 +1,9 @@
 package com.arttrip.android.core.model.enums.exhibition
 
 enum class SortType(
-    val label: String
+    val label: String,
 ) {
     LATEST("최신순"),
     ENDING_SOON("마감순"),
-    POPULAR("인기순")
+    POPULAR("인기순"),
 }

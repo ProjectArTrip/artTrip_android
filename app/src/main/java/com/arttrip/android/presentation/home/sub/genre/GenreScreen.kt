@@ -23,14 +23,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -128,15 +127,15 @@ fun GenreScreen(
     GenreFilterBottomSheet(
         visible = state.isFilterSheetVisible,
         onIntent = onIntent,
-        state = state
+        state = state,
     )
 }
 
 @Composable
 fun GenreFilterBottomSheet(
-    visible : Boolean,
+    visible: Boolean,
     onIntent: (GenreIntent) -> Unit,
-    state: GenreState
+    state: GenreState,
 ) {
     var selectedSortType by remember(state.selectedSortType) { mutableStateOf(state.selectedSortType) }
     var selectedGenre by remember(state.selectedGenre) { mutableStateOf(state.selectedGenre) }
@@ -149,18 +148,22 @@ fun GenreFilterBottomSheet(
         },
         content = {
             Spacer(
-                modifier = Modifier
-                    .height(16.dp)
+                modifier =
+                    Modifier
+                        .height(16.dp),
             )
-            Text("정렬",
+            Text(
+                "정렬",
                 style = AppTextStyle.Body01Bold,
-                color = AppColor.TextPrimary)
+                color = AppColor.TextPrimary,
+            )
             Spacer(
-                modifier = Modifier
-                    .height(8.dp)
+                modifier =
+                    Modifier
+                        .height(8.dp),
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SortType.entries.forEach { sortType ->
                     AppFilterChip(
@@ -169,30 +172,36 @@ fun GenreFilterBottomSheet(
                         selected = selectedSortType == sortType,
                         onClick = {
                             selectedSortType = sortType
-                        }
+                        },
                     )
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .height(15.dp)
+                modifier =
+                    Modifier
+                        .height(15.dp),
             )
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(color = AppColor.Gray100)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(color = AppColor.Gray100),
             )
             Spacer(
-                modifier = Modifier
-                    .height(8.dp)
+                modifier =
+                    Modifier
+                        .height(8.dp),
             )
-            Text("전시 장르",
+            Text(
+                "전시 장르",
                 style = AppTextStyle.Body01Bold,
-                color = AppColor.TextPrimary)
+                color = AppColor.TextPrimary,
+            )
             Spacer(
-                modifier = Modifier
-                    .height(8.dp)
+                modifier =
+                    Modifier
+                        .height(8.dp),
             )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -205,13 +214,14 @@ fun GenreFilterBottomSheet(
                         selected = selectedGenre == genre,
                         onClick = {
                             selectedGenre = genre
-                        }
+                        },
                     )
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .height(48.dp)
+                modifier =
+                    Modifier
+                        .height(48.dp),
             )
             AppButton(
                 text = "적용하기",
@@ -219,13 +229,14 @@ fun GenreFilterBottomSheet(
                     onIntent(GenreIntent.CloseFilterSheet)
                     onIntent(GenreIntent.SelectSortType(selectedSortType))
                     onIntent(GenreIntent.SelectGenre(selectedGenre!!))
-                }
+                },
             )
             Spacer(
-                modifier = Modifier
-                    .height(16.dp)
+                modifier =
+                    Modifier
+                        .height(16.dp),
             )
-        }
+        },
     )
 }
 
@@ -245,9 +256,10 @@ fun ExhibitionList(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
     ) {

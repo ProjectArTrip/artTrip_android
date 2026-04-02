@@ -48,7 +48,7 @@ fun SearchScreen(
     innerPadding: PaddingValues,
     state: SearchState,
     onIntent: (SearchIntent) -> Unit,
-    exhibitionList : LazyPagingItems<Exhibition>
+    exhibitionList: LazyPagingItems<Exhibition>,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -125,7 +125,6 @@ fun SearchScreen(
                         state = state,
                         onIntent = onIntent,
                     )
-
                 } else {
                     if (exhibitionList.itemCount == 0 &&
                         exhibitionList.loadState.refresh is LoadState.NotLoading
@@ -317,16 +316,18 @@ fun SearchResultContent(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         Spacer(
-            modifier = Modifier
-                .height(24.dp)
+            modifier =
+                Modifier
+                    .height(24.dp),
         )
         LazyColumn(
             state = listState,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(exhibitions.itemCount) { index ->
 
@@ -337,13 +338,13 @@ fun SearchResultContent(
                         onExhibitionClick = onExhibitionClick,
                         onLikeClick = onLikeClick,
                     )
-
                 }
             }
             item {
                 Spacer(
-                    modifier = Modifier
-                        .height(12.dp)
+                    modifier =
+                        Modifier
+                            .height(12.dp),
                 )
             }
         }

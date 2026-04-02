@@ -11,6 +11,5 @@ class GetRecentSearchUseCase
     constructor(
         private val searchHistoryRepository: SearchHistoryRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<List<RecentSearch>>> =
-            searchHistoryRepository.getRecentSearchList()
+        operator fun invoke(): Flow<ApiResult<List<RecentSearch>>> = searchHistoryRepository.getRecentSearchList()
     }

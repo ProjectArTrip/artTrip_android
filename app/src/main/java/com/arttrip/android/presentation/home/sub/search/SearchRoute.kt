@@ -21,7 +21,6 @@ fun SearchRoute(
 
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
-
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -35,6 +34,6 @@ fun SearchRoute(
         innerPadding = innerPadding,
         state = state,
         onIntent = viewModel::onIntent,
-        exhibitionList = exhibitionList
+        exhibitionList = exhibitionList,
     )
 }

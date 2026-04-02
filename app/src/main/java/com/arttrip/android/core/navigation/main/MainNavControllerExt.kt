@@ -35,7 +35,7 @@ fun NavHostController.navigateToRegion(region: DomesticRegion) {
 
 fun NavHostController.navigateToSchedule(
     country: ForeignCountry?,
-    date: LocalDate
+    date: LocalDate,
 ) {
     navigate(MainRoute.schedule(country, date))
 }

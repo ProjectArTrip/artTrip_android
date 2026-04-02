@@ -39,15 +39,14 @@ class SearchViewModel
         private val _effect = MutableSharedFlow<SearchEffect>()
         val effect: SharedFlow<SearchEffect> = _effect
 
-        private val _searchTrigger = MutableSharedFlow<String>()
+        private val searchTrigger = MutableSharedFlow<String>()
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val exhibitions =
-            _searchTrigger
+            searchTrigger
                 .flatMapLatest { keyword ->
                     getSearchExhibitionUseCase(keyword)
-                }
-                .cachedIn(viewModelScope)
+                }.cachedIn(viewModelScope)
 
         init {
             loadRecentSearch()
@@ -67,13 +66,13 @@ class SearchViewModel
                 is SearchIntent.SearchClicked -> {
                     viewModelScope.launch {
                         _state.update { it.copy(isSearchResultVisible = true) }
-                        _searchTrigger.emit(intent.keyword)
+                        searchTrigger.emit(intent.keyword)
                     }
                 }
                 is SearchIntent.RecentKeywordClicked -> {
                     viewModelScope.launch {
                         _state.update { it.copy(inputText = intent.keyword, isSearchResultVisible = true) }
-                        _searchTrigger.emit(intent.keyword)
+                        searchTrigger.emit(intent.keyword)
                     }
                 }
                 is SearchIntent.RecentKeywordDismissClicked -> {
@@ -82,7 +81,7 @@ class SearchViewModel
                 is SearchIntent.RecommendKeywordClicked -> {
                     viewModelScope.launch {
                         _state.update { it.copy(inputText = intent.keyword, isSearchResultVisible = true) }
-                        _searchTrigger.emit(intent.keyword)
+                        searchTrigger.emit(intent.keyword)
                     }
                 }
                 SearchIntent.DeleteAllClicked -> {
@@ -114,9 +113,10 @@ class SearchViewModel
                 deleteRecentSearchUseCase(id).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> Unit
-                        is ApiResult.Success -> _state.update {
-                            it.copy(recentKeywordList = it.recentKeywordList.filter { item -> item.id != id })
-                        }
+                        is ApiResult.Success ->
+                            _state.update {
+                                it.copy(recentKeywordList = it.recentKeywordList.filter { item -> item.id != id })
+                            }
                         is ApiResult.Error -> Unit
                     }
                 }

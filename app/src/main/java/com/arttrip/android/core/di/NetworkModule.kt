@@ -6,8 +6,8 @@ import com.arttrip.android.data.remote.api.FavoriteApi
 import com.arttrip.android.data.remote.api.HomeApi
 import com.arttrip.android.data.remote.api.KeywordApi
 import com.arttrip.android.data.remote.api.ReviewApi
-import com.arttrip.android.data.remote.api.UserApi
 import com.arttrip.android.data.remote.api.SearchHistoryApi
+import com.arttrip.android.data.remote.api.UserApi
 import com.arttrip.android.data.remote.interceptor.AuthInterceptor
 import com.arttrip.android.data.remote.interceptor.TokenAuthenticator
 import dagger.Module

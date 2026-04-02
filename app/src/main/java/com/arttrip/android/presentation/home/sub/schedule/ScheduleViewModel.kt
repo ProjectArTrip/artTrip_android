@@ -15,55 +15,57 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ScheduleViewModel @Inject constructor() : ViewModel() {
-    private val _state = MutableStateFlow(ScheduleState())
-    val state: StateFlow<ScheduleState> = _state
+class ScheduleViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private val _state = MutableStateFlow(ScheduleState())
+        val state: StateFlow<ScheduleState> = _state
 
-    private val _effect = MutableSharedFlow<ScheduleEffect>()
-    val effect: SharedFlow<ScheduleEffect> = _effect
+        private val _effect = MutableSharedFlow<ScheduleEffect>()
+        val effect: SharedFlow<ScheduleEffect> = _effect
 
-    fun onIntent(intent: ScheduleIntent) {
-        when (intent) {
-            is ScheduleIntent.Initialize -> {
-                _state.update {
-                    if (it.selectedDate != null) return@update it
-                    it.copy(selectedDate = intent.date)
+        fun onIntent(intent: ScheduleIntent) {
+            when (intent) {
+                is ScheduleIntent.Initialize -> {
+                    _state.update {
+                        if (it.selectedDate != null) return@update it
+                        it.copy(selectedDate = intent.date)
+                    }
                 }
-            }
 
-            ScheduleIntent.BackClicked -> {
-                viewModelScope.launch {
-                    _effect.emit(ScheduleEffect.NavigateBack)
+                ScheduleIntent.BackClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(ScheduleEffect.NavigateBack)
+                    }
                 }
-            }
 
-            ScheduleIntent.NotificationIconClicked -> {
-                viewModelScope.launch {
-                    _effect.emit(ScheduleEffect.NavigateToNotification)
+                ScheduleIntent.NotificationIconClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(ScheduleEffect.NavigateToNotification)
+                    }
                 }
-            }
 
-            ScheduleIntent.OpenFilterSheet -> {
-                _state.update { it.copy(isFilterSheetVisible = true) }
-            }
+                ScheduleIntent.OpenFilterSheet -> {
+                    _state.update { it.copy(isFilterSheetVisible = true) }
+                }
 
-            ScheduleIntent.CloseFilterSheet -> {
-                _state.update { it.copy(isFilterSheetVisible = false) }
-            }
+                ScheduleIntent.CloseFilterSheet -> {
+                    _state.update { it.copy(isFilterSheetVisible = false) }
+                }
 
-            is ScheduleIntent.SelectSortType -> {
-                _state.update { it.copy(selectedSortType = intent.type) }
-            }
+                is ScheduleIntent.SelectSortType -> {
+                    _state.update { it.copy(selectedSortType = intent.type) }
+                }
 
-            is ScheduleIntent.SelectDate -> {
-                _state.update { it.copy(selectedDate = intent.date) }
-            }
+                is ScheduleIntent.SelectDate -> {
+                    _state.update { it.copy(selectedDate = intent.date) }
+                }
 
-            is ScheduleIntent.ExhibitionClicked -> {
-                viewModelScope.launch {
-                    _effect.emit(ScheduleEffect.NavigateToExhibitionDetail(intent.exhibitionId))
+                is ScheduleIntent.ExhibitionClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(ScheduleEffect.NavigateToExhibitionDetail(intent.exhibitionId))
+                    }
                 }
             }
         }
     }
-}

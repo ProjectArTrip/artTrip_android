@@ -29,6 +29,6 @@ interface ExhibitApi {
         @Query("region") region: String?,
         @Query("genres") genres: List<String>?,
         @Query("styles") styles: List<String>?,
-        @Query("sortType") sortType: SortType?
-    ) : ExhibitListPageResDto
+        @Query("sortType") sortType: SortType?,
+    ): ExhibitListPageResDto
 }

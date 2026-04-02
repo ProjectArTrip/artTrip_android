@@ -62,6 +62,7 @@ class ExhibitRepositoryImpl
                     emit(ApiResult.Error(error))
                 }
             }
+
         override fun getExhibits(
             query: String?,
             startDate: String?,

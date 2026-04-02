@@ -29,19 +29,20 @@ class ExhibitListPagingSource(
             val cursor: Int? = params.key
             val loadSize: Int = params.loadSize
 
-            val res = dataSource.getExhibits(
-                cursor = cursor,
-                size = loadSize,
-                query = query,
-                startDate = startDate,
-                endDate = endDate,
-                isDomestic = isDomestic,
-                country = country,
-                region = region,
-                genres = genres,
-                styles = styles,
-                sortType = sortType,
-            )
+            val res =
+                dataSource.getExhibits(
+                    cursor = cursor,
+                    size = loadSize,
+                    query = query,
+                    startDate = startDate,
+                    endDate = endDate,
+                    isDomestic = isDomestic,
+                    country = country,
+                    region = region,
+                    genres = genres,
+                    styles = styles,
+                    sortType = sortType,
+                )
 
             onTotalCountLoaded(res.exhibitTotalCount)
 

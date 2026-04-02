@@ -75,7 +75,7 @@ fun MainNavHost(
                 onNavigateRegion = { region ->
                     navController.navigateToRegion(region)
                 },
-                onNavigateSchedule = {country, date ->
+                onNavigateSchedule = { country, date ->
                     navController.navigateToSchedule(country, date)
                 },
                 onNavigateGenre = { country, genre ->
@@ -173,7 +173,7 @@ fun MainNavHost(
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
                 country = country,
-                date = date
+                date = date,
             )
         }
 

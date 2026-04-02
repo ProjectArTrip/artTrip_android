@@ -11,6 +11,5 @@ class GetRecommendKeywordUseCase
     constructor(
         private val userTasteRepository: UserTasteRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<List<Taste>>> =
-            userTasteRepository.getRecommendKeywords()
+        operator fun invoke(): Flow<ApiResult<List<Taste>>> = userTasteRepository.getRecommendKeywords()
     }

@@ -231,8 +231,8 @@ class HomeViewModel
                         _effect.emit(
                             HomeEffect.NavigateToForeignSchedule(
                                 intent.country,
-                                intent.date
-                            )
+                                intent.date,
+                            ),
                         )
                     }
                 }
@@ -241,8 +241,8 @@ class HomeViewModel
                     viewModelScope.launch {
                         _effect.emit(
                             HomeEffect.NavigateToDomesticSchedule(
-                                intent.date
-                            )
+                                intent.date,
+                            ),
                         )
                     }
                 }

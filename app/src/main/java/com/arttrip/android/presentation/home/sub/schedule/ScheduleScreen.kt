@@ -38,9 +38,10 @@ fun ScheduleScreen(
     date: LocalDate,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -64,9 +65,10 @@ fun ScheduleScreen(
                 },
             )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {

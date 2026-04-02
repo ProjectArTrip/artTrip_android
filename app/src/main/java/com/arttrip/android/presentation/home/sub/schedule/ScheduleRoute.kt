@@ -33,7 +33,6 @@ fun ScheduleRoute(
                 ScheduleEffect.NavigateBack -> onBack()
                 ScheduleEffect.NavigateToNotification -> onNavigateNotification()
                 is ScheduleEffect.NavigateToExhibitionDetail -> {
-
                 }
             }
         }

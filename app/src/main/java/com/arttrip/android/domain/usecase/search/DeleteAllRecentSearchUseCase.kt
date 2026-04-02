@@ -10,6 +10,5 @@ class DeleteAllRecentSearchUseCase
     constructor(
         private val searchHistoryRepository: SearchHistoryRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<Unit>> =
-            searchHistoryRepository.deleteAllRecentSearch()
+        operator fun invoke(): Flow<ApiResult<Unit>> = searchHistoryRepository.deleteAllRecentSearch()
     }

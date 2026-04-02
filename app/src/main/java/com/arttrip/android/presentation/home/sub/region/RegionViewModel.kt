@@ -33,15 +33,14 @@ class RegionViewModel
         private val _effect = MutableSharedFlow<RegionEffect>()
         val effect: SharedFlow<RegionEffect> = _effect
 
-        private val _regionTrigger = MutableSharedFlow<DomesticRegion>(replay = 1)
+        private val regionTrigger = MutableSharedFlow<DomesticRegion>(replay = 1)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val exhibitions: kotlinx.coroutines.flow.Flow<PagingData<Exhibition>> =
-            _regionTrigger
+            regionTrigger
                 .flatMapLatest { region ->
                     getRegionExhibitionUseCase(region)
-                }
-                .cachedIn(viewModelScope)
+                }.cachedIn(viewModelScope)
 
         private var isInitialized = false
 
@@ -85,7 +84,7 @@ class RegionViewModel
 
         private fun emitTrigger(region: DomesticRegion) {
             viewModelScope.launch {
-                _regionTrigger.emit(region)
+                regionTrigger.emit(region)
             }
         }
     }

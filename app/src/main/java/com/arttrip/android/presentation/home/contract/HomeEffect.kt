@@ -22,11 +22,11 @@ sealed interface HomeEffect {
 
     data class NavigateToForeignSchedule(
         val country: ForeignCountry,
-        val date: LocalDate
+        val date: LocalDate,
     ) : HomeEffect
 
     data class NavigateToDomesticSchedule(
-        val date: LocalDate
+        val date: LocalDate,
     ) : HomeEffect
 
     data class NavigateToForeignGenre(

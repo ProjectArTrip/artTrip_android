@@ -35,11 +35,11 @@ class GenreViewModel
         private val _effect = MutableSharedFlow<GenreEffect>()
         val effect: SharedFlow<GenreEffect> = _effect
 
-        private val _genreTrigger = MutableSharedFlow<GenreQueryParams>(replay = 1)
+        private val genreTrigger = MutableSharedFlow<GenreQueryParams>(replay = 1)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val exhibitions: kotlinx.coroutines.flow.Flow<PagingData<Exhibition>> =
-            _genreTrigger
+            genreTrigger
                 .flatMapLatest { params ->
                     getGenreExhibitionUseCase(
                         country = params.country,
@@ -49,8 +49,7 @@ class GenreViewModel
                             _state.update { it.copy(exhibitTotalCount = count) }
                         },
                     )
-                }
-                .cachedIn(viewModelScope)
+                }.cachedIn(viewModelScope)
 
         fun onIntent(intent: GenreIntent) {
             when (intent) {
@@ -96,9 +95,13 @@ class GenreViewModel
             }
         }
 
-        private fun emitTrigger(country: ForeignCountry?, genre: ExhibitionGenre, sortType: SortType) {
+        private fun emitTrigger(
+            country: ForeignCountry?,
+            genre: ExhibitionGenre,
+            sortType: SortType,
+        ) {
             viewModelScope.launch {
-                _genreTrigger.emit(GenreQueryParams(country = country, genre = genre, sortType = sortType))
+                genreTrigger.emit(GenreQueryParams(country = country, genre = genre, sortType = sortType))
             }
         }
 

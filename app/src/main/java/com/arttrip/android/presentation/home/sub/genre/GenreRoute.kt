@@ -31,7 +31,7 @@ fun GenreRoute(
             GenreIntent.Initialize(
                 country = country,
                 genre = genre,
-            )
+            ),
         )
     }
 

@@ -18,6 +18,7 @@ interface ExhibitRepository {
     ): Flow<ApiResult<ExhibitionDetail>>
 
     fun getUserRecentExhibits(imageQueryParams: ImageQueryParams): Flow<ApiResult<List<RecentExhibition>>>
+
     fun getExhibits(
         query: String? = null,
         startDate: String? = null,

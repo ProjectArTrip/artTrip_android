@@ -12,9 +12,7 @@ class GetRegionExhibitionUseCase
     constructor(
         private val exhibitRepository: ExhibitRepository,
     ) {
-        operator fun invoke(
-            region: DomesticRegion,
-        ): Flow<PagingData<Exhibition>> =
+        operator fun invoke(region: DomesticRegion): Flow<PagingData<Exhibition>> =
             exhibitRepository.getExhibits(
                 isDomestic = true,
                 region = region,
