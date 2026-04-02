@@ -48,6 +48,7 @@ import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
 
 enum class FilterMenu { Country, Date }
 
@@ -58,7 +59,7 @@ fun DateFilterBottomSheet(
 ) {
     var expandedMenu by rememberSaveable { mutableStateOf<FilterMenu?>(null) }
 
-    var selectedCountry by rememberSaveable { mutableStateOf<ForeignCountry?>(ForeignCountry.Entire) }
+    var selectedCountry by rememberSaveable { mutableStateOf<ForeignCountry?>(null) }
 
     var dateDesc by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -286,7 +287,7 @@ private fun FilterMenuHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .noRippleClickable(onClick = onClick)
                 .padding(start = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
