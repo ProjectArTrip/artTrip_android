@@ -7,8 +7,6 @@ import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.NavKeys
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
-import com.arttrip.android.core.navigation.main.MainRoute
-import com.arttrip.android.presentation.reviewwrite.model.ReviewWritePrefill
 import java.time.LocalDate
 
 /* ================================

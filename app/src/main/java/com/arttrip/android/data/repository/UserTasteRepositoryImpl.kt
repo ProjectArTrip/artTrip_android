@@ -5,6 +5,7 @@ import com.arttrip.android.data.remote.mapper.base.toAppError
 import com.arttrip.android.data.remote.mapper.keyword.toDomain
 import com.arttrip.android.data.remote.mapper.keyword.toRecommendList
 import com.arttrip.android.data.remote.model.keyword.UserKeywordsReqDto
+import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.model.usertaste.Taste
 import com.arttrip.android.domain.model.usertaste.TasteGroup
@@ -62,7 +63,7 @@ class UserTasteRepositoryImpl
                     emit(ApiResult.Success(result))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
-                    emit(ApiResult.Error(ApiError.Unknown(t)))
+                    emit(ApiResult.Error(t.toAppError()))
                 }
             }
 

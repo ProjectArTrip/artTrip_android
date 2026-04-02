@@ -52,5 +52,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun profileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
+
+    @Singleton
+    @Binds
     abstract fun recentSearchRepository(searchHistoryRepositoryImpl: SearchHistoryRepositoryImpl): SearchHistoryRepository
 }

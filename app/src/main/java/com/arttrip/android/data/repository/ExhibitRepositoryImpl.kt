@@ -86,7 +86,7 @@ class ExhibitRepositoryImpl
                     ),
                 pagingSourceFactory = {
                     ExhibitListPagingSource(
-                        dataSource = dataSource,
+                        dataSource = exhibitDataSource,
                         query = query,
                         startDate = startDate,
                         endDate = endDate,
