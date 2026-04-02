@@ -16,14 +16,13 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -85,7 +84,7 @@ fun DateFilterBottomSheet(
                     .height(668.dp),
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(Modifier.height(18.dp))
@@ -100,12 +99,10 @@ fun DateFilterBottomSheet(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .weight(1f)
-                            .verticalScroll(rememberScrollState())
-                            .padding(bottom = bottomInset),
+                            .weight(1f),
                 ) {
                     CountryFilterMenuItem(
-                        title = "국가 선택",
+                        title = "국가",
                         description = selectedCountry?.label,
                         iconResId = R.drawable.ic_calendar_24,
                         expanded = expandedMenu == FilterMenu.Country,
@@ -124,7 +121,7 @@ fun DateFilterBottomSheet(
                     Spacer(Modifier.height(12.dp))
 
                     DateFilterMenuItem(
-                        title = "날짜 선택",
+                        title = "날짜",
                         description = dateDesc,
                         iconResId = R.drawable.ic_calendar_24,
                         expanded = expandedMenu == FilterMenu.Date,
@@ -138,9 +135,9 @@ fun DateFilterBottomSheet(
                             },
                         )
                     }
-
-                    Spacer(Modifier.height(bottomContentPadding))
                 }
+                Spacer(Modifier.height(bottomContentPadding))
+                Spacer(Modifier.height(bottomInset))
             }
             AppButton(
                 modifier =
