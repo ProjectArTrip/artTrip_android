@@ -132,7 +132,7 @@ fun DateFilterBottomSheet(
                             toggleMenu(FilterMenu.Date)
                         },
                     ) {
-                        DateFilterContent(
+                        DatePickerContent(
                             onPickPreset = { preset ->
                                 dateDesc = preset
                             },
@@ -344,18 +344,4 @@ private fun CountryFilterChips(
             )
         }
     }
-}
-
-@Composable
-private fun DateFilterContent(onPickPreset: (String) -> Unit) {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(390.dp)
-                .background(
-                    color = AppColor.Gray50,
-                    shape = RoundedCornerShape(8.dp),
-                ),
-    )
 }
