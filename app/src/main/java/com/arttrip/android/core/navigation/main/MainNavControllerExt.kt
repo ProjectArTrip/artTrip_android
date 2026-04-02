@@ -7,6 +7,7 @@ import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.navigation.NavKeys
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
+import java.time.LocalDate
 
 /* ================================
  * Public API
@@ -30,6 +31,13 @@ fun NavHostController.navigateToSearch() {
 
 fun NavHostController.navigateToRegion(region: DomesticRegion) {
     navigate(MainRoute.region(region))
+}
+
+fun NavHostController.navigateToSchedule(
+    country: ForeignCountry?,
+    date: LocalDate,
+) {
+    navigate(MainRoute.schedule(country, date))
 }
 
 fun NavHostController.navigateToGenre(

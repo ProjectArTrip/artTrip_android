@@ -29,4 +29,12 @@ fun KeywordsResDto.toDomain(): TasteGroup {
     )
 }
 
+fun KeywordsResDto.toRecommendList(): List<Taste> =
+    keywords.map { dto ->
+        Taste(
+            id = dto.keywordId,
+            name = dto.name,
+        )
+    }
+
 private fun String.toKeywordTypeOrNull(): KeywordType? = runCatching { KeywordType.valueOf(this) }.getOrNull()

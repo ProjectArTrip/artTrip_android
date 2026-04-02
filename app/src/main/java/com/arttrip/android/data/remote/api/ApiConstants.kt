@@ -12,4 +12,5 @@ object ApiConstants {
     const val EXHIBIT_PATH = "/exhibits"
 
     const val USER_PATH = "/me"
+    const val SEARCH_KEYWORD_PATH = "/search-history"
 }

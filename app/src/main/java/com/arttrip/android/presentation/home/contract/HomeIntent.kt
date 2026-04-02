@@ -83,6 +83,15 @@ sealed interface HomeIntent {
         val region: DomesticRegion,
     ) : HomeIntent
 
+    data class ForeignMoreScheduleIconClicked(
+        val country: ForeignCountry,
+        val date: LocalDate,
+    ) : HomeIntent
+
+    data class DomesticMoreScheduleIconClicked(
+        val date: LocalDate,
+    ) : HomeIntent
+
     data class ForeignMoreGenreIconClicked(
         val country: ForeignCountry,
         val genre: ExhibitionGenre,

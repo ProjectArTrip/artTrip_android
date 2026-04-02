@@ -30,11 +30,13 @@ import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
 import com.arttrip.android.presentation.home.sub.genre.GenreRoute
 import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
 import com.arttrip.android.presentation.home.sub.region.RegionRoute
+import com.arttrip.android.presentation.home.sub.schedule.ScheduleRoute
 import com.arttrip.android.presentation.home.sub.search.SearchRoute
 import com.arttrip.android.presentation.map.MapRoute
 import com.arttrip.android.presentation.mypage.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.stamp.StampRoute
+import java.time.LocalDate
 
 @Composable
 fun MainNavHost(
@@ -72,6 +74,9 @@ fun MainNavHost(
                 },
                 onNavigateRegion = { region ->
                     navController.navigateToRegion(region)
+                },
+                onNavigateSchedule = { country, date ->
+                    navController.navigateToSchedule(country, date)
                 },
                 onNavigateGenre = { country, genre ->
                     navController.navigateToGenre(country, genre)
@@ -114,6 +119,9 @@ fun MainNavHost(
             SearchRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
+                },
             )
         }
 
@@ -134,6 +142,38 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 region = region,
                 onBack = navController::popBackStack,
+                onNavigateExhibitionDetail = { id ->
+                    navController.navigateToExhibitionDetail(id)
+                },
+            )
+        }
+
+        composable(
+            route = MainRoute.HOME_SCHEDULE,
+            arguments =
+                listOf(
+                    navArgument("country") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                    navArgument("date") {
+                        type = NavType.StringType
+                    },
+                ),
+        ) { backStackEntry ->
+            val countryName = backStackEntry.arguments?.getString("country")
+            val country = countryName?.let { ForeignCountry.valueOf(it) }
+
+            val dateString = backStackEntry.arguments?.getString("date")
+            val date = dateString?.let { LocalDate.parse(it) }!!
+
+            ScheduleRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateNotification = navController::navigateToNotification,
+                country = country,
+                date = date,
             )
         }
 
@@ -162,6 +202,8 @@ fun MainNavHost(
             GenreRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateNotification = navController::navigateToNotification,
+                onNavigateExhibitionDetail = { id -> navController.navigateToExhibitionDetail(id) },
                 country = country,
                 genre = genre,
             )

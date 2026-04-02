@@ -13,15 +13,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.LikeButton
@@ -33,6 +36,8 @@ import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
+import com.arttrip.android.domain.model.recentsearch.RecentSearch
+import com.arttrip.android.domain.model.usertaste.Taste
 import com.arttrip.android.presentation.home.ExhibitionImage
 import com.arttrip.android.presentation.home.ExhibitionImageCase
 import com.arttrip.android.presentation.home.sub.search.contract.SearchIntent
@@ -43,12 +48,18 @@ fun SearchScreen(
     innerPadding: PaddingValues,
     state: SearchState,
     onIntent: (SearchIntent) -> Unit,
+    exhibitionList: LazyPagingItems<Exhibition>,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .noRippleClickable {
+                    focusManager.clearFocus()
+                },
     ) {
         Column(
             modifier =
@@ -78,54 +89,59 @@ fun SearchScreen(
                         .height(16.dp),
             )
 
+            AppTextField(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                value = state.inputText,
+                onValueChange = { text ->
+                    onIntent(SearchIntent.InputTextChanged(text))
+                },
+                placeholder = "새로 오픈한 12월 독일 전시가 있어요",
+                trailing = {
+                    AppIconButton(
+                        iconResId = R.drawable.ic_search_24,
+                        contentDescription = "Search Button",
+                        onIconClick = {
+                            focusManager.clearFocus()
+
+                            if (state.inputText.trim().isNotBlank()) {
+                                onIntent(SearchIntent.SearchClicked(state.inputText))
+                            }
+                        },
+                    )
+                },
+            )
+
             Box(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
             ) {
-                AppTextField(
-                    value = state.inputText,
-                    onValueChange = { text ->
-                        onIntent(SearchIntent.InputTextChanged(text))
-                    },
-                    placeholder = "새로 오픈한 12월 독일 전시가 있어요",
-                    trailing = {
-                        AppIconButton(
-                            iconResId = R.drawable.ic_search_24,
-                            contentDescription = "Search Button",
-                            onIconClick = {
-                                onIntent(SearchIntent.SearchClicked(state.inputText))
+                if (!state.isSearchResultVisible) {
+                    SearchIdleContent(
+                        state = state,
+                        onIntent = onIntent,
+                    )
+                } else {
+                    if (exhibitionList.itemCount == 0 &&
+                        exhibitionList.loadState.refresh is LoadState.NotLoading
+                    ) {
+                        EmptySearchResultContent()
+                    } else {
+                        SearchResultContent(
+                            exhibitions = exhibitionList,
+                            onExhibitionClick = { id ->
+                                onIntent(SearchIntent.ExhibitionClicked(id))
+                            },
+                            onLikeClick = { id ->
+                                onIntent(SearchIntent.LikeClicked(id))
                             },
                         )
-                    },
-                )
-            }
-
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-            ) {
-                // 초기 섹션
-                SearchIdleContent(
-                    state = state,
-                    onIntent = onIntent,
-                )
-
-//                // 검색 결과 X 섹션
-//                EmptySearchResultContent()
-//
-//                // 검색 결과 O 섹션
-//                SearchResultContent(
-//                    onExhibitionClick = { id ->
-//                        onIntent(SearchIntent.ExhibitionClicked(id))
-//                    },
-//                    onLikeClick = { id ->
-//                        onIntent(SearchIntent.LikeClicked(id))
-//                    },
-//                )
+                    }
+                }
             }
         }
     }
@@ -147,13 +163,13 @@ fun SearchIdleContent(
                     .height(20.dp),
         )
         if (state.recentKeywordList.isNotEmpty()) {
-            RecentSearch(
+            RecentSearchSection(
                 recentKeywordList = state.recentKeywordList,
                 onChipClick = { keyword ->
                     onIntent(SearchIntent.RecentKeywordClicked(keyword))
                 },
-                onDismissClick = { keyword ->
-                    onIntent(SearchIntent.RecentKeywordDismissClicked(keyword))
+                onDismissClick = { id ->
+                    onIntent(SearchIntent.RecentKeywordDismissClicked(id))
                 },
                 onDeleteAllClick = {
                     onIntent(SearchIntent.DeleteAllClicked)
@@ -176,10 +192,10 @@ fun SearchIdleContent(
 }
 
 @Composable
-fun RecentSearch(
-    recentKeywordList: List<String>,
+fun RecentSearchSection(
+    recentKeywordList: List<RecentSearch>,
     onChipClick: (String) -> Unit,
-    onDismissClick: (String) -> Unit,
+    onDismissClick: (Int) -> Unit,
     onDeleteAllClick: () -> Unit,
 ) {
     Row(
@@ -214,14 +230,14 @@ fun RecentSearch(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        recentKeywordList.forEach { label ->
+        recentKeywordList.forEach { item ->
             RecentSearchChip(
-                label = label,
+                label = item.content,
                 onChipClick = {
-                    onChipClick(label)
+                    onChipClick(item.content)
                 },
                 onDismissClick = {
-                    onDismissClick(label)
+                    onDismissClick(item.id)
                 },
             )
         }
@@ -230,7 +246,7 @@ fun RecentSearch(
 
 @Composable
 fun RecommendSearch(
-    recommendKeywordList: List<String>,
+    recommendKeywordList: List<Taste>,
     onChipClick: (String) -> Unit,
 ) {
     Column(
@@ -252,11 +268,11 @@ fun RecommendSearch(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            recommendKeywordList.forEach { keyword ->
+            recommendKeywordList.forEach { taste ->
                 SuggestionChip(
-                    label = keyword,
+                    label = taste.name,
                     onChipClick = {
-                        onChipClick(keyword)
+                        onChipClick(taste.name)
                     },
                 )
             }
@@ -287,55 +303,50 @@ fun EmptySearchResultContent() {
 
 @Composable
 fun SearchResultContent(
+    exhibitions: LazyPagingItems<Exhibition>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(exhibitions.loadState.refresh) {
+        if (exhibitions.loadState.refresh is LoadState.Loading) {
+            listState.scrollToItem(0)
+        }
+    }
+
     Column(
         modifier =
             Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxWidth(),
     ) {
         Spacer(
             modifier =
                 Modifier
                     .height(24.dp),
         )
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth(),
+        LazyColumn(
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            val dummyExhibition =
-                Exhibition(
-                    id = 1,
-                    title = "DDP 매거진 라이브러리: 기록에 머물다",
-                    posterUrl = "https://i.pinimg.com/originals/5d/90/1f/5d901f30a1ee270123e19b1404165113.jpg",
-                    status = ExhibitionStatus.ONGOING,
-                    period = "2025.01.01 - 2025.12.31",
-                    hallName = "DDP 동대문디자인플라자",
-                    country = "대한민국",
-                    region = "서울",
-                    isBookmarked = true,
-                )
+            items(exhibitions.itemCount) { index ->
 
-            repeat(10) {
-                ExhibitionItem(
-                    exhibition = dummyExhibition,
-                    onExhibitionClick = { id ->
-                        onExhibitionClick(id)
-                    },
-                    onLikeClick = { id ->
-                        onLikeClick(id)
-                    },
+                exhibitions[index]?.let { exhibition ->
+
+                    ExhibitionItem(
+                        exhibition = exhibition,
+                        onExhibitionClick = onExhibitionClick,
+                        onLikeClick = onLikeClick,
+                    )
+                }
+            }
+            item {
+                Spacer(
+                    modifier =
+                        Modifier
+                            .height(12.dp),
                 )
             }
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(24.dp),
-            )
         }
     }
 }
