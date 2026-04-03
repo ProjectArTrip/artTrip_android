@@ -10,6 +10,5 @@ data class Bookmark(
     val status: ExhibitionStatus,
     val period: String,
     val hallName: String,
-    val country: String?,
-    val region: String?,
+    val location: String?,
 )
