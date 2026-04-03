@@ -81,6 +81,7 @@ androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterfa
 google-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "google-maps" }
 google-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "google-location" }
 maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps-compose" }
+maps-compose-utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "maps-compose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

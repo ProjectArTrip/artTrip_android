@@ -133,4 +133,5 @@ dependencies {
     implementation(libs.google.maps)
     implementation(libs.google.location)
     implementation(libs.maps.compose)
+    implementation(libs.maps.compose.utils)
 }
