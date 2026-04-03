@@ -11,4 +11,22 @@ sealed interface DateFilterResultIntent {
         val startDate: LocalDate,
         val endDate: LocalDate,
     ) : DateFilterResultIntent
+
+    data object DateFilterIconClicked : DateFilterResultIntent
+
+    data object DateFilterSheetDismissed : DateFilterResultIntent
+
+    data object DateFilterApplyClicked : DateFilterResultIntent
+
+    data object DateFilterResetClicked : DateFilterResultIntent
+
+    data object DateFilterDateSectionOpened : DateFilterResultIntent
+
+    data class DateFilterDayClicked(
+        val date: LocalDate,
+    ) : DateFilterResultIntent
+
+    data class DateFilterLocationSelected(
+        val location: ExhibitionLocation,
+    ) : DateFilterResultIntent
 }

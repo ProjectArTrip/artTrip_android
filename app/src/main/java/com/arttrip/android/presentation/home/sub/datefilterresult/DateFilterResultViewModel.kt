@@ -12,6 +12,7 @@ import com.arttrip.android.domain.usecase.exhibition.GetRegionExhibitionUseCase
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultEffect
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultIntent
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultState
+import com.arttrip.android.presentation.home.sub.datefilterresult.contract.ExhibitionLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,9 +24,14 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.LocalDate
 import javax.inject.Inject
+
+private data class FilterParams(
+    val location: ExhibitionLocation,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+)
 
 @HiltViewModel
 class DateFilterResultViewModel
@@ -40,17 +46,16 @@ class DateFilterResultViewModel
         private val _effect = MutableSharedFlow<DateFilterResultEffect>()
         val effect: SharedFlow<DateFilterResultEffect> = _effect
 
-        private val initParams = MutableStateFlow<DateFilterResultIntent.Initialize?>(null)
+        private val filterParams = MutableStateFlow<FilterParams?>(null)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val exhibitionsFlow: Flow<PagingData<Exhibition>> =
-            initParams
+            filterParams
                 .filterNotNull()
                 .flatMapLatest { params ->
-                    if (params.isDomestic) {
-                        getRegionExhibitionUseCase(DomesticRegion.valueOf(params.location))
-                    } else {
-                        getCountryExhibitionUseCase(ForeignCountry.valueOf(params.location))
+                    when (val loc = params.location) {
+                        is ExhibitionLocation.Domestic -> getRegionExhibitionUseCase(loc.region)
+                        is ExhibitionLocation.Foreign -> getCountryExhibitionUseCase(loc.country)
                     }
                 }.cachedIn(viewModelScope)
 
@@ -59,22 +64,100 @@ class DateFilterResultViewModel
                 DateFilterResultIntent.BackClicked -> {
                     viewModelScope.launch { _effect.emit(DateFilterResultEffect.NavigateBack) }
                 }
+
                 is DateFilterResultIntent.Initialize -> {
-                    val formatter = DateTimeFormatter.ofPattern("MM.dd (E)", Locale.KOREAN)
-                    val locationLabel =
+                    val location =
                         if (intent.isDomestic) {
-                            DomesticRegion.valueOf(intent.location).label
+                            ExhibitionLocation.Domestic(DomesticRegion.valueOf(intent.location))
                         } else {
-                            ForeignCountry.valueOf(intent.location).label
+                            ExhibitionLocation.Foreign(ForeignCountry.valueOf(intent.location))
                         }
+                    applyFilter(location, intent.startDate, intent.endDate)
+                }
+
+                DateFilterResultIntent.DateFilterIconClicked -> {
+                    val current = filterParams.value ?: return
                     _state.update {
                         it.copy(
-                            location = locationLabel,
-                            dateStr = "${intent.startDate.format(formatter)} - ${intent.endDate.format(formatter)}",
+                            isDateFilterSheetVisible = true,
+                            dateFilterStartDate = current.startDate,
+                            dateFilterEndDate = current.endDate,
+                            dateFilterSelectedLocation = current.location,
                         )
                     }
-                    initParams.value = intent
+                }
+
+                DateFilterResultIntent.DateFilterSheetDismissed -> {
+                    _state.update {
+                        it.copy(
+                            isDateFilterSheetVisible = false,
+                            dateFilterStartDate = null,
+                            dateFilterEndDate = null,
+                            dateFilterSelectedLocation = null,
+                        )
+                    }
+                }
+
+                DateFilterResultIntent.DateFilterDateSectionOpened -> {
+                    if (_state.value.dateFilterStartDate == null) {
+                        _state.update { it.copy(dateFilterStartDate = LocalDate.now()) }
+                    }
+                }
+
+                DateFilterResultIntent.DateFilterResetClicked -> {
+                    _state.update {
+                        it.copy(
+                            dateFilterStartDate = LocalDate.now(),
+                            dateFilterEndDate = null,
+                        )
+                    }
+                }
+
+                DateFilterResultIntent.DateFilterApplyClicked -> {
+                    val s = _state.value
+                    val location = s.dateFilterSelectedLocation ?: return
+                    _state.update {
+                        it.copy(
+                            isDateFilterSheetVisible = false,
+                            dateFilterStartDate = null,
+                            dateFilterEndDate = null,
+                            dateFilterSelectedLocation = null,
+                        )
+                    }
+                    applyFilter(location, s.dateFilterStartDate!!, s.dateFilterEndDate!!)
+                }
+
+                is DateFilterResultIntent.DateFilterDayClicked -> {
+                    val today = LocalDate.now()
+                    val date = intent.date
+                    if (date < today) return
+                    val startDate = _state.value.dateFilterStartDate ?: today
+                    val endDate = _state.value.dateFilterEndDate
+                    when {
+                        endDate != null -> _state.update { it.copy(dateFilterStartDate = date, dateFilterEndDate = null) }
+                        date >= startDate -> _state.update { it.copy(dateFilterEndDate = date) }
+                        else -> _state.update { it.copy(dateFilterStartDate = date, dateFilterEndDate = null) }
+                    }
+                }
+
+                is DateFilterResultIntent.DateFilterLocationSelected -> {
+                    _state.update { it.copy(dateFilterSelectedLocation = intent.location) }
                 }
             }
+        }
+
+        private fun applyFilter(
+            location: ExhibitionLocation,
+            startDate: LocalDate,
+            endDate: LocalDate,
+        ) {
+            _state.update {
+                it.copy(
+                    location = location,
+                    startDate = startDate,
+                    endDate = endDate,
+                )
+            }
+            filterParams.value = FilterParams(location, startDate, endDate)
         }
     }
