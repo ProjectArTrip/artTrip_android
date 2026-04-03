@@ -26,7 +26,7 @@ import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
-import com.arttrip.android.presentation.home.sub.dateresult.DateResultRoute
+import com.arttrip.android.presentation.home.sub.datecountryresult.DateCountryResultRoute
 import com.arttrip.android.presentation.home.sub.genre.GenreRoute
 import com.arttrip.android.presentation.home.sub.notification.NotificationRoute
 import com.arttrip.android.presentation.home.sub.region.RegionRoute
@@ -67,7 +67,9 @@ fun MainNavHost(
             HomeRoute(
                 innerPadding,
                 onNavigateNotification = navController::navigateToNotification,
-                onNavigateDateFilter = navController::navigateToDateFilter,
+                onNavigateDateCountryResult = { country, startDate, endDate ->
+                    navController.navigateToDateCountryResult(country, startDate, endDate)
+                },
                 onNavigateSearch = navController::navigateToSearch,
                 onNavigateExhibitionDetail = { id ->
                     navController.navigateToExhibitionDetail(id)
@@ -103,9 +105,23 @@ fun MainNavHost(
             )
         }
 
-        composable(MainRoute.HOME_DATE_RESULT) {
-            DateResultRoute(
+        composable(
+            route = MainRoute.HOME_DATE_COUNTRY_RESULT,
+            arguments =
+                listOf(
+                    navArgument("country") { type = NavType.StringType },
+                    navArgument("startDate") { type = NavType.StringType },
+                    navArgument("endDate") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            val country = ForeignCountry.valueOf(backStackEntry.arguments?.getString("country")!!)
+            val startDate = LocalDate.parse(backStackEntry.arguments?.getString("startDate")!!)
+            val endDate = LocalDate.parse(backStackEntry.arguments?.getString("endDate")!!)
+            DateCountryResultRoute(
                 innerPadding = innerPadding,
+                country = country,
+                startDate = startDate,
+                endDate = endDate,
             )
         }
         composable(MainRoute.HOME_NOTIFICATION) {

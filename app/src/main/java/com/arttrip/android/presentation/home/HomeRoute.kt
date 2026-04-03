@@ -16,7 +16,7 @@ import java.time.LocalDate
 fun HomeRoute(
     innerPadding: PaddingValues,
     onNavigateNotification: () -> Unit,
-    onNavigateDateFilter: () -> Unit,
+    onNavigateDateCountryResult: (ForeignCountry, LocalDate, LocalDate) -> Unit,
     onNavigateSearch: () -> Unit,
     onNavigateExhibitionDetail: (Int) -> Unit,
     onNavigateRegion: (DomesticRegion) -> Unit,
@@ -32,8 +32,8 @@ fun HomeRoute(
                 HomeEffect.NavigateToNotification -> {
                     onNavigateNotification()
                 }
-                HomeEffect.NavigateToDateFilter -> {
-                    onNavigateDateFilter()
+                is HomeEffect.NavigateToDateCountryResult -> {
+                    onNavigateDateCountryResult(effect.country, effect.startDate, effect.endDate)
                 }
                 HomeEffect.NavigateToSearch -> {
                     onNavigateSearch()

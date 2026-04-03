@@ -150,17 +150,21 @@ class HomeViewModel
 
                 is HomeIntent.DateFilterApplyClicked -> {
                     val s = _state.value
-                    Log.d(
-                        "DateFilter",
-                        "country=${s.dateFilterSelectedCountry}, start=${s.dateFilterStartDate}, end=${s.dateFilterEndDate}",
-                    )
-                    // TODO: API 호출
                     _state.update {
                         it.copy(
                             isDateFilterSheetVisible = false,
                             dateFilterStartDate = null,
                             dateFilterEndDate = null,
                             dateFilterSelectedCountry = null,
+                        )
+                    }
+                    viewModelScope.launch {
+                        _effect.emit(
+                            HomeEffect.NavigateToDateCountryResult(
+                                country = s.dateFilterSelectedCountry!!,
+                                startDate = s.dateFilterStartDate!!,
+                                endDate = s.dateFilterEndDate!!,
+                            ),
                         )
                     }
                 }
