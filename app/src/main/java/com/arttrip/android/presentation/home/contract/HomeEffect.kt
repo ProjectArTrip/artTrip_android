@@ -8,8 +8,9 @@ import java.time.LocalDate
 sealed interface HomeEffect {
     object NavigateToNotification : HomeEffect
 
-    data class NavigateToDateCountryResult(
-        val country: ForeignCountry,
+    data class NavigateToDateFilterResult(
+        val isDomestic: Boolean,
+        val location: String,
         val startDate: LocalDate,
         val endDate: LocalDate,
     ) : HomeEffect

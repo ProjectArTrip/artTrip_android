@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.home.sub.datecountryresult
+package com.arttrip.android.presentation.home.sub.datefilterresult
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -28,12 +28,12 @@ import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.rememberScrollUpVisible
-import com.arttrip.android.presentation.home.sub.datecountryresult.contract.DateCountryResultState
+import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultState
 
 @Composable
-fun DateCountryResultScreen(
+fun DateFilterResultScreen(
     innerPadding: PaddingValues,
-    state: DateCountryResultState,
+    state: DateFilterResultState,
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
@@ -59,7 +59,7 @@ fun DateCountryResultScreen(
                 }
             },
         )
-        DateCountryResultTopBar(
+        DateFilterResultTopBar(
             visible = countVisible,
             location = state.location,
             date = state.dateStr,
@@ -93,7 +93,7 @@ fun DateCountryResultScreen(
 }
 
 @Composable
-private fun DateCountryResultTopBar(
+private fun DateFilterResultTopBar(
     visible: Boolean,
     location: String,
     date: String,

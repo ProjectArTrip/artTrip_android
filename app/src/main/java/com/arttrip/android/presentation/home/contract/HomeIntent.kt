@@ -35,6 +35,10 @@ sealed interface HomeIntent {
         val country: ForeignCountry,
     ) : HomeIntent
 
+    data class DateFilterRegionSelected(
+        val region: DomesticRegion,
+    ) : HomeIntent
+
     object SearchIconClicked : HomeIntent
 
     data class LoadForeignRecommendExhibitList(

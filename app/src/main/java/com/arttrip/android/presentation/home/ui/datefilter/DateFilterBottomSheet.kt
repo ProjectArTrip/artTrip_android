@@ -26,6 +26,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -37,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppFilterChip
@@ -55,17 +55,24 @@ enum class FilterMenu { Country, Date }
 @Composable
 fun DateFilterBottomSheet(
     visible: Boolean,
+    title: String,
     startDate: LocalDate?,
     endDate: LocalDate?,
-    selectedCountry: ForeignCountry?,
+    isApplyEnabled: Boolean,
+    locationTitle: String,
+    locationDescription: String?,
     onDayClick: (LocalDate) -> Unit,
-    onCountryClick: (ForeignCountry) -> Unit,
     onDateSectionOpen: () -> Unit,
     onResetClick: () -> Unit,
     onApplyClick: () -> Unit,
     onDismissRequest: () -> Unit,
+    locationChips: @Composable () -> Unit,
 ) {
     var expandedMenu by rememberSaveable { mutableStateOf<FilterMenu?>(null) }
+
+    LaunchedEffect(visible) {
+        if (visible) expandedMenu = null
+    }
 
     val dateDesc =
         when {
@@ -73,8 +80,6 @@ fun DateFilterBottomSheet(
             endDate == null -> "${startDate.toFilterLabel()} -"
             else -> "${startDate.toFilterLabel()} - ${endDate.toFilterLabel()}"
         }
-
-    val isApplyEnabled = selectedCountry != null && endDate != null
 
     val buttonBottomMargin = 16.dp
     val bottomContentPadding = 32.dp
@@ -101,7 +106,7 @@ fun DateFilterBottomSheet(
             ) {
                 Spacer(Modifier.height(18.dp))
                 Text(
-                    text = "국가 및 날짜 선택",
+                    text = title,
                     style = AppTextStyle.Title02Bold,
                     color = AppColor.TextPrimary,
                 )
@@ -114,17 +119,13 @@ fun DateFilterBottomSheet(
                             .weight(1f),
                 ) {
                     CountryFilterMenuItem(
-                        title = "국가",
-                        description = selectedCountry?.label,
+                        title = locationTitle,
+                        description = locationDescription,
                         iconResId = R.drawable.ic_calendar_24,
                         expanded = expandedMenu == FilterMenu.Country,
                         onHeaderClick = { toggleMenu(FilterMenu.Country) },
-                    ) {
-                        CountryFilterChips(
-                            selectedCountry = selectedCountry,
-                            onCountryClick = onCountryClick,
-                        )
-                    }
+                        expandedContent = { locationChips() },
+                    )
 
                     Spacer(Modifier.height(12.dp))
 
@@ -342,12 +343,12 @@ private fun FilterMenuHeader(
 }
 
 @Composable
-private fun CountryFilterChips(
-    selectedCountry: ForeignCountry?,
-    onCountryClick: (ForeignCountry) -> Unit,
+internal fun <T> FilterChips(
+    items: List<T>,
+    selected: T?,
+    labelOf: (T) -> String,
+    onItemClick: (T) -> Unit,
 ) {
-    val countries = ForeignCountry.entries.toList()
-
     FlowRow(
         modifier =
             Modifier
@@ -357,13 +358,12 @@ private fun CountryFilterChips(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemVerticalAlignment = Alignment.Top,
     ) {
-        countries.forEach { country ->
-            val selected = selectedCountry == country
+        items.forEach { item ->
             AppFilterChip(
                 case = AppFilterChipCase.Case02,
-                text = country.label,
-                selected = selected,
-                onClick = { onCountryClick(country) },
+                text = labelOf(item),
+                selected = selected == item,
+                onClick = { onItemClick(item) },
             )
         }
     }

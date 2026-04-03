@@ -1,4 +1,4 @@
-package com.arttrip.android.presentation.home.sub.datecountryresult
+package com.arttrip.android.presentation.home.sub.datefilterresult
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -6,31 +6,32 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arttrip.android.core.model.enums.foreign.ForeignCountry
-import com.arttrip.android.presentation.home.sub.datecountryresult.contract.DateCountryResultIntent
+import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultIntent
 import java.time.LocalDate
 
 @Composable
-fun DateCountryResultRoute(
+fun DateFilterResultRoute(
     innerPadding: PaddingValues,
-    country: ForeignCountry,
+    isDomestic: Boolean,
+    location: String,
     startDate: LocalDate,
     endDate: LocalDate,
-    viewModel: DateCountryResultViewModel = hiltViewModel(),
+    viewModel: DateFilterResultViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(country, startDate, endDate) {
+    LaunchedEffect(Unit) {
         viewModel.onIntent(
-            DateCountryResultIntent.Initialize(
-                country = country,
+            DateFilterResultIntent.Initialize(
+                isDomestic = isDomestic,
+                location = location,
                 startDate = startDate,
                 endDate = endDate,
             ),
         )
     }
 
-    DateCountryResultScreen(
+    DateFilterResultScreen(
         innerPadding = innerPadding,
         state = state,
     )

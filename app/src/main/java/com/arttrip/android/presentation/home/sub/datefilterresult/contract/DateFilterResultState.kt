@@ -1,9 +1,9 @@
-package com.arttrip.android.presentation.home.sub.datecountryresult.contract
+package com.arttrip.android.presentation.home.sub.datefilterresult.contract
 
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.domain.model.exhibition.Exhibition
 
-data class DateCountryResultState(
+data class DateFilterResultState(
     val location: String = "",
     val dateStr: String = "",
     val list: List<Exhibition> = mockExhibitionList,

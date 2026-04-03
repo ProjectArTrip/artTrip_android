@@ -1,5 +1,6 @@
 package com.arttrip.android.presentation.home.contract
 
+import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.presentation.home.PlaceTab
@@ -22,6 +23,7 @@ data class HomeState(
     val dateFilterStartDate: LocalDate? = null,
     val dateFilterEndDate: LocalDate? = null,
     val dateFilterSelectedCountry: ForeignCountry? = null,
+    val dateFilterSelectedRegion: DomesticRegion? = null,
 )
 
 private fun emptyCountryHomeData(): HomeSection =

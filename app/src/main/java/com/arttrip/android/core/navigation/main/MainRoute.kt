@@ -12,14 +12,16 @@ object MainRoute {
     const val BOOKMARK = "bookmark"
     const val MY_PAGE = "my_page"
 
-    private const val HOME_DATE_COUNTRY_RESULT_ROUTE = "home_date_country_result"
-    const val HOME_DATE_COUNTRY_RESULT = "$HOME_DATE_COUNTRY_RESULT_ROUTE?country={country}&startDate={startDate}&endDate={endDate}"
+    private const val HOME_DATE_FILTER_RESULT_ROUTE = "home_date_filter_result"
+    const val HOME_DATE_FILTER_RESULT =
+        "$HOME_DATE_FILTER_RESULT_ROUTE?isDomestic={isDomestic}&location={location}&startDate={startDate}&endDate={endDate}"
 
-    fun dateCountryResult(
-        country: ForeignCountry,
+    fun dateFilterResult(
+        isDomestic: Boolean,
+        location: String,
         startDate: LocalDate,
         endDate: LocalDate,
-    ): String = "$HOME_DATE_COUNTRY_RESULT_ROUTE?country=${country.name}&startDate=$startDate&endDate=$endDate"
+    ): String = "$HOME_DATE_FILTER_RESULT_ROUTE?isDomestic=$isDomestic&location=$location&startDate=$startDate&endDate=$endDate"
 
     const val HOME_NOTIFICATION = "home_notification"
 
