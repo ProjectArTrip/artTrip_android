@@ -20,20 +20,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionConstants
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.rememberScrollUpVisible
+import com.arttrip.android.domain.model.exhibition.Exhibition
+import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultIntent
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultState
 
 @Composable
 fun DateFilterResultScreen(
     innerPadding: PaddingValues,
     state: DateFilterResultState,
+    onIntent: (DateFilterResultIntent) -> Unit,
+    exhibitionItems: LazyPagingItems<Exhibition>,
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
@@ -72,13 +76,13 @@ fun DateFilterResultScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(
-                count = state.list.size,
-                key = { index -> state.list[index].id },
+                count = exhibitionItems.itemCount,
+                key = { index -> exhibitionItems[index]?.id ?: index },
             ) { index ->
-                val item = state.list[index]
+                val item = exhibitionItems[index] ?: return@items
                 ExhibitionListItem(
                     posterUrl = item.posterUrl,
-                    location = if (item.country == ExhibitionConstants.DOMESTIC_COUNTRY) item.region else item.country,
+                    location = null,
                     title = item.title,
                     hallName = item.hallName,
                     period = item.period,

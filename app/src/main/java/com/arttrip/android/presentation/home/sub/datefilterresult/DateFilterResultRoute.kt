@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultIntent
 import java.time.LocalDate
 
@@ -19,6 +20,7 @@ fun DateFilterResultRoute(
     viewModel: DateFilterResultViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val exhibitionItems = viewModel.exhibitionsFlow.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.onIntent(
@@ -34,5 +36,7 @@ fun DateFilterResultRoute(
     DateFilterResultScreen(
         innerPadding = innerPadding,
         state = state,
+        onIntent = viewModel::onIntent,
+        exhibitionItems = exhibitionItems,
     )
 }
