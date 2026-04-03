@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,11 +14,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,20 +26,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
-import com.arttrip.android.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppButton
@@ -50,11 +42,10 @@ import com.arttrip.android.core.ui.component.button.AppButtonVariant
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
-import com.arttrip.android.core.ui.component.button.LikeButton
 import com.arttrip.android.core.ui.component.empty.AppEmptyState
+import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
-import com.arttrip.android.core.ui.component.tag.AppTag
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
@@ -128,11 +119,17 @@ fun BookmarkScreen(
                         onSetBookmarkFromRemote(item.exhibitId, true)
                     }
                     val isLiked by bookmarkedFlow(item.exhibitId).collectAsStateWithLifecycle(true)
-                    BookmarkItem(
-                        bookmark = item,
+
+                    ExhibitionListItem(
+                        posterUrl = item.posterUrl,
+                        location = item.location,
+                        title = item.title,
+                        hallName = item.hallName,
+                        period = item.period,
+                        status = item.status,
                         isLiked = isLiked,
-                        onItemClick = { onIntent(BookmarkIntent.ClickItem(item.exhibitId)) },
                         onLikeClick = { onIntent(BookmarkIntent.ToggleBookmark(item.exhibitId)) },
+                        onItemClick = { onIntent(BookmarkIntent.ClickItem(item.exhibitId)) },
                     )
                 }
             }
@@ -274,101 +271,6 @@ private fun SortTextButton(
         color = if (selected) AppColor.TextPoint else AppColor.TextPrimary,
         modifier = Modifier.noRippleClickable(onClick = onClick),
     )
-}
-
-@Composable
-fun BookmarkItem(
-    bookmark: Bookmark,
-    isLiked: Boolean,
-    onItemClick: () -> Unit,
-    onLikeClick: () -> Unit,
-) {
-    Row(
-        modifier =
-            Modifier
-                .noRippleClickable { onItemClick() }
-                .padding(end = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ExhibitionThumbWithActions(
-            url = bookmark.posterUrl,
-            isLiked = isLiked,
-            status = bookmark.status,
-            onLikeClick = onLikeClick,
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Column {
-            bookmark.country?.let {
-                Text(
-                    text = it,
-                    style = AppTextStyle.Body01Regular,
-                    color = AppColor.TextPoint,
-                )
-                Spacer(modifier = Modifier.height(6.dp))
-            }
-            Text(
-                text = bookmark.title,
-                style = AppTextStyle.Title02Bold,
-                color = AppColor.TextPrimary,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = bookmark.hallName,
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextTertiary,
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = bookmark.period,
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextTertiary,
-            )
-        }
-    }
-}
-
-@Composable
-fun ExhibitionThumbWithActions(
-    url: String,
-    isLiked: Boolean,
-    status: ExhibitionStatus,
-    onLikeClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier =
-            modifier
-                .size(100.dp),
-    ) {
-        AsyncImage(
-            modifier =
-                Modifier
-                    .matchParentSize()
-                    .clip(RoundedCornerShape(8.dp)),
-            model = url,
-            contentDescription = "Exhibition thumbnail",
-            contentScale = ContentScale.Crop,
-        )
-
-        LikeButton(
-            modifier =
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 8.dp),
-            isSelected = isLiked,
-            onClick = onLikeClick,
-        )
-
-        AppTag(
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 0.dp, end = 0.dp),
-            status = status,
-        )
-    }
 }
 
 @Composable
