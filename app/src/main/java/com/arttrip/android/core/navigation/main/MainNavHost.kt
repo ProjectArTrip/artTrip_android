@@ -121,6 +121,7 @@ fun MainNavHost(
             val endDate = LocalDate.parse(backStackEntry.arguments?.getString("endDate")!!)
             DateFilterResultRoute(
                 innerPadding = innerPadding,
+                onBack = navController::popBackStack,
                 isDomestic = isDomestic,
                 location = location,
                 startDate = startDate,

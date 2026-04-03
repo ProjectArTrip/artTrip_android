@@ -7,12 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultEffect
 import com.arttrip.android.presentation.home.sub.datefilterresult.contract.DateFilterResultIntent
 import java.time.LocalDate
 
 @Composable
 fun DateFilterResultRoute(
     innerPadding: PaddingValues,
+    onBack: () -> Unit,
     isDomestic: Boolean,
     location: String,
     startDate: LocalDate,
@@ -31,6 +33,14 @@ fun DateFilterResultRoute(
                 endDate = endDate,
             ),
         )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                DateFilterResultEffect.NavigateBack -> onBack()
+            }
+        }
     }
 
     DateFilterResultScreen(

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
@@ -55,6 +56,9 @@ class DateFilterResultViewModel
 
         fun onIntent(intent: DateFilterResultIntent) {
             when (intent) {
+                DateFilterResultIntent.BackClicked -> {
+                    viewModelScope.launch { _effect.emit(DateFilterResultEffect.NavigateBack) }
+                }
                 is DateFilterResultIntent.Initialize -> {
                     val formatter = DateTimeFormatter.ofPattern("MM.dd (E)", Locale.KOREAN)
                     val locationLabel =

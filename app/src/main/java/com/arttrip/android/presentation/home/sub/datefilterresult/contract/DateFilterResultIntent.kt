@@ -3,6 +3,8 @@ package com.arttrip.android.presentation.home.sub.datefilterresult.contract
 import java.time.LocalDate
 
 sealed interface DateFilterResultIntent {
+    data object BackClicked : DateFilterResultIntent
+
     data class Initialize(
         val isDomestic: Boolean,
         val location: String,

@@ -43,7 +43,15 @@ fun DateFilterResultScreen(
     val countVisible = rememberScrollUpVisible(listState).value
     Column(modifier = Modifier.padding(innerPadding)) {
         AppTopBar(
-            leading = null,
+            leading = {
+                AppIconButton(
+                    iconResId = R.drawable.ic_back_24,
+                    contentDescription = "뒤로가기",
+                    onIconClick = {
+                        onIntent(DateFilterResultIntent.BackClicked)
+                    },
+                )
+            },
             actions = {
                 AppIconButton(
                     iconResId = R.drawable.ic_alert_24,
