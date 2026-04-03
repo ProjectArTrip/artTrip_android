@@ -59,7 +59,6 @@ fun MyReviewsScreen(
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
 
-    android.util.Log.d("MyReviewsScreen", "itemCount=${reviewItems.itemCount}")
     val totalCount = state.reviewTotalCount
 
     Column(modifier = Modifier.padding(innerPadding)) {
