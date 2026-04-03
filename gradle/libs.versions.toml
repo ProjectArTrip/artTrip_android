@@ -32,6 +32,10 @@ credentialsPlayServicesAuth = "1.5.0"
 googleid = "1.1.1"
 exifinterface = "1.4.2"
 
+google-maps = "20.0.0"
+google-location = "21.3.0"
+maps-compose = "6.1.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -73,6 +77,10 @@ androidx-credentials = { group = "androidx.credentials", name = "credentials", v
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
+
+google-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "google-maps" }
+google-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "google-location" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps-compose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

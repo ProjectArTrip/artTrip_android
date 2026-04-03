@@ -38,7 +38,10 @@ android {
         val kakaoNativeAppKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY") ?: ""
         val googleWebClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
 
+        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
         manifestPlaceholders["kakaoNativeAppKey"] = kakaoNativeAppKey
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
 
         buildConfigField(
             "String",
@@ -126,4 +129,8 @@ dependencies {
 
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
+
+    implementation(libs.google.maps)
+    implementation(libs.google.location)
+    implementation(libs.maps.compose)
 }
