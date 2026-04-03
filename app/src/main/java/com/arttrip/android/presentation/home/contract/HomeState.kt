@@ -19,6 +19,9 @@ data class HomeState(
     val domesticSelectedDate: LocalDate = LocalDate.now(),
     val domesticSelectedGenre: ExhibitionGenre = ExhibitionGenre.ContemporaryArt,
     val isDateFilterSheetVisible: Boolean = false,
+    val dateFilterStartDate: LocalDate? = null,
+    val dateFilterEndDate: LocalDate? = null,
+    val dateFilterSelectedCountry: ForeignCountry? = null,
 )
 
 private fun emptyCountryHomeData(): HomeSection =

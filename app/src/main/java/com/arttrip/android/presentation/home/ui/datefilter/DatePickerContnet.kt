@@ -18,11 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,46 +30,30 @@ import com.arttrip.android.core.ui.theme.AppTextStyle
 import java.time.LocalDate
 import java.time.YearMonth
 
-private fun LocalDate.koreanDayOfWeek(): String = WEEKDAY_LABELS[dayOfWeek.value % 7]
+internal fun LocalDate.koreanDayOfWeek(): String = WEEKDAY_LABELS[dayOfWeek.value % 7]
 
-private fun LocalDate.toFilterLabel(): String = "$monthValue.$dayOfMonth(${koreanDayOfWeek()})"
+internal fun LocalDate.toFilterLabel(): String = "$monthValue.$dayOfMonth(${koreanDayOfWeek()})"
 
 private fun LocalDate.chipState(
     today: LocalDate,
     startDate: LocalDate,
     endDate: LocalDate?,
-): DayChipStateCase03 = when {
-    this < today -> DayChipStateCase03.Past
-    this == startDate || this == endDate -> DayChipStateCase03.Selected
-    this == today -> DayChipStateCase03.Today
-    else -> DayChipStateCase03.Future
-}
-
+): DayChipStateCase03 =
+    when {
+        this < today -> DayChipStateCase03.Past
+        this == startDate || this == endDate -> DayChipStateCase03.Selected
+        this == today -> DayChipStateCase03.Today
+        else -> DayChipStateCase03.Future
+    }
 
 @Composable
-fun DatePickerContent(onPickPreset: (String) -> Unit) {
+fun DatePickerContent(
+    startDate: LocalDate,
+    endDate: LocalDate?,
+    onDayClick: (LocalDate) -> Unit,
+) {
     val today = remember { LocalDate.now() }
     val startMonth = remember { YearMonth.now() }
-    var startDate by remember { mutableStateOf(today) }
-    var endDate by remember { mutableStateOf<LocalDate?>(null) }
-
-    LaunchedEffect(startDate, endDate) {
-        val end = endDate
-        onPickPreset(
-            if (end == null) "${startDate.toFilterLabel()} -"
-            else "${startDate.toFilterLabel()} - ${end.toFilterLabel()}"
-        )
-    }
-
-    fun onDayClick(date: LocalDate) {
-        if (date < today) return
-        when {
-            endDate != null -> { startDate = date; endDate = null }
-            date >= startDate -> endDate = date
-            else -> { startDate = date; endDate = null }
-        }
-    }
-
     val listState = rememberLazyListState()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -89,13 +69,12 @@ fun DatePickerContent(onPickPreset: (String) -> Unit) {
                     today = today,
                     startDate = startDate,
                     endDate = endDate,
-                    onDayClick = ::onDayClick,
+                    onDayClick = onDayClick,
                 )
             }
         }
     }
 }
-
 
 @Composable
 private fun WeekdayHeader() {
@@ -176,12 +155,13 @@ private fun WeekRow(
     endDate: LocalDate?,
     onDayClick: (LocalDate) -> Unit,
 ) {
-    val dates = remember(yearMonth, weekIndex, startOffset, totalDays) {
-        List(7) { col ->
-            val dom = weekIndex * 7 + col - startOffset + 1
-            if (dom in 1..totalDays) yearMonth.atDay(dom) else null
+    val dates =
+        remember(yearMonth, weekIndex, startOffset, totalDays) {
+            List(7) { col ->
+                val dom = weekIndex * 7 + col - startOffset + 1
+                if (dom in 1..totalDays) yearMonth.atDay(dom) else null
+            }
         }
-    }
 
     Box(modifier = Modifier.fillMaxWidth().height(36.dp)) {
         // 하이라이트 레이어 (padding 없이 full width)
@@ -201,10 +181,11 @@ private fun WeekRow(
 
         // 칩 레이어
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(horizontal = 10.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             dates.forEach { date ->
@@ -231,25 +212,26 @@ private fun BoxScope.RangeHighlight(
     startDate: LocalDate,
     endDate: LocalDate,
 ) {
-    val modifier = when {
-        date == startDate ->
-            Modifier
-                .fillMaxWidth(0.5f)
-                .height(24.dp)
-                .background(AppColor.Primary100)
-                .align(Alignment.CenterEnd)
-        date == endDate ->
-            Modifier
-                .fillMaxWidth(0.5f)
-                .height(24.dp)
-                .background(AppColor.Primary100)
-                .align(Alignment.CenterStart)
-        date > startDate && date < endDate ->
-            Modifier
-                .fillMaxWidth()
-                .height(24.dp)
-                .background(AppColor.Primary100)
-        else -> return
-    }
+    val modifier =
+        when {
+            date == startDate ->
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(24.dp)
+                    .background(AppColor.Primary100)
+                    .align(Alignment.CenterEnd)
+            date == endDate ->
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(24.dp)
+                    .background(AppColor.Primary100)
+                    .align(Alignment.CenterStart)
+            date > startDate && date < endDate ->
+                Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)
+                    .background(AppColor.Primary100)
+            else -> return
+        }
     Box(modifier)
 }

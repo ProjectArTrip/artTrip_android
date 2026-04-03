@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
@@ -44,24 +42,39 @@ import com.arttrip.android.core.ui.component.button.AppButton
 import com.arttrip.android.core.ui.component.button.AppButtonDefaults
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
+import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.core.util.noRippleClickable
+import java.time.LocalDate
 
 enum class FilterMenu { Country, Date }
 
 @Composable
 fun DateFilterBottomSheet(
     visible: Boolean,
+    startDate: LocalDate?,
+    endDate: LocalDate?,
+    selectedCountry: ForeignCountry?,
+    onDayClick: (LocalDate) -> Unit,
+    onCountryClick: (ForeignCountry) -> Unit,
+    onDateSectionOpen: () -> Unit,
+    onResetClick: () -> Unit,
+    onApplyClick: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     var expandedMenu by rememberSaveable { mutableStateOf<FilterMenu?>(null) }
 
-    var selectedCountry by rememberSaveable { mutableStateOf<ForeignCountry?>(null) }
+    val dateDesc =
+        when {
+            startDate == null -> null
+            endDate == null -> "${startDate.toFilterLabel()} -"
+            else -> "${startDate.toFilterLabel()} - ${endDate.toFilterLabel()}"
+        }
 
-    var dateDesc by rememberSaveable { mutableStateOf<String?>(null) }
+    val isApplyEnabled = selectedCountry != null && endDate != null
 
     val buttonBottomMargin = 16.dp
     val bottomContentPadding = 32.dp
@@ -70,8 +83,6 @@ fun DateFilterBottomSheet(
     fun toggleMenu(menu: FilterMenu) {
         expandedMenu = if (expandedMenu == menu) null else menu
     }
-
-    val density = LocalDensity.current
 
     AppModalBottomSheet(
         visible = visible,
@@ -107,15 +118,11 @@ fun DateFilterBottomSheet(
                         description = selectedCountry?.label,
                         iconResId = R.drawable.ic_calendar_24,
                         expanded = expandedMenu == FilterMenu.Country,
-                        onHeaderClick = {
-                            toggleMenu(FilterMenu.Country)
-                        },
+                        onHeaderClick = { toggleMenu(FilterMenu.Country) },
                     ) {
                         CountryFilterChips(
                             selectedCountry = selectedCountry,
-                            onCountryClick = { country ->
-                                selectedCountry = country
-                            },
+                            onCountryClick = onCountryClick,
                         )
                     }
 
@@ -127,13 +134,15 @@ fun DateFilterBottomSheet(
                         iconResId = R.drawable.ic_calendar_24,
                         expanded = expandedMenu == FilterMenu.Date,
                         onHeaderClick = {
+                            if (expandedMenu != FilterMenu.Date) onDateSectionOpen()
                             toggleMenu(FilterMenu.Date)
                         },
+                        onResetClick = if (endDate != null) onResetClick else null,
                     ) {
                         DatePickerContent(
-                            onPickPreset = { preset ->
-                                dateDesc = preset
-                            },
+                            startDate = startDate ?: LocalDate.now(),
+                            endDate = endDate,
+                            onDayClick = onDayClick,
                         )
                     }
                 }
@@ -147,7 +156,8 @@ fun DateFilterBottomSheet(
                         .fillMaxWidth()
                         .padding(bottom = buttonBottomMargin),
                 text = "적용하기",
-                onClick = {},
+                enabled = isApplyEnabled,
+                onClick = onApplyClick,
             )
         }
     }
@@ -211,6 +221,7 @@ private fun DateFilterMenuItem(
     @DrawableRes iconResId: Int,
     expanded: Boolean,
     onHeaderClick: () -> Unit,
+    onResetClick: (() -> Unit)? = null,
     expandedContent: @Composable ColumnScope.() -> Unit,
 ) {
     FilterMenuCard(
@@ -224,6 +235,7 @@ private fun DateFilterMenuItem(
             description = description,
             iconResId = iconResId,
             onClick = onHeaderClick,
+            onResetClick = onResetClick,
         )
 
         Spacer(Modifier.height(16.dp))
@@ -282,13 +294,15 @@ private fun FilterMenuHeader(
     description: String? = null,
     @DrawableRes iconResId: Int,
     onClick: () -> Unit,
+    onResetClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .noRippleClickable(onClick = onClick)
-                .padding(start = 20.dp),
+                .padding(start = 20.dp)
+                .height(20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -311,6 +325,17 @@ private fun FilterMenuHeader(
                 text = description,
                 style = AppTextStyle.Body01Bold,
                 color = AppColor.TextPoint,
+            )
+        }
+
+        if (onResetClick != null) {
+            Spacer(modifier = Modifier.width(8.dp))
+            AppIconButton(
+                modifier = Modifier.size(20.dp),
+                iconResId = R.drawable.ic_reset_24,
+                contentDescription = "초기화",
+                tint = AppColor.Gray900,
+                onIconClick = onResetClick,
             )
         }
     }

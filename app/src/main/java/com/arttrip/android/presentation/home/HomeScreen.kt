@@ -304,6 +304,14 @@ fun HomeBody(
 
         DateFilterBottomSheet(
             visible = state.isDateFilterSheetVisible,
+            startDate = state.dateFilterStartDate,
+            endDate = state.dateFilterEndDate,
+            selectedCountry = state.dateFilterSelectedCountry,
+            onDayClick = { date -> onIntent(HomeIntent.DateFilterDayClicked(date)) },
+            onCountryClick = { country -> onIntent(HomeIntent.DateFilterCountrySelected(country)) },
+            onDateSectionOpen = { onIntent(HomeIntent.DateFilterDateSectionOpened) },
+            onResetClick = { onIntent(HomeIntent.DateFilterResetClicked) },
+            onApplyClick = { onIntent(HomeIntent.DateFilterApplyClicked) },
             onDismissRequest = { onIntent(HomeIntent.DateFilterSheetDismissed) },
         )
     }

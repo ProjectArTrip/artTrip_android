@@ -21,6 +21,20 @@ sealed interface HomeIntent {
 
     object DateFilterSheetDismissed : HomeIntent
 
+    object DateFilterApplyClicked : HomeIntent
+
+    object DateFilterResetClicked : HomeIntent
+
+    object DateFilterDateSectionOpened : HomeIntent
+
+    data class DateFilterDayClicked(
+        val date: LocalDate,
+    ) : HomeIntent
+
+    data class DateFilterCountrySelected(
+        val country: ForeignCountry,
+    ) : HomeIntent
+
     object SearchIconClicked : HomeIntent
 
     data class LoadForeignRecommendExhibitList(
