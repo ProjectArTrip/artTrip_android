@@ -7,4 +7,5 @@ data class MapState(
     val markers: List<ExhibitionMarker> = emptyList(),
     val isLoading: Boolean = false,
     val error: ApiError? = null,
+    val selectedClusterCount: Int = 0,
 )

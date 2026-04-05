@@ -25,6 +25,8 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -43,6 +45,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +62,7 @@ fun MapScreen(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isExpanded = scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
+    val scope = rememberCoroutineScope()
 
     BottomSheetScaffold(
         modifier = modifier
@@ -71,12 +75,23 @@ fun MapScreen(
         },
         sheetPeekHeight = 64.dp,
         sheetContent = {
-            BottomSheetContent(innerPadding = innerPadding, isExpanded = isExpanded)
+            BottomSheetContent(
+                innerPadding = innerPadding,
+                isExpanded = isExpanded,
+                clusterCount = state.selectedClusterCount,
+            )
         }
     ) {
         MapContent(
             cameraPositionState = cameraPositionState,
             markers = state.markers,
+            onClusterClick = { cluster ->
+                onIntent(MapIntent.OnClusterClicked(count = cluster.size))
+                scope.launch { scaffoldState.bottomSheetState.expand() }
+            },
+            onCameraIdle = { visibleCount ->
+                onIntent(MapIntent.OnCameraIdle(visibleCount = visibleCount))
+            },
         )
     }
 }
@@ -86,7 +101,17 @@ fun MapScreen(
 private fun MapContent(
     cameraPositionState: com.google.maps.android.compose.CameraPositionState,
     markers: List<ExhibitionMarker>,
+    onClusterClick: (Cluster<ExhibitionMarker>) -> Unit,
+    onCameraIdle: (Int) -> Unit,
 ) {
+    LaunchedEffect(cameraPositionState.isMoving, markers) {
+        if (!cameraPositionState.isMoving) {
+            val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
+            val count = bounds?.let { b -> markers.count { b.contains(it.latLng) } } ?: 0
+            onCameraIdle(count)
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -100,12 +125,17 @@ private fun MapContent(
         ) {
             Clustering<ExhibitionMarker>(
                 items = markers,
+                onClusterClick = { cluster ->
+                    onClusterClick(cluster)
+                    true
+                },
                 clusterContent = { cluster ->
                     PlaceCluster(cluster = cluster)
                 },
                 clusterItemContent = {
                     PlaceMarker()
-                })
+                },
+            )
         }
         Column(
             modifier = Modifier
@@ -138,7 +168,11 @@ fun BottomSheetDragHandle() {
 }
 
 @Composable
-fun BottomSheetContent(innerPadding: PaddingValues, isExpanded: Boolean) {
+fun BottomSheetContent(
+    innerPadding: PaddingValues,
+    isExpanded: Boolean,
+    clusterCount: Int,
+) {
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
 
@@ -175,7 +209,7 @@ fun BottomSheetContent(innerPadding: PaddingValues, isExpanded: Boolean) {
                             .width(8.dp)
                     )
                     Text(
-                        text = "24",
+                        text = clusterCount.toString(),
                         style = AppTextStyle.Headline,
                         color = AppColor.TextPoint
                     )

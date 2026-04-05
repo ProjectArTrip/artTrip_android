@@ -35,6 +35,8 @@ class MapViewModel
         fun onIntent(intent: MapIntent) {
             when (intent) {
                 is MapIntent.LoadMarkers -> loadMarkers(etag = intent.etag)
+                is MapIntent.OnClusterClicked -> _state.update { it.copy(selectedClusterCount = intent.count) }
+                is MapIntent.OnCameraIdle -> _state.update { it.copy(selectedClusterCount = intent.visibleCount) }
             }
         }
 
