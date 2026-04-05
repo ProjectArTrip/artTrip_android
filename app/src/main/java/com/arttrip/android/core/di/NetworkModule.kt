@@ -5,6 +5,7 @@ import com.arttrip.android.data.remote.api.ExhibitApi
 import com.arttrip.android.data.remote.api.FavoriteApi
 import com.arttrip.android.data.remote.api.HomeApi
 import com.arttrip.android.data.remote.api.KeywordApi
+import com.arttrip.android.data.remote.api.MapApi
 import com.arttrip.android.data.remote.api.ReviewApi
 import com.arttrip.android.data.remote.api.SearchHistoryApi
 import com.arttrip.android.data.remote.api.UserApi
@@ -110,4 +111,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideSearchHistoryApi(retrofit: Retrofit): SearchHistoryApi = retrofit.create(SearchHistoryApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMapApi(retrofit: Retrofit): MapApi = retrofit.create(MapApi::class.java)
 }

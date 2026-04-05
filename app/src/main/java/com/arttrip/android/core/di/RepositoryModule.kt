@@ -4,6 +4,7 @@ import com.arttrip.android.data.repository.AuthRepositoryImpl
 import com.arttrip.android.data.repository.BookmarkRepositoryImpl
 import com.arttrip.android.data.repository.ExhibitRepositoryImpl
 import com.arttrip.android.data.repository.HomeRepositoryImpl
+import com.arttrip.android.data.repository.MapRepositoryImpl
 import com.arttrip.android.data.repository.ProfileRepositoryImpl
 import com.arttrip.android.data.repository.ReviewRepositoryImpl
 import com.arttrip.android.data.repository.SearchHistoryRepositoryImpl
@@ -12,6 +13,7 @@ import com.arttrip.android.domain.repository.AuthRepository
 import com.arttrip.android.domain.repository.BookmarkRepository
 import com.arttrip.android.domain.repository.ExhibitRepository
 import com.arttrip.android.domain.repository.HomeRepository
+import com.arttrip.android.domain.repository.MapRepository
 import com.arttrip.android.domain.repository.ProfileRepository
 import com.arttrip.android.domain.repository.ReviewRepository
 import com.arttrip.android.domain.repository.SearchHistoryRepository
@@ -56,4 +58,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun recentSearchRepository(searchHistoryRepositoryImpl: SearchHistoryRepositoryImpl): SearchHistoryRepository
+
+    @Singleton
+    @Binds
+    abstract fun mapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
 }
