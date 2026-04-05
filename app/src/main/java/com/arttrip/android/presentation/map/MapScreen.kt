@@ -32,10 +32,12 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.domain.model.map.ExhibitionMarker
+import com.arttrip.android.presentation.map.contract.MapIntent
+import com.arttrip.android.presentation.map.contract.MapState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.Cluster
-import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
@@ -47,6 +49,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapScreen(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
+    state: MapState,
+    onIntent: (MapIntent) -> Unit,
 ) {
     val seoul = LatLng(37.5665, 126.9780)
     val cameraPositionState = rememberCameraPositionState {
@@ -71,7 +75,8 @@ fun MapScreen(
         }
     ) {
         MapContent(
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            markers = state.markers,
         )
     }
 }
@@ -79,25 +84,12 @@ fun MapScreen(
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 private fun MapContent(
-    cameraPositionState: com.google.maps.android.compose.CameraPositionState
+    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
+    markers: List<ExhibitionMarker>,
 ) {
-    val dummyPlaces = listOf(
-        PlaceItem(1, LatLng(37.5665, 126.9780), "서울시청"),
-        PlaceItem(2, LatLng(37.5700, 126.9768), "경복궁"),
-        PlaceItem(3, LatLng(37.5512, 126.9882), "남산타워"),
-        PlaceItem(4, LatLng(37.5133, 127.1028), "롯데월드"),
-        PlaceItem(5, LatLng(37.5796, 126.9770), "청와대"),
-        PlaceItem(6, LatLng(37.5445, 127.0557), "서울숲"),
-        PlaceItem(7, LatLng(37.5219, 127.1216), "올림픽공원"),
-        PlaceItem(8, LatLng(37.5704, 126.9920), "광장시장"),
-        PlaceItem(9, LatLng(37.5585, 126.9780), "명동"),
-        PlaceItem(10, LatLng(37.4979, 127.0276), "강남역")
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -106,12 +98,12 @@ private fun MapContent(
                 zoomControlsEnabled = false
             )
         ) {
-            Clustering(
-                items = dummyPlaces,
+            Clustering<ExhibitionMarker>(
+                items = markers,
                 clusterContent = { cluster ->
                     PlaceCluster(cluster = cluster)
                 },
-                clusterItemContent = { item ->
+                clusterItemContent = {
                     PlaceMarker()
                 })
         }
@@ -146,7 +138,7 @@ fun BottomSheetDragHandle() {
 }
 
 @Composable
-fun BottomSheetContent(innerPadding : PaddingValues, isExpanded: Boolean) {
+fun BottomSheetContent(innerPadding: PaddingValues, isExpanded: Boolean) {
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
 
@@ -219,7 +211,7 @@ fun BottomSheetContent(innerPadding : PaddingValues, isExpanded: Boolean) {
 }
 
 @Composable
-fun PlaceCluster(cluster: Cluster<PlaceItem>) {
+fun PlaceCluster(cluster: Cluster<ExhibitionMarker>) {
     Box(
         modifier = Modifier
             .size(66.dp),
@@ -239,23 +231,10 @@ fun PlaceCluster(cluster: Cluster<PlaceItem>) {
 }
 
 @Composable
-fun PlaceMarker(
-) {
+fun PlaceMarker() {
     Box(
         modifier = Modifier
             .size(16.dp)
             .background(AppColor.Primary300, CircleShape)
     )
-}
-
-data class PlaceItem(
-    val id: Long,
-    val latLng: LatLng,
-    val name: String
-) : ClusterItem {
-
-    override fun getPosition(): LatLng = latLng
-    override fun getTitle(): String = name
-    override fun getSnippet(): String = ""
-    override fun getZIndex(): Float? = null
 }
