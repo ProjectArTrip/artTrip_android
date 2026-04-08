@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -93,28 +94,44 @@ fun DateFilterResultScreen(
                 },
         )
 
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 24.dp),
-            state = listState,
-            contentPadding = PaddingValues(top = 12.dp, bottom = 56.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            items(
-                count = exhibitionItems.itemCount,
-                key = { index -> exhibitionItems[index]?.id ?: index },
-            ) { index ->
-                val item = exhibitionItems[index] ?: return@items
-                ExhibitionListItem(
-                    posterUrl = item.posterUrl,
-                    location = null,
-                    title = item.title,
-                    hallName = item.hallName,
-                    period = item.period,
-                    status = item.status,
-                    isLiked = item.isBookmarked,
-                    onLikeClick = {},
-                    onItemClick = {},
+        val isEmpty =
+            exhibitionItems.loadState.refresh is LoadState.NotLoading && exhibitionItems.itemCount == 0
+
+        if (isEmpty) {
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(top = 88.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "검색결과가 없습니다.",
+                    style = AppTextStyle.Body01Regular,
+                    color = AppColor.TextSecondary,
                 )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                state = listState,
+                contentPadding = PaddingValues(top = 12.dp, bottom = 56.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(
+                    count = exhibitionItems.itemCount,
+                    key = { index -> exhibitionItems[index]?.id ?: index },
+                ) { index ->
+                    val item = exhibitionItems[index] ?: return@items
+                    ExhibitionListItem(
+                        posterUrl = item.posterUrl,
+                        location = null,
+                        title = item.title,
+                        hallName = item.hallName,
+                        period = item.period,
+                        status = item.status,
+                        isLiked = item.isBookmarked,
+                        onLikeClick = {},
+                        onItemClick = {},
+                    )
+                }
             }
         }
 
