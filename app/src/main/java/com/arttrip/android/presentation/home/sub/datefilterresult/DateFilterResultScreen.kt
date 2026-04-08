@@ -80,12 +80,6 @@ fun DateFilterResultScreen(
                 ) {
                     onIntent(DateFilterResultIntent.DateFilterIconClicked)
                 }
-                AppIconButton(
-                    modifier = Modifier,
-                    iconResId = R.drawable.ic_search_24,
-                    contentDescription = "검색",
-                ) {
-                }
             },
         )
         DateFilterResultTopBar(
