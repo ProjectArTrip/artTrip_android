@@ -223,7 +223,8 @@ private fun MapContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .background(color = AppColor.Primary300)
+                    .padding(horizontal = 24.dp)
+                    .background(color = AppColor.Gray100)
             )
         }
         FloatingActionButton(
@@ -231,15 +232,9 @@ private fun MapContent(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .offset(x = (-24).dp, y = (-88).dp)
-                .size(40.dp)
-                .shadow(
-                    elevation = 2.dp,
-                    shape = CircleShape,
-                    spotColor = Color(0x29000000),
-                    ambientColor = Color(0x29000000),
-                ),
+                .size(40.dp),
             elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 0.dp,
+                defaultElevation = 2.dp,
                 pressedElevation = 0.dp,
                 focusedElevation = 0.dp,
                 hoveredElevation = 0.dp,
