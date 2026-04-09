@@ -1,5 +1,8 @@
 package com.arttrip.android.presentation.map
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -63,12 +66,39 @@ fun MapScreen(
 ) {
     val seoul = LatLng(37.5665, 126.9780)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(seoul, 13f)
+        position = CameraPosition.fromLatLngZoom(seoul, 15f)
     }
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isExpanded = scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
     val scope = rememberCoroutineScope()
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        if (permissions.values.any { it }) {
+            onIntent(MapIntent.OnLocationPermissionGranted)
+        } else {
+            onIntent(MapIntent.OnLocationPermissionDenied)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        locationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
+        )
+    }
+
+    LaunchedEffect(state.currentLocation) {
+        state.currentLocation?.let { location ->
+            cameraPositionState.move(
+                update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(location, 15f),
+            )
+        }
+    }
 
     LaunchedEffect(isExpanded) {
         if (isExpanded) clusterExhibits.refresh()

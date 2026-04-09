@@ -11,6 +11,8 @@ import com.arttrip.android.domain.usecase.map.GetExhibitionMarkersUseCase
 import com.arttrip.android.presentation.map.contract.MapEffect
 import com.arttrip.android.presentation.map.contract.MapIntent
 import com.arttrip.android.presentation.map.contract.MapState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,6 +31,7 @@ class MapViewModel
     constructor(
         private val getExhibitionMarkersUseCase: GetExhibitionMarkersUseCase,
         private val getClusterExhibitsUseCase: GetClusterExhibitsUseCase,
+        private val fusedLocationClient: FusedLocationProviderClient,
     ) : ViewModel() {
         private val _state = MutableStateFlow(MapState())
         val state: StateFlow<MapState> = _state
@@ -66,6 +69,20 @@ class MapViewModel
                     _state.update { it.copy(selectedClusterCount = intent.visibleCount) }
                     _selectedIds.value = intent.ids
                 }
+                is MapIntent.OnLocationPermissionGranted -> fetchCurrentLocation()
+                is MapIntent.OnLocationPermissionDenied -> Unit
+            }
+        }
+
+        private fun fetchCurrentLocation() {
+            try {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    location?.let {
+                        _state.update { state -> state.copy(currentLocation = LatLng(it.latitude, it.longitude)) }
+                    }
+                }
+            } catch (e: SecurityException) {
+                // 권한이 없는 경우 무시 (서울 기본값 유지)
             }
         }
 
