@@ -21,12 +21,15 @@ import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppFilterChip
 import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
+import com.arttrip.android.core.ui.component.calendar.DayChipCase01
+import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleState
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -48,7 +51,7 @@ fun ScheduleScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             AppTopBar(
-                title = date.format(DateTimeFormatter.ofPattern("M월 d일")) + " 전시 일정",
+                title = "이번주 전시 일정",
                 leading = {
                     AppIconButton(
                         iconResId = R.drawable.ic_back_24,
@@ -73,7 +76,7 @@ fun ScheduleScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "총 N개",
+                    text = date.format(DateTimeFormatter.ofPattern("yyyy년 MM월")),
                     style = AppTextStyle.Title02Bold,
                     color = AppColor.TextPrimary,
                 )
@@ -83,6 +86,24 @@ fun ScheduleScreen(
                     onIconClick = { onIntent(ScheduleIntent.OpenFilterSheet) },
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                getThisWeekDates().forEach { weekDate ->
+                    DayChipCase01(
+                        dayOfMonth = weekDate.dayOfMonth,
+                        dayOfWeek = weekDate.dayOfWeek,
+                        state = if (weekDate == (state.selectedDate ?: date)) DayChipStateCase01.Selected else DayChipStateCase01.Unselected,
+                    ) {
+                        onIntent(ScheduleIntent.SelectDate(weekDate))
+                    }
+                }
+            }
         }
     }
 
@@ -91,6 +112,14 @@ fun ScheduleScreen(
         onIntent = onIntent,
         state = state,
     )
+}
+
+private fun getThisWeekDates(): List<LocalDate> {
+    val today = LocalDate.now()
+    val sunday = today.with(DayOfWeek.MONDAY).minusDays(1)
+    return (0..6).map { offset ->
+        sunday.plusDays(offset.toLong())
+    }
 }
 
 @Composable
