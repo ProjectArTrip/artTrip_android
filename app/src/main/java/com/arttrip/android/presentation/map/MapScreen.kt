@@ -4,6 +4,7 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -24,6 +26,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -32,15 +37,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.map.ExhibitionMarker
 import com.arttrip.android.presentation.map.contract.MapIntent
@@ -126,6 +137,15 @@ fun MapScreen(
         MapContent(
             cameraPositionState = cameraPositionState,
             markers = state.markers,
+            onMyLocationClick = {
+                scope.launch {
+                    state.currentLocation?.let { location ->
+                        cameraPositionState.animate(
+                            update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(location, 15f),
+                        )
+                    }
+                }
+            },
             onClusterClick = { cluster ->
                 onIntent(
                     MapIntent.OnClusterClicked(
@@ -154,6 +174,7 @@ private fun MapContent(
     markers: List<ExhibitionMarker>,
     onClusterClick: (Cluster<ExhibitionMarker>) -> Unit,
     onCameraIdle: (Int, List<Int>) -> Unit,
+    onMyLocationClick: () -> Unit,
 ) {
     LaunchedEffect(cameraPositionState.isMoving, markers) {
         if (!cameraPositionState.isMoving) {
@@ -174,7 +195,7 @@ private fun MapContent(
                 zoomControlsEnabled = false
             )
         ) {
-            Clustering<ExhibitionMarker>(
+            Clustering(
                 items = markers,
                 onClusterClick = { cluster ->
                     onClusterClick(cluster)
@@ -203,6 +224,33 @@ private fun MapContent(
                     .fillMaxWidth()
                     .height(48.dp)
                     .background(color = AppColor.Primary300)
+            )
+        }
+        FloatingActionButton(
+            onClick = onMyLocationClick,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = (-24).dp, y = (-88).dp)
+                .size(40.dp)
+                .shadow(
+                    elevation = 2.dp,
+                    shape = CircleShape,
+                    spotColor = Color(0x29000000),
+                    ambientColor = Color(0x29000000),
+                ),
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = 0.dp,
+                pressedElevation = 0.dp,
+                focusedElevation = 0.dp,
+                hoveredElevation = 0.dp,
+            ),
+            containerColor = AppColor.Gray0,
+            shape = CircleShape,
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_location_24),
+                contentDescription = "내 위치 이동",
+                tint = AppColor.Gray900,
             )
         }
     }
