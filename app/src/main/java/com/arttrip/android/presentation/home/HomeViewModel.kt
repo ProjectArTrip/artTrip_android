@@ -119,14 +119,89 @@ class HomeViewModel
                 }
 
                 is HomeIntent.DateFilterIconClicked -> {
-//                    viewModelScope.launch {
-//                        _effect.emit(HomeEffect.NavigateToDateFilter)
-//                    }
-                    _state.update { it.copy(isDateFilterSheetVisible = true) }
+                    _state.update {
+                        it.copy(
+                            isDateFilterSheetVisible = true,
+                            dateFilterStartDate = null,
+                            dateFilterEndDate = null,
+                            dateFilterSelectedCountry = null,
+                            dateFilterSelectedRegion = null,
+                        )
+                    }
                 }
 
                 is HomeIntent.DateFilterSheetDismissed -> {
-                    _state.update { it.copy(isDateFilterSheetVisible = false) }
+                    _state.update {
+                        it.copy(
+                            isDateFilterSheetVisible = false,
+                            dateFilterStartDate = null,
+                            dateFilterEndDate = null,
+                            dateFilterSelectedCountry = null,
+                        )
+                    }
+                }
+
+                is HomeIntent.DateFilterDateSectionOpened -> {
+                    if (_state.value.dateFilterStartDate == null) {
+                        _state.update { it.copy(dateFilterStartDate = LocalDate.now()) }
+                    }
+                }
+
+                is HomeIntent.DateFilterResetClicked -> {
+                    _state.update {
+                        it.copy(
+                            dateFilterStartDate = LocalDate.now(),
+                            dateFilterEndDate = null,
+                        )
+                    }
+                }
+
+                is HomeIntent.DateFilterApplyClicked -> {
+                    val s = _state.value
+                    _state.update {
+                        it.copy(
+                            isDateFilterSheetVisible = false,
+                            dateFilterStartDate = null,
+                            dateFilterEndDate = null,
+                            dateFilterSelectedCountry = null,
+                            dateFilterSelectedRegion = null,
+                        )
+                    }
+                    viewModelScope.launch {
+                        _effect.emit(
+                            HomeEffect.NavigateToDateFilterResult(
+                                isDomestic = s.placeTabs == PlaceTab.Domestic,
+                                location =
+                                    when (s.placeTabs) {
+                                        PlaceTab.Foreign -> s.dateFilterSelectedCountry!!.name
+                                        PlaceTab.Domestic -> s.dateFilterSelectedRegion!!.name
+                                    },
+                                startDate = s.dateFilterStartDate!!,
+                                endDate = s.dateFilterEndDate!!,
+                            ),
+                        )
+                    }
+                }
+
+                is HomeIntent.DateFilterDayClicked -> {
+                    val today = LocalDate.now()
+                    val date = intent.date
+                    if (date < today) return
+                    val startDate = _state.value.dateFilterStartDate ?: today
+                    val endDate = _state.value.dateFilterEndDate
+                    when {
+                        endDate != null -> _state.update { it.copy(dateFilterStartDate = date, dateFilterEndDate = null) }
+                        date >= startDate -> _state.update { it.copy(dateFilterEndDate = date) }
+                        else -> _state.update { it.copy(dateFilterStartDate = date, dateFilterEndDate = null) }
+                    }
+                }
+
+                is HomeIntent.DateFilterCountrySelected -> {
+                    _state.update { it.copy(dateFilterSelectedCountry = intent.country) }
+                }
+
+                is HomeIntent.DateFilterRegionSelected -> {
+                    _state.update { it.copy(dateFilterSelectedRegion = intent.region) }
                 }
 
                 is HomeIntent.SearchIconClicked -> {

@@ -22,6 +22,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.calendar.DayChipCase02
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase02
+import com.arttrip.android.core.ui.component.calendar.WEEKDAY_LABELS
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import java.time.LocalDate
@@ -178,9 +179,8 @@ private fun CalendarHeader(
 
 @Composable
 private fun WeekdayRow(modifier: Modifier = Modifier) {
-    val labels = listOf("일", "월", "화", "수", "목", "금", "토")
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        labels.forEach { label ->
+        WEEKDAY_LABELS.forEach { label ->
             Text(
                 text = label,
                 style = AppTextStyle.Body01Regular,

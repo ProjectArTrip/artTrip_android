@@ -12,7 +12,16 @@ object MainRoute {
     const val BOOKMARK = "bookmark"
     const val MY_PAGE = "my_page"
 
-    const val HOME_DATE_RESULT = "home_date_result"
+    private const val HOME_DATE_FILTER_RESULT_ROUTE = "home_date_filter_result"
+    const val HOME_DATE_FILTER_RESULT =
+        "$HOME_DATE_FILTER_RESULT_ROUTE?isDomestic={isDomestic}&location={location}&startDate={startDate}&endDate={endDate}"
+
+    fun dateFilterResult(
+        isDomestic: Boolean,
+        location: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): String = "$HOME_DATE_FILTER_RESULT_ROUTE?isDomestic=$isDomestic&location=$location&startDate=$startDate&endDate=$endDate"
 
     const val HOME_NOTIFICATION = "home_notification"
 

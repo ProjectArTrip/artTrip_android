@@ -75,6 +75,7 @@ import com.arttrip.android.presentation.home.ui.GenreSectionLoading
 import com.arttrip.android.presentation.home.ui.RecommendSectionLoading
 import com.arttrip.android.presentation.home.ui.ScheduleSectionLoading
 import com.arttrip.android.presentation.home.ui.datefilter.DateFilterBottomSheet
+import com.arttrip.android.presentation.home.ui.datefilter.FilterChips
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.math.abs
@@ -304,7 +305,51 @@ fun HomeBody(
 
         DateFilterBottomSheet(
             visible = state.isDateFilterSheetVisible,
+            title =
+                when (state.placeTabs) {
+                    PlaceTab.Foreign -> "국가 및 날짜 선택"
+                    PlaceTab.Domestic -> "지역 및 날짜 선택"
+                },
+            startDate = state.dateFilterStartDate,
+            endDate = state.dateFilterEndDate,
+            isApplyEnabled =
+                when (state.placeTabs) {
+                    PlaceTab.Foreign -> state.dateFilterSelectedCountry != null && state.dateFilterEndDate != null
+                    PlaceTab.Domestic -> state.dateFilterSelectedRegion != null && state.dateFilterEndDate != null
+                },
+            locationTitle =
+                when (state.placeTabs) {
+                    PlaceTab.Foreign -> "국가"
+                    PlaceTab.Domestic -> "지역"
+                },
+            locationDescription =
+                when (state.placeTabs) {
+                    PlaceTab.Foreign -> state.dateFilterSelectedCountry?.label
+                    PlaceTab.Domestic -> state.dateFilterSelectedRegion?.label
+                },
+            onDayClick = { date -> onIntent(HomeIntent.DateFilterDayClicked(date)) },
+            onDateSectionOpen = { onIntent(HomeIntent.DateFilterDateSectionOpened) },
+            onResetClick = { onIntent(HomeIntent.DateFilterResetClicked) },
+            onApplyClick = { onIntent(HomeIntent.DateFilterApplyClicked) },
             onDismissRequest = { onIntent(HomeIntent.DateFilterSheetDismissed) },
+            locationChips = {
+                when (state.placeTabs) {
+                    PlaceTab.Foreign ->
+                        FilterChips(
+                            items = ForeignCountry.entries,
+                            selected = state.dateFilterSelectedCountry,
+                            labelOf = { it.label },
+                            onItemClick = { onIntent(HomeIntent.DateFilterCountrySelected(it)) },
+                        )
+                    PlaceTab.Domestic ->
+                        FilterChips(
+                            items = DomesticRegion.entries,
+                            selected = state.dateFilterSelectedRegion,
+                            labelOf = { it.label },
+                            onItemClick = { onIntent(HomeIntent.DateFilterRegionSelected(it)) },
+                        )
+                }
+            },
         )
     }
 }

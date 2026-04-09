@@ -21,8 +21,13 @@ fun NavHostController.navigateToNotification() {
     navigate(MainRoute.HOME_NOTIFICATION)
 }
 
-fun NavHostController.navigateToDateFilter() {
-    navigate(MainRoute.HOME_DATE_RESULT)
+fun NavHostController.navigateToDateFilterResult(
+    isDomestic: Boolean,
+    location: String,
+    startDate: LocalDate,
+    endDate: LocalDate,
+) {
+    navigate(MainRoute.dateFilterResult(isDomestic, location, startDate, endDate))
 }
 
 fun NavHostController.navigateToSearch() {
