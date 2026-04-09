@@ -14,6 +14,8 @@ interface ProfileRepository {
 
     fun updateUserNickname(nickname: String): Flow<ApiResult<Unit>>
 
+    fun deleteUserAccount(): Flow<ApiResult<Unit>>
+
     fun deleteProfileImage(): Flow<ApiResult<Unit>>
 
     fun updateProfileImage(file: File): Flow<ApiResult<Unit>>
