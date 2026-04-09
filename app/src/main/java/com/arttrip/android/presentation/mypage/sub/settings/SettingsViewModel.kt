@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.model.config.AppLinks
 import com.arttrip.android.data.local.auth.SessionManager
+import com.arttrip.android.domain.model.network.ApiResult
+import com.arttrip.android.domain.usecase.profile.DeleteUserAccountUseCase
 import com.arttrip.android.presentation.mypage.sub.settings.contract.SettingsEffect
 import com.arttrip.android.presentation.mypage.sub.settings.contract.SettingsIntent
 import com.arttrip.android.presentation.mypage.sub.settings.contract.SettingsState
@@ -21,6 +23,7 @@ class SettingsViewModel
     @Inject
     constructor(
         private val sessionManager: SessionManager,
+        private val deleteUserAccountUseCase: DeleteUserAccountUseCase,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SettingsState())
         val state: StateFlow<SettingsState> = _state
@@ -59,10 +62,27 @@ class SettingsViewModel
                 SettingsIntent.DeleteAccountConfirmClick -> {
                     _state.update { it.copy(isDeleteAccountDialogVisible = false) }
 
-                    // TODO 탈퇴하기
+                    withdrawAccountAndLogout()
                 }
                 SettingsIntent.DeleteAccountDialogDismissed -> {
                     _state.update { it.copy(isDeleteAccountDialogVisible = false) }
+                }
+            }
+        }
+
+        private fun withdrawAccountAndLogout() {
+            viewModelScope.launch {
+                deleteUserAccountUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> {}
+
+                        is ApiResult.Success -> {
+                            sessionManager.logout()
+                        }
+                        is ApiResult.Error -> {
+                            _effect.emit(SettingsEffect.ShowToast("다시 시도해주세요."))
+                        }
+                    }
                 }
             }
         }
