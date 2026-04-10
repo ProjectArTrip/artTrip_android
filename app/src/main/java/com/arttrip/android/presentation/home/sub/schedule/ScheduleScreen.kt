@@ -10,11 +10,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
 import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
@@ -27,6 +32,8 @@ import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.domain.model.exhibition.Exhibition
+import com.arttrip.android.presentation.home.sub.genre.ExhibitionItem
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleState
 import java.time.DayOfWeek
@@ -39,6 +46,7 @@ fun ScheduleScreen(
     state: ScheduleState,
     onIntent: (ScheduleIntent) -> Unit,
     date: LocalDate,
+    exhibitionList: LazyPagingItems<Exhibition>,
 ) {
     Box(
         modifier =
@@ -80,11 +88,11 @@ fun ScheduleScreen(
                     style = AppTextStyle.Title02Bold,
                     color = AppColor.TextPrimary,
                 )
-                AppIconButton(
-                    iconResId = R.drawable.ic_filter_24,
-                    contentDescription = "Filter Button",
-                    onIconClick = { onIntent(ScheduleIntent.OpenFilterSheet) },
-                )
+//                AppIconButton(
+//                    iconResId = R.drawable.ic_filter_24,
+//                    contentDescription = "Filter Button",
+//                    onIconClick = { onIntent(ScheduleIntent.OpenFilterSheet) },
+//                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -104,6 +112,12 @@ fun ScheduleScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            ExhibitionList(
+                exhibitionList = exhibitionList,
+                onExhibitionClick = { id -> onIntent(ScheduleIntent.ExhibitionClicked(id)) },
+                onLikeClick = {},
+            )
         }
     }
 
@@ -119,6 +133,47 @@ private fun getThisWeekDates(): List<LocalDate> {
     val sunday = today.with(DayOfWeek.MONDAY).minusDays(1)
     return (0..6).map { offset ->
         sunday.plusDays(offset.toLong())
+    }
+}
+
+@Composable
+fun ExhibitionList(
+    exhibitionList: LazyPagingItems<Exhibition>,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(exhibitionList.loadState.refresh) {
+        if (exhibitionList.loadState.refresh is LoadState.Loading) {
+            listState.scrollToItem(0)
+        }
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
+    ) {
+        items(exhibitionList.itemCount) { index ->
+            exhibitionList[index]?.let { exhibition ->
+                ExhibitionItem(
+                    exhibition = exhibition,
+                    onExhibitionClick = onExhibitionClick,
+                    onLikeClick = onLikeClick,
+                )
+            }
+        }
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(12.dp)
+            )
+        }
     }
 }
 
