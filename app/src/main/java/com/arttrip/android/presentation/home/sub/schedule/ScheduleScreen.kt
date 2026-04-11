@@ -75,25 +75,13 @@ fun ScheduleScreen(
                     )
                 },
             )
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = date.format(DateTimeFormatter.ofPattern("yyyy년 MM월")),
-                    style = AppTextStyle.Title02Bold,
-                    color = AppColor.TextPrimary,
-                )
-//                AppIconButton(
-//                    iconResId = R.drawable.ic_filter_24,
-//                    contentDescription = "Filter Button",
-//                    onIconClick = { onIntent(ScheduleIntent.OpenFilterSheet) },
-//                )
-            }
+            Text(
+                modifier = Modifier
+                    .padding(start = 24.dp),
+                text = date.format(DateTimeFormatter.ofPattern("yyyy년 MM월")),
+                style = AppTextStyle.Title02Bold,
+                color = AppColor.TextPrimary,
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier =
@@ -175,37 +163,4 @@ fun ExhibitionList(
             )
         }
     }
-}
-
-@Composable
-fun ScheduleFilterBottomSheet(
-    visible: Boolean,
-    onIntent: (ScheduleIntent) -> Unit,
-    state: ScheduleState,
-) {
-    AppModalBottomSheet(
-        visible = visible,
-        topBar = AppBottomSheetTopBar.Header(),
-        onDismissRequest = { onIntent(ScheduleIntent.CloseFilterSheet) },
-        content = {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "정렬",
-                style = AppTextStyle.Body01Bold,
-                color = AppColor.TextPrimary,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SortType.entries.forEach { sortType ->
-                    AppFilterChip(
-                        case = AppFilterChipCase.Case02,
-                        text = sortType.label,
-                        selected = state.selectedSortType == sortType,
-                        onClick = { onIntent(ScheduleIntent.SelectSortType(sortType)) },
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(36.dp))
-        },
-    )
 }
