@@ -14,14 +14,6 @@ sealed interface ScheduleIntent {
 
     object NotificationIconClicked : ScheduleIntent
 
-    object OpenFilterSheet : ScheduleIntent
-
-    object CloseFilterSheet : ScheduleIntent
-
-    data class SelectSortType(
-        val type: SortType,
-    ) : ScheduleIntent
-
     data class SelectDate(
         val date: LocalDate,
     ) : ScheduleIntent

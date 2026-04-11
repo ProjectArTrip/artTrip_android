@@ -108,12 +108,6 @@ fun ScheduleScreen(
             )
         }
     }
-
-    ScheduleFilterBottomSheet(
-        visible = state.isFilterSheetVisible,
-        onIntent = onIntent,
-        state = state,
-    )
 }
 
 private fun getThisWeekDates(): List<LocalDate> {

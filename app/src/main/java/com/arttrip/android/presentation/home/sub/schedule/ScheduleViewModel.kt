@@ -73,18 +73,6 @@ class ScheduleViewModel
                     }
                 }
 
-                ScheduleIntent.OpenFilterSheet -> {
-                    _state.update { it.copy(isFilterSheetVisible = true) }
-                }
-
-                ScheduleIntent.CloseFilterSheet -> {
-                    _state.update { it.copy(isFilterSheetVisible = false) }
-                }
-
-                is ScheduleIntent.SelectSortType -> {
-                    _state.update { it.copy(selectedSortType = intent.type) }
-                }
-
                 is ScheduleIntent.SelectDate -> {
                     _state.update { it.copy(selectedDate = intent.date) }
                     emitTrigger(_state.value.country, intent.date)

@@ -6,7 +6,5 @@ import java.time.LocalDate
 
 data class ScheduleState(
     val selectedDate: LocalDate? = null,
-    val isFilterSheetVisible: Boolean = false,
-    val selectedSortType: SortType = SortType.LATEST,
     val country: ForeignCountry? = null,
 )
