@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,14 +31,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
@@ -51,6 +55,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.map.ExhibitionMarker
@@ -176,6 +181,10 @@ private fun MapContent(
     onCameraIdle: (Int, List<Int>) -> Unit,
     onMyLocationClick: () -> Unit,
 ) {
+    var dropdownExpanded by remember { mutableStateOf(false) }
+    var selectedCountry by remember { mutableStateOf<ForeignCountry?>(null) }
+    val countries = ForeignCountry.entries.filter { it != ForeignCountry.Entire }
+
     LaunchedEffect(cameraPositionState.isMoving, markers) {
         if (!cameraPositionState.isMoving) {
             val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
@@ -219,13 +228,61 @@ private fun MapContent(
                 modifier = Modifier
                     .height(16.dp)
             )
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
                     .padding(horizontal = 24.dp)
-                    .background(color = AppColor.Gray100)
-            )
+                    .shadow(2.dp, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(color = AppColor.Gray0)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .noRippleClickable { dropdownExpanded = !dropdownExpanded }
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = selectedCountry?.label ?: "국가 선택",
+                        style = AppTextStyle.Body01Regular,
+                        color = if (selectedCountry != null) AppColor.TextPrimary else AppColor.TextTertiary,
+                    )
+                    Icon(
+                        painter = painterResource(
+                            id = if (dropdownExpanded) R.drawable.ic_up_24 else R.drawable.ic_down_24,
+                        ),
+                        contentDescription = null,
+                        tint = AppColor.Gray900,
+                    )
+                }
+                AnimatedVisibility(visible = dropdownExpanded) {
+                    Column {
+                        HorizontalDivider(color = AppColor.Gray100)
+                        countries.forEach { country ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .noRippleClickable {
+                                        selectedCountry = country
+                                        dropdownExpanded = false
+                                    }
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = country.label,
+                                    style = AppTextStyle.Body01Regular,
+                                    color = AppColor.TextPrimary,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
         FloatingActionButton(
             onClick = onMyLocationClick,
