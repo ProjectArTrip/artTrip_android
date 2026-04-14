@@ -66,4 +66,11 @@ object MainRoute {
     const val REVIEW_WRITE = "review_write"
 
     const val TASTE_ANALYSIS = "mypage/taste_analysis"
+
+    const val MY_PAGE_EDIT_PROFILE = "mypage/edit_profile"
+    const val MY_PAGE_RECENT_EXHIBITIONS = "mypage/recent_exhibitions"
+    const val MY_PAGE_MY_REVIEWS = "mypage/my_reviews"
+    const val MY_PAGE_SETTINGS = "mypage/settings"
+    const val MY_PAGE_NOTIFICATION = "mypage/settings/notification"
+    const val MY_PAGE_NOTICE = "mypage/settings/notice"
 }
