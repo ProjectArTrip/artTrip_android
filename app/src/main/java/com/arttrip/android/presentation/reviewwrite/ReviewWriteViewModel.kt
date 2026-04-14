@@ -3,6 +3,7 @@ package com.arttrip.android.presentation.reviewwrite
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.core.util.copyToCacheFile
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
@@ -215,7 +216,6 @@ class ReviewWriteViewModel
         }
 
         private fun submit() {
-            // TODO edit vs create
             val snapshot = _state.value
 
             if (snapshot.reviewText.isBlank() || snapshot.visitDate == null || snapshot.isSubmitting) {
@@ -260,10 +260,11 @@ class ReviewWriteViewModel
                                 is ApiResult.Loading -> Unit
                                 is ApiResult.Success -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithToast(UiMessage.REVIEW_CREATED))
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
                                 }
                             }
                         }
@@ -283,10 +284,11 @@ class ReviewWriteViewModel
                                 is ApiResult.Loading -> Unit
                                 is ApiResult.Success -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithToast(UiMessage.REVIEW_UPDATED))
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
                                 }
                             }
                         }

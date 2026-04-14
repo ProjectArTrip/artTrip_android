@@ -3,6 +3,7 @@ package com.arttrip.android.presentation.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.data.local.auth.TokenManager
 import com.arttrip.android.domain.model.auth.LoginProvider
 import com.arttrip.android.domain.model.network.ApiResult
@@ -50,11 +51,13 @@ class LoginViewModel
                 }
 
                 is LoginIntent.KakaoLoginFailure -> {
-                    intent.throwable?.let { Log.e(TAG, "Kakao login failed", it) }
-                    _state.update { state -> reduce(state, intent) }
-                    viewModelScope.launch {
-                        _effect.emit(LoginEffect.ShowError("카카오 로그인에 실패했어요. 다시 시도해 주세요."))
+                    intent.throwable?.let { t ->
+                        Log.e(TAG, "Kakao login failed", t)
+                        viewModelScope.launch {
+                            _effect.emit(LoginEffect.ShowError(UiMessage.ERROR_RETRY))
+                        }
                     }
+                    _state.update { state -> reduce(state, intent) }
                 }
 
                 LoginIntent.ClickGoogleLogin -> {
@@ -69,11 +72,13 @@ class LoginViewModel
                 }
 
                 is LoginIntent.GoogleLoginFailure -> {
-                    intent.throwable?.let { Log.e(TAG, "Google login failed", it) }
-                    _state.update { state -> reduce(state, intent) }
-                    viewModelScope.launch {
-                        _effect.emit(LoginEffect.ShowError("구글 로그인에 실패했어요. 다시 시도해 주세요."))
+                    intent.throwable?.let { t ->
+                        Log.e(TAG, "Google login failed", t)
+                        viewModelScope.launch {
+                            _effect.emit(LoginEffect.ShowError(UiMessage.ERROR_RETRY))
+                        }
                     }
+                    _state.update { state -> reduce(state, intent) }
                 }
 
                 LoginIntent.DismissError -> {
@@ -150,13 +155,8 @@ class LoginViewModel
                         }
 
                         is ApiResult.Error -> {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessage = "로그인에 실패했습니다.",
-                                )
-                            }
-                            _effect.emit(LoginEffect.ShowError("로그인에 실패했습니다."))
+                            _state.update { it.copy(isLoading = false) }
+                            _effect.emit(LoginEffect.ShowError(UiMessage.ERROR_RETRY))
                         }
                     }
                 }

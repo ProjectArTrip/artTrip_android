@@ -17,12 +17,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
-import com.arttrip.android.core.navigation.mypage.MyPageNavHost
 import com.arttrip.android.presentation.bookmark.BookmarkRoute
 import com.arttrip.android.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.android.presentation.home.HomeRoute
@@ -33,10 +31,17 @@ import com.arttrip.android.presentation.home.sub.region.RegionRoute
 import com.arttrip.android.presentation.home.sub.schedule.ScheduleRoute
 import com.arttrip.android.presentation.home.sub.search.SearchRoute
 import com.arttrip.android.presentation.map.MapRoute
+import com.arttrip.android.presentation.mypage.MyPageRoute
+import com.arttrip.android.presentation.mypage.sub.editprofile.EditProfileRoute
+import com.arttrip.android.presentation.mypage.sub.myreviews.MyReviewsRoute
+import com.arttrip.android.presentation.mypage.sub.recentexhibitions.RecentExhibitionsRoute
+import com.arttrip.android.presentation.mypage.sub.settings.SettingsRoute
 import com.arttrip.android.presentation.mypage.sub.taste.TasteRoute
 import com.arttrip.android.presentation.reviewwrite.ReviewWriteRoute
 import com.arttrip.android.presentation.stamp.StampRoute
 import java.time.LocalDate
+import com.arttrip.android.presentation.mypage.sub.settings.sub.notice.NoticeRoute as MyPageNoticeRoute
+import com.arttrip.android.presentation.mypage.sub.settings.sub.notification.NotificationRoute as MyPageNotificationRoute
 
 @Composable
 fun MainNavHost(
@@ -96,12 +101,68 @@ fun MainNavHost(
             )
         }
         composable(BottomNavItem.MyPage.route) {
-            val myPageNavController = rememberNavController()
-
-            MyPageNavHost(
-                navController = myPageNavController,
-                mainNavController = navController,
+            MyPageRoute(
                 innerPadding = innerPadding,
+                onNavigateEditProfile = { navController.navigate(MainRoute.MY_PAGE_EDIT_PROFILE) },
+                onNavigateRecentExhibitions = { navController.navigate(MainRoute.MY_PAGE_RECENT_EXHIBITIONS) },
+                onNavigateMyReviews = { navController.navigate(MainRoute.MY_PAGE_MY_REVIEWS) },
+                onNavigateTasteAnalysis = { navController.navigateToTaste() },
+                onNavigateSettings = { navController.navigate(MainRoute.MY_PAGE_SETTINGS) },
+            )
+        }
+
+        // MyPage 하위 화면
+        composable(MainRoute.MY_PAGE_EDIT_PROFILE) {
+            EditProfileRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+        composable(MainRoute.MY_PAGE_RECENT_EXHIBITIONS) {
+            RecentExhibitionsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateExhibitionDetail = { exhibitId ->
+                    navController.navigateToExhibitionDetail(exhibitId)
+                },
+            )
+        }
+        composable(MainRoute.MY_PAGE_MY_REVIEWS) {
+            var reviewWriteSuccessTick by remember { mutableIntStateOf(0) }
+            val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+            LaunchedEffect(currentBackStackEntry) {
+                if (navController.consumeReviewWriteSuccessResult()) {
+                    reviewWriteSuccessTick++
+                }
+            }
+            MyReviewsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                reviewWriteSuccessTick = reviewWriteSuccessTick,
+                onNavigateReviewWrite = { mode ->
+                    navController.navigateToReviewWrite(mode)
+                },
+            )
+        }
+        composable(MainRoute.MY_PAGE_SETTINGS) {
+            SettingsRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+                onNavigateNotice = { navController.navigate(MainRoute.MY_PAGE_NOTICE) },
+                onNavigateNotification = { navController.navigate(MainRoute.MY_PAGE_NOTIFICATION) },
+            )
+        }
+        composable(MainRoute.MY_PAGE_NOTIFICATION) {
+            MyPageNotificationRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
+            )
+        }
+        composable(MainRoute.MY_PAGE_NOTICE) {
+            MyPageNoticeRoute(
+                innerPadding = innerPadding,
+                onBack = navController::popBackStack,
             )
         }
 

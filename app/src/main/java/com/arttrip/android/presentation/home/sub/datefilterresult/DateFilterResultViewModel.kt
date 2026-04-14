@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.usecase.exhibition.GetCountryExhibitionUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetRegionExhibitionUseCase
@@ -142,6 +143,12 @@ class DateFilterResultViewModel
 
                 is DateFilterResultIntent.DateFilterLocationSelected -> {
                     _state.update { it.copy(dateFilterSelectedLocation = intent.location) }
+                }
+
+                DateFilterResultIntent.PagingRefreshError -> {
+                    viewModelScope.launch {
+                        _effect.emit(DateFilterResultEffect.ShowToast(UiMessage.ERROR_RETRY_LATER))
+                    }
                 }
             }
         }

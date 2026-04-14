@@ -98,7 +98,7 @@ fun SettingsScreen(
             DeleteAccountDialog(
                 state.isDeleteAccountDialogVisible,
                 { onIntent(SettingsIntent.DeleteAccountDialogDismissed) },
-                { onIntent(SettingsIntent.DeleteAccountDialogDismissed) },
+                { onIntent(SettingsIntent.DeleteAccountConfirmClick) },
             )
         }
     }

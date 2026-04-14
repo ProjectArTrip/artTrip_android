@@ -10,4 +10,8 @@ sealed interface SettingsEffect {
     data class OpenWeb(
         val url: String,
     ) : SettingsEffect
+
+    data class ShowToast(
+        val message: String,
+    ) : SettingsEffect
 }

@@ -3,7 +3,13 @@ package com.arttrip.android.presentation.reviewwrite.contract
 sealed interface ReviewWriteEffect {
     data object NavigateBack : ReviewWriteEffect
 
-    data object NavigateBackWithSuccess : ReviewWriteEffect
+    data class NavigateBackWithToast(
+        val message: String,
+    ) : ReviewWriteEffect
 
     data object LaunchPhotoPicker : ReviewWriteEffect
+
+    data class ShowToast(
+        val message: String,
+    ) : ReviewWriteEffect
 }

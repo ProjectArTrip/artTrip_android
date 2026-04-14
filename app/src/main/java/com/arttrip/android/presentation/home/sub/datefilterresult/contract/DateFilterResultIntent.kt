@@ -29,4 +29,6 @@ sealed interface DateFilterResultIntent {
     data class DateFilterLocationSelected(
         val location: ExhibitionLocation,
     ) : DateFilterResultIntent
+
+    data object PagingRefreshError : DateFilterResultIntent
 }

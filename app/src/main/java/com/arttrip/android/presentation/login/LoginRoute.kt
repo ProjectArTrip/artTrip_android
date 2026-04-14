@@ -13,6 +13,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.BuildConfig
 import com.arttrip.android.core.navigation.app.AppRoute
+import com.arttrip.android.core.util.LocalToastController
 import com.arttrip.android.presentation.login.contract.LoginEffect
 import com.arttrip.android.presentation.login.contract.LoginIntent
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -33,6 +34,7 @@ fun LoginRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val toast = LocalToastController.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -85,9 +87,7 @@ fun LoginRoute(
                 LoginEffect.NavigateToHome -> {
                     onNavigate(AppRoute.MAIN)
                 }
-                is LoginEffect.ShowError -> {
-                    // 토스트/스낵바 등 표시
-                }
+                is LoginEffect.ShowError -> toast.show(effect.message)
             }
         }
     }
