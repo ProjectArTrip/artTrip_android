@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleEffect
 import com.arttrip.android.presentation.home.sub.schedule.contract.ScheduleIntent
@@ -22,9 +23,10 @@ fun ScheduleRoute(
     date: LocalDate,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
     LaunchedEffect(date) {
-        viewModel.onIntent(ScheduleIntent.Initialize(date = date))
+        viewModel.onIntent(ScheduleIntent.Initialize(date = date, country = country))
     }
 
     LaunchedEffect(Unit) {
@@ -43,5 +45,6 @@ fun ScheduleRoute(
         state = state,
         onIntent = viewModel::onIntent,
         date = date,
+        exhibitionList = exhibitionList,
     )
 }

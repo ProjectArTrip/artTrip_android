@@ -514,10 +514,10 @@ fun ForeignExhibitionSection(
 private fun getThisWeekDates(): List<LocalDate> {
     val today = LocalDate.now()
 
-    val monday = today.with(DayOfWeek.MONDAY)
+    val sunday = today.with(DayOfWeek.MONDAY).minusDays(1)
 
     return (0..6).map { offset ->
-        monday.plusDays(offset.toLong())
+        sunday.plusDays(offset.toLong())
     }
 }
 
