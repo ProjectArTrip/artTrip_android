@@ -3,6 +3,7 @@ package com.arttrip.android.presentation.mypage.sub.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.model.config.AppLinks
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.data.local.auth.SessionManager
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.profile.DeleteUserAccountUseCase
@@ -80,7 +81,7 @@ class SettingsViewModel
                             sessionManager.logout()
                         }
                         is ApiResult.Error -> {
-                            _effect.emit(SettingsEffect.ShowToast("잠시 후 다시 시도해주세요."))
+                            _effect.emit(SettingsEffect.ShowToast(UiMessage.ERROR_RETRY_LATER))
                         }
                     }
                 }

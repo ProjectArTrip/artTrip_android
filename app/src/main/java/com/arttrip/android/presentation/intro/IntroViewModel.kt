@@ -2,6 +2,7 @@ package com.arttrip.android.presentation.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.android.domain.usecase.userTaste.SaveUserTasteUseCase
@@ -125,7 +126,7 @@ class IntroViewModel
                                     errorMessage = "키워드 설정에 실패하였습니다.",
                                 )
                             }
-                            _effect.emit(IntroEffect.ShowError("일시적인 오류로 저장에 실패했습니다.\n잠시 후 다시 시도해주세요."))
+                            _effect.emit(IntroEffect.ShowError(UiMessage.ERROR_TEMP_SAVE_RETRY))
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.core.util.copyToCacheFile
 import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
@@ -162,7 +163,7 @@ class EditProfileViewModel
                                     )
                                 }
                             } else {
-                                _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                                _effect.emit(EditProfileEffect.ShowToast(UiMessage.ERROR_SAVE_RETRY))
                                 Log.d("EditProfile", "${result.error}")
                                 _state.update {
                                     it.copy(
@@ -202,7 +203,7 @@ class EditProfileViewModel
                         }
                         is ApiResult.Error -> {
                             _state.update { it.copy(isLoading = false) }
-                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            _effect.emit(EditProfileEffect.ShowToast(UiMessage.ERROR_SAVE_RETRY))
                         }
                     }
                 }
@@ -221,7 +222,7 @@ class EditProfileViewModel
                         }
                         is ApiResult.Error -> {
                             _state.update { it.copy(isLoading = false) }
-                            _effect.emit(EditProfileEffect.ShowToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            _effect.emit(EditProfileEffect.ShowToast(UiMessage.ERROR_SAVE_RETRY))
                         }
                     }
                 }

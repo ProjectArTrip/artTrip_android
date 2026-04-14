@@ -2,6 +2,7 @@ package com.arttrip.android.presentation.mypage.sub.taste
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.android.domain.usecase.userTaste.GetUserTasteGroupsUseCase
@@ -135,7 +136,7 @@ class TasteViewModel
                         }
                         is ApiResult.Success -> {
                             _state.update { it.copy(isLoading = false) }
-                            _effect.emit(TasteEffect.ShowToastAndNavigateBack("장르 및 스타일이 저장되었습니다."))
+                            _effect.emit(TasteEffect.ShowToastAndNavigateBack(UiMessage.TASTE_SAVED))
                         }
                         is ApiResult.Error -> {
                             _state.update {
@@ -144,7 +145,7 @@ class TasteViewModel
                                     errorMessage = "키워드 설정에 실패하였습니다.",
                                 )
                             }
-                            _effect.emit(TasteEffect.ShowError("일시적인 오류로 저장에 실패했습니다.\n잠시 후 다시 시도해주세요."))
+                            _effect.emit(TasteEffect.ShowError(UiMessage.ERROR_TEMP_SAVE_RETRY))
                         }
                     }
                 }

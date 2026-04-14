@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.android.core.model.enums.domestic.DomesticRegion
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
+import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.usecase.exhibition.GetCountryExhibitionUseCase
 import com.arttrip.android.domain.usecase.exhibition.GetRegionExhibitionUseCase
@@ -146,7 +147,7 @@ class DateFilterResultViewModel
 
                 DateFilterResultIntent.PagingRefreshError -> {
                     viewModelScope.launch {
-                        _effect.emit(DateFilterResultEffect.ShowToast("잠시 후 다시 시도해주세요."))
+                        _effect.emit(DateFilterResultEffect.ShowToast(UiMessage.ERROR_RETRY_LATER))
                     }
                 }
             }
