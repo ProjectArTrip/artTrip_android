@@ -32,6 +32,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -181,6 +182,7 @@ private fun MapContent(
     onCameraIdle: (Int, List<Int>) -> Unit,
     onMyLocationClick: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     var dropdownExpanded by remember { mutableStateOf(false) }
     var selectedCountry by remember { mutableStateOf<ForeignCountry?>(null) }
     val countries = ForeignCountry.entries.filter { it != ForeignCountry.Entire }
@@ -232,22 +234,22 @@ private fun MapContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .shadow(2.dp, RoundedCornerShape(8.dp))
+                    .shadow(6.dp, RoundedCornerShape(8.dp))
+                    .border(width = 1.dp, color = AppColor.Gray100, shape = RoundedCornerShape(size = 8.dp))
                     .clip(RoundedCornerShape(8.dp))
                     .background(color = AppColor.Gray0)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
                         .noRippleClickable { dropdownExpanded = !dropdownExpanded }
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = selectedCountry?.label ?: "국가 선택",
-                        style = AppTextStyle.Body01Regular,
+                        text = selectedCountry?.label ?: "국가를 선택해주세요.",
+                        style = AppTextStyle.Body01Bold,
                         color = if (selectedCountry != null) AppColor.TextPrimary else AppColor.TextTertiary,
                     )
                     Icon(
@@ -265,17 +267,22 @@ private fun MapContent(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(48.dp)
                                     .noRippleClickable {
                                         selectedCountry = country
                                         dropdownExpanded = false
+                                        country.latLng?.let { latLng ->
+                                            scope.launch {
+                                                cameraPositionState.animate(
+                                                    update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(latLng, 8f),
+                                                )
+                                            }
+                                        }
                                     }
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                                    .padding(all = 16.dp)
                             ) {
                                 Text(
                                     text = country.label,
-                                    style = AppTextStyle.Body01Regular,
+                                    style = AppTextStyle.Body01Light,
                                     color = AppColor.TextPrimary,
                                 )
                             }
