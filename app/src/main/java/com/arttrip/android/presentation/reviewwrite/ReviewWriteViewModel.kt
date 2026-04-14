@@ -45,6 +45,8 @@ class ReviewWriteViewModel
         private val _effect = MutableSharedFlow<ReviewWriteEffect>()
         val effect: SharedFlow<ReviewWriteEffect> = _effect
 
+        private val errorToastMessage = "다시 시도해주세요."
+
         fun onIntent(intent: ReviewWriteIntent) {
             when (intent) {
                 is ReviewWriteIntent.Initialize -> {
@@ -215,7 +217,6 @@ class ReviewWriteViewModel
         }
 
         private fun submit() {
-            // TODO edit vs create
             val snapshot = _state.value
 
             if (snapshot.reviewText.isBlank() || snapshot.visitDate == null || snapshot.isSubmitting) {
@@ -260,10 +261,11 @@ class ReviewWriteViewModel
                                 is ApiResult.Loading -> Unit
                                 is ApiResult.Success -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithToast("리뷰가 등록되었습니다."))
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.ShowToast(errorToastMessage))
                                 }
                             }
                         }
@@ -283,10 +285,11 @@ class ReviewWriteViewModel
                                 is ApiResult.Loading -> Unit
                                 is ApiResult.Success -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.NavigateBackWithSuccess)
+                                    _effect.emit(ReviewWriteEffect.NavigateBackWithToast("리뷰가 수정되었습니다."))
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
+                                    _effect.emit(ReviewWriteEffect.ShowToast(errorToastMessage))
                                 }
                             }
                         }

@@ -143,6 +143,12 @@ class DateFilterResultViewModel
                 is DateFilterResultIntent.DateFilterLocationSelected -> {
                     _state.update { it.copy(dateFilterSelectedLocation = intent.location) }
                 }
+
+                DateFilterResultIntent.PagingRefreshError -> {
+                    viewModelScope.launch {
+                        _effect.emit(DateFilterResultEffect.ShowToast("잠시 후 다시 시도해주세요."))
+                    }
+                }
             }
         }
 

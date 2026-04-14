@@ -80,7 +80,7 @@ class SettingsViewModel
                             sessionManager.logout()
                         }
                         is ApiResult.Error -> {
-                            _effect.emit(SettingsEffect.ShowToast("다시 시도해주세요."))
+                            _effect.emit(SettingsEffect.ShowToast("잠시 후 다시 시도해주세요."))
                         }
                     }
                 }

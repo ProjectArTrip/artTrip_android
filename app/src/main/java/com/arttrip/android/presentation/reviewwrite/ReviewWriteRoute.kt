@@ -10,6 +10,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.android.core.ui.launcher.PhotoPickerMode
 import com.arttrip.android.core.ui.launcher.rememberPhotoPickerLauncher
+import com.arttrip.android.core.util.LocalToastController
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteEffect
 import com.arttrip.android.presentation.reviewwrite.contract.ReviewWriteIntent
 import com.arttrip.android.presentation.reviewwrite.model.ReviewWriteMode
@@ -24,6 +25,7 @@ fun ReviewWriteRoute(
     viewModel: ReviewWriteViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val toast = LocalToastController.current
 
     val photoPickerLauncher =
         rememberRemainingPhotoPickerLauncher(
@@ -43,7 +45,11 @@ fun ReviewWriteRoute(
                     latestLaunchPicker()
                 }
                 ReviewWriteEffect.NavigateBack -> onBack()
-                ReviewWriteEffect.NavigateBackWithSuccess -> onSuccessBack()
+                is ReviewWriteEffect.NavigateBackWithToast -> {
+                    toast.show(eff.message)
+                    onSuccessBack()
+                }
+                is ReviewWriteEffect.ShowToast -> toast.show(eff.message)
             }
         }
     }
