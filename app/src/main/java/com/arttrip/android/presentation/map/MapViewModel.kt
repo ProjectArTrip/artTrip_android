@@ -14,6 +14,7 @@ import com.arttrip.android.presentation.map.contract.MapState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,15 +40,19 @@ class MapViewModel
         private val _effect = MutableSharedFlow<MapEffect>()
         val effect: SharedFlow<MapEffect> = _effect
 
-        private val _selectedIds = MutableStateFlow<List<Int>>(emptyList())
+        private val selectedIds = MutableStateFlow<List<Int>>(emptyList())
         private var skipNextCameraIdle = false
 
-        val clusterExhibits: Flow<PagingData<Exhibition>> = _selectedIds
-            .flatMapLatest { ids ->
-                if (ids.isEmpty()) flowOf(PagingData.empty())
-                else getClusterExhibitsUseCase(ids)
-            }
-            .cachedIn(viewModelScope)
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val clusterExhibits: Flow<PagingData<Exhibition>> =
+            selectedIds
+                .flatMapLatest { ids ->
+                    if (ids.isEmpty()) {
+                        flowOf(PagingData.empty())
+                    } else {
+                        getClusterExhibitsUseCase(ids)
+                    }
+                }.cachedIn(viewModelScope)
 
         init {
             onIntent(MapIntent.LoadMarkers(etag = ""))
@@ -59,7 +64,7 @@ class MapViewModel
                 is MapIntent.OnClusterClicked -> {
                     skipNextCameraIdle = true
                     _state.update { it.copy(selectedClusterCount = intent.count) }
-                    _selectedIds.value = intent.ids
+                    selectedIds.value = intent.ids
                 }
                 is MapIntent.OnCameraIdle -> {
                     if (skipNextCameraIdle) {
@@ -67,7 +72,7 @@ class MapViewModel
                         return
                     }
                     _state.update { it.copy(selectedClusterCount = intent.visibleCount) }
-                    _selectedIds.value = intent.ids
+                    selectedIds.value = intent.ids
                 }
                 is MapIntent.OnLocationPermissionGranted -> fetchCurrentLocation()
                 is MapIntent.OnLocationPermissionDenied -> Unit

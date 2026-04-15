@@ -36,12 +36,13 @@ class MapRepositoryImpl
 
         override fun getClusterExhibits(ids: List<Int>): Flow<PagingData<Exhibition>> =
             Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    initialLoadSize = 20,
-                    prefetchDistance = 1,
-                    enablePlaceholders = false,
-                ),
+                config =
+                    PagingConfig(
+                        pageSize = 20,
+                        initialLoadSize = 20,
+                        prefetchDistance = 1,
+                        enablePlaceholders = false,
+                    ),
                 pagingSourceFactory = {
                     ClusterExhibitsPagingSource(ids = ids, dataSource = dataSource)
                 },

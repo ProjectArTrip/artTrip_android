@@ -15,21 +15,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.arttrip.android.R
-import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
-import com.arttrip.android.core.ui.component.button.AppFilterChip
-import com.arttrip.android.core.ui.component.button.AppFilterChipCase
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.calendar.DayChipCase01
 import com.arttrip.android.core.ui.component.calendar.DayChipStateCase01
-import com.arttrip.android.core.ui.component.sheet.AppBottomSheetTopBar
-import com.arttrip.android.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.domain.model.exhibition.Exhibition
@@ -76,8 +70,9 @@ fun ScheduleScreen(
                 },
             )
             Text(
-                modifier = Modifier
-                    .padding(start = 24.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 24.dp),
                 text = date.format(DateTimeFormatter.ofPattern("yyyy년 MM월")),
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPrimary,
@@ -94,7 +89,14 @@ fun ScheduleScreen(
                     DayChipCase01(
                         dayOfMonth = weekDate.dayOfMonth,
                         dayOfWeek = weekDate.dayOfWeek,
-                        state = if (weekDate == (state.selectedDate ?: date)) DayChipStateCase01.Selected else DayChipStateCase01.Unselected,
+                        state =
+                            if (weekDate ==
+                                (state.selectedDate ?: date)
+                            ) {
+                                DayChipStateCase01.Selected
+                            } else {
+                                DayChipStateCase01.Unselected
+                            },
                     ) {
                         onIntent(ScheduleIntent.SelectDate(weekDate))
                     }
@@ -152,8 +154,9 @@ fun ExhibitionList(
         }
         item {
             Spacer(
-                modifier = Modifier
-                    .height(12.dp)
+                modifier =
+                    Modifier
+                        .height(12.dp),
             )
         }
     }

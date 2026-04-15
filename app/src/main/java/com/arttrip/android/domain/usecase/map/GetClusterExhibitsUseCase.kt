@@ -11,6 +11,5 @@ class GetClusterExhibitsUseCase
     constructor(
         private val mapRepository: MapRepository,
     ) {
-        operator fun invoke(ids: List<Int>): Flow<PagingData<Exhibition>> =
-            mapRepository.getClusterExhibits(ids)
+        operator fun invoke(ids: List<Int>): Flow<PagingData<Exhibition>> = mapRepository.getClusterExhibits(ids)
     }

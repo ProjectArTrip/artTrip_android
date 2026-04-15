@@ -8,7 +8,10 @@ data class ExhibitionMarker(
     val latLng: LatLng,
 ) : ClusterItem {
     override fun getPosition(): LatLng = latLng
+
     override fun getTitle(): String = ""
+
     override fun getSnippet(): String = ""
+
     override fun getZIndex(): Float? = null
 }
