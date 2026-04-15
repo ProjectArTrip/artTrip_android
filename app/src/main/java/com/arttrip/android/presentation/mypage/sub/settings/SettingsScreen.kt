@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
-import com.arttrip.android.core.ui.component.dialog.AppDialog
+import com.arttrip.android.core.ui.component.dialog.AppTwoButtonDialog
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
 import com.arttrip.android.presentation.mypage.sub.settings.contract.SettingsIntent
@@ -158,7 +158,7 @@ private fun DeleteAccountDialog(
     onDismissRequest: () -> Unit,
     onConfirmClicked: () -> Unit,
 ) {
-    AppDialog(
+    AppTwoButtonDialog(
         visible = visible,
         onDismissRequest = onDismissRequest,
         primaryText = "탈퇴하기",

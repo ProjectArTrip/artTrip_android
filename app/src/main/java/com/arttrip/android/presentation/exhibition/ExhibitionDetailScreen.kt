@@ -33,7 +33,7 @@ import com.arttrip.android.R
 import com.arttrip.android.core.ui.component.appbar.AppTopBar
 import com.arttrip.android.core.ui.component.button.AppIconButton
 import com.arttrip.android.core.ui.component.button.HeartButton
-import com.arttrip.android.core.ui.component.dialog.AppDialog
+import com.arttrip.android.core.ui.component.dialog.AppTwoButtonDialog
 import com.arttrip.android.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.android.core.ui.component.tab.AppTabCase
 import com.arttrip.android.core.ui.component.tab.AppTabRow
@@ -160,7 +160,7 @@ fun ExhibitionDetailScreen(
             }
         }
 
-        AppDialog(
+        AppTwoButtonDialog(
             visible = state.writeReviewDialogVisible,
             onDismissRequest = { onIntent(ExhibitionDetailIntent.WriteReviewDialogDismissClicked) },
             primaryText = "리뷰 작성",
