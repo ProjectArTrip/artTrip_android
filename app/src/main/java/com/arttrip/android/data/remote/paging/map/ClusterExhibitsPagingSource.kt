@@ -14,11 +14,12 @@ class ClusterExhibitsPagingSource(
 ) : PagingSource<Int, Exhibition>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Exhibition> =
         try {
-            val res = dataSource.getClusterExhibits(
-                ids = ids,
-                cursor = params.key,
-                size = params.loadSize,
-            )
+            val res =
+                dataSource.getClusterExhibits(
+                    ids = ids,
+                    cursor = params.key,
+                    size = params.loadSize,
+                )
             LoadResult.Page(
                 data = res.exhibits.map { it.toDomain() },
                 prevKey = null,

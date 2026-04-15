@@ -3,7 +3,9 @@ package com.arttrip.android.presentation.map
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,13 +29,11 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.border
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,10 +53,10 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.arttrip.android.R
+import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.ui.component.list.ExhibitionListItem
 import com.arttrip.android.core.ui.theme.AppColor
 import com.arttrip.android.core.ui.theme.AppTextStyle
-import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import com.arttrip.android.core.util.noRippleClickable
 import com.arttrip.android.domain.model.exhibition.Exhibition
 import com.arttrip.android.domain.model.map.ExhibitionMarker
@@ -82,23 +82,25 @@ fun MapScreen(
     onIntent: (MapIntent) -> Unit,
 ) {
     val seoul = LatLng(37.5665, 126.9780)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(seoul, 15f)
-    }
+    val cameraPositionState =
+        rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(seoul, 15f)
+        }
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isExpanded = scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
     val scope = rememberCoroutineScope()
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-    ) { permissions ->
-        if (permissions.values.any { it }) {
-            onIntent(MapIntent.OnLocationPermissionGranted)
-        } else {
-            onIntent(MapIntent.OnLocationPermissionDenied)
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            if (permissions.values.any { it }) {
+                onIntent(MapIntent.OnLocationPermissionGranted)
+            } else {
+                onIntent(MapIntent.OnLocationPermissionDenied)
+            }
         }
-    }
 
     LaunchedEffect(Unit) {
         locationPermissionLauncher.launch(
@@ -112,7 +114,9 @@ fun MapScreen(
     LaunchedEffect(state.currentLocation) {
         state.currentLocation?.let { location ->
             cameraPositionState.move(
-                update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(location, 15f),
+                update =
+                    com.google.android.gms.maps.CameraUpdateFactory
+                        .newLatLngZoom(location, 15f),
             )
         }
     }
@@ -122,8 +126,9 @@ fun MapScreen(
     }
 
     BottomSheetScaffold(
-        modifier = modifier
-            .padding(bottom = innerPadding.calculateBottomPadding()),
+        modifier =
+            modifier
+                .padding(bottom = innerPadding.calculateBottomPadding()),
         scaffoldState = scaffoldState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContainerColor = AppColor.Gray0,
@@ -138,7 +143,7 @@ fun MapScreen(
                 clusterCount = state.selectedClusterCount,
                 clusterExhibits = clusterExhibits,
             )
-        }
+        },
     ) {
         MapContent(
             cameraPositionState = cameraPositionState,
@@ -147,7 +152,9 @@ fun MapScreen(
                 scope.launch {
                     state.currentLocation?.let { location ->
                         cameraPositionState.animate(
-                            update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(location, 15f),
+                            update =
+                                com.google.android.gms.maps.CameraUpdateFactory
+                                    .newLatLngZoom(location, 15f),
                         )
                     }
                 }
@@ -157,11 +164,13 @@ fun MapScreen(
                     MapIntent.OnClusterClicked(
                         count = cluster.size,
                         ids = cluster.items.map { it.id.toInt() },
-                    )
+                    ),
                 )
                 scope.launch {
                     cameraPositionState.animate(
-                        update = com.google.android.gms.maps.CameraUpdateFactory.newLatLng(cluster.position),
+                        update =
+                            com.google.android.gms.maps.CameraUpdateFactory
+                                .newLatLng(cluster.position),
                     )
                     scaffoldState.bottomSheetState.expand()
                 }
@@ -196,15 +205,17 @@ private fun MapContent(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            uiSettings = MapUiSettings(
-                zoomControlsEnabled = false
-            )
+            uiSettings =
+                MapUiSettings(
+                    zoomControlsEnabled = false,
+                ),
         ) {
             Clustering(
                 items = markers,
@@ -221,29 +232,33 @@ private fun MapContent(
             )
         }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(
-                modifier = Modifier
-                    .height(16.dp)
+                modifier =
+                    Modifier
+                        .height(16.dp),
             )
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .shadow(6.dp, RoundedCornerShape(8.dp))
-                    .border(width = 1.dp, color = AppColor.Gray100, shape = RoundedCornerShape(size = 8.dp))
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color = AppColor.Gray0)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .shadow(6.dp, RoundedCornerShape(8.dp))
+                        .border(width = 1.dp, color = AppColor.Gray100, shape = RoundedCornerShape(size = 8.dp))
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(color = AppColor.Gray0),
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .noRippleClickable { dropdownExpanded = !dropdownExpanded }
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .noRippleClickable { dropdownExpanded = !dropdownExpanded }
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
@@ -253,9 +268,10 @@ private fun MapContent(
                         color = if (selectedCountry != null) AppColor.TextPrimary else AppColor.TextTertiary,
                     )
                     Icon(
-                        painter = painterResource(
-                            id = if (dropdownExpanded) R.drawable.ic_up_24 else R.drawable.ic_down_24,
-                        ),
+                        painter =
+                            painterResource(
+                                id = if (dropdownExpanded) R.drawable.ic_up_24 else R.drawable.ic_down_24,
+                            ),
                         contentDescription = null,
                         tint = AppColor.Gray900,
                     )
@@ -265,20 +281,22 @@ private fun MapContent(
                         HorizontalDivider(color = AppColor.Gray100)
                         countries.forEach { country ->
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .noRippleClickable {
-                                        selectedCountry = country
-                                        dropdownExpanded = false
-                                        country.latLng?.let { latLng ->
-                                            scope.launch {
-                                                cameraPositionState.animate(
-                                                    update = com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(latLng, 8f),
-                                                )
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .noRippleClickable {
+                                            selectedCountry = country
+                                            dropdownExpanded = false
+                                            country.latLng?.let { latLng ->
+                                                scope.launch {
+                                                    cameraPositionState.animate(
+                                                        update =
+                                                            com.google.android.gms.maps.CameraUpdateFactory
+                                                                .newLatLngZoom(latLng, 8f),
+                                                    )
+                                                }
                                             }
-                                        }
-                                    }
-                                    .padding(all = 16.dp)
+                                        }.padding(all = 16.dp),
                             ) {
                                 Text(
                                     text = country.label,
@@ -293,16 +311,18 @@ private fun MapContent(
         }
         FloatingActionButton(
             onClick = onMyLocationClick,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = (-24).dp, y = (-88).dp)
-                .size(40.dp),
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 2.dp,
-                pressedElevation = 0.dp,
-                focusedElevation = 0.dp,
-                hoveredElevation = 0.dp,
-            ),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-24).dp, y = (-88).dp)
+                    .size(40.dp),
+            elevation =
+                FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 2.dp,
+                    pressedElevation = 0.dp,
+                    focusedElevation = 0.dp,
+                    hoveredElevation = 0.dp,
+                ),
             containerColor = AppColor.Gray0,
             shape = CircleShape,
         ) {
@@ -321,7 +341,7 @@ fun BottomSheetDragHandle() {
         Modifier
             .padding(vertical = 10.dp)
             .size(width = 32.dp, height = 4.dp)
-            .background(AppColor.Gray100, RoundedCornerShape(10.dp))
+            .background(AppColor.Gray100, RoundedCornerShape(10.dp)),
     )
 }
 
@@ -335,75 +355,84 @@ fun BottomSheetContent(
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
 
-    val statusBarHeight = WindowInsets.statusBars.getTop(density)
+    val screenHeight = with(density) { windowInfo.containerSize.height.toDp() }
+    val statusBarHeight = with(density) { WindowInsets.statusBars.getTop(density).toDp() }
+    val bottomNavHeight = innerPadding.calculateBottomPadding()
+    val topMargin = 88.dp
     val dragHandleHeight = 24.dp
-    val expandedSheetHeight = with(density) {
-        windowInfo.containerSize.height.toDp() - statusBarHeight.toDp() - innerPadding.calculateBottomPadding() - 88.dp - dragHandleHeight
-    }
+    val expandedSheetHeight = screenHeight - statusBarHeight - bottomNavHeight - topMargin - dragHandleHeight
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(expandedSheetHeight)
-            .background(color = AppColor.Gray0)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(expandedSheetHeight)
+                .background(color = AppColor.Gray0),
     ) {
         if (isExpanded) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
             ) {
                 Spacer(
-                    modifier = Modifier
-                        .height(16.dp)
+                    modifier =
+                        Modifier
+                            .height(16.dp),
                 )
                 Row {
                     Text(
                         text = "전시",
                         style = AppTextStyle.Headline,
-                        color = AppColor.TextPrimary
+                        color = AppColor.TextPrimary,
                     )
                     Spacer(
-                        modifier = Modifier
-                            .width(8.dp)
+                        modifier =
+                            Modifier
+                                .width(8.dp),
                     )
                     Text(
                         text = clusterCount.toString(),
                         style = AppTextStyle.Headline,
-                        color = AppColor.TextPoint
+                        color = AppColor.TextPoint,
                     )
                     Text(
                         text = "건",
                         style = AppTextStyle.Headline,
-                        color = AppColor.TextPrimary
+                        color = AppColor.TextPrimary,
                     )
                 }
                 Spacer(
-                    modifier = Modifier
-                        .height(8.dp)
+                    modifier =
+                        Modifier
+                            .height(8.dp),
                 )
                 if (clusterExhibits.itemCount == 0) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Spacer(
-                            modifier = Modifier
-                                .height(56.dp)
+                            modifier =
+                                Modifier
+                                    .height(56.dp),
                         )
                         Text(
-                            text = "해당 위치에 전시가 없습니다.\n" +
+                            text =
+                                "해당 위치에 전시가 없습니다.\n" +
                                     "다른 위치를 검색해보세요.",
                             style = AppTextStyle.Body01Regular,
                             color = AppColor.TextTertiary,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(
                             count = clusterExhibits.itemCount,
@@ -420,7 +449,7 @@ fun BottomSheetContent(
                                     status = exhibition.status,
                                     isLiked = exhibition.isBookmarked,
                                     onLikeClick = {},
-                                    onItemClick = {}
+                                    onItemClick = {},
                                 )
                             }
                         }
@@ -435,7 +464,7 @@ fun BottomSheetContent(
                 modifier = Modifier.align(Alignment.TopCenter),
                 text = "전시 리스트 확인하기",
                 style = AppTextStyle.Body01Bold,
-                color = AppColor.TextPoint
+                color = AppColor.TextPoint,
             )
         }
     }
@@ -444,19 +473,21 @@ fun BottomSheetContent(
 @Composable
 fun PlaceCluster(cluster: Cluster<ExhibitionMarker>) {
     Box(
-        modifier = Modifier
-            .size(66.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(66.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(AppColor.Gray900.copy(alpha = 0.8f), CircleShape)
+            modifier =
+                Modifier
+                    .matchParentSize()
+                    .background(AppColor.Gray900.copy(alpha = 0.8f), CircleShape),
         )
         Text(
             text = cluster.size.toString(),
             style = AppTextStyle.Title01Bold,
-            color = AppColor.TextWhite
+            color = AppColor.TextWhite,
         )
     }
 }
@@ -464,8 +495,9 @@ fun PlaceCluster(cluster: Cluster<ExhibitionMarker>) {
 @Composable
 fun PlaceMarker() {
     Box(
-        modifier = Modifier
-            .size(16.dp)
-            .background(AppColor.Primary300, CircleShape)
+        modifier =
+            Modifier
+                .size(16.dp)
+                .background(AppColor.Primary300, CircleShape),
     )
 }

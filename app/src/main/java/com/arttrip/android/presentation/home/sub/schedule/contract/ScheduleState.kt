@@ -1,6 +1,5 @@
 package com.arttrip.android.presentation.home.sub.schedule.contract
 
-import com.arttrip.android.core.model.enums.exhibition.SortType
 import com.arttrip.android.core.model.enums.foreign.ForeignCountry
 import java.time.LocalDate
 
