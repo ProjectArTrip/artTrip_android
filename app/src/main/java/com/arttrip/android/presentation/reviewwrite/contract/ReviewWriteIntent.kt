@@ -43,4 +43,12 @@ sealed interface ReviewWriteIntent {
 
     // 제출
     data object SubmitClicked : ReviewWriteIntent
+
+    data object ProhibitedFishDialogDismissed : ReviewWriteIntent
+
+    data object ProhibitedFishConfirmClicked : ReviewWriteIntent
+
+    data object ExitConfirmDialogDismissed : ReviewWriteIntent
+
+    data object ExitConfirmClicked : ReviewWriteIntent
 }
