@@ -43,7 +43,7 @@ import com.arttrip.android.core.ui.theme.Pretendard
  *
  * 예)
  * ```
- * AppDialog(
+ * AppTwoButtonDialog(
  *   visible = visible,
  *   onDismissRequest = { visible = false }, // 뒤로가기/바깥 클릭 시 닫힘
  *   primaryText = "확인",
@@ -61,7 +61,7 @@ import com.arttrip.android.core.ui.theme.Pretendard
  * @param content 본문 슬롯 (**ColumnScope**)
  */
 @Composable
-fun AppDialog(
+fun AppTwoButtonDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     primaryText: String,
@@ -126,13 +126,63 @@ fun AppDialog(
     }
 }
 
+@Composable
+fun AppSingleButtonDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
+    primaryText: String,
+    onPrimaryClick: () -> Unit,
+    primaryEnabled: Boolean = true,
+    contentTopPadding: Dp = 32.dp,
+    contentBottomPadding: Dp = 24.dp,
+    content: @Composable (ColumnScope.() -> Unit),
+) {
+    if (!visible) return
+
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties =
+            DialogProperties(
+                usePlatformDefaultWidth = false,
+            ),
+    ) {
+        Surface(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = AppColor.Gray0,
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp)
+                        .padding(top = contentTopPadding, bottom = contentBottomPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                content()
+
+                AppButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    variant = AppButtonVariant.Primary,
+                    text = primaryText,
+                    onClick = onPrimaryClick,
+                    enabled = primaryEnabled,
+                )
+            }
+        }
+    }
+}
+
 @Preview(
-    name = "App Dialog Preview",
+    name = "AppTwoButtonDialog Preview",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
-private fun AppDialogComparePreview() {
+private fun AppTwoButtonDialogComparePreview() {
     var visible by remember { mutableStateOf(true) }
 
     Box(
@@ -146,7 +196,7 @@ private fun AppDialogComparePreview() {
             onClick = { visible = true },
         )
 
-        AppDialog(
+        AppTwoButtonDialog(
             visible = visible,
             onDismissRequest = { visible = false },
             primaryText = "리뷰 작성",

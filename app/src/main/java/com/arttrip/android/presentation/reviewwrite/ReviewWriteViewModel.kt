@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.core.util.copyToCacheFile
+import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
 import com.arttrip.android.domain.usecase.review.EditReviewUseCase
@@ -53,9 +54,7 @@ class ReviewWriteViewModel
                 }
 
                 ReviewWriteIntent.BackClicked -> {
-                    viewModelScope.launch {
-                        _effect.emit(ReviewWriteEffect.NavigateBack)
-                    }
+                    _state.update { it.copy(isExitConfirmDialogVisible = true) }
                 }
 
                 ReviewWriteIntent.VisitDateClicked,
@@ -140,6 +139,21 @@ class ReviewWriteViewModel
                 }
                 ReviewWriteIntent.SubmitClicked -> {
                     submit()
+                }
+                ReviewWriteIntent.ExitConfirmClicked -> {
+                    viewModelScope.launch {
+                        _state.update { it.copy(isExitConfirmDialogVisible = false) }
+                        _effect.emit(ReviewWriteEffect.NavigateBack)
+                    }
+                }
+                ReviewWriteIntent.ExitConfirmDialogDismissed -> {
+                    _state.update { it.copy(isExitConfirmDialogVisible = false) }
+                }
+                ReviewWriteIntent.ProhibitedFishConfirmClicked -> {
+                    _state.update { it.copy(isProhibitedFishDialogVisible = false) }
+                }
+                ReviewWriteIntent.ProhibitedFishDialogDismissed -> {
+                    _state.update { it.copy(isProhibitedFishDialogVisible = false) }
                 }
             }
         }
@@ -264,7 +278,12 @@ class ReviewWriteViewModel
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    val error = result.error
+                                    if (error is ApiError.HttpError && error.serverCode == "REVIEW400-BAD_WORD_INCLUDED") {
+                                        _state.update { it.copy(isProhibitedFishDialogVisible = true) }
+                                    } else {
+                                        _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    }
                                 }
                             }
                         }
@@ -288,7 +307,12 @@ class ReviewWriteViewModel
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    val error = result.error
+                                    if (error is ApiError.HttpError && error.serverCode == "REVIEW400-BAD_WORD_INCLUDED") {
+                                        _state.update { it.copy(isProhibitedFishDialogVisible = true) }
+                                    } else {
+                                        _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    }
                                 }
                             }
                         }
