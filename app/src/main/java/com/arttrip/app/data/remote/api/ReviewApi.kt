@@ -1,0 +1,64 @@
+package com.arttrip.app.data.remote.api
+
+import com.arttrip.app.data.remote.api.ApiConstants.REVIEW_PATH
+import com.arttrip.app.data.remote.model.review.ExhibitReviewResDto
+import com.arttrip.app.data.remote.model.review.ReviewDetailResDto
+import com.arttrip.app.data.remote.model.review.ReviewPageResDto
+import com.arttrip.app.data.remote.model.review.UserReviewResDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface ReviewApi {
+    @GET("${REVIEW_PATH}/exhibit/{exhibitId}")
+    suspend fun getExhibitDetailReviews(
+        @Path("exhibitId") exhibitId: Int,
+        @Query("cursor") cursor: Int? = null,
+        @Query("size") size: Int = 10,
+        @Query("w") w: Int = 200,
+        @Query("h") h: Int = 200,
+        @Query("f") f: String = "webp",
+    ): ReviewPageResDto<ExhibitReviewResDto>
+
+    @GET("${REVIEW_PATH}/{reviewId}")
+    suspend fun getReview(
+        @Path("reviewId") reviewId: Int,
+    ): ReviewDetailResDto
+
+    @Multipart
+    @POST("${REVIEW_PATH}/{exhibitId}")
+    suspend fun postReview(
+        @Path("exhibitId") exhibitId: Int,
+        @Part("request") request: RequestBody,
+        @Part images: List<MultipartBody.Part>? = null,
+    ): Unit
+
+    @DELETE("${REVIEW_PATH}/{reviewId}")
+    suspend fun deleteReview(
+        @Path("reviewId") reviewId: Int,
+    ): Unit
+
+    @Multipart
+    @PATCH("${REVIEW_PATH}/{reviewId}")
+    suspend fun patchReview(
+        @Path("reviewId") reviewId: Int,
+        @Part("request") request: RequestBody,
+        @Part images: List<MultipartBody.Part>? = null,
+    ): Unit
+
+    @GET("${REVIEW_PATH}/all")
+    suspend fun getUserReviews(
+        @Query("cursor") cursor: Int? = null,
+        @Query("size") size: Int = 10,
+        @Query("w") w: Int = 200,
+        @Query("h") h: Int = 200,
+        @Query("f") f: String = "webp",
+    ): ReviewPageResDto<UserReviewResDto>
+}

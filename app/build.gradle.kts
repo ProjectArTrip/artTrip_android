@@ -14,26 +14,36 @@ plugins {
 }
 
 android {
-    namespace = "com.arttrip.android"
+    val localProperties =
+        Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                load(file.inputStream())
+            }
+        }
+
+    namespace = "com.arttrip.app"
     compileSdk {
         version = release(36)
     }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(localProperties["RELEASE_STORE_FILE"] as String)
+            storePassword = localProperties["RELEASE_STORE_PASSWORD"] as String
+            keyAlias = localProperties["RELEASE_KEY_ALIAS"] as String
+            keyPassword = localProperties["RELEASE_KEY_PASSWORD"] as String
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.arttrip.android"
+        applicationId = "com.arttrip.app"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val localProperties =
-            Properties().apply {
-                val file = rootProject.file("local.properties")
-                if (file.exists()) {
-                    load(file.inputStream())
-                }
-            }
 
         val kakaoNativeAppKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY") ?: ""
         val googleWebClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
@@ -61,6 +71,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
