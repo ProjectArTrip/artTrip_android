@@ -145,7 +145,7 @@ fun ExhibitionDetailScreen(
                 }
                 when (selectedTabIndex) {
                     0 -> item { ExhibitionDetailInfoTab(detail = state.detail) }
-                    1 -> item { ExhibitionMapTab() }
+                    1 -> item { ExhibitionMapTab(latitude = state.detail.hallLatitude, longitude = state.detail.hallLongitude) }
                     2 ->
                         exhibitionReviewTab(
                             reviewTotalCount = state.reviewTotalCount ?: 0,
