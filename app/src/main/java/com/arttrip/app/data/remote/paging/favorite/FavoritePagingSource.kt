@@ -12,7 +12,7 @@ import retrofit2.HttpException
 
 class FavoritePagingSource(
     private val dataSource: FavoriteDataSource,
-    private val sortOption: BookmarkSortType,
+    private val sortType: BookmarkSortType,
     private val regions: List<String>?,
     private val countries: List<String>?,
     private val onTotalCount: (Int) -> Unit,
@@ -25,7 +25,7 @@ class FavoritePagingSource(
             Log.d("FavoritePagingSource", "load() cursor=$cursor loadSize=$loadSize")
             val res =
                 dataSource.getFavorites(
-                    sortOption = sortOption,
+                    sortType = sortType,
                     regions = regions,
                     countries = countries,
                     cursor = cursor,

@@ -78,7 +78,7 @@ class BookmarkRepositoryImpl
                 pagingSourceFactory = {
                     FavoritePagingSource(
                         dataSource = dataSource,
-                        sortOption = sortType,
+                        sortType = sortType,
                         regions = regions,
                         countries = countries,
                         onTotalCount = { count ->

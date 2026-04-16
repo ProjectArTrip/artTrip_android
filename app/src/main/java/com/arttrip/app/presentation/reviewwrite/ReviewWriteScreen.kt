@@ -1,5 +1,6 @@
 package com.arttrip.app.presentation.reviewwrite
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +40,8 @@ import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppButton
 import com.arttrip.app.core.ui.component.button.AppButtonDefaults
 import com.arttrip.app.core.ui.component.button.AppIconButton
+import com.arttrip.app.core.ui.component.dialog.AppSingleButtonDialog
+import com.arttrip.app.core.ui.component.dialog.AppTwoButtonDialog
 import com.arttrip.app.core.ui.component.input.AppSelectField
 import com.arttrip.app.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.app.core.ui.component.sheet.AppModalBottomSheet
@@ -60,6 +64,10 @@ fun ReviewWriteScreen(
     state: ReviewWriteState,
     onIntent: (ReviewWriteIntent) -> Unit,
 ) {
+    BackHandler {
+        onIntent(ReviewWriteIntent.BackClicked)
+    }
+
     val scrollState = rememberScrollState()
 
     val buttonBottomMargin = 10.dp
@@ -175,21 +183,26 @@ fun ReviewWriteScreen(
             enabled = state.canSubmit,
         )
 
-        AppModalBottomSheet(
+        DatePickerBottomSheet(
             visible = state.isVisitDateSheetVisible,
+            calendarMonth = state.calendarMonth,
+            visitDate = state.visitDate,
             onDismissRequest = { onIntent(ReviewWriteIntent.VisitDateSheetDismissed) },
-            contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp),
-            topBar = AppBottomSheetTopBar.None,
-        ) {
-            SingleSelectDatePicker(
-                modifier = Modifier.fillMaxWidth(),
-                initialMonth = state.calendarMonth,
-                initialSelected = state.visitDate,
-                onMonthChanged = { ym -> onIntent(ReviewWriteIntent.CalendarMonthChanged(ym)) },
-                onDateSelected = { date -> onIntent(ReviewWriteIntent.VisitDateSelected(date)) },
-                onCloseClicked = { onIntent(ReviewWriteIntent.VisitDateSheetDismissed) },
-            )
-        }
+            onMonthChanged = { ym -> onIntent(ReviewWriteIntent.CalendarMonthChanged(ym)) },
+            onDateSelected = { date -> onIntent(ReviewWriteIntent.VisitDateSelected(date)) },
+        )
+
+        ProhibitedFishDialog(
+            visible = state.isProhibitedFishDialogVisible,
+            onDismissRequest = { onIntent(ReviewWriteIntent.ProhibitedFishDialogDismissed) },
+            onConfirmClick = { onIntent(ReviewWriteIntent.ProhibitedFishConfirmClicked) },
+        )
+
+        ExitConfirmDialog(
+            visible = state.isExitConfirmDialogVisible,
+            onDismissRequest = { onIntent(ReviewWriteIntent.ExitConfirmDialogDismissed) },
+            onConfirmClick = { onIntent(ReviewWriteIntent.ExitConfirmClicked) },
+        )
     }
 }
 
@@ -308,6 +321,93 @@ private fun ExhibitionPosterImage(
             loading = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
             error = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
         )
+    }
+}
+
+@Composable
+private fun DatePickerBottomSheet(
+    visible: Boolean,
+    calendarMonth: YearMonth,
+    visitDate: LocalDate?,
+    onDismissRequest: () -> Unit,
+    onMonthChanged: (YearMonth) -> Unit,
+    onDateSelected: (LocalDate) -> Unit,
+) {
+    AppModalBottomSheet(
+        visible = visible,
+        onDismissRequest = onDismissRequest,
+        contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp),
+        topBar = AppBottomSheetTopBar.None,
+    ) {
+        SingleSelectDatePicker(
+            modifier = Modifier.fillMaxWidth(),
+            initialMonth = calendarMonth,
+            initialSelected = visitDate,
+            onMonthChanged = onMonthChanged,
+            onDateSelected = onDateSelected,
+            onCloseClicked = onDismissRequest,
+        )
+    }
+}
+
+@Composable
+private fun ProhibitedFishDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    AppSingleButtonDialog(
+        visible = visible,
+        primaryText = "다시 수정하기",
+        onPrimaryClick = onConfirmClick,
+        onDismissRequest = onDismissRequest,
+        contentTopPadding = 40.dp,
+        contentBottomPadding = 24.dp,
+    ) {
+        Text(
+            "금칙어가 포함되어있습니다.",
+            style = AppTextStyle.Title02Bold,
+            color = AppColor.TextPrimary,
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "부적절한 표현이 있어 등록이 제한되었습니다.\n수정 후 다시 시도해 주세요.",
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextSecondary,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun ExitConfirmDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    AppTwoButtonDialog(
+        visible = visible,
+        primaryText = "확인",
+        onPrimaryClick = onConfirmClick,
+        secondaryText = "취소",
+        onSecondaryClick = onDismissRequest,
+        onDismissRequest = onDismissRequest,
+        contentTopPadding = 40.dp,
+        contentBottomPadding = 25.dp,
+    ) {
+        Text(
+            "작성을 중단할까요?",
+            style = AppTextStyle.Title02Bold,
+            color = AppColor.TextPrimary,
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "작성 중인 내용은 저장되지 않아요.",
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextSecondary,
+        )
+        Spacer(Modifier.height(15.dp))
     }
 }
 

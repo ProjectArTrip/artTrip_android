@@ -20,13 +20,13 @@ class FavoriteDataSource
             )
 
         suspend fun getFavorites(
-            sortOption: BookmarkSortType,
+            sortType: BookmarkSortType,
             regions: List<String>? = null,
             countries: List<String>? = null,
             cursor: Int? = null,
             size: Int,
         ) = api.getFavorites(
-            sortOption = sortOption.name,
+            sortType = sortType.name,
             regions = regions,
             countries = countries,
             cursor = cursor,

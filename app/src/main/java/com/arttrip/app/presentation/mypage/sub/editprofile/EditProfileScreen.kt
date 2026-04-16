@@ -31,7 +31,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.arttrip.app.R
 import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
-import com.arttrip.app.core.ui.component.dialog.AppDialog
+import com.arttrip.app.core.ui.component.dialog.AppTwoButtonDialog
 import com.arttrip.app.core.ui.component.input.AppTextField
 import com.arttrip.app.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.app.core.ui.component.sheet.AppModalBottomSheet
@@ -199,7 +199,7 @@ private fun NicknameEditDialog(
     onNicknameChange: (String) -> Unit,
     onConfirmClicked: () -> Unit,
 ) {
-    AppDialog(
+    AppTwoButtonDialog(
         visible = visible,
         onDismissRequest = onDismissRequest,
         primaryText = "변경하기",

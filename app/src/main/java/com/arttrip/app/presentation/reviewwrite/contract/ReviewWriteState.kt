@@ -33,6 +33,8 @@ data class ReviewWriteState(
     val photos: List<ReviewPhotoItem> = emptyList(),
     val deletedImageIds: List<Int> = emptyList(),
     val showReviewLengthError: Boolean = false,
+    val isProhibitedFishDialogVisible: Boolean = false,
+    val isExitConfirmDialogVisible: Boolean = false,
 ) {
     val canAddPhoto: Boolean get() = photos.size < MAX_REVIEW_PHOTO_COUNT
     val canSubmit: Boolean
