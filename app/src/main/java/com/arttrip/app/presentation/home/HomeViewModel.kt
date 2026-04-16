@@ -75,8 +75,7 @@ class HomeViewModel
             viewModelScope.launch {
                 observeProfile().collect { profile ->
                     if (profile != null) {
-                        // TODO state update
-                        Log.d("Home", "사용자명: ${ profile.nickname}")
+                        _state.update { it.copy(nickname = profile.nickname.ifBlank { "사용자" }) }
                     }
                 }
             }

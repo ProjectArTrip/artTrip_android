@@ -453,7 +453,7 @@ fun ForeignExhibitionSection(
                     .height(32.dp),
         )
         PersonalizedSection(
-            name = "손현준",
+            name = state.nickname,
             sectionState = personalizedState,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
@@ -570,7 +570,7 @@ fun DomesticExhibitionSection(
                     .height(32.dp),
         )
         PersonalizedSection(
-            name = "손현준",
+            name = state.nickname,
             sectionState = personalizedState,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))

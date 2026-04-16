@@ -10,6 +10,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 data class HomeState(
+    val nickname: String = "",
     val placeTabs: PlaceTab = PlaceTab.Foreign,
     val selectedCountry: ForeignCountry = ForeignCountry.Entire,
     val foreignExhibitionData: Map<ForeignCountry, HomeSection> =
