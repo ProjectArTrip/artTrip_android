@@ -22,7 +22,7 @@ android {
             }
         }
 
-    namespace = "com.arttrip.android"
+    namespace = "com.arttrip.app"
     compileSdk {
         version = release(36)
     }
@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.arttrip.android"
+        applicationId = "com.arttrip.app"
         minSdk = 29
         targetSdk = 36
         versionCode = 1

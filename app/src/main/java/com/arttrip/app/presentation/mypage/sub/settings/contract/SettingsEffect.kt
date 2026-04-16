@@ -1,0 +1,17 @@
+package com.arttrip.app.presentation.mypage.sub.settings.contract
+
+sealed interface SettingsEffect {
+    data object NavigateBack : SettingsEffect
+
+    data object NavigateToNotice : SettingsEffect
+
+    data object NavigateToNotification : SettingsEffect
+
+    data class OpenWeb(
+        val url: String,
+    ) : SettingsEffect
+
+    data class ShowToast(
+        val message: String,
+    ) : SettingsEffect
+}
