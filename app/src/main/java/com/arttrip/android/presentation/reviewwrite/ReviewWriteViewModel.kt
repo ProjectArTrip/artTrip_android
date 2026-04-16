@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.android.core.ui.UiMessage
 import com.arttrip.android.core.util.copyToCacheFile
+import com.arttrip.android.domain.model.network.ApiError
 import com.arttrip.android.domain.model.network.ApiResult
 import com.arttrip.android.domain.usecase.review.CreateReviewUseCase
 import com.arttrip.android.domain.usecase.review.EditReviewUseCase
@@ -277,7 +278,12 @@ class ReviewWriteViewModel
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    val error = result.error
+                                    if (error is ApiError.HttpError && error.serverCode == "REVIEW400-BAD_WORD_INCLUDED") {
+                                        _state.update { it.copy(isProhibitedFishDialogVisible = true) }
+                                    } else {
+                                        _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    }
                                 }
                             }
                         }
@@ -301,7 +307,12 @@ class ReviewWriteViewModel
                                 }
                                 is ApiResult.Error -> {
                                     _state.update { it.copy(isSubmitting = false) }
-                                    _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    val error = result.error
+                                    if (error is ApiError.HttpError && error.serverCode == "REVIEW400-BAD_WORD_INCLUDED") {
+                                        _state.update { it.copy(isProhibitedFishDialogVisible = true) }
+                                    } else {
+                                        _effect.emit(ReviewWriteEffect.ShowToast(UiMessage.ERROR_RETRY))
+                                    }
                                 }
                             }
                         }
