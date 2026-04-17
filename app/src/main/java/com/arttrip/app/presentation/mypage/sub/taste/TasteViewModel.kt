@@ -40,7 +40,7 @@ class TasteViewModel
                     viewModelScope.launch { _effect.emit(TasteEffect.NavigateBack) }
                 }
                 is TasteIntent.Initialize -> {
-                    loadIntroOptions()
+                    loadTasteOptions()
                 }
                 is TasteIntent.ToggleGenre -> handleToggleGenre(intent.name)
                 is TasteIntent.ToggleStyle -> handleToggleStyle(intent.name)
@@ -50,7 +50,7 @@ class TasteViewModel
             }
         }
 
-        private fun loadIntroOptions() {
+        private fun loadTasteOptions() {
             viewModelScope.launch {
                 _state.update { it.copy(isLoading = true, errorMessage = null) }
 

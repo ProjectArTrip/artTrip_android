@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.intro
+package com.arttrip.app.presentation.intro.taste
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -8,36 +8,36 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arttrip.app.core.navigation.app.AppRoute
 import com.arttrip.app.core.util.LocalToastController
-import com.arttrip.app.presentation.intro.contract.IntroEffect
-import com.arttrip.app.presentation.intro.contract.IntroIntent
+import com.arttrip.app.presentation.intro.taste.contract.TasteEffect
+import com.arttrip.app.presentation.intro.taste.contract.TasteIntent
 
 @Composable
-fun IntroRoute(
+fun TasteRoute(
     innerPadding: PaddingValues,
-    viewModel: IntroViewModel = hiltViewModel(),
+    viewModel: TasteViewModel = hiltViewModel(),
     onNavigate: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val toast = LocalToastController.current
 
     LaunchedEffect(Unit) {
-        viewModel.onIntent(IntroIntent.Initialize)
+        viewModel.onIntent(TasteIntent.Initialize)
     }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                IntroEffect.NavigateToHome -> {
+                TasteEffect.NavigateToHome -> {
                     onNavigate(AppRoute.MAIN)
                 }
-                is IntroEffect.ShowError -> {
+                is TasteEffect.ShowError -> {
                     toast.show(effect.message)
                 }
             }
         }
     }
 
-    IntroScreen(
+    TasteScreen(
         innerPadding = innerPadding,
         state = state,
         onIntent = viewModel::onIntent,
