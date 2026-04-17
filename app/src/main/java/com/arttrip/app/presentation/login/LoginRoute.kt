@@ -1,7 +1,6 @@
 package com.arttrip.app.presentation.login
 
 import android.app.Activity
-
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

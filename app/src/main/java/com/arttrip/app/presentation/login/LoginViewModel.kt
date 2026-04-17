@@ -1,6 +1,5 @@
 package com.arttrip.app.presentation.login
 
-
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
