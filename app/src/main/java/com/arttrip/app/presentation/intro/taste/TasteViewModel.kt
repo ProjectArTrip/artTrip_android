@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.intro
+package com.arttrip.app.presentation.intro.taste
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,9 +6,9 @@ import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.app.domain.usecase.userTaste.SaveUserTasteUseCase
-import com.arttrip.app.presentation.intro.contract.IntroEffect
-import com.arttrip.app.presentation.intro.contract.IntroIntent
-import com.arttrip.app.presentation.intro.contract.IntroState
+import com.arttrip.app.presentation.intro.taste.contract.TasteEffect
+import com.arttrip.app.presentation.intro.taste.contract.TasteIntent
+import com.arttrip.app.presentation.intro.taste.contract.TasteState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,30 +19,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class IntroViewModel
+class TasteViewModel
     @Inject
     constructor(
         private val getAllTasteGroupsUseCase: GetAllTasteGroupsUseCase,
         private val saveUserTasteUseCase: SaveUserTasteUseCase,
     ) : ViewModel() {
-        private val _state = MutableStateFlow(IntroState())
-        val state: StateFlow<IntroState> = _state
+        private val _state = MutableStateFlow(TasteState())
+        val state: StateFlow<TasteState> = _state
 
-        private val _effect = MutableSharedFlow<IntroEffect>()
-        val effect: SharedFlow<IntroEffect> = _effect
+        private val _effect = MutableSharedFlow<TasteEffect>()
+        val effect: SharedFlow<TasteEffect> = _effect
 
-        fun onIntent(intent: IntroIntent) {
+        fun onIntent(intent: TasteIntent) {
             when (intent) {
-                is IntroIntent.Initialize -> {
-                    loadIntroOptions()
+                is TasteIntent.Initialize -> {
+                    loadTasteOptions()
                 }
-                is IntroIntent.ToggleGenre -> handleToggleGenre(intent.name)
-                is IntroIntent.ToggleStyle -> handleToggleStyle(intent.name)
-                is IntroIntent.ClickNext -> handleClickNext()
+                is TasteIntent.ToggleGenre -> handleToggleGenre(intent.name)
+                is TasteIntent.ToggleStyle -> handleToggleStyle(intent.name)
+                is TasteIntent.ClickNext -> handleClickNext()
             }
         }
 
-        private fun loadIntroOptions() {
+        private fun loadTasteOptions() {
             viewModelScope.launch {
                 getAllTasteGroupsUseCase().collect { result ->
                     when (result) {
@@ -117,7 +117,7 @@ class IntroViewModel
                         }
                         is ApiResult.Success -> {
                             _state.update { it.copy(isLoading = false) }
-                            _effect.emit(IntroEffect.NavigateToHome)
+                            _effect.emit(TasteEffect.NavigateToHome)
                         }
                         is ApiResult.Error -> {
                             _state.update {
@@ -126,7 +126,7 @@ class IntroViewModel
                                     errorMessage = "키워드 설정에 실패하였습니다.",
                                 )
                             }
-                            _effect.emit(IntroEffect.ShowError(UiMessage.ERROR_TEMP_SAVE_RETRY))
+                            _effect.emit(TasteEffect.ShowError(UiMessage.ERROR_TEMP_SAVE_RETRY))
                         }
                     }
                 }
