@@ -21,5 +21,12 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Create local.properties
+        run: |
+          echo "RELEASE_STORE_FILE=dummy" >> local.properties
+          echo "RELEASE_STORE_PASSWORD=dummy" >> local.properties
+          echo "RELEASE_KEY_ALIAS=dummy" >> local.properties
+          echo "RELEASE_KEY_PASSWORD=dummy" >> local.properties
+
       - name: Build Debug
         run: ./gradlew assembleDebug
