@@ -1,6 +1,5 @@
 package com.arttrip.app.presentation.login
 
-val syntaxError =
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
