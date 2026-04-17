@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class
-NotificationViewModel@Inject
+class NotificationViewModel
+    @Inject
     constructor() : ViewModel() {
         private val _state = MutableStateFlow(NotificationState())
         val state: StateFlow<NotificationState> = _state

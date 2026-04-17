@@ -1,0 +1,32 @@
+name: CI / KtLint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Create local.properties
+        run: |
+          echo "RELEASE_STORE_FILE=dummy" >> local.properties
+          echo "RELEASE_STORE_PASSWORD=dummy" >> local.properties
+          echo "RELEASE_KEY_ALIAS=dummy" >> local.properties
+          echo "RELEASE_KEY_PASSWORD=dummy" >> local.properties
+
+      - name: Run ktlintCheck
+        run: ./gradlew ktlintCheck
