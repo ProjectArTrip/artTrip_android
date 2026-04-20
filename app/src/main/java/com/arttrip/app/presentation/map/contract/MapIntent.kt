@@ -18,4 +18,12 @@ sealed interface MapIntent {
     data object OnLocationPermissionGranted : MapIntent
 
     data object OnLocationPermissionDenied : MapIntent
+
+    data class ExhibitionClicked(val id: Int) : MapIntent
+
+    data class OnCameraMoved(val latLng: com.google.android.gms.maps.model.LatLng, val zoom: Float) : MapIntent
+
+    data class OnCountrySelected(val country: com.arttrip.app.core.model.enums.foreign.ForeignCountry?) : MapIntent
+
+    data object OnLocationCentered : MapIntent
 }

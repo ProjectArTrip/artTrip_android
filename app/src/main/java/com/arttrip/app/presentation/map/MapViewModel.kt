@@ -20,8 +20,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,12 +42,13 @@ class MapViewModel
         private val _effect = MutableSharedFlow<MapEffect>()
         val effect: SharedFlow<MapEffect> = _effect
 
-        private val selectedIds = MutableStateFlow<List<Int>>(emptyList())
         private var skipNextCameraIdle = false
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val clusterExhibits: Flow<PagingData<Exhibition>> =
-            selectedIds
+            _state
+                .map { it.selectedIds }
+                .distinctUntilChanged()
                 .flatMapLatest { ids ->
                     if (ids.isEmpty()) {
                         flowOf(PagingData.empty())
@@ -63,19 +66,31 @@ class MapViewModel
                 is MapIntent.LoadMarkers -> loadMarkers(etag = intent.etag)
                 is MapIntent.OnClusterClicked -> {
                     skipNextCameraIdle = true
-                    _state.update { it.copy(selectedClusterCount = intent.count) }
-                    selectedIds.value = intent.ids
+                    _state.update { it.copy(selectedClusterCount = intent.count, selectedIds = intent.ids) }
                 }
                 is MapIntent.OnCameraIdle -> {
                     if (skipNextCameraIdle) {
                         skipNextCameraIdle = false
                         return
                     }
-                    _state.update { it.copy(selectedClusterCount = intent.visibleCount) }
-                    selectedIds.value = intent.ids
+                    _state.update { it.copy(selectedClusterCount = intent.visibleCount, selectedIds = intent.ids) }
                 }
                 is MapIntent.OnLocationPermissionGranted -> fetchCurrentLocation()
                 is MapIntent.OnLocationPermissionDenied -> Unit
+                is MapIntent.ExhibitionClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(MapEffect.NavigateToExhibitionDetail(intent.id))
+                    }
+                }
+                is MapIntent.OnCameraMoved -> {
+                    _state.update { it.copy(cameraLatLng = intent.latLng, cameraZoom = intent.zoom) }
+                }
+                is MapIntent.OnCountrySelected -> {
+                    _state.update { it.copy(selectedCountry = intent.country) }
+                }
+                is MapIntent.OnLocationCentered -> {
+                    _state.update { it.copy(hasCenteredOnLocation = true) }
+                }
             }
         }
 
