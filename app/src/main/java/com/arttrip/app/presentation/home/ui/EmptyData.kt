@@ -161,3 +161,33 @@ fun EmptyGenreExhibition(genre: ExhibitionGenre) {
         }
     }
 }
+
+@Composable
+fun EmptyExhibitionList() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(
+            modifier =
+                Modifier
+                    .height(56.dp),
+        )
+        Icon(
+            painter = painterResource(R.drawable.ic_home_no_data_96),
+            contentDescription = "No Data",
+            tint = Color.Unspecified,
+        )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(8.dp),
+        )
+        Text(
+            text = "진행중인 전시가 없습니다.",
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextTertiary,
+        )
+    }
+}
