@@ -27,6 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.arttrip.app.R
@@ -429,6 +431,16 @@ fun ForeignExhibitionSection(
     val genreState =
         homeSection.genreList[selectedGenre] ?: SectionLoadState.Idle
 
+    val hasError = recommendState is SectionLoadState.Error ||
+        personalizedState is SectionLoadState.Error ||
+        scheduleState is SectionLoadState.Error ||
+        genreState is SectionLoadState.Error
+
+    if (hasError) {
+        ErrorScreen()
+        return
+    }
+
     Column(
         modifier =
             Modifier
@@ -535,6 +547,16 @@ fun DomesticExhibitionSection(
     val personalizedState = section.personalizedList
     val scheduleState = section.scheduleList[selectedDate] ?: SectionLoadState.Idle
     val genreState = section.genreList[selectedGenre] ?: SectionLoadState.Idle
+
+    val hasError = recommendState is SectionLoadState.Error ||
+        personalizedState is SectionLoadState.Error ||
+        scheduleState is SectionLoadState.Error ||
+        genreState is SectionLoadState.Error
+
+    if (hasError) {
+        ErrorScreen()
+        return
+    }
 
     Column(
         modifier =
@@ -1410,5 +1432,44 @@ fun ExhibitionImage(
         content?.let { slot ->
             slot()
         }
+    }
+}
+
+@Composable
+fun ErrorScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(
+            modifier = Modifier
+                .height(62.dp)
+        )
+        Icon(
+            painter = painterResource(R.drawable.ic_home_error_96),
+            contentDescription = "error",
+            tint = Color.Unspecified
+        )
+        Spacer(
+            modifier = Modifier
+                .height(4.dp)
+        )
+        Text(
+            text = "일시적인 오류가 발생했어요",
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextPrimary
+        )
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+        )
+        Text(
+            text = "이용에 불편을 드려 죄송합니다\n" +
+                    "잠시 후에 다시 시도해 주세요",
+            style = AppTextStyle.Body02Regular,
+            color = AppColor.TextTertiary,
+            textAlign = TextAlign.Center
+        )
     }
 }
