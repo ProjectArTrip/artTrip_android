@@ -24,6 +24,7 @@ import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.calendar.DayChipCase01
 import com.arttrip.app.core.ui.component.calendar.DayChipStateCase01
+import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.exhibition.Exhibition
@@ -159,10 +160,16 @@ fun ExhibitionList(
             ) {
                 items(exhibitionList.itemCount) { index ->
                     exhibitionList[index]?.let { exhibition ->
-                        ExhibitionItem(
-                            exhibition = exhibition,
-                            onExhibitionClick = onExhibitionClick,
-                            onLikeClick = onLikeClick,
+                        ExhibitionListItem(
+                            posterUrl = exhibition.posterUrl,
+                            location = null,
+                            title = exhibition.title,
+                            hallName = exhibition.hallName,
+                            period = exhibition.period,
+                            status = exhibition.status,
+                            isLiked = exhibition.isBookmarked,
+                            onItemClick = { onExhibitionClick(exhibition.id) },
+                            onLikeClick = {}
                         )
                     }
                 }

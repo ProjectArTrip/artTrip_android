@@ -260,6 +260,7 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
+                onNavigateToExhibitionDetail = navController::navigateToExhibitionDetail,
                 country = country,
                 date = date,
             )

@@ -19,6 +19,7 @@ fun ScheduleRoute(
     viewModel: ScheduleViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onNavigateNotification: () -> Unit,
+    onNavigateToExhibitionDetail: (Int) -> Unit,
     country: ForeignCountry?,
     date: LocalDate,
 ) {
@@ -35,6 +36,7 @@ fun ScheduleRoute(
                 ScheduleEffect.NavigateBack -> onBack()
                 ScheduleEffect.NavigateToNotification -> onNavigateNotification()
                 is ScheduleEffect.NavigateToExhibitionDetail -> {
+                    onNavigateToExhibitionDetail(effect.exhibitionId)
                 }
             }
         }
