@@ -30,6 +30,9 @@ import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.presentation.home.sub.genre.ExhibitionItem
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleState
+import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -134,30 +137,43 @@ fun ExhibitionList(
         }
     }
 
-    LazyColumn(
-        state = listState,
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-    ) {
-        items(exhibitionList.itemCount) { index ->
-            exhibitionList[index]?.let { exhibition ->
-                ExhibitionItem(
-                    exhibition = exhibition,
-                    onExhibitionClick = onExhibitionClick,
-                    onLikeClick = onLikeClick,
-                )
-            }
+    when {
+        exhibitionList.loadState.refresh is LoadState.Loading -> {
+            LoadingExhibitionList()
         }
-        item {
-            Spacer(
+        exhibitionList.loadState.refresh is LoadState.Error -> {
+            ErrorExhibitionList()
+        }
+        exhibitionList.itemCount == 0 -> {
+            NoExhibitionList()
+        }
+        else -> {
+            LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
-                        .height(12.dp),
-            )
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
+            ) {
+                items(exhibitionList.itemCount) { index ->
+                    exhibitionList[index]?.let { exhibition ->
+                        ExhibitionItem(
+                            exhibition = exhibition,
+                            onExhibitionClick = onExhibitionClick,
+                            onLikeClick = onLikeClick,
+                        )
+                    }
+                }
+                item {
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(12.dp),
+                    )
+                }
+            }
         }
     }
 }
