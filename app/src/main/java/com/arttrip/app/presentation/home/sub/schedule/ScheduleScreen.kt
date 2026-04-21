@@ -28,7 +28,6 @@ import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.exhibition.Exhibition
-import com.arttrip.app.presentation.home.sub.genre.ExhibitionItem
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleState
 import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList

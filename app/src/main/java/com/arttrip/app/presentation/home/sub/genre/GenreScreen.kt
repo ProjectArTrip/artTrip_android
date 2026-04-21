@@ -38,6 +38,7 @@ import com.arttrip.app.core.ui.component.button.AppFilterChip
 import com.arttrip.app.core.ui.component.button.AppFilterChipCase
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.button.LikeButton
+import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.app.core.ui.component.sheet.AppModalBottomSheet
 import com.arttrip.app.core.ui.component.tag.AppTag
@@ -49,6 +50,9 @@ import com.arttrip.app.presentation.home.ExhibitionImage
 import com.arttrip.app.presentation.home.ExhibitionImageCase
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreIntent
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreState
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 
 @Composable
 fun GenreScreen(
@@ -254,92 +258,49 @@ fun ExhibitionList(
         }
     }
 
-    LazyColumn(
-        state = listState,
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-    ) {
-        items(exhibitionList.itemCount) { index ->
-            exhibitionList[index]?.let { exhibition ->
-                ExhibitionItem(
-                    exhibition = exhibition,
-                    onExhibitionClick = onExhibitionClick,
-                    onLikeClick = onLikeClick,
-                )
-            }
+    when {
+        exhibitionList.loadState.refresh is LoadState.Loading -> {
+            LoadingExhibitionList()
         }
-    }
-}
-
-@Composable
-fun ExhibitionItem(
-    exhibition: Exhibition,
-    onExhibitionClick: (Int) -> Unit,
-    onLikeClick: (Int) -> Unit,
-) {
-    Row(
-        modifier =
-            Modifier
-                .noRippleClickable {
-                    onExhibitionClick(exhibition.id)
-                },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ExhibitionImage(
-            url = exhibition.posterUrl,
-            case = ExhibitionImageCase.CASE3,
-        ) {
-            LikeButton(
+        exhibitionList.loadState.refresh is LoadState.Error -> {
+            ErrorExhibitionList()
+        }
+        exhibitionList.itemCount == 0 -> {
+            NoExhibitionList()
+        }
+        else -> {
+            LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = (-8).dp, y = (8).dp),
-                isSelected = exhibition.isBookmarked,
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
             ) {
-                onLikeClick(exhibition.id)
+                items(exhibitionList.itemCount) { index ->
+                    exhibitionList[index]?.let { exhibition ->
+                        ExhibitionListItem(
+                            posterUrl = exhibition.posterUrl,
+                            location = null,
+                            title = exhibition.title,
+                            hallName = exhibition.hallName,
+                            period = exhibition.period,
+                            status = exhibition.status,
+                            isLiked = exhibition.isBookmarked,
+                            onItemClick = { onExhibitionClick(exhibition.id) },
+                            onLikeClick = {}
+                        )
+                    }
+                }
+                item {
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(12.dp),
+                    )
+                }
             }
-            AppTag(
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomEnd),
-                status = exhibition.status,
-            )
-        }
-        Spacer(
-            modifier =
-                Modifier
-                    .width(12.dp),
-        )
-        Column {
-            Text(
-                text = exhibition.title,
-                style = AppTextStyle.Body01Bold,
-                color = AppColor.TextPrimary,
-            )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(4.dp),
-            )
-            Text(
-                text = exhibition.hallName,
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextTertiary,
-            )
-            Spacer(
-                modifier =
-                    Modifier
-                        .height(2.dp),
-            )
-            Text(
-                text = exhibition.period,
-                style = AppTextStyle.Body02Regular,
-                color = AppColor.TextTertiary,
-            )
         }
     }
 }
