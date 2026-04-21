@@ -42,6 +42,8 @@ import com.arttrip.app.presentation.home.ExhibitionImage
 import com.arttrip.app.presentation.home.ExhibitionImageCase
 import com.arttrip.app.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.app.presentation.home.sub.search.contract.SearchState
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
 
 @Composable
 fun SearchScreen(
@@ -126,20 +128,27 @@ fun SearchScreen(
                         onIntent = onIntent,
                     )
                 } else {
-                    if (exhibitionList.itemCount == 0 &&
-                        exhibitionList.loadState.refresh is LoadState.NotLoading
-                    ) {
-                        EmptySearchResultContent()
-                    } else {
-                        SearchResultContent(
-                            exhibitions = exhibitionList,
-                            onExhibitionClick = { id ->
-                                onIntent(SearchIntent.ExhibitionClicked(id))
-                            },
-                            onLikeClick = { id ->
-                                onIntent(SearchIntent.LikeClicked(id))
-                            },
-                        )
+                    when {
+                        exhibitionList.loadState.refresh is LoadState.Loading -> {
+                            LoadingExhibitionList()
+                        }
+                        exhibitionList.loadState.refresh is LoadState.Error -> {
+                            ErrorExhibitionList()
+                        }
+                        exhibitionList.itemCount == 0 -> {
+                            EmptySearchResultContent()
+                        }
+                        else -> {
+                            SearchResultContent(
+                                exhibitions = exhibitionList,
+                                onExhibitionClick = { id ->
+                                    onIntent(SearchIntent.ExhibitionClicked(id))
+                                },
+                                onLikeClick = { id ->
+                                    onIntent(SearchIntent.LikeClicked(id))
+                                },
+                            )
+                        }
                     }
                 }
             }
