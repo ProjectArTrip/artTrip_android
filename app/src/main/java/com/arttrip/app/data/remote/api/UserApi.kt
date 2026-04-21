@@ -26,9 +26,6 @@ interface UserApi {
         @Body body: UserNicknameReqDto,
     ): UserResDto
 
-    @DELETE(USER_PATH)
-    suspend fun deleteUserAccount(): Unit
-
     @DELETE("${USER_PATH}/image")
     suspend fun deleteProfileImage(): Unit
 

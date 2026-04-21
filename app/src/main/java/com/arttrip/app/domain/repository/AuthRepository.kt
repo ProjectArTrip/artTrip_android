@@ -10,4 +10,6 @@ interface AuthRepository {
         provider: LoginProvider,
         idToken: String,
     ): Flow<ApiResult<LoginResult>>
+
+    fun deleteUserAccount(): Flow<ApiResult<Unit>>
 }

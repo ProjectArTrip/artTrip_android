@@ -64,19 +64,6 @@ class ProfileRepositoryImpl
                 }
             }
 
-        override fun deleteUserAccount(): Flow<ApiResult<Unit>> =
-            flow {
-                emit(ApiResult.Loading)
-
-                try {
-                    dataSource.deleteUserAccount()
-                    emit(ApiResult.Success(Unit))
-                } catch (t: Throwable) {
-                    if (t is CancellationException) throw t
-                    emit(ApiResult.Error(t.toAppError()))
-                }
-            }
-
         override fun deleteProfileImage(): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)
