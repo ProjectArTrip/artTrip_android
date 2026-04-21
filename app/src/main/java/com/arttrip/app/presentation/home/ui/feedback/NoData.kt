@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.home.ui
+package com.arttrip.app.presentation.home.ui.feedback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 
 @Composable
-fun EmptyRecommendExhibition() {
+fun NoRecommendExhibition() {
     Box(
         modifier =
             Modifier
@@ -58,7 +58,7 @@ fun EmptyRecommendExhibition() {
 }
 
 @Composable
-fun EmptyPersonalizedExhibition() {
+fun NoPersonalizedExhibition() {
     Box(
         modifier =
             Modifier
@@ -93,7 +93,7 @@ fun EmptyPersonalizedExhibition() {
 }
 
 @Composable
-fun EmptyScheduleExhibition() {
+fun NoScheduleExhibition() {
     Box(
         modifier =
             Modifier
@@ -128,7 +128,7 @@ fun EmptyScheduleExhibition() {
 }
 
 @Composable
-fun EmptyGenreExhibition(genre: ExhibitionGenre) {
+fun NoGenreExhibition(genre: ExhibitionGenre) {
     Box(
         modifier =
             Modifier
@@ -163,7 +163,7 @@ fun EmptyGenreExhibition(genre: ExhibitionGenre) {
 }
 
 @Composable
-fun EmptyExhibitionList() {
+fun NoExhibitionList() {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
