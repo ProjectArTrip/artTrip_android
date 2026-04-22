@@ -100,7 +100,7 @@ fun SearchScreen(
                 onValueChange = { text ->
                     onIntent(SearchIntent.InputTextChanged(text))
                 },
-                placeholder = "새로 오픈한 12월 독일 전시가 있어요",
+                placeholder = "검색어를 입력해주세요",
                 trailing = {
                     AppIconButton(
                         iconResId = R.drawable.ic_search_24,
