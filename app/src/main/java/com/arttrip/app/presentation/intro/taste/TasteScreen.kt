@@ -224,7 +224,7 @@ private fun TasteBottomCta(
 ) {
     AppButton(
         modifier = modifier,
-        text = "다음으로",
+        text = "시작하기",
         onClick = onClick,
         enabled = enabled,
     )
