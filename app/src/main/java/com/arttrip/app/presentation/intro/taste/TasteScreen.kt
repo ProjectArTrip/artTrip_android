@@ -57,11 +57,21 @@ fun TasteScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = 24.dp,
-                        top = 40.dp,
+                        top = 32.dp,
                         end = 24.dp,
                         bottom = bottomInset,
                     ),
         ) {
+            Text(
+                text =
+                    buildAnnotatedString {
+                        withStyle(AppTextStyle.Body02Bold.toSpanStyle()) { append("2") }
+                        withStyle(AppTextStyle.Body02Light.toSpanStyle()) { append("/2") }
+                    },
+                color = AppColor.TextPrimary,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
             TasteWelcomeSection(
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -113,8 +123,7 @@ private fun TasteWelcomeSection(modifier: Modifier = Modifier) {
     ) {
         Text(
             text =
-                "사용자님의 관심있는 키워드를 \n" +
-                    "골라주세요!",
+                "관심있는 키워드를 골라주세요!",
             style = AppTextStyle.Headline,
             color = AppColor.TextPrimary,
         )
