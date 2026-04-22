@@ -132,6 +132,7 @@ dependencies {
     implementation(libs.kakao.sdk.user)
 
     implementation(libs.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
     // Coil
     implementation(libs.coil.compose)
 
