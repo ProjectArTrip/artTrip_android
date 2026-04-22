@@ -62,7 +62,7 @@ fun NicknameScreen(
         AppButton(
             text = "다음으로",
             onClick = { onIntent(NicknameIntent.NicknameConfirmClicked) },
-            enabled = state.nicknameInput.isNotBlank(),
+            enabled = state.nicknameInput.length >= 2,
         )
         Spacer(modifier = Modifier.height(buttonBottomMargin))
     }

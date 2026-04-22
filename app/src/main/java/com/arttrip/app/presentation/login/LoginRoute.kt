@@ -82,7 +82,7 @@ fun LoginRoute(
                 }
 
                 LoginEffect.NavigateToIntro -> {
-                    onNavigate(AppRoute.INTRO_TASTE)
+                    onNavigate(AppRoute.INTRO_NICKNAME)
                 }
                 LoginEffect.NavigateToHome -> {
                     onNavigate(AppRoute.MAIN)
