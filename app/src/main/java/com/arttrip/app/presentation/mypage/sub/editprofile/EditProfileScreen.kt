@@ -204,7 +204,7 @@ private fun NicknameEditDialog(
         onDismissRequest = onDismissRequest,
         primaryText = "변경하기",
         onPrimaryClick = onConfirmClicked,
-        primaryEnabled = nickname.isNotBlank(),
+        primaryEnabled = nickname.length >= 2,
         secondaryText = "취소",
         onSecondaryClick = onDismissRequest,
         secondaryEnabled = true,
