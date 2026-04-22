@@ -159,7 +159,7 @@ class EditProfileViewModel
                                 _state.update {
                                     it.copy(
                                         isLoading = false,
-                                        nicknameHelperText = "이미 사용 중인 닉네임이에요.",
+                                        nicknameHelperText = "중복된 닉네임입니다.",
                                     )
                                 }
                             } else {
