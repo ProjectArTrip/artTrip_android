@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.data.local.auth.TokenManager
-import com.arttrip.app.domain.model.auth.LoginProvider
+import com.arttrip.app.domain.model.auth.SocialLoginCredential
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.auth.SocialLoginUseCase
 import com.arttrip.app.presentation.login.contract.LoginEffect
@@ -47,7 +47,7 @@ class LoginViewModel
                 }
 
                 is LoginIntent.KakaoLoginSuccess -> {
-                    loginWithIdToken(LoginProvider.KAKAO, intent.idToken)
+                    login(SocialLoginCredential.Kakao(intent.idToken))
                 }
 
                 is LoginIntent.KakaoLoginFailure -> {
@@ -68,7 +68,7 @@ class LoginViewModel
                 }
 
                 is LoginIntent.GoogleLoginSuccess -> {
-                    loginWithIdToken(LoginProvider.GOOGLE, intent.idToken)
+                    login(SocialLoginCredential.Google(intent.authorizationCode))
                 }
 
                 is LoginIntent.GoogleLoginFailure -> {
@@ -119,12 +119,9 @@ class LoginViewModel
                 -> state
             }
 
-        private fun loginWithIdToken(
-            provider: LoginProvider,
-            idToken: String,
-        ) {
+        private fun login(credential: SocialLoginCredential) {
             viewModelScope.launch {
-                socialLoginUseCase(provider, idToken).collect { result ->
+                socialLoginUseCase(credential).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {
                             _state.update {
