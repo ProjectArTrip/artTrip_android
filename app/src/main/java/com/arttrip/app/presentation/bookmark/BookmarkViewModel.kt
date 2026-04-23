@@ -184,11 +184,6 @@ class BookmarkViewModel
                 BookmarkSort.DEADLINE -> BookmarkSortType.ENDING_SOON
             }
 
-        fun setBookmarkFromRemote(
-            exhibitId: Int,
-            isBookmarked: Boolean,
-        ) = bookmarkStore.setFromRemote(exhibitId, isBookmarked)
-
         private fun <T> toggleWithAllAllowEmpty(
             current: Set<T>,
             target: T,

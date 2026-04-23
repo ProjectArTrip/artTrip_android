@@ -50,7 +50,6 @@ fun BookmarkRoute(
         state = state,
         bookmarks = bookmarks,
         onIntent = viewModel::onIntent,
-        onSetBookmarkFromRemote = viewModel::setBookmarkFromRemote,
         bookmarkedFlow = viewModel::bookmarkedFlow,
     )
 }

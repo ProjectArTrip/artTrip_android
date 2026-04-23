@@ -62,7 +62,6 @@ fun BookmarkScreen(
     state: BookmarkState,
     bookmarks: LazyPagingItems<Bookmark>,
     onIntent: (BookmarkIntent) -> Unit,
-    onSetBookmarkFromRemote: (exhibitId: Int, isBookmarked: Boolean) -> Unit,
     bookmarkedFlow: (exhibitId: Int) -> Flow<Boolean>,
 ) {
     val listState = rememberLazyListState()
@@ -115,9 +114,6 @@ fun BookmarkScreen(
                     key = bookmarks.itemKey { it.exhibitId },
                 ) { index ->
                     val item = bookmarks[index] ?: return@items
-                    LaunchedEffect(item.exhibitId) {
-                        onSetBookmarkFromRemote(item.exhibitId, true)
-                    }
                     val isLiked by bookmarkedFlow(item.exhibitId).collectAsStateWithLifecycle(true)
 
                     ExhibitionListItem(
