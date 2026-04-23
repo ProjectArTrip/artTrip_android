@@ -24,6 +24,7 @@ fun ScheduleRoute(
     date: LocalDate,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
     LaunchedEffect(date) {
@@ -48,5 +49,6 @@ fun ScheduleRoute(
         onIntent = viewModel::onIntent,
         date = date,
         exhibitionList = exhibitionList,
+        bookmarked = bookmarked,
     )
 }

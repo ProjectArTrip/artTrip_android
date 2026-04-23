@@ -44,6 +44,7 @@ fun ScheduleScreen(
     onIntent: (ScheduleIntent) -> Unit,
     date: LocalDate,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     Box(
         modifier =
@@ -108,8 +109,9 @@ fun ScheduleScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ExhibitionList(
                 exhibitionList = exhibitionList,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id -> onIntent(ScheduleIntent.ExhibitionClicked(id)) },
-                onLikeClick = {},
+                onLikeClick = { id -> onIntent(ScheduleIntent.LikeClicked(id)) },
             )
         }
     }
@@ -126,6 +128,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 @Composable
 fun ExhibitionList(
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -166,9 +169,9 @@ fun ExhibitionList(
                             hallName = exhibition.hallName,
                             period = exhibition.period,
                             status = exhibition.status,
-                            isLiked = exhibition.isBookmarked,
+                            isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
                             onItemClick = { onExhibitionClick(exhibition.id) },
-                            onLikeClick = {}
+                            onLikeClick = { onLikeClick(exhibition.id) },
                         )
                     }
                 }
