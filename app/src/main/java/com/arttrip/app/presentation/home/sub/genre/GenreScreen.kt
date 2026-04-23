@@ -62,6 +62,7 @@ fun GenreScreen(
     country: ForeignCountry?,
     genre: ExhibitionGenre,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     Box(
         modifier =
@@ -123,8 +124,9 @@ fun GenreScreen(
             }
             ExhibitionList(
                 exhibitionList = exhibitionList,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id -> onIntent(GenreIntent.ExhibitionClicked(id)) },
-                onLikeClick = {},
+                onLikeClick = { id -> onIntent(GenreIntent.LikeClicked(id)) },
             )
         }
     }
@@ -247,6 +249,7 @@ fun GenreFilterBottomSheet(
 @Composable
 fun ExhibitionList(
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -287,9 +290,9 @@ fun ExhibitionList(
                             hallName = exhibition.hallName,
                             period = exhibition.period,
                             status = exhibition.status,
-                            isLiked = exhibition.isBookmarked,
+                            isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
                             onItemClick = { onExhibitionClick(exhibition.id) },
-                            onLikeClick = {}
+                            onLikeClick = { onLikeClick(exhibition.id) },
                         )
                     }
                 }

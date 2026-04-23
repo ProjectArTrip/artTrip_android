@@ -29,4 +29,8 @@ sealed interface GenreIntent {
     data class ExhibitionClicked(
         val id: Int,
     ) : GenreIntent
+
+    data class LikeClicked(
+        val id: Int,
+    ) : GenreIntent
 }
