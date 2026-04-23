@@ -101,6 +101,7 @@ fun PlaceTab.toIndex(): Int = PlaceTab.tabs.indexOf(this)
 fun HomeScreen(
     innerPadding: PaddingValues,
     state: HomeState,
+    bookmarked: Map<Int, Boolean>,
     onIntent: (HomeIntent) -> Unit,
 ) {
     val foreignScrollState = rememberScrollState()
@@ -194,6 +195,7 @@ fun HomeScreen(
 
         HomeBody(
             state = state,
+            bookmarked = bookmarked,
             onIntent = onIntent,
             foreignScrollState = foreignScrollState,
             domesticScrollState = domesticScrollState,
@@ -260,6 +262,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
 @Composable
 fun HomeBody(
     state: HomeState,
+    bookmarked: Map<Int, Boolean>,
     onIntent: (HomeIntent) -> Unit,
     foreignScrollState: ScrollState,
     domesticScrollState: ScrollState,
@@ -300,8 +303,8 @@ fun HomeBody(
         }
 
         when (state.placeTabs) {
-            PlaceTab.Foreign -> ForeignExhibitionSection(state, onIntent, foreignScrollState)
-            PlaceTab.Domestic -> DomesticExhibitionSection(state, onIntent, domesticScrollState)
+            PlaceTab.Foreign -> ForeignExhibitionSection(state, bookmarked, onIntent, foreignScrollState)
+            PlaceTab.Domestic -> DomesticExhibitionSection(state, bookmarked, onIntent, domesticScrollState)
         }
 
         DateFilterBottomSheet(
@@ -410,6 +413,7 @@ fun CountryListChip(
 @Composable
 fun ForeignExhibitionSection(
     state: HomeState,
+    bookmarked: Map<Int, Boolean>,
     onIntent: (HomeIntent) -> Unit,
     scrollState: ScrollState,
 ) {
@@ -451,10 +455,11 @@ fun ForeignExhibitionSection(
         )
         RecommendSection(
             recommendState,
+            bookmarked = bookmarked,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
             placeTab = state.placeTabs,
             foreignCountry = state.selectedCountry,
         )
@@ -466,10 +471,11 @@ fun ForeignExhibitionSection(
         PersonalizedSection(
             name = state.nickname,
             sectionState = personalizedState,
+            bookmarked = bookmarked,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -480,6 +486,7 @@ fun ForeignExhibitionSection(
             weekDates = getThisWeekDates(),
             selectedDate = selectedDate,
             sectionState = scheduleState,
+            bookmarked = bookmarked,
             onMoreClick = {
                 onIntent(HomeIntent.ForeignMoreScheduleIconClicked(selectedCountry, selectedDate))
             },
@@ -491,7 +498,7 @@ fun ForeignExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -501,6 +508,7 @@ fun ForeignExhibitionSection(
         ExhibitionByGenreSection(
             selectedGenre = selectedGenre,
             sectionState = genreState,
+            bookmarked = bookmarked,
             onGenreClick = { genre ->
                 onIntent(HomeIntent.SelectForeignGenre(genre))
 
@@ -512,7 +520,7 @@ fun ForeignExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -535,6 +543,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 @Composable
 fun DomesticExhibitionSection(
     state: HomeState,
+    bookmarked: Map<Int, Boolean>,
     onIntent: (HomeIntent) -> Unit,
     scrollState: ScrollState,
 ) {
@@ -570,10 +579,11 @@ fun DomesticExhibitionSection(
         )
         RecommendSection(
             recommendState,
+            bookmarked = bookmarked,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
             placeTab = state.placeTabs,
             foreignCountry = state.selectedCountry,
         )
@@ -593,10 +603,11 @@ fun DomesticExhibitionSection(
         PersonalizedSection(
             name = state.nickname,
             sectionState = personalizedState,
+            bookmarked = bookmarked,
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -607,6 +618,7 @@ fun DomesticExhibitionSection(
             weekDates = getThisWeekDates(),
             selectedDate = selectedDate,
             sectionState = scheduleState,
+            bookmarked = bookmarked,
             onMoreClick = {
                 onIntent(HomeIntent.DomesticMoreScheduleIconClicked(selectedDate))
             },
@@ -618,7 +630,7 @@ fun DomesticExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -628,6 +640,7 @@ fun DomesticExhibitionSection(
         ExhibitionByGenreSection(
             selectedGenre = selectedGenre,
             sectionState = genreState,
+            bookmarked = bookmarked,
             onGenreClick = { genre ->
                 onIntent(HomeIntent.SelectDomesticGenre(genre))
 
@@ -639,7 +652,7 @@ fun DomesticExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
-            onLikeClick = {},
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
             modifier =
@@ -749,6 +762,7 @@ fun DomesticRegionItem(
 @Composable
 fun RecommendSection(
     sectionState: SectionLoadState<List<Exhibition>>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
@@ -784,7 +798,7 @@ fun RecommendSection(
                     )
                     sectionState.data.forEach { exhibition ->
                         ExhibitionItemCase1(
-                            exhibition = exhibition,
+                            exhibition = exhibition.copy(isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked),
                             onExhibitionClick = { id ->
                                 onExhibitionClick(id)
                             },
@@ -812,6 +826,7 @@ fun RecommendSection(
 fun PersonalizedSection(
     name: String,
     sectionState: SectionLoadState<List<Exhibition>>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -863,7 +878,7 @@ fun PersonalizedSection(
                         )
                         sectionState.data.forEach { exhibition ->
                             ExhibitionItemCase2(
-                                exhibition = exhibition,
+                                exhibition = exhibition.copy(isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked),
                                 onExhibitionClick = { id ->
                                     onExhibitionClick(id)
                                 },
@@ -891,6 +906,7 @@ fun WeeklyExhibitSection(
     weekDates: List<LocalDate>,
     selectedDate: LocalDate,
     sectionState: SectionLoadState<List<Exhibition>>,
+    bookmarked: Map<Int, Boolean>,
     onMoreClick: () -> Unit,
     onDateClick: (LocalDate) -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -953,7 +969,7 @@ fun WeeklyExhibitSection(
                     ) {
                         sectionState.data.forEach { exhibition ->
                             ExhibitItemCase3(
-                                exhibition = exhibition,
+                                exhibition = exhibition.copy(isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked),
                                 onExhibitionClick = { id ->
                                     onExhibitionClick(id)
                                 },
@@ -975,6 +991,7 @@ fun WeeklyExhibitSection(
 fun ExhibitionByGenreSection(
     selectedGenre: ExhibitionGenre,
     sectionState: SectionLoadState<List<Exhibition>>,
+    bookmarked: Map<Int, Boolean>,
     onGenreClick: (ExhibitionGenre) -> Unit,
     onMoreClick: () -> Unit,
     onExhibitionClick: (Int) -> Unit,
@@ -1060,7 +1077,7 @@ fun ExhibitionByGenreSection(
                     ) {
                         sectionState.data.forEach { exhibition ->
                             ExhibitionItemCase4(
-                                exhibition = exhibition,
+                                exhibition = exhibition.copy(isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked),
                                 onExhibitionClick = { id ->
                                     onExhibitionClick(id)
                                 },

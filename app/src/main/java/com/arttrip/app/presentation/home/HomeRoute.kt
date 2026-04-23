@@ -25,6 +25,7 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -65,6 +66,7 @@ fun HomeRoute(
     HomeScreen(
         innerPadding = innerPadding,
         state = state,
+        bookmarked = bookmarked,
         onIntent = viewModel::onIntent,
     )
 }

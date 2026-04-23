@@ -118,4 +118,8 @@ sealed interface HomeIntent {
     data class DomesticMoreGenreIconClicked(
         val genre: ExhibitionGenre,
     ) : HomeIntent
+
+    data class ToggleBookmark(
+        val id: Int,
+    ) : HomeIntent
 }
