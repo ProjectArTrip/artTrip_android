@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.model.network.ApiResult
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.usecase.map.GetClusterExhibitsUseCase
 import com.arttrip.app.domain.usecase.map.GetExhibitionMarkersUseCase
 import com.arttrip.app.presentation.map.contract.MapEffect
@@ -35,9 +36,12 @@ class MapViewModel
         private val getExhibitionMarkersUseCase: GetExhibitionMarkersUseCase,
         private val getClusterExhibitsUseCase: GetClusterExhibitsUseCase,
         private val fusedLocationClient: FusedLocationProviderClient,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(MapState())
         val state: StateFlow<MapState> = _state
+
+        val bookmarked = bookmarkStore.bookmarked
 
         private val _effect = MutableSharedFlow<MapEffect>()
         val effect: SharedFlow<MapEffect> = _effect
@@ -81,6 +85,9 @@ class MapViewModel
                     viewModelScope.launch {
                         _effect.emit(MapEffect.NavigateToExhibitionDetail(intent.id))
                     }
+                }
+                is MapIntent.LikeClicked -> {
+                    bookmarkStore.toggle(intent.id)
                 }
                 is MapIntent.OnCameraMoved -> {
                     _state.update { it.copy(cameraLatLng = intent.latLng, cameraZoom = intent.zoom) }

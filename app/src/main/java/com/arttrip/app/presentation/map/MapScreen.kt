@@ -81,6 +81,7 @@ fun MapScreen(
     state: MapState,
     clusterExhibits: LazyPagingItems<Exhibition>,
     onIntent: (MapIntent) -> Unit,
+    bookmarked: Map<Int, Boolean>,
 ) {
     val cameraPositionState =
         rememberCameraPositionState {
@@ -150,7 +151,9 @@ fun MapScreen(
                 isExpanded = isExpanded,
                 clusterCount = state.selectedClusterCount,
                 clusterExhibits = clusterExhibits,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id -> onIntent(MapIntent.ExhibitionClicked(id)) },
+                onLikeClick = { id -> onIntent(MapIntent.LikeClicked(id)) },
             )
         },
     ) {
@@ -363,7 +366,9 @@ fun BottomSheetContent(
     isExpanded: Boolean,
     clusterCount: Int,
     clusterExhibits: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
 ) {
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
@@ -460,8 +465,8 @@ fun BottomSheetContent(
                                     hallName = exhibition.hallName,
                                     period = exhibition.period,
                                     status = exhibition.status,
-                                    isLiked = exhibition.isBookmarked,
-                                    onLikeClick = {},
+                                    isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
+                                    onLikeClick = { onLikeClick(exhibition.id) },
                                     onItemClick = { onExhibitionClick(exhibition.id) },
                                 )
                             }

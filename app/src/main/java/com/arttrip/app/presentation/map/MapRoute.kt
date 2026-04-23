@@ -16,6 +16,7 @@ fun MapRoute(
     viewModel: MapViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
     val clusterExhibits = viewModel.clusterExhibits.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
@@ -31,5 +32,6 @@ fun MapRoute(
         state = state,
         clusterExhibits = clusterExhibits,
         onIntent = viewModel::onIntent,
+        bookmarked = bookmarked,
     )
 }
