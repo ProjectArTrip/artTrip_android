@@ -51,6 +51,7 @@ fun SearchScreen(
     state: SearchState,
     onIntent: (SearchIntent) -> Unit,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -141,6 +142,7 @@ fun SearchScreen(
                         else -> {
                             SearchResultContent(
                                 exhibitions = exhibitionList,
+                                bookmarked = bookmarked,
                                 onExhibitionClick = { id ->
                                     onIntent(SearchIntent.ExhibitionClicked(id))
                                 },
@@ -313,6 +315,7 @@ fun EmptySearchResultContent() {
 @Composable
 fun SearchResultContent(
     exhibitions: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -344,6 +347,7 @@ fun SearchResultContent(
 
                     ExhibitionItem(
                         exhibition = exhibition,
+                        isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
                         onExhibitionClick = onExhibitionClick,
                         onLikeClick = onLikeClick,
                     )
@@ -363,6 +367,7 @@ fun SearchResultContent(
 @Composable
 fun ExhibitionItem(
     exhibition: Exhibition,
+    isBookmarked: Boolean,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -383,7 +388,7 @@ fun ExhibitionItem(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = exhibition.isBookmarked,
+                isSelected = isBookmarked,
             ) {
                 onLikeClick(exhibition.id)
             }
