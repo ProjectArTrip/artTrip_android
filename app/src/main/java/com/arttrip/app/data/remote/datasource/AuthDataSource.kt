@@ -12,5 +12,5 @@ class AuthDataSource
     ) {
         suspend fun postLogin(loginReqDto: LoginReqDto) = api.postLogin(loginReqDto)
 
-        suspend fun deleteUserAccount(body: DeleteUserAccountReqDto) = api.deleteUserAccount(body)
+        suspend fun deleteUserAccount(body: DeleteUserAccountReqDto) = api.withdrawAccount(body)
     }

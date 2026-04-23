@@ -8,7 +8,6 @@ import com.arttrip.app.data.remote.model.auth.RefreshReqDto
 import com.arttrip.app.data.remote.model.auth.RefreshResDto
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface AuthApi {
@@ -22,8 +21,8 @@ interface AuthApi {
         @Body body: RefreshReqDto,
     ): Call<RefreshResDto>
 
-    @HTTP(method = "DELETE", path = AUTH_PATH, hasBody = true)
-    suspend fun deleteUserAccount(
+    @POST("${AUTH_PATH}/withdraw")
+    suspend fun withdrawAccount(
         @Body body: DeleteUserAccountReqDto,
     )
 }
