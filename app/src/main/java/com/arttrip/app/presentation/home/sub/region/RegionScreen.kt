@@ -63,6 +63,7 @@ fun RegionScreen(
     state: RegionState,
     onIntent: (RegionIntent) -> Unit,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     Box(
         modifier =
@@ -87,6 +88,7 @@ fun RegionScreen(
 
             ExhibitionList(
                 exhibitionList = exhibitionList,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id ->
                     onIntent(RegionIntent.ExhibitionClicked(id))
                 },
@@ -238,6 +240,7 @@ fun DropDown(
 @Composable
 fun ExhibitionList(
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     expanded: Boolean,
@@ -284,9 +287,9 @@ fun ExhibitionList(
                                 hallName = exhibition.hallName,
                                 period = exhibition.period,
                                 status = exhibition.status,
-                                isLiked = exhibition.isBookmarked,
+                                isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
                                 onItemClick = { onExhibitionClick(exhibition.id) },
-                                onLikeClick = {}
+                                onLikeClick = { onLikeClick(exhibition.id) },
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                         }
