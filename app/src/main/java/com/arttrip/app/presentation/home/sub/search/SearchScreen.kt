@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +32,7 @@ import com.arttrip.app.core.ui.component.button.LikeButton
 import com.arttrip.app.core.ui.component.chip.RecentSearchChip
 import com.arttrip.app.core.ui.component.chip.SuggestionChip
 import com.arttrip.app.core.ui.component.input.AppTextField
+import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.component.tag.AppTag
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
@@ -42,6 +44,7 @@ import com.arttrip.app.presentation.home.ExhibitionImage
 import com.arttrip.app.presentation.home.ExhibitionImageCase
 import com.arttrip.app.presentation.home.sub.search.contract.SearchIntent
 import com.arttrip.app.presentation.home.sub.search.contract.SearchState
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
 
 @Composable
 fun SearchScreen(
@@ -49,6 +52,7 @@ fun SearchScreen(
     state: SearchState,
     onIntent: (SearchIntent) -> Unit,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -98,7 +102,7 @@ fun SearchScreen(
                 onValueChange = { text ->
                     onIntent(SearchIntent.InputTextChanged(text))
                 },
-                placeholder = "새로 오픈한 12월 독일 전시가 있어요",
+                placeholder = "검색어를 입력해주세요",
                 trailing = {
                     AppIconButton(
                         iconResId = R.drawable.ic_search_24,
@@ -126,20 +130,28 @@ fun SearchScreen(
                         onIntent = onIntent,
                     )
                 } else {
-                    if (exhibitionList.itemCount == 0 &&
-                        exhibitionList.loadState.refresh is LoadState.NotLoading
-                    ) {
-                        EmptySearchResultContent()
-                    } else {
-                        SearchResultContent(
-                            exhibitions = exhibitionList,
-                            onExhibitionClick = { id ->
-                                onIntent(SearchIntent.ExhibitionClicked(id))
-                            },
-                            onLikeClick = { id ->
-                                onIntent(SearchIntent.LikeClicked(id))
-                            },
-                        )
+                    when {
+                        exhibitionList.loadState.refresh is LoadState.Loading -> {
+                            LoadingExhibitionList()
+                        }
+                        exhibitionList.loadState.refresh is LoadState.Error -> {
+                            ErrorExhibitionList()
+                        }
+                        exhibitionList.itemCount == 0 -> {
+                            EmptySearchResultContent()
+                        }
+                        else -> {
+                            SearchResultContent(
+                                exhibitions = exhibitionList,
+                                bookmarked = bookmarked,
+                                onExhibitionClick = { id ->
+                                    onIntent(SearchIntent.ExhibitionClicked(id))
+                                },
+                                onLikeClick = { id ->
+                                    onIntent(SearchIntent.LikeClicked(id))
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -304,6 +316,7 @@ fun EmptySearchResultContent() {
 @Composable
 fun SearchResultContent(
     exhibitions: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -335,6 +348,7 @@ fun SearchResultContent(
 
                     ExhibitionItem(
                         exhibition = exhibition,
+                        isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
                         onExhibitionClick = onExhibitionClick,
                         onLikeClick = onLikeClick,
                     )
@@ -354,6 +368,7 @@ fun SearchResultContent(
 @Composable
 fun ExhibitionItem(
     exhibition: Exhibition,
+    isBookmarked: Boolean,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -374,7 +389,7 @@ fun ExhibitionItem(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-8).dp, y = (8).dp),
-                isSelected = exhibition.isBookmarked,
+                isSelected = isBookmarked,
             ) {
                 onLikeClick(exhibition.id)
             }
@@ -426,6 +441,72 @@ fun ExhibitionItem(
                 style = AppTextStyle.Body02Regular,
                 color = AppColor.TextTertiary,
             )
+        }
+    }
+}
+
+@Composable
+fun LoadingExhibitionList() {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+    ) {
+        repeat(5) {
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(12.dp),
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                StaticSkeleton(
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                Spacer(
+                    modifier =
+                        Modifier
+                            .width(12.dp),
+                )
+                Column {
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(160.dp)
+                                .height(16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(4.dp),
+                    )
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(120.dp)
+                                .height(14.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(2.dp),
+                    )
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(120.dp)
+                                .height(14.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                }
+            }
         }
     }
 }

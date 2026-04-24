@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.usecase.exhibition.GetScheduleExhibitionUseCase
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleEffect
@@ -28,9 +29,12 @@ class ScheduleViewModel
     @Inject
     constructor(
         private val getScheduleExhibitionUseCase: GetScheduleExhibitionUseCase,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(ScheduleState())
         val state: StateFlow<ScheduleState> = _state
+
+        val bookmarked = bookmarkStore.bookmarked
 
         private val _effect = MutableSharedFlow<ScheduleEffect>()
         val effect: SharedFlow<ScheduleEffect> = _effect
@@ -82,6 +86,10 @@ class ScheduleViewModel
                     viewModelScope.launch {
                         _effect.emit(ScheduleEffect.NavigateToExhibitionDetail(intent.exhibitionId))
                     }
+                }
+
+                is ScheduleIntent.LikeClicked -> {
+                    bookmarkStore.toggle(intent.id)
                 }
             }
         }

@@ -24,6 +24,7 @@ fun GenreRoute(
     genre: ExhibitionGenre,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
     LaunchedEffect(genre) {
@@ -52,5 +53,6 @@ fun GenreRoute(
         country = country,
         genre = genre,
         exhibitionList = exhibitionList,
+        bookmarked = bookmarked,
     )
 }

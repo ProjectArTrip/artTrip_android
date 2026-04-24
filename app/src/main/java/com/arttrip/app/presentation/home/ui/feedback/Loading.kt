@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.home.ui
+package com.arttrip.app.presentation.home.ui.feedback
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -301,6 +301,73 @@ fun ScheduleAndGenreExhibitionSkeleton() {
                         .height(14.dp),
                 shape = RoundedCornerShape(10.dp),
             )
+        }
+    }
+}
+
+@Composable
+fun LoadingExhibitionList() {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+    ) {
+        repeat(5) {
+            Spacer(
+                modifier =
+                    Modifier
+                        .height(12.dp),
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                StaticSkeleton(
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                Spacer(
+                    modifier =
+                        Modifier
+                            .width(12.dp),
+                )
+                Column {
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(160.dp)
+                                .height(16.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(4.dp),
+                    )
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(120.dp)
+                                .height(14.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(2.dp),
+                    )
+                    StaticSkeleton(
+                        modifier =
+                            Modifier
+                                .width(120.dp)
+                                .height(14.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    )
+                }
+            }
         }
     }
 }

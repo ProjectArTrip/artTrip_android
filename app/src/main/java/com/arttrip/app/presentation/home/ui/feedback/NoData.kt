@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.home.ui
+package com.arttrip.app.presentation.home.ui.feedback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 
 @Composable
-fun EmptyRecommendExhibition() {
+fun NoRecommendExhibition() {
     Box(
         modifier =
             Modifier
@@ -58,7 +58,7 @@ fun EmptyRecommendExhibition() {
 }
 
 @Composable
-fun EmptyPersonalizedExhibition() {
+fun NoPersonalizedExhibition() {
     Box(
         modifier =
             Modifier
@@ -93,7 +93,7 @@ fun EmptyPersonalizedExhibition() {
 }
 
 @Composable
-fun EmptyScheduleExhibition() {
+fun NoScheduleExhibition() {
     Box(
         modifier =
             Modifier
@@ -128,7 +128,7 @@ fun EmptyScheduleExhibition() {
 }
 
 @Composable
-fun EmptyGenreExhibition(genre: ExhibitionGenre) {
+fun NoGenreExhibition(genre: ExhibitionGenre) {
     Box(
         modifier =
             Modifier
@@ -159,5 +159,36 @@ fun EmptyGenreExhibition(genre: ExhibitionGenre) {
                 color = AppColor.TextTertiary,
             )
         }
+    }
+}
+
+@Composable
+fun NoExhibitionList() {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(
+            modifier =
+                Modifier
+                    .height(56.dp),
+        )
+        Icon(
+            painter = painterResource(R.drawable.ic_home_no_data_96),
+            contentDescription = "No Data",
+            tint = Color.Unspecified,
+        )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(8.dp),
+        )
+        Text(
+            text = "진행중인 전시가 없습니다.",
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextTertiary,
+        )
     }
 }

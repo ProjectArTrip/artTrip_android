@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.usecase.exhibition.GetRegionExhibitionUseCase
 import com.arttrip.app.presentation.home.sub.region.contract.RegionEffect
@@ -26,9 +27,12 @@ class RegionViewModel
     @Inject
     constructor(
         private val getRegionExhibitionUseCase: GetRegionExhibitionUseCase,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(RegionState())
         val state: StateFlow<RegionState> = _state
+
+        val bookmarked = bookmarkStore.bookmarked
 
         private val _effect = MutableSharedFlow<RegionEffect>()
         val effect: SharedFlow<RegionEffect> = _effect
@@ -78,7 +82,9 @@ class RegionViewModel
                         _effect.emit(RegionEffect.NavigateToDetail(intent.id))
                     }
                 }
-                is RegionIntent.LikeClicked -> {}
+                is RegionIntent.LikeClicked -> {
+                    bookmarkStore.toggle(intent.id)
+                }
             }
         }
 

@@ -38,8 +38,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +63,6 @@ import com.arttrip.app.domain.model.map.ExhibitionMarker
 import com.arttrip.app.presentation.map.contract.MapIntent
 import com.arttrip.app.presentation.map.contract.MapState
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
@@ -80,12 +79,19 @@ fun MapScreen(
     state: MapState,
     clusterExhibits: LazyPagingItems<Exhibition>,
     onIntent: (MapIntent) -> Unit,
+    bookmarked: Map<Int, Boolean>,
 ) {
-    val seoul = LatLng(37.5665, 126.9780)
     val cameraPositionState =
         rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(seoul, 15f)
+            position = CameraPosition.fromLatLngZoom(state.cameraLatLng, state.cameraZoom)
         }
+
+    LaunchedEffect(cameraPositionState.isMoving) {
+        if (!cameraPositionState.isMoving) {
+            val pos = cameraPositionState.position
+            onIntent(MapIntent.OnCameraMoved(latLng = pos.target, zoom = pos.zoom))
+        }
+    }
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isExpanded = scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
@@ -112,12 +118,13 @@ fun MapScreen(
     }
 
     LaunchedEffect(state.currentLocation) {
-        state.currentLocation?.let { location ->
-            cameraPositionState.move(
+        if (!state.hasCenteredOnLocation && state.currentLocation != null) {
+            cameraPositionState.animate(
                 update =
                     com.google.android.gms.maps.CameraUpdateFactory
-                        .newLatLngZoom(location, 15f),
+                        .newLatLngZoom(state.currentLocation, 15f),
             )
+            onIntent(MapIntent.OnLocationCentered)
         }
     }
 
@@ -142,12 +149,17 @@ fun MapScreen(
                 isExpanded = isExpanded,
                 clusterCount = state.selectedClusterCount,
                 clusterExhibits = clusterExhibits,
+                bookmarked = bookmarked,
+                onExhibitionClick = { id -> onIntent(MapIntent.ExhibitionClicked(id)) },
+                onLikeClick = { id -> onIntent(MapIntent.LikeClicked(id)) },
             )
         },
     ) {
         MapContent(
             cameraPositionState = cameraPositionState,
             markers = state.markers,
+            selectedCountry = state.selectedCountry,
+            onCountrySelected = { onIntent(MapIntent.OnCountrySelected(it)) },
             onMyLocationClick = {
                 scope.launch {
                     state.currentLocation?.let { location ->
@@ -187,19 +199,20 @@ fun MapScreen(
 private fun MapContent(
     cameraPositionState: com.google.maps.android.compose.CameraPositionState,
     markers: List<ExhibitionMarker>,
+    selectedCountry: ForeignCountry?,
+    onCountrySelected: (ForeignCountry?) -> Unit,
     onClusterClick: (Cluster<ExhibitionMarker>) -> Unit,
     onCameraIdle: (Int, List<Int>) -> Unit,
     onMyLocationClick: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    var dropdownExpanded by remember { mutableStateOf(false) }
-    var selectedCountry by remember { mutableStateOf<ForeignCountry?>(null) }
+    var dropdownExpanded by rememberSaveable { mutableStateOf(false) }
     val countries = ForeignCountry.entries.filter { it != ForeignCountry.Entire }
 
     LaunchedEffect(cameraPositionState.isMoving, markers) {
         if (!cameraPositionState.isMoving) {
-            val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
-            val visibleMarkers = bounds?.let { b -> markers.filter { b.contains(it.latLng) } } ?: emptyList()
+            val bounds = cameraPositionState.projection?.visibleRegion?.latLngBounds ?: return@LaunchedEffect
+            val visibleMarkers = markers.filter { bounds.contains(it.latLng) }
             onCameraIdle(visibleMarkers.size, visibleMarkers.map { it.id.toInt() })
         }
     }
@@ -285,7 +298,7 @@ private fun MapContent(
                                     Modifier
                                         .fillMaxWidth()
                                         .noRippleClickable {
-                                            selectedCountry = country
+                                            onCountrySelected(country)
                                             dropdownExpanded = false
                                             country.latLng?.let { latLng ->
                                                 scope.launch {
@@ -351,6 +364,9 @@ fun BottomSheetContent(
     isExpanded: Boolean,
     clusterCount: Int,
     clusterExhibits: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
 ) {
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
@@ -447,9 +463,9 @@ fun BottomSheetContent(
                                     hallName = exhibition.hallName,
                                     period = exhibition.period,
                                     status = exhibition.status,
-                                    isLiked = exhibition.isBookmarked,
-                                    onLikeClick = {},
-                                    onItemClick = {},
+                                    isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
+                                    onLikeClick = { onLikeClick(exhibition.id) },
+                                    onItemClick = { onExhibitionClick(exhibition.id) },
                                 )
                             }
                         }

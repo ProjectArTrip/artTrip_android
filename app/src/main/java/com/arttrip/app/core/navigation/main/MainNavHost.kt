@@ -90,7 +90,14 @@ fun MainNavHost(
                 },
             )
         }
-        composable(BottomNavItem.Map.route) { MapRoute(innerPadding) }
+        composable(BottomNavItem.Map.route) {
+            MapRoute(
+                innerPadding = innerPadding,
+                onNavigateExhibitionDetail = { exhibitId ->
+                    navController.navigateToExhibitionDetail(exhibitId)
+                },
+            )
+        }
         composable(BottomNavItem.Stamp.route) { StampRoute(innerPadding) }
         composable(BottomNavItem.Bookmark.route) {
             BookmarkRoute(
@@ -253,6 +260,7 @@ fun MainNavHost(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
+                onNavigateToExhibitionDetail = navController::navigateToExhibitionDetail,
                 country = country,
                 date = date,
             )

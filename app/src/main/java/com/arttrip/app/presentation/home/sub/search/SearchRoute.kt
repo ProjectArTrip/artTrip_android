@@ -18,6 +18,7 @@ fun SearchRoute(
     onNavigateExhibitionDetail: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
 
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
@@ -35,5 +36,6 @@ fun SearchRoute(
         state = state,
         onIntent = viewModel::onIntent,
         exhibitionList = exhibitionList,
+        bookmarked = bookmarked,
     )
 }

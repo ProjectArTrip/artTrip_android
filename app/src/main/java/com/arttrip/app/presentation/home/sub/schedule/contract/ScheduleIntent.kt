@@ -20,4 +20,8 @@ sealed interface ScheduleIntent {
     data class ExhibitionClicked(
         val exhibitionId: Int,
     ) : ScheduleIntent
+
+    data class LikeClicked(
+        val id: Int,
+    ) : ScheduleIntent
 }

@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.exhibition.SortType
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.usecase.exhibition.GetGenreExhibitionUseCase
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreEffect
@@ -28,9 +29,12 @@ class GenreViewModel
     @Inject
     constructor(
         private val getGenreExhibitionUseCase: GetGenreExhibitionUseCase,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(GenreState())
         val state: StateFlow<GenreState> = _state
+
+        val bookmarked = bookmarkStore.bookmarked
 
         private val _effect = MutableSharedFlow<GenreEffect>()
         val effect: SharedFlow<GenreEffect> = _effect
@@ -91,6 +95,9 @@ class GenreViewModel
                     viewModelScope.launch {
                         _effect.emit(GenreEffect.NavigateToDetail(intent.id))
                     }
+                }
+                is GenreIntent.LikeClicked -> {
+                    bookmarkStore.toggle(intent.id)
                 }
             }
         }

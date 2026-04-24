@@ -43,6 +43,7 @@ import com.arttrip.app.R
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.button.LikeButton
+import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.component.tag.AppTag
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
@@ -52,6 +53,9 @@ import com.arttrip.app.presentation.home.ExhibitionImage
 import com.arttrip.app.presentation.home.ExhibitionImageCase
 import com.arttrip.app.presentation.home.sub.region.contract.RegionIntent
 import com.arttrip.app.presentation.home.sub.region.contract.RegionState
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 
 @Composable
 fun RegionScreen(
@@ -59,6 +63,7 @@ fun RegionScreen(
     state: RegionState,
     onIntent: (RegionIntent) -> Unit,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     Box(
         modifier =
@@ -83,6 +88,7 @@ fun RegionScreen(
 
             ExhibitionList(
                 exhibitionList = exhibitionList,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id ->
                     onIntent(RegionIntent.ExhibitionClicked(id))
                 },
@@ -234,6 +240,7 @@ fun DropDown(
 @Composable
 fun ExhibitionList(
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     expanded: Boolean,
@@ -251,27 +258,46 @@ fun ExhibitionList(
             Modifier
                 .fillMaxSize(),
     ) {
-        LazyColumn(
-            state = listState,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-        ) {
-            item { Spacer(modifier = Modifier.height(12.dp)) }
+        when {
+            exhibitionList.loadState.refresh is LoadState.Loading -> {
+                LoadingExhibitionList()
+            }
+            exhibitionList.loadState.refresh is LoadState.Error -> {
+                ErrorExhibitionList()
+            }
+            exhibitionList.itemCount == 0 -> {
+                NoExhibitionList()
+            }
+            else -> {
+                LazyColumn(
+                    state = listState,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                ) {
+                    item { Spacer(modifier = Modifier.height(12.dp)) }
 
-            items(count = exhibitionList.itemCount) { index ->
-                exhibitionList[index]?.let { exhibition ->
-                    ExhibitionItem(
-                        exhibition = exhibition,
-                        onExhibitionClick = onExhibitionClick,
-                        onLikeClick = onLikeClick,
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    items(count = exhibitionList.itemCount) { index ->
+                        exhibitionList[index]?.let { exhibition ->
+                            ExhibitionListItem(
+                                posterUrl = exhibition.posterUrl,
+                                location = null,
+                                title = exhibition.title,
+                                hallName = exhibition.hallName,
+                                period = exhibition.period,
+                                status = exhibition.status,
+                                isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
+                                onItemClick = { onExhibitionClick(exhibition.id) },
+                                onLikeClick = { onLikeClick(exhibition.id) },
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(12.dp)) }
                 }
             }
-
-            item { Spacer(modifier = Modifier.height(24.dp)) }
         }
         if (expanded) {
             Box(

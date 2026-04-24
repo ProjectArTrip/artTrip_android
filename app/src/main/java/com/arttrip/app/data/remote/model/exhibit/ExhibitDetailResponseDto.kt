@@ -12,7 +12,7 @@ data class ExhibitDetailResponseDto(
     val hallAddress: String?,
     val hallOpeningHours: String?,
     val hallPhone: String?,
-    val hallLatitude: Double?,
-    val hallLongitude: Double?,
+    val hallLatitude: Double,
+    val hallLongitude: Double,
     val isFavorite: Boolean,
 )

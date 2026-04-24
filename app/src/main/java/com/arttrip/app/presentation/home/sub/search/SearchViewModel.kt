@@ -3,6 +3,7 @@ package com.arttrip.app.presentation.home.sub.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.exhibition.GetSearchExhibitionUseCase
 import com.arttrip.app.domain.usecase.search.DeleteAllRecentSearchUseCase
@@ -32,9 +33,12 @@ class SearchViewModel
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
         private val deleteAllRecentSearchUseCase: DeleteAllRecentSearchUseCase,
         private val getRecommendKeywordUseCase: GetRecommendKeywordUseCase,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SearchState())
         val state: StateFlow<SearchState> = _state
+
+        val bookmarked = bookmarkStore.bookmarked
 
         private val _effect = MutableSharedFlow<SearchEffect>()
         val effect: SharedFlow<SearchEffect> = _effect
@@ -92,7 +96,9 @@ class SearchViewModel
                         _effect.emit(SearchEffect.NavigateToDetail(intent.id))
                     }
                 }
-                is SearchIntent.LikeClicked -> {}
+                is SearchIntent.LikeClicked -> {
+                    bookmarkStore.toggle(intent.id)
+                }
             }
         }
 

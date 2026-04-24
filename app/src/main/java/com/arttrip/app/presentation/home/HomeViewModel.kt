@@ -7,6 +7,7 @@ import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
 import com.arttrip.app.core.model.image.ImageQueryParams
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
@@ -53,12 +54,15 @@ class HomeViewModel
         private val getDomesticGenreExhibitionListUseCase: GetDomesticGenreExhibitionListUseCase,
         private val refreshProfileUseCase: RefreshProfileUseCase,
         private val observeProfile: ObserveProfileUseCase,
+        private val bookmarkStore: BookmarkStore,
     ) : ViewModel() {
         private val _state = MutableStateFlow(HomeState())
         val state: StateFlow<HomeState> = _state
 
         private val _effect = MutableSharedFlow<HomeEffect>()
         val effect: SharedFlow<HomeEffect> = _effect
+
+        val bookmarked = bookmarkStore.bookmarked
 
         init {
             val country = ForeignCountry.Entire
@@ -75,8 +79,7 @@ class HomeViewModel
             viewModelScope.launch {
                 observeProfile().collect { profile ->
                     if (profile != null) {
-                        // TODO state update
-                        Log.d("Home", "사용자명: ${ profile.nickname}")
+                        _state.update { it.copy(nickname = profile.nickname.ifBlank { "사용자" }) }
                     }
                 }
             }
@@ -338,6 +341,10 @@ class HomeViewModel
                         _effect.emit(HomeEffect.NavigateToDomesticGenre(intent.genre))
                     }
                 }
+
+                is HomeIntent.ToggleBookmark -> {
+                    bookmarkStore.toggle(intent.id)
+                }
             }
         }
 
@@ -354,7 +361,10 @@ class HomeViewModel
                 getForeignRecommendExhibitionListUseCase(country = country).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> Unit
-                        is ApiResult.Success -> setRecommendState(country, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setRecommendState(country, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setRecommendState(country, SectionLoadState.Error(result.error))
                     }
                 }
@@ -405,7 +415,10 @@ class HomeViewModel
                 getForeignPersonalizedExhibitionListUseCase(country = country).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> Unit
-                        is ApiResult.Success -> setPersonalizedState(country, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setPersonalizedState(country, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setPersonalizedState(country, SectionLoadState.Error(result.error))
                     }
                 }
@@ -444,7 +457,10 @@ class HomeViewModel
                 getForeignScheduledExhibitionListUseCase(country, date).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> Unit
-                        is ApiResult.Success -> setScheduleState(country, date, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setScheduleState(country, date, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setScheduleState(country, date, SectionLoadState.Error(result.error))
                     }
                 }
@@ -486,7 +502,10 @@ class HomeViewModel
                 getForeignGenreExhibitionListUseCase(country, genre).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> Unit
-                        is ApiResult.Success -> setGenreState(country, genre, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setGenreState(country, genre, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setGenreState(country, genre, SectionLoadState.Error(result.error))
                     }
                 }
@@ -522,7 +541,10 @@ class HomeViewModel
             viewModelScope.launch {
                 getDomesticRecommendExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
                     when (result) {
-                        is ApiResult.Success -> setDomesticRecommendState(SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setDomesticRecommendState(SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setDomesticRecommendState(SectionLoadState.Error(result.error))
                         ApiResult.Loading -> Unit
                     }
@@ -550,7 +572,10 @@ class HomeViewModel
             viewModelScope.launch {
                 getDomesticPersonalizedExhibitionListUseCase(region = DomesticRegion.Entire).collect { result ->
                     when (result) {
-                        is ApiResult.Success -> setDomesticPersonalizedState(SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setDomesticPersonalizedState(SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setDomesticPersonalizedState(SectionLoadState.Error(result.error))
                         ApiResult.Loading -> Unit
                     }
@@ -578,7 +603,10 @@ class HomeViewModel
             viewModelScope.launch {
                 getDomesticScheduleExhibitionListUseCase(region = DomesticRegion.Entire, date = date).collect { result ->
                     when (result) {
-                        is ApiResult.Success -> setDomesticWeeklyState(date, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setDomesticWeeklyState(date, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setDomesticWeeklyState(date, SectionLoadState.Error(result.error))
                         ApiResult.Loading -> Unit
                     }
@@ -610,7 +638,10 @@ class HomeViewModel
             viewModelScope.launch {
                 getDomesticGenreExhibitionListUseCase(region = DomesticRegion.Entire, genre = genre).collect { result ->
                     when (result) {
-                        is ApiResult.Success -> setDomesticGenreState(genre, SectionLoadState.Success(result.data))
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.associate { it.id to it.isBookmarked })
+                            setDomesticGenreState(genre, SectionLoadState.Success(result.data))
+                        }
                         is ApiResult.Error -> setDomesticGenreState(genre, SectionLoadState.Error(result.error))
                         ApiResult.Loading -> Unit
                     }

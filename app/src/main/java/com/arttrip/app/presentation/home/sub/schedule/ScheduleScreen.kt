@@ -24,12 +24,15 @@ import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.calendar.DayChipCase01
 import com.arttrip.app.core.ui.component.calendar.DayChipStateCase01
+import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.exhibition.Exhibition
-import com.arttrip.app.presentation.home.sub.genre.ExhibitionItem
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleState
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,6 +44,7 @@ fun ScheduleScreen(
     onIntent: (ScheduleIntent) -> Unit,
     date: LocalDate,
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
 ) {
     Box(
         modifier =
@@ -105,8 +109,9 @@ fun ScheduleScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ExhibitionList(
                 exhibitionList = exhibitionList,
+                bookmarked = bookmarked,
                 onExhibitionClick = { id -> onIntent(ScheduleIntent.ExhibitionClicked(id)) },
-                onLikeClick = {},
+                onLikeClick = { id -> onIntent(ScheduleIntent.LikeClicked(id)) },
             )
         }
     }
@@ -123,6 +128,7 @@ private fun getThisWeekDates(): List<LocalDate> {
 @Composable
 fun ExhibitionList(
     exhibitionList: LazyPagingItems<Exhibition>,
+    bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -134,30 +140,49 @@ fun ExhibitionList(
         }
     }
 
-    LazyColumn(
-        state = listState,
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-    ) {
-        items(exhibitionList.itemCount) { index ->
-            exhibitionList[index]?.let { exhibition ->
-                ExhibitionItem(
-                    exhibition = exhibition,
-                    onExhibitionClick = onExhibitionClick,
-                    onLikeClick = onLikeClick,
-                )
-            }
+    when {
+        exhibitionList.loadState.refresh is LoadState.Loading -> {
+            LoadingExhibitionList()
         }
-        item {
-            Spacer(
+        exhibitionList.loadState.refresh is LoadState.Error -> {
+            ErrorExhibitionList()
+        }
+        exhibitionList.itemCount == 0 -> {
+            NoExhibitionList()
+        }
+        else -> {
+            LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
-                        .height(12.dp),
-            )
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
+            ) {
+                items(exhibitionList.itemCount) { index ->
+                    exhibitionList[index]?.let { exhibition ->
+                        ExhibitionListItem(
+                            posterUrl = exhibition.posterUrl,
+                            location = null,
+                            title = exhibition.title,
+                            hallName = exhibition.hallName,
+                            period = exhibition.period,
+                            status = exhibition.status,
+                            isLiked = bookmarked[exhibition.id] ?: exhibition.isBookmarked,
+                            onItemClick = { onExhibitionClick(exhibition.id) },
+                            onLikeClick = { onLikeClick(exhibition.id) },
+                        )
+                    }
+                }
+                item {
+                    Spacer(
+                        modifier =
+                            Modifier
+                                .height(12.dp),
+                    )
+                }
+            }
         }
     }
 }

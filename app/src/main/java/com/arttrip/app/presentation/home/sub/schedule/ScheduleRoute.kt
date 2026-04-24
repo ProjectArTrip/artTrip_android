@@ -19,10 +19,12 @@ fun ScheduleRoute(
     viewModel: ScheduleViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onNavigateNotification: () -> Unit,
+    onNavigateToExhibitionDetail: (Int) -> Unit,
     country: ForeignCountry?,
     date: LocalDate,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.bookmarked.collectAsStateWithLifecycle()
     val exhibitionList = viewModel.exhibitions.collectAsLazyPagingItems()
 
     LaunchedEffect(date) {
@@ -35,6 +37,7 @@ fun ScheduleRoute(
                 ScheduleEffect.NavigateBack -> onBack()
                 ScheduleEffect.NavigateToNotification -> onNavigateNotification()
                 is ScheduleEffect.NavigateToExhibitionDetail -> {
+                    onNavigateToExhibitionDetail(effect.exhibitionId)
                 }
             }
         }
@@ -46,5 +49,6 @@ fun ScheduleRoute(
         onIntent = viewModel::onIntent,
         date = date,
         exhibitionList = exhibitionList,
+        bookmarked = bookmarked,
     )
 }
