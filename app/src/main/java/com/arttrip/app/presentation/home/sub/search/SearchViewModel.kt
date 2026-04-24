@@ -3,12 +3,12 @@ package com.arttrip.app.presentation.home.sub.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.exhibition.GetSearchExhibitionUseCase
 import com.arttrip.app.domain.usecase.search.DeleteAllRecentSearchUseCase
 import com.arttrip.app.domain.usecase.search.DeleteRecentSearchUseCase
 import com.arttrip.app.domain.usecase.search.GetRecentSearchUseCase
-import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.usecase.search.GetRecommendKeywordUseCase
 import com.arttrip.app.presentation.home.sub.search.contract.SearchEffect
 import com.arttrip.app.presentation.home.sub.search.contract.SearchIntent

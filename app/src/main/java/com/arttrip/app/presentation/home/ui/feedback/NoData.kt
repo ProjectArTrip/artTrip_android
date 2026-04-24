@@ -165,9 +165,10 @@ fun NoGenreExhibition(genre: ExhibitionGenre) {
 @Composable
 fun NoExhibitionList() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(
             modifier =

@@ -448,13 +448,15 @@ fun ExhibitionItem(
 @Composable
 fun LoadingExhibitionList() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth(),
     ) {
         repeat(5) {
             Spacer(
-                modifier = Modifier
-                    .height(12.dp)
+                modifier =
+                    Modifier
+                        .height(12.dp),
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

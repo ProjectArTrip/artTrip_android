@@ -30,9 +30,9 @@ import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleIntent
 import com.arttrip.app.presentation.home.sub.schedule.contract.ScheduleState
-import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
 import com.arttrip.app.presentation.home.ui.feedback.LoadingExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

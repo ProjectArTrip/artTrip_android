@@ -7,6 +7,7 @@ import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
 import com.arttrip.app.core.model.image.ImageQueryParams
+import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
@@ -17,7 +18,6 @@ import com.arttrip.app.domain.usecase.exhibition.GetForeignGenreExhibitionListUs
 import com.arttrip.app.domain.usecase.exhibition.GetForeignPersonalizedExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetForeignScheduledExhibitionListUseCase
-import com.arttrip.app.core.util.bookmark.BookmarkStore
 import com.arttrip.app.domain.usecase.profile.ObserveProfileUseCase
 import com.arttrip.app.domain.usecase.profile.RefreshProfileUseCase
 import com.arttrip.app.presentation.home.contract.HomeEffect

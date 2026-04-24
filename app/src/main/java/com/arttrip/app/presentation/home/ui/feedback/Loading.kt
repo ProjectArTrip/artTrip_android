@@ -308,14 +308,16 @@ fun ScheduleAndGenreExhibitionSkeleton() {
 @Composable
 fun LoadingExhibitionList() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
     ) {
         repeat(5) {
             Spacer(
-                modifier = Modifier
-                    .height(12.dp)
+                modifier =
+                    Modifier
+                        .height(12.dp),
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -38,7 +38,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -64,7 +63,6 @@ import com.arttrip.app.domain.model.map.ExhibitionMarker
 import com.arttrip.app.presentation.map.contract.MapIntent
 import com.arttrip.app.presentation.map.contract.MapState
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings

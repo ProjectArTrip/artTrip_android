@@ -22,11 +22,15 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun ExhibitionMapTab(latitude: Double, longitude: Double) {
+fun ExhibitionMapTab(
+    latitude: Double,
+    longitude: Double,
+) {
     val position = remember(latitude, longitude) { LatLng(latitude, longitude) }
-    val cameraPositionState = rememberCameraPositionState {
-        this.position = CameraPosition.fromLatLngZoom(position, 15f)
-    }
+    val cameraPositionState =
+        rememberCameraPositionState {
+            this.position = CameraPosition.fromLatLngZoom(position, 15f)
+        }
 
     Box(
         modifier =
@@ -40,17 +44,18 @@ fun ExhibitionMapTab(latitude: Double, longitude: Double) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
-            uiSettings = MapUiSettings(
-                zoomControlsEnabled = false,
-                zoomGesturesEnabled = false,
-                scrollGesturesEnabled = false,
-                tiltGesturesEnabled = false,
-                rotationGesturesEnabled = false,
-                scrollGesturesEnabledDuringRotateOrZoom = false,
-                mapToolbarEnabled = false,
-                compassEnabled = false,
-                myLocationButtonEnabled = false,
-            ),
+            uiSettings =
+                MapUiSettings(
+                    zoomControlsEnabled = false,
+                    zoomGesturesEnabled = false,
+                    scrollGesturesEnabled = false,
+                    tiltGesturesEnabled = false,
+                    rotationGesturesEnabled = false,
+                    scrollGesturesEnabledDuringRotateOrZoom = false,
+                    mapToolbarEnabled = false,
+                    compassEnabled = false,
+                    myLocationButtonEnabled = false,
+                ),
             properties = MapProperties(isMyLocationEnabled = false),
         ) {
             Marker(state = remember { MarkerState(position = position) })

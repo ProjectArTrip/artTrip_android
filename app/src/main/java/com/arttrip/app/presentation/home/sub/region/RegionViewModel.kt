@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
-import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.core.util.bookmark.BookmarkStore
+import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.usecase.exhibition.GetRegionExhibitionUseCase
 import com.arttrip.app.presentation.home.sub.region.contract.RegionEffect
 import com.arttrip.app.presentation.home.sub.region.contract.RegionIntent

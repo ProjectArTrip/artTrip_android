@@ -7,8 +7,8 @@ import androidx.paging.cachedIn
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.exhibition.SortType
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
-import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.core.util.bookmark.BookmarkStore
+import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.usecase.exhibition.GetGenreExhibitionUseCase
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreEffect
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreIntent

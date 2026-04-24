@@ -67,16 +67,16 @@ import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.presentation.home.contract.HomeIntent
 import com.arttrip.app.presentation.home.contract.HomeState
 import com.arttrip.app.presentation.home.model.SectionLoadState
+import com.arttrip.app.presentation.home.ui.datefilter.DateFilterBottomSheet
+import com.arttrip.app.presentation.home.ui.datefilter.FilterChips
+import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
+import com.arttrip.app.presentation.home.ui.feedback.GenreSectionLoading
 import com.arttrip.app.presentation.home.ui.feedback.NoGenreExhibition
 import com.arttrip.app.presentation.home.ui.feedback.NoPersonalizedExhibition
 import com.arttrip.app.presentation.home.ui.feedback.NoRecommendExhibition
 import com.arttrip.app.presentation.home.ui.feedback.NoScheduleExhibition
-import com.arttrip.app.presentation.home.ui.feedback.GenreSectionLoading
 import com.arttrip.app.presentation.home.ui.feedback.RecommendSectionLoading
 import com.arttrip.app.presentation.home.ui.feedback.ScheduleSectionLoading
-import com.arttrip.app.presentation.home.ui.datefilter.DateFilterBottomSheet
-import com.arttrip.app.presentation.home.ui.datefilter.FilterChips
-import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.math.abs
@@ -434,10 +434,11 @@ fun ForeignExhibitionSection(
     val genreState =
         homeSection.genreList[selectedGenre] ?: SectionLoadState.Idle
 
-    val hasError = recommendState is SectionLoadState.Error ||
-        personalizedState is SectionLoadState.Error ||
-        scheduleState is SectionLoadState.Error ||
-        genreState is SectionLoadState.Error
+    val hasError =
+        recommendState is SectionLoadState.Error ||
+            personalizedState is SectionLoadState.Error ||
+            scheduleState is SectionLoadState.Error ||
+            genreState is SectionLoadState.Error
 
     if (hasError) {
         ErrorExhibitionList()
@@ -556,10 +557,11 @@ fun DomesticExhibitionSection(
     val scheduleState = section.scheduleList[selectedDate] ?: SectionLoadState.Idle
     val genreState = section.genreList[selectedGenre] ?: SectionLoadState.Idle
 
-    val hasError = recommendState is SectionLoadState.Error ||
-        personalizedState is SectionLoadState.Error ||
-        scheduleState is SectionLoadState.Error ||
-        genreState is SectionLoadState.Error
+    val hasError =
+        recommendState is SectionLoadState.Error ||
+            personalizedState is SectionLoadState.Error ||
+            scheduleState is SectionLoadState.Error ||
+            genreState is SectionLoadState.Error
 
     if (hasError) {
         ErrorExhibitionList()

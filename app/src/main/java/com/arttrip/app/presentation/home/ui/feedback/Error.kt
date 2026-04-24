@@ -20,38 +20,43 @@ import com.arttrip.app.core.ui.theme.AppTextStyle
 @Composable
 fun ErrorExhibitionList() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(
-            modifier = Modifier
-                .height(62.dp)
+            modifier =
+                Modifier
+                    .height(62.dp),
         )
         Icon(
             painter = painterResource(R.drawable.ic_home_error_96),
             contentDescription = "error",
-            tint = Color.Unspecified
+            tint = Color.Unspecified,
         )
         Spacer(
-            modifier = Modifier
-                .height(4.dp)
+            modifier =
+                Modifier
+                    .height(4.dp),
         )
         Text(
             text = "일시적인 오류가 발생했어요",
             style = AppTextStyle.Body01Regular,
-            color = AppColor.TextPrimary
+            color = AppColor.TextPrimary,
         )
         Spacer(
-            modifier = Modifier
-                .height(8.dp)
+            modifier =
+                Modifier
+                    .height(8.dp),
         )
         Text(
-            text = "이용에 불편을 드려 죄송합니다\n" +
+            text =
+                "이용에 불편을 드려 죄송합니다\n" +
                     "잠시 후에 다시 시도해 주세요",
             style = AppTextStyle.Body02Regular,
             color = AppColor.TextTertiary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
@@ -37,17 +35,12 @@ import com.arttrip.app.core.ui.component.button.AppButton
 import com.arttrip.app.core.ui.component.button.AppFilterChip
 import com.arttrip.app.core.ui.component.button.AppFilterChipCase
 import com.arttrip.app.core.ui.component.button.AppIconButton
-import com.arttrip.app.core.ui.component.button.LikeButton
 import com.arttrip.app.core.ui.component.list.ExhibitionListItem
 import com.arttrip.app.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.app.core.ui.component.sheet.AppModalBottomSheet
-import com.arttrip.app.core.ui.component.tag.AppTag
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
-import com.arttrip.app.core.util.noRippleClickable
 import com.arttrip.app.domain.model.exhibition.Exhibition
-import com.arttrip.app.presentation.home.ExhibitionImage
-import com.arttrip.app.presentation.home.ExhibitionImageCase
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreIntent
 import com.arttrip.app.presentation.home.sub.genre.contract.GenreState
 import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
