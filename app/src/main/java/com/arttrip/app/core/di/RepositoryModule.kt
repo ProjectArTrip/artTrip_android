@@ -2,6 +2,7 @@ package com.arttrip.app.core.di
 
 import com.arttrip.app.data.repository.AuthRepositoryImpl
 import com.arttrip.app.data.repository.BookmarkRepositoryImpl
+import com.arttrip.app.data.repository.CurationRepositoryImpl
 import com.arttrip.app.data.repository.ExhibitRepositoryImpl
 import com.arttrip.app.data.repository.HomeRepositoryImpl
 import com.arttrip.app.data.repository.MapRepositoryImpl
@@ -11,6 +12,7 @@ import com.arttrip.app.data.repository.SearchHistoryRepositoryImpl
 import com.arttrip.app.data.repository.UserTasteRepositoryImpl
 import com.arttrip.app.domain.repository.AuthRepository
 import com.arttrip.app.domain.repository.BookmarkRepository
+import com.arttrip.app.domain.repository.CurationRepository
 import com.arttrip.app.domain.repository.ExhibitRepository
 import com.arttrip.app.domain.repository.HomeRepository
 import com.arttrip.app.domain.repository.MapRepository
@@ -62,4 +64,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun mapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
+
+    @Singleton
+    @Binds
+    abstract fun curationRepository(curationRepositoryImpl: CurationRepositoryImpl): CurationRepository
 }
