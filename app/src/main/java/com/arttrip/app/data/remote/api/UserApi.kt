@@ -1,6 +1,7 @@
 package com.arttrip.app.data.remote.api
 
 import com.arttrip.app.data.remote.api.ApiConstants.USER_PATH
+import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
 import com.arttrip.app.data.remote.model.user.UserNicknameReqDto
 import com.arttrip.app.data.remote.model.user.UserRecentExhibitsResDto
 import com.arttrip.app.data.remote.model.user.UserResDto
@@ -10,6 +11,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -41,4 +43,9 @@ interface UserApi {
         @Query("h") h: Int,
         @Query("f") f: String,
     ): UserRecentExhibitsResDto
+
+    @POST("${USER_PATH}/fcm-token")
+    suspend fun postFcmToken(
+        @Body body: UserFcmTokenReqDto,
+    ): Unit
 }
