@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "780308839388",
+    "project_id": "arttrip-56c5d",
+    "storage_bucket": "arttrip-56c5d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780308839388:android:fce3c5c52c3d2256d76d19",
+        "android_client_info": {
+          "package_name": "com.arttrip.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7vLEMaHSdkRzq3ydl67OJXBL2daQ7IE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780308839388:android:31b86c0f846d52f6d76d19",
+        "android_client_info": {
+          "package_name": "com.arttrip.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7vLEMaHSdkRzq3ydl67OJXBL2daQ7IE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
