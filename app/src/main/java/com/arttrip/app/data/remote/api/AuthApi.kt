@@ -1,6 +1,7 @@
 package com.arttrip.app.data.remote.api
 
 import com.arttrip.app.data.remote.api.ApiConstants.AUTH_PATH
+import com.arttrip.app.data.remote.model.auth.DeleteUserAccountReqDto
 import com.arttrip.app.data.remote.model.auth.LoginReqDto
 import com.arttrip.app.data.remote.model.auth.LoginResDto
 import com.arttrip.app.data.remote.model.auth.RefreshReqDto
@@ -19,4 +20,9 @@ interface AuthApi {
     fun refreshTokens(
         @Body body: RefreshReqDto,
     ): Call<RefreshResDto>
+
+    @POST("${AUTH_PATH}/withdraw")
+    suspend fun withdrawAccount(
+        @Body body: DeleteUserAccountReqDto,
+    )
 }

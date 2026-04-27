@@ -20,8 +20,6 @@ class UserDataSource
 
         suspend fun patchUserNickname(userNicknameReqDto: UserNicknameReqDto) = api.patchUserNickname(userNicknameReqDto)
 
-        suspend fun deleteUserAccount() = api.deleteUserAccount()
-
         suspend fun deleteProfileImage() = api.deleteProfileImage()
 
         suspend fun patchProfileImage(part: MultipartBody.Part) = api.patchProfileImage(part)

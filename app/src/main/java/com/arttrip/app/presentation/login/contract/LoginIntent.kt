@@ -14,7 +14,7 @@ sealed interface LoginIntent {
     data object ClickGoogleLogin : LoginIntent
 
     data class GoogleLoginSuccess(
-        val idToken: String,
+        val authorizationCode: String,
     ) : LoginIntent
 
     data class GoogleLoginFailure(
