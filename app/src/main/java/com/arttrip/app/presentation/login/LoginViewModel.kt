@@ -7,9 +7,11 @@ import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.data.local.auth.OnboardingManager
 import com.arttrip.app.data.local.auth.TokenManager
 import com.arttrip.app.domain.model.auth.OnboardingStep
+import com.arttrip.app.data.local.fcm.FcmTokenProvider
 import com.arttrip.app.domain.model.auth.SocialLoginCredential
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.auth.SocialLoginUseCase
+import com.arttrip.app.domain.usecase.notification.RegisterFcmTokenUseCase
 import com.arttrip.app.presentation.login.contract.LoginEffect
 import com.arttrip.app.presentation.login.contract.LoginIntent
 import com.arttrip.app.presentation.login.contract.LoginState
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +32,8 @@ class LoginViewModel
         private val socialLoginUseCase: SocialLoginUseCase,
         private val tokenManager: TokenManager,
         private val onboardingManager: OnboardingManager,
+        private val fcmTokenProvider: FcmTokenProvider,
+        private val registerFcmTokenUseCase: RegisterFcmTokenUseCase,
     ) : ViewModel() {
         companion object {
             private const val TAG = "LoginViewModel"
@@ -145,6 +150,13 @@ class LoginViewModel
                             val tokens = data.tokens
                             tokenManager.saveTokens(tokens)
                             onboardingManager.save(data.onboardingStep)
+
+                            viewModelScope.launch {
+                                runCatching {
+                                    val fcmToken = fcmTokenProvider.getToken()
+                                    registerFcmTokenUseCase(fcmToken).collect()
+                                }
+                            }
 
                             val effect =
                                 when (data.onboardingStep) {
