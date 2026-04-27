@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.hilt)
     kotlin("kapt")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -144,4 +145,8 @@ dependencies {
     implementation(libs.google.location)
     implementation(libs.maps.compose)
     implementation(libs.maps.compose.utils)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 }
