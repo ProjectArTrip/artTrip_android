@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
+import com.arttrip.app.data.local.auth.OnboardingManager
+import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.domain.model.network.ApiError
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.profile.UpdateUserNicknameUseCase
@@ -24,6 +26,7 @@ class NicknameViewModel
     @Inject
     constructor(
         private val updateUserNicknameUseCase: UpdateUserNicknameUseCase,
+        private val onboardingManager: OnboardingManager,
     ) : ViewModel() {
         private val _state = MutableStateFlow(NicknameState())
         val state = _state.asStateFlow()
@@ -67,6 +70,7 @@ class NicknameViewModel
                                     isLoading = false,
                                 )
                             }
+                            onboardingManager.save(OnboardingStep.TASTE)
                             _effect.emit(NicknameEffect.NavigateToTaste)
                         }
                         is ApiResult.Error -> {

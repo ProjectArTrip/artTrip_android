@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
+import com.arttrip.app.data.local.auth.OnboardingManager
 import com.arttrip.app.data.local.auth.TokenManager
 import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.domain.model.auth.SocialLoginCredential
@@ -27,6 +28,7 @@ class LoginViewModel
     constructor(
         private val socialLoginUseCase: SocialLoginUseCase,
         private val tokenManager: TokenManager,
+        private val onboardingManager: OnboardingManager,
     ) : ViewModel() {
         companion object {
             private const val TAG = "LoginViewModel"
@@ -142,6 +144,7 @@ class LoginViewModel
                             val data = result.data
                             val tokens = data.tokens
                             tokenManager.saveTokens(tokens)
+                            onboardingManager.save(data.onboardingStep)
 
                             val effect =
                                 when (data.onboardingStep) {

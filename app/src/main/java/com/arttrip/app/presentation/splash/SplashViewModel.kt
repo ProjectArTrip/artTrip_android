@@ -3,7 +3,9 @@ package com.arttrip.app.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.navigation.app.AppRoute
+import com.arttrip.app.data.local.auth.OnboardingManager
 import com.arttrip.app.data.local.auth.TokenManager
+import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.presentation.splash.contract.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -17,6 +19,7 @@ class SplashViewModel
     @Inject
     constructor(
         private val tokenManager: TokenManager,
+        private val onboardingManager: OnboardingManager,
     ) : ViewModel() {
         private val _state = MutableStateFlow(SplashState())
         val state: StateFlow<SplashState> = _state
@@ -33,10 +36,14 @@ class SplashViewModel
                 val hasValidToken = tokenManager.hasTokens()
 
                 val target =
-                    if (hasValidToken) {
-                        AppRoute.MAIN
-                    } else {
+                    if (!hasValidToken) {
                         AppRoute.LOGIN
+                    } else {
+                        when (onboardingManager.get()) {
+                            OnboardingStep.NICKNAME -> AppRoute.INTRO_NICKNAME
+                            OnboardingStep.TASTE -> AppRoute.INTRO_TASTE
+                            else -> AppRoute.MAIN
+                        }
                     }
 
                 _state.value =

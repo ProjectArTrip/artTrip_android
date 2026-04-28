@@ -3,6 +3,7 @@ package com.arttrip.app.presentation.intro.taste
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
+import com.arttrip.app.data.local.auth.OnboardingManager
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.app.domain.usecase.userTaste.SaveUserTasteUseCase
@@ -24,6 +25,7 @@ class TasteViewModel
     constructor(
         private val getAllTasteGroupsUseCase: GetAllTasteGroupsUseCase,
         private val saveUserTasteUseCase: SaveUserTasteUseCase,
+        private val onboardingManager: OnboardingManager,
     ) : ViewModel() {
         private val _state = MutableStateFlow(TasteState())
         val state: StateFlow<TasteState> = _state
@@ -117,6 +119,7 @@ class TasteViewModel
                         }
                         is ApiResult.Success -> {
                             _state.update { it.copy(isLoading = false) }
+                            onboardingManager.clear()
                             _effect.emit(TasteEffect.NavigateToHome)
                         }
                         is ApiResult.Error -> {
