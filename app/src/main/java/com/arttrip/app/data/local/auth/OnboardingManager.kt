@@ -13,16 +13,14 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private val KEY_STEP = stringPreferencesKey("onboarding_step")
+
 @Singleton
 class OnboardingManager
     @Inject
     constructor(
         private val dataStore: DataStore<Preferences>,
     ) {
-        companion object {
-            private val KEY_STEP = stringPreferencesKey("onboarding_step")
-        }
-
         private val scope = CoroutineScope(Dispatchers.IO)
 
         @Volatile
