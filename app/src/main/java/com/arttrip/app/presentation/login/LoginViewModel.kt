@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.data.local.auth.TokenManager
+import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.domain.model.auth.SocialLoginCredential
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.auth.SocialLoginUseCase
@@ -143,10 +144,10 @@ class LoginViewModel
                             tokenManager.saveTokens(tokens)
 
                             val effect =
-                                if (data.isFirstLogin) {
-                                    LoginEffect.NavigateToIntro
-                                } else {
-                                    LoginEffect.NavigateToHome
+                                when (data.onboardingStep) {
+                                    OnboardingStep.NICKNAME -> LoginEffect.NavigateToNicknameStep
+                                    OnboardingStep.TASTE -> LoginEffect.NavigateToTasteStep
+                                    OnboardingStep.COMPLETED -> LoginEffect.NavigateToHome
                                 }
                             _effect.emit(effect)
                         }
