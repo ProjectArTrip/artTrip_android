@@ -1,4 +1,4 @@
-package com.arttrip.app.presentation.intro
+package com.arttrip.app.presentation.intro.taste
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,14 +30,14 @@ import com.arttrip.app.core.ui.component.button.AppFilterChipCase
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.usertaste.Taste
-import com.arttrip.app.presentation.intro.contract.IntroIntent
-import com.arttrip.app.presentation.intro.contract.IntroState
+import com.arttrip.app.presentation.intro.taste.contract.TasteIntent
+import com.arttrip.app.presentation.intro.taste.contract.TasteState
 
 @Composable
-fun IntroScreen(
+fun TasteScreen(
     innerPadding: PaddingValues,
-    state: IntroState,
-    onIntent: (IntroIntent) -> Unit,
+    state: TasteState,
+    onIntent: (TasteIntent) -> Unit,
 ) {
     val buttonBottomMargin = 16.dp
     val bottomInset = AppButtonDefaults.Height + buttonBottomMargin
@@ -57,41 +57,51 @@ fun IntroScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = 24.dp,
-                        top = 40.dp,
+                        top = 32.dp,
                         end = 24.dp,
                         bottom = bottomInset,
                     ),
         ) {
-            IntroWelcomeSection(
+            Text(
+                text =
+                    buildAnnotatedString {
+                        withStyle(AppTextStyle.Body02Bold.toSpanStyle()) { append("2") }
+                        withStyle(AppTextStyle.Body02Light.toSpanStyle()) { append("/2") }
+                    },
+                color = AppColor.TextPrimary,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TasteWelcomeSection(
                 modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            IntroGenreSection(
+            TasteGenreSection(
                 modifier = Modifier.fillMaxWidth(),
                 genreList = state.genres,
                 selectedNames = state.selectedGenreNames,
                 onToggleGenre = { name ->
-                    onIntent(IntroIntent.ToggleGenre(name))
+                    onIntent(TasteIntent.ToggleGenre(name))
                 },
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            IntroStyleSection(
+            TasteStyleSection(
                 modifier = Modifier.fillMaxWidth(),
                 styleList = state.styles,
                 selectedNames = state.selectedStyleNames,
                 onToggleStyle = { name ->
-                    onIntent(IntroIntent.ToggleStyle(name))
+                    onIntent(TasteIntent.ToggleStyle(name))
                 },
             )
 
             Spacer(modifier = Modifier.height(bottomContentPadding))
         }
 
-        IntroBottomCta(
+        TasteBottomCta(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
@@ -101,20 +111,19 @@ fun IntroScreen(
                         end = 24.dp,
                     ),
             enabled = state.isNextEnabled,
-            onClick = { onIntent(IntroIntent.ClickNext) },
+            onClick = { onIntent(TasteIntent.ClickNext) },
         )
     }
 }
 
 @Composable
-private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
+private fun TasteWelcomeSection(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
     ) {
         Text(
             text =
-                "사용자님의 관심있는 키워드를 \n" +
-                    "골라주세요!",
+                "관심있는 키워드를 골라주세요!",
             style = AppTextStyle.Headline,
             color = AppColor.TextPrimary,
         )
@@ -131,7 +140,7 @@ private fun IntroWelcomeSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun IntroGenreSection(
+private fun TasteGenreSection(
     modifier: Modifier = Modifier,
     selectedNames: Set<String>,
     genreList: List<Taste>,
@@ -175,7 +184,7 @@ private fun IntroGenreSection(
 }
 
 @Composable
-private fun IntroStyleSection(
+private fun TasteStyleSection(
     modifier: Modifier = Modifier,
     selectedNames: Set<String>,
     styleList: List<Taste>,
@@ -208,29 +217,29 @@ private fun IntroStyleSection(
 }
 
 @Composable
-private fun IntroBottomCta(
+private fun TasteBottomCta(
     modifier: Modifier = Modifier,
     enabled: Boolean,
     onClick: () -> Unit = {},
 ) {
     AppButton(
         modifier = modifier,
-        text = "다음으로",
+        text = "시작하기",
         onClick = onClick,
         enabled = enabled,
     )
 }
 
 @Preview(
-    name = "IntroScreen",
+    name = "TasteScreen",
     showBackground = true,
     showSystemUi = true,
 )
 @Composable
-fun PreviewIntroScreen() {
-    IntroScreen(
+fun PreviewTasteScreen() {
+    TasteScreen(
         innerPadding = PaddingValues(0.dp),
-        state = IntroState(),
+        state = TasteState(),
         onIntent = {},
     )
 }

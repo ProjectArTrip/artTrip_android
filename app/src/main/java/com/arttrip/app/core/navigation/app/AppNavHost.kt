@@ -9,7 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arttrip.app.core.navigation.app.AppRoute
-import com.arttrip.app.presentation.intro.IntroRoute
+import com.arttrip.app.presentation.intro.nickname.NicknameRoute
+import com.arttrip.app.presentation.intro.taste.TasteRoute
 import com.arttrip.app.presentation.login.LoginRoute
 import com.arttrip.app.presentation.main.MainRoute
 import com.arttrip.app.presentation.splash.SplashRoute
@@ -44,13 +45,25 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        composable(AppRoute.INTRO) {
+        composable(AppRoute.INTRO_TASTE) {
             val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
-            IntroRoute(
+            TasteRoute(
                 innerPadding = systemPadding,
                 onNavigate = { targetRoute ->
                     navController.navigate(targetRoute) {
-                        popUpTo(AppRoute.INTRO) { inclusive = true }
+                        popUpTo(AppRoute.INTRO_TASTE) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable(AppRoute.INTRO_NICKNAME) {
+            val systemPadding = WindowInsets.safeDrawing.asPaddingValues()
+            NicknameRoute(
+                innerPadding = systemPadding,
+                onNavigate = { targetRoute ->
+                    navController.navigate(targetRoute) {
+                        popUpTo(AppRoute.INTRO_NICKNAME) { inclusive = true }
                     }
                 },
             )

@@ -14,18 +14,16 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private val KEY_ACCESS = stringPreferencesKey("access_token")
+private val KEY_REFRESH = stringPreferencesKey("refresh_token")
+private const val TAG = "TokenManager"
+
 @Singleton
 class TokenManager
     @Inject
     constructor(
         private val dataStore: DataStore<Preferences>,
     ) {
-        companion object {
-            private val KEY_ACCESS = stringPreferencesKey("access_token")
-            private val KEY_REFRESH = stringPreferencesKey("refresh_token")
-            private const val TAG = "TokenManager"
-        }
-
         private val scope = CoroutineScope(Dispatchers.IO)
 
         @Volatile

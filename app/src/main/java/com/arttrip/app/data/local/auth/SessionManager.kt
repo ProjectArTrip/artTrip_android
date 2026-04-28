@@ -10,12 +10,14 @@ class SessionManager
     @Inject
     constructor(
         private val tokenManager: TokenManager,
+        private val onboardingManager: OnboardingManager,
     ) {
         private val _logoutSignal = MutableStateFlow(0)
         val logoutSignal: StateFlow<Int> = _logoutSignal
 
         fun logout() {
             tokenManager.clear()
+            onboardingManager.clear()
             _logoutSignal.value += 1
         }
 

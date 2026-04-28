@@ -111,8 +111,11 @@ fun LoginRoute(
                     }
                 }
 
-                LoginEffect.NavigateToIntro -> {
-                    onNavigate(AppRoute.INTRO)
+                LoginEffect.NavigateToNicknameStep -> {
+                    onNavigate(AppRoute.INTRO_NICKNAME)
+                }
+                LoginEffect.NavigateToTasteStep -> {
+                    onNavigate(AppRoute.INTRO_TASTE)
                 }
                 LoginEffect.NavigateToHome -> {
                     onNavigate(AppRoute.MAIN)

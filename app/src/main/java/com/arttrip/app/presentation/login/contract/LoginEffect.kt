@@ -5,7 +5,9 @@ sealed interface LoginEffect {
 
     data object LaunchGoogleLogin : LoginEffect
 
-    data object NavigateToIntro : LoginEffect
+    data object NavigateToNicknameStep : LoginEffect
+
+    data object NavigateToTasteStep : LoginEffect
 
     data object NavigateToHome : LoginEffect
 
