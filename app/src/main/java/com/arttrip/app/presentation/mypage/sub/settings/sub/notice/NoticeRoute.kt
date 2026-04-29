@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.arttrip.app.presentation.mypage.sub.settings.sub.notice.contract.NoticeEffect
 import kotlinx.coroutines.flow.collectLatest
 
@@ -15,7 +15,9 @@ fun NoticeRoute(
     onBack: () -> Unit,
     viewModel: NoticeViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val reviewsFlow = viewModel.noticesFlow
+    val noticeItems = reviewsFlow.collectAsLazyPagingItems()
+
     LaunchedEffect(viewModel) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -25,7 +27,7 @@ fun NoticeRoute(
     }
     NoticeScreen(
         innerPadding = innerPadding,
-        state = state,
         onIntent = viewModel::onIntent,
+        noticeItems = noticeItems,
     )
 }
