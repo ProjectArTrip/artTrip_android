@@ -15,4 +15,6 @@ object ApiConstants {
     const val SEARCH_KEYWORD_PATH = "/search-history"
 
     const val MAP_PATH = "/map"
+
+    const val USER_NOTICE_PATH = "/notifications"
 }
