@@ -11,7 +11,7 @@ import com.arttrip.app.domain.model.exhibition.RecentExhibition
 import com.arttrip.app.domain.model.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
-interface ExhibitRepository {
+interface ExhibitionRepository {
     fun getExhibitDetail(
         exhibitId: Int,
         imageQueryParams: ImageQueryParams,
