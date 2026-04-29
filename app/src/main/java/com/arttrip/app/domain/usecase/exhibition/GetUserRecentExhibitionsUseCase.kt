@@ -3,17 +3,17 @@ package com.arttrip.app.domain.usecase.exhibition
 import com.arttrip.app.core.model.image.ImageQueryParams
 import com.arttrip.app.domain.model.exhibition.RecentExhibition
 import com.arttrip.app.domain.model.network.ApiResult
-import com.arttrip.app.domain.repository.ExhibitRepository
+import com.arttrip.app.domain.repository.ExhibitionRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetUserRecentExhibitionsUseCase
     @Inject
     constructor(
-        private val exhibitRepository: ExhibitRepository,
+        private val exhibitionRepository: ExhibitionRepository,
     ) {
         operator fun invoke(imageQueryParams: ImageQueryParams): Flow<ApiResult<List<RecentExhibition>>> =
-            exhibitRepository.getUserRecentExhibits(
+            exhibitionRepository.getUserRecentExhibits(
                 imageQueryParams = imageQueryParams,
             )
     }
