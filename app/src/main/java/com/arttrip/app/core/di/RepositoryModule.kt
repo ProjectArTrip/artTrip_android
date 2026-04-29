@@ -5,6 +5,7 @@ import com.arttrip.app.data.repository.BookmarkRepositoryImpl
 import com.arttrip.app.data.repository.ExhibitRepositoryImpl
 import com.arttrip.app.data.repository.HomeRepositoryImpl
 import com.arttrip.app.data.repository.MapRepositoryImpl
+import com.arttrip.app.data.repository.NoticeRepositoryImpl
 import com.arttrip.app.data.repository.ProfileRepositoryImpl
 import com.arttrip.app.data.repository.ReviewRepositoryImpl
 import com.arttrip.app.data.repository.SearchHistoryRepositoryImpl
@@ -14,6 +15,7 @@ import com.arttrip.app.domain.repository.BookmarkRepository
 import com.arttrip.app.domain.repository.ExhibitRepository
 import com.arttrip.app.domain.repository.HomeRepository
 import com.arttrip.app.domain.repository.MapRepository
+import com.arttrip.app.domain.repository.NoticeRepository
 import com.arttrip.app.domain.repository.ProfileRepository
 import com.arttrip.app.domain.repository.ReviewRepository
 import com.arttrip.app.domain.repository.SearchHistoryRepository
@@ -62,4 +64,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun mapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
+
+    @Singleton
+    @Binds
+    abstract fun noticeRepository(noticeRepositoryImpl: NoticeRepositoryImpl): NoticeRepository
 }
