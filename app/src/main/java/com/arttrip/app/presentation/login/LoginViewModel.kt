@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.data.local.auth.OnboardingManager
 import com.arttrip.app.data.local.auth.TokenManager
-import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.data.local.fcm.FcmTokenProvider
+import com.arttrip.app.domain.model.auth.OnboardingStep
 import com.arttrip.app.domain.model.auth.SocialLoginCredential
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.usecase.auth.SocialLoginUseCase

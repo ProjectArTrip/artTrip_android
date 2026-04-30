@@ -22,13 +22,20 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.arttrip.app.core.navigation.app.AppNavHost
+import com.arttrip.app.core.ui.component.toast.AppNotificationHost
 import com.arttrip.app.core.ui.component.toast.AppToastHost
 import com.arttrip.app.core.ui.theme.ArtTripTheme
 import com.arttrip.app.core.util.LocalToastController
+import com.arttrip.app.data.local.fcm.FcmEventBus
+import com.arttrip.app.data.local.fcm.FcmMessage
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var fcmEventBus: FcmEventBus
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -46,6 +53,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                var fcmMessage by remember { mutableStateOf<FcmMessage?>(null) }
+                LaunchedEffect(Unit) {
+                    fcmEventBus.messages.collect { fcmMessage = it }
+                }
+
                 val navController = rememberNavController()
                 val scope = rememberCoroutineScope()
                 val toastController = remember { ToastController(scope) }
@@ -53,6 +65,12 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(LocalToastController provides toastController) {
                     Box(Modifier.fillMaxSize()) {
                         AppNavHost(navController = navController)
+
+                        AppNotificationHost(
+                            message = fcmMessage,
+                            onDismiss = { fcmMessage = null },
+                            onClick = { android.util.Log.d("MainActivity", "notification banner clicked") },
+                        )
 
                         AppToastHost(hostState = toastController.hostState)
                     }
