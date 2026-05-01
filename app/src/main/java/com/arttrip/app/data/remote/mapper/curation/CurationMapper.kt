@@ -1,10 +1,10 @@
 package com.arttrip.app.data.remote.mapper.curation
 
 import com.arttrip.app.data.remote.mapper.home.toDomain
-import com.arttrip.app.data.remote.model.curation.CurationResponse
+import com.arttrip.app.data.remote.model.curation.CurationResponseDto
 import com.arttrip.app.domain.model.curation.Curation
 
-fun CurationResponse.toDomain(): Curation =
+fun CurationResponseDto.toDomain(): Curation =
     Curation(
         curationId = curationId,
         title = title,

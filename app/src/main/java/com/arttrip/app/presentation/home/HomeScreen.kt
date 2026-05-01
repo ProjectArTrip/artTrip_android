@@ -1032,7 +1032,9 @@ fun CurationSection(
 ) {
     when (sectionState) {
         SectionLoadState.Idle -> {}
-        SectionLoadState.Loading -> { CurationSectionLoading() }
+        SectionLoadState.Loading -> {
+            CurationSectionLoading()
+        }
         is SectionLoadState.Success -> {
             CurationItem(
                 curation = sectionState.data,

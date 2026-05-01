@@ -2,7 +2,7 @@ package com.arttrip.app.data.remote.api
 
 import com.arttrip.app.data.remote.api.ApiConstants.CURATION_PATH
 import com.arttrip.app.data.remote.model.curation.CurationExhibitListResDto
-import com.arttrip.app.data.remote.model.curation.CurationResponse
+import com.arttrip.app.data.remote.model.curation.CurationResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,7 +12,7 @@ interface CurationApi {
     suspend fun getCurations(
         @Query("domestic") domestic: Boolean,
         @Query("country") country: String?,
-    ): CurationResponse
+    ): CurationResponseDto
 
     @GET("$CURATION_PATH/{curationId}")
     suspend fun getCurationExhibits(

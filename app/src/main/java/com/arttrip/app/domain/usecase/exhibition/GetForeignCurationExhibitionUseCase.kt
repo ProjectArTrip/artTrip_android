@@ -12,6 +12,5 @@ class GetForeignCurationExhibitionUseCase
     constructor(
         private val curationRepository: CurationRepository,
     ) {
-        operator fun invoke(country: ForeignCountry): Flow<ApiResult<Curation>> =
-            curationRepository.getForeignCurations(country = country)
+        operator fun invoke(country: ForeignCountry): Flow<ApiResult<Curation>> = curationRepository.getForeignCurations(country = country)
     }

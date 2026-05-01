@@ -8,11 +8,9 @@ class CurationDataSource
     constructor(
         private val api: CurationApi,
     ) {
-        suspend fun getForeignCurations(country: String) =
-            api.getCurations(domestic = false, country = country)
+        suspend fun getForeignCurations(country: String) = api.getCurations(domestic = false, country = country)
 
-        suspend fun getDomesticCurations() =
-            api.getCurations(domestic = true, country = null)
+        suspend fun getDomesticCurations() = api.getCurations(domestic = true, country = null)
 
         suspend fun getCurationExhibits(
             curationId: Long,

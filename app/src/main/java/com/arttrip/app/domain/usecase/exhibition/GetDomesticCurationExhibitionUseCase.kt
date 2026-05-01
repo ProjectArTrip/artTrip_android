@@ -11,6 +11,5 @@ class GetDomesticCurationExhibitionUseCase
     constructor(
         private val curationRepository: CurationRepository,
     ) {
-        operator fun invoke(): Flow<ApiResult<Curation>> =
-            curationRepository.getDomesticCurations()
+        operator fun invoke(): Flow<ApiResult<Curation>> = curationRepository.getDomesticCurations()
     }

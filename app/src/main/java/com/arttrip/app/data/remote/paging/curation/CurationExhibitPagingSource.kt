@@ -18,11 +18,12 @@ class CurationExhibitPagingSource(
             val cursor: Int? = params.key
             val loadSize: Int = params.loadSize
 
-            val res = dataSource.getCurationExhibits(
-                curationId = curationId,
-                cursor = cursor,
-                size = loadSize,
-            )
+            val res =
+                dataSource.getCurationExhibits(
+                    curationId = curationId,
+                    cursor = cursor,
+                    size = loadSize,
+                )
 
             if (cursor == null) {
                 onTitleLoaded(res.title)
