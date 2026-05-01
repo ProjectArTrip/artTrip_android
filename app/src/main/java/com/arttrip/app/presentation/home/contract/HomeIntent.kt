@@ -128,4 +128,8 @@ sealed interface HomeIntent {
     data class ToggleBookmark(
         val id: Int,
     ) : HomeIntent
+
+    data class CurationMoreClicked(
+        val curationId: Long,
+    ) : HomeIntent
 }

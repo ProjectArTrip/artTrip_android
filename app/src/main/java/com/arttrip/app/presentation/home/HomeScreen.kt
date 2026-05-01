@@ -514,6 +514,7 @@ fun ForeignExhibitionSection(
             bookmarked = bookmarked,
             placeTab = PlaceTab.Foreign,
             selectedCountry = selectedCountry,
+            onMoreClick = { curationId -> onIntent(HomeIntent.CurationMoreClicked(curationId)) },
             onExhibitionClick = { id -> onIntent(HomeIntent.ExhibitionClicked(id)) },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
@@ -660,6 +661,7 @@ fun DomesticExhibitionSection(
             bookmarked = bookmarked,
             placeTab = PlaceTab.Domestic,
             selectedCountry = ForeignCountry.Entire,
+            onMoreClick = { curationId -> onIntent(HomeIntent.CurationMoreClicked(curationId)) },
             onExhibitionClick = { id -> onIntent(HomeIntent.ExhibitionClicked(id)) },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
@@ -1024,6 +1026,7 @@ fun CurationSection(
     bookmarked: Map<Int, Boolean>,
     placeTab: PlaceTab,
     selectedCountry: ForeignCountry,
+    onMoreClick: (Long) -> Unit,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1036,6 +1039,7 @@ fun CurationSection(
                 bookmarked = bookmarked,
                 placeTab = placeTab,
                 selectedCountry = selectedCountry,
+                onMoreClick = { onMoreClick(sectionState.data.curationId) },
                 onExhibitionClick = onExhibitionClick,
                 onLikeClick = onLikeClick,
             )
@@ -1050,6 +1054,7 @@ fun CurationItem(
     bookmarked: Map<Int, Boolean>,
     placeTab: PlaceTab,
     selectedCountry: ForeignCountry,
+    onMoreClick: () -> Unit,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
 ) {
@@ -1059,7 +1064,7 @@ fun CurationItem(
         SectionTitle(
             modifier = Modifier.padding(horizontal = 24.dp),
             title = curation.title,
-            onMoreClick = {},
+            onMoreClick = onMoreClick,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(

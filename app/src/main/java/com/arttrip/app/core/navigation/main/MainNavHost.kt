@@ -24,6 +24,7 @@ import com.arttrip.app.core.model.enums.foreign.ForeignCountry
 import com.arttrip.app.presentation.bookmark.BookmarkRoute
 import com.arttrip.app.presentation.exhibition.ExhibitionDetailRoute
 import com.arttrip.app.presentation.home.HomeRoute
+import com.arttrip.app.presentation.home.sub.curation.CurationRoute
 import com.arttrip.app.presentation.home.sub.datefilterresult.DateFilterResultRoute
 import com.arttrip.app.presentation.home.sub.genre.GenreRoute
 import com.arttrip.app.presentation.home.sub.notification.NotificationRoute
@@ -87,6 +88,9 @@ fun MainNavHost(
                 },
                 onNavigateGenre = { country, genre ->
                     navController.navigateToGenre(country, genre)
+                },
+                onNavigateCuration = { curationId ->
+                    navController.navigateToCuration(curationId)
                 },
             )
         }
@@ -340,6 +344,24 @@ fun MainNavHost(
             TasteRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+            )
+        }
+
+        composable(
+            route = MainRoute.HOME_CURATION,
+            arguments =
+                listOf(
+                    navArgument("curationId") { type = NavType.LongType },
+                ),
+        ) { backStackEntry ->
+            val curationId = backStackEntry.arguments?.getLong("curationId") ?: return@composable
+
+            CurationRoute(
+                innerPadding = innerPadding,
+                curationId = curationId,
+                onBack = navController::popBackStack,
+                onNavigateNotification = navController::navigateToNotification,
+                onNavigateExhibitionDetail = { id -> navController.navigateToExhibitionDetail(id) },
             )
         }
     }

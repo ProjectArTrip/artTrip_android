@@ -1,8 +1,10 @@
 package com.arttrip.app.data.remote.api
 
 import com.arttrip.app.data.remote.api.ApiConstants.CURATION_PATH
+import com.arttrip.app.data.remote.model.curation.CurationExhibitListResDto
 import com.arttrip.app.data.remote.model.curation.CurationResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CurationApi {
@@ -11,4 +13,11 @@ interface CurationApi {
         @Query("domestic") domestic: Boolean,
         @Query("country") country: String?,
     ): CurationResponse
+
+    @GET("$CURATION_PATH/{curationId}")
+    suspend fun getCurationExhibits(
+        @Path("curationId") curationId: Long,
+        @Query("cursor") cursor: Int?,
+        @Query("size") size: Int,
+    ): CurationExhibitListResDto
 }

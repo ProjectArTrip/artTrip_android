@@ -42,4 +42,8 @@ sealed interface HomeEffect {
     data class NavigateToDomesticGenre(
         val genre: ExhibitionGenre,
     ) : HomeEffect
+
+    data class NavigateToCuration(
+        val curationId: Long,
+    ) : HomeEffect
 }

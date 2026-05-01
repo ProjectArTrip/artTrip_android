@@ -22,6 +22,7 @@ fun HomeRoute(
     onNavigateRegion: (DomesticRegion) -> Unit,
     onNavigateSchedule: (ForeignCountry?, LocalDate) -> Unit,
     onNavigateGenre: (ForeignCountry?, ExhibitionGenre) -> Unit,
+    onNavigateCuration: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -59,6 +60,10 @@ fun HomeRoute(
                 }
                 is HomeEffect.NavigateToDomesticGenre -> {
                     onNavigateGenre(null, effect.genre)
+                }
+
+                is HomeEffect.NavigateToCuration -> {
+                    onNavigateCuration(effect.curationId)
                 }
             }
         }

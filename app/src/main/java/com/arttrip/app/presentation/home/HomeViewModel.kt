@@ -361,6 +361,12 @@ class HomeViewModel
                 is HomeIntent.ToggleBookmark -> {
                     bookmarkStore.toggle(intent.id)
                 }
+
+                is HomeIntent.CurationMoreClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(HomeEffect.NavigateToCuration(intent.curationId))
+                    }
+                }
             }
         }
 
