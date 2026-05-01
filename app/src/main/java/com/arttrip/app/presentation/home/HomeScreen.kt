@@ -63,12 +63,14 @@ import com.arttrip.app.core.ui.component.tag.AppTag
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.core.util.noRippleClickable
+import com.arttrip.app.domain.model.curation.Curation
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.presentation.home.contract.HomeIntent
 import com.arttrip.app.presentation.home.contract.HomeState
 import com.arttrip.app.presentation.home.model.SectionLoadState
 import com.arttrip.app.presentation.home.ui.datefilter.DateFilterBottomSheet
 import com.arttrip.app.presentation.home.ui.datefilter.FilterChips
+import com.arttrip.app.presentation.home.ui.feedback.CurationSectionLoading
 import com.arttrip.app.presentation.home.ui.feedback.ErrorExhibitionList
 import com.arttrip.app.presentation.home.ui.feedback.GenreSectionLoading
 import com.arttrip.app.presentation.home.ui.feedback.NoGenreExhibition
@@ -418,6 +420,7 @@ fun ForeignExhibitionSection(
     scrollState: ScrollState,
 ) {
     val selectedCountry = state.selectedCountry
+    val curationState = state.foreignCurationData.getValue(selectedCountry)
 
     val homeSection = state.foreignExhibitionData.getValue(selectedCountry)
 
@@ -499,6 +502,20 @@ fun ForeignExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+        )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(32.dp),
+        )
+        CurationSection(
+            sectionState = curationState,
+            bookmarked = bookmarked,
+            placeTab = PlaceTab.Foreign,
+            selectedCountry = selectedCountry,
+            onMoreClick = { curationId -> onIntent(HomeIntent.CurationMoreClicked(curationId)) },
+            onExhibitionClick = { id -> onIntent(HomeIntent.ExhibitionClicked(id)) },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
@@ -632,6 +649,20 @@ fun DomesticExhibitionSection(
             onExhibitionClick = { id ->
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
+            onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+        )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(32.dp),
+        )
+        CurationSection(
+            sectionState = state.domesticCurationData,
+            bookmarked = bookmarked,
+            placeTab = PlaceTab.Domestic,
+            selectedCountry = ForeignCountry.Entire,
+            onMoreClick = { curationId -> onIntent(HomeIntent.CurationMoreClicked(curationId)) },
+            onExhibitionClick = { id -> onIntent(HomeIntent.ExhibitionClicked(id)) },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
         Spacer(
@@ -985,6 +1016,81 @@ fun WeeklyExhibitSection(
             }
             is SectionLoadState.Error -> {
             }
+        }
+    }
+}
+
+@Composable
+fun CurationSection(
+    sectionState: SectionLoadState<Curation>,
+    bookmarked: Map<Int, Boolean>,
+    placeTab: PlaceTab,
+    selectedCountry: ForeignCountry,
+    onMoreClick: (Long) -> Unit,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+) {
+    when (sectionState) {
+        SectionLoadState.Idle -> {}
+        SectionLoadState.Loading -> {
+            CurationSectionLoading()
+        }
+        is SectionLoadState.Success -> {
+            CurationItem(
+                curation = sectionState.data,
+                bookmarked = bookmarked,
+                placeTab = placeTab,
+                selectedCountry = selectedCountry,
+                onMoreClick = { onMoreClick(sectionState.data.curationId) },
+                onExhibitionClick = onExhibitionClick,
+                onLikeClick = onLikeClick,
+            )
+        }
+        is SectionLoadState.Error -> {}
+    }
+}
+
+@Composable
+fun CurationItem(
+    curation: Curation,
+    bookmarked: Map<Int, Boolean>,
+    placeTab: PlaceTab,
+    selectedCountry: ForeignCountry,
+    onMoreClick: () -> Unit,
+    onExhibitionClick: (Int) -> Unit,
+    onLikeClick: (Int) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        SectionTitle(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            title = curation.title,
+            onMoreClick = onMoreClick,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            text = curation.subtitle,
+            style = AppTextStyle.Body01Regular,
+            color = AppColor.TextPrimary,
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            curation.exhibits.forEach { exhibition ->
+                ExhibitionItemCase1(
+                    exhibition = exhibition.copy(isBookmarked = bookmarked[exhibition.id] ?: exhibition.isBookmarked),
+                    onExhibitionClick = onExhibitionClick,
+                    onLikeClick = onLikeClick,
+                    placeTab = placeTab,
+                    foreignCountry = selectedCountry,
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 }

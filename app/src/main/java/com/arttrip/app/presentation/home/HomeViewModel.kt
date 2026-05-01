@@ -8,12 +8,15 @@ import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
 import com.arttrip.app.core.model.image.ImageQueryParams
 import com.arttrip.app.core.util.bookmark.BookmarkStore
+import com.arttrip.app.domain.model.curation.Curation
 import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.model.network.ApiResult
+import com.arttrip.app.domain.usecase.exhibition.GetDomesticCurationExhibitionUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticGenreExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticPersonalizedExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticRecommendExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetDomesticScheduleExhibitionListUseCase
+import com.arttrip.app.domain.usecase.exhibition.GetForeignCurationExhibitionUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetForeignGenreExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetForeignPersonalizedExhibitionListUseCase
 import com.arttrip.app.domain.usecase.exhibition.GetForeignRecommendExhibitionListUseCase
@@ -48,10 +51,12 @@ class HomeViewModel
         private val getForeignPersonalizedExhibitionListUseCase: GetForeignPersonalizedExhibitionListUseCase,
         private val getForeignScheduledExhibitionListUseCase: GetForeignScheduledExhibitionListUseCase,
         private val getForeignGenreExhibitionListUseCase: GetForeignGenreExhibitionListUseCase,
+        private val getForeignCurationExhibitionUseCase: GetForeignCurationExhibitionUseCase,
         private val getDomesticRecommendExhibitionListUseCase: GetDomesticRecommendExhibitionListUseCase,
         private val getDomesticPersonalizedExhibitionListUseCase: GetDomesticPersonalizedExhibitionListUseCase,
         private val getDomesticScheduleExhibitionListUseCase: GetDomesticScheduleExhibitionListUseCase,
         private val getDomesticGenreExhibitionListUseCase: GetDomesticGenreExhibitionListUseCase,
+        private val getDomesticCurationExhibitionUseCase: GetDomesticCurationExhibitionUseCase,
         private val refreshProfileUseCase: RefreshProfileUseCase,
         private val observeProfile: ObserveProfileUseCase,
         private val bookmarkStore: BookmarkStore,
@@ -73,6 +78,7 @@ class HomeViewModel
             onIntent(HomeIntent.LoadForeignPersonalizedExhibitList(country))
             onIntent(HomeIntent.LoadForeignScheduledExhibitList(country, today))
             onIntent(HomeIntent.LoadForeignGenreExhibitList(country, firstGenre))
+            onIntent(HomeIntent.LoadForeignCurationList(country))
 
             loadProfile() // TODO intent로 변경
 
@@ -98,6 +104,7 @@ class HomeViewModel
                         loadDomesticPersonalizedExhibitList()
                         loadDomesticScheduledExhibitList(date)
                         loadDomesticGenreExhibitList(genre)
+                        loadDomesticCurations()
                     }
                 }
 
@@ -113,6 +120,7 @@ class HomeViewModel
                     loadForeignPersonalizedExhibitList(newCountry)
                     loadForeignScheduledExhibitList(newCountry, date)
                     loadForeignGenreExhibitList(newCountry, genre)
+                    loadForeignCurations(newCountry)
                 }
 
                 is HomeIntent.NotificationIconClicked -> {
@@ -245,6 +253,14 @@ class HomeViewModel
                     loadDomesticGenreExhibitList(intent.genre)
                 }
 
+                is HomeIntent.LoadForeignCurationList -> {
+                    loadForeignCurations(intent.country)
+                }
+
+                is HomeIntent.LoadDomesticCurationList -> {
+                    loadDomesticCurations()
+                }
+
                 is HomeIntent.SelectForeignDate -> {
                     val date = intent.date
 
@@ -344,6 +360,12 @@ class HomeViewModel
 
                 is HomeIntent.ToggleBookmark -> {
                     bookmarkStore.toggle(intent.id)
+                }
+
+                is HomeIntent.CurationMoreClicked -> {
+                    viewModelScope.launch {
+                        _effect.emit(HomeEffect.NavigateToCuration(intent.curationId))
+                    }
                 }
             }
         }
@@ -661,6 +683,59 @@ class HomeViewModel
                             genreList = current.genreList + (genre to state),
                         ),
                 )
+            }
+        }
+
+        private fun loadForeignCurations(country: ForeignCountry) {
+            val current = _state.value.foreignCurationData.getValue(country)
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+
+            setForeignCurationState(country, SectionLoadState.Loading)
+
+            viewModelScope.launch {
+                getForeignCurationExhibitionUseCase(country = country).collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.exhibits.associate { it.id to it.isBookmarked })
+                            setForeignCurationState(country, SectionLoadState.Success(result.data))
+                        }
+                        is ApiResult.Error -> setForeignCurationState(country, SectionLoadState.Error(result.error))
+                    }
+                }
+            }
+        }
+
+        private fun setForeignCurationState(
+            country: ForeignCountry,
+            state: SectionLoadState<Curation>,
+        ) {
+            _state.update { s ->
+                s.copy(
+                    foreignCurationData = s.foreignCurationData + (country to state),
+                )
+            }
+        }
+
+        private fun loadDomesticCurations() {
+            val current = _state.value.domesticCurationData
+            if (current is SectionLoadState.Success || current is SectionLoadState.Loading) return
+
+            _state.update { it.copy(domesticCurationData = SectionLoadState.Loading) }
+
+            viewModelScope.launch {
+                getDomesticCurationExhibitionUseCase().collect { result ->
+                    when (result) {
+                        is ApiResult.Loading -> Unit
+                        is ApiResult.Success -> {
+                            bookmarkStore.upsertFromRemote(result.data.exhibits.associate { it.id to it.isBookmarked })
+                            _state.update { it.copy(domesticCurationData = SectionLoadState.Success(result.data)) }
+                        }
+                        is ApiResult.Error -> {
+                            _state.update { it.copy(domesticCurationData = SectionLoadState.Error(result.error)) }
+                        }
+                    }
+                }
             }
         }
     }
