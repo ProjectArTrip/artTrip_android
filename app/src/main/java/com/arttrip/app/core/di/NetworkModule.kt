@@ -10,6 +10,7 @@ import com.arttrip.app.data.remote.api.MapApi
 import com.arttrip.app.data.remote.api.ReviewApi
 import com.arttrip.app.data.remote.api.SearchHistoryApi
 import com.arttrip.app.data.remote.api.UserApi
+import com.arttrip.app.data.remote.api.UserNoticeApi
 import com.arttrip.app.data.remote.interceptor.AuthInterceptor
 import com.arttrip.app.data.remote.interceptor.TokenAuthenticator
 import dagger.Module
@@ -116,6 +117,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideMapApi(retrofit: Retrofit): MapApi = retrofit.create(MapApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserNoticeApi(retrofit: Retrofit): UserNoticeApi = retrofit.create(UserNoticeApi::class.java)
 
     @Provides
     @Singleton

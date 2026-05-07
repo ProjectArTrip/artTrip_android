@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -27,14 +26,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.arttrip.app.R
 import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.empty.AppEmptyState
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
+import com.arttrip.app.domain.model.notice.Notice
+import com.arttrip.app.domain.model.notice.toNoticeDateText
 import com.arttrip.app.presentation.mypage.sub.settings.sub.notice.contract.NoticeIntent
-import com.arttrip.app.presentation.mypage.sub.settings.sub.notice.contract.NoticeState
 
 private val CONTENT_HORIZONTAL_PADDING = 24.dp
 private val BOTTOM_SCROLL_SPACER = 48.dp
@@ -42,11 +44,12 @@ private val BOTTOM_SCROLL_SPACER = 48.dp
 @Composable
 fun NoticeScreen(
     innerPadding: PaddingValues,
-    state: NoticeState,
     onIntent: (NoticeIntent) -> Unit,
+    noticeItems: LazyPagingItems<Notice>,
 ) {
     val listState = rememberLazyListState()
     var expandedIds by rememberSaveable { mutableStateOf(setOf<Int>()) }
+    val isEmpty = noticeItems.itemCount == 0 && noticeItems.loadState.refresh is LoadState.NotLoading
     Column(
         modifier =
             Modifier
@@ -66,8 +69,9 @@ fun NoticeScreen(
                 )
             },
         )
+        //  noticeItems.loadState.refresh is LoadState.Loading
 
-        if (state.isEmpty) {
+        if (isEmpty) {
             AppEmptyState(
                 modifier = Modifier.fillMaxWidth(),
                 iconResId = R.drawable.ic_empty_notice_96,
@@ -81,19 +85,21 @@ fun NoticeScreen(
                 state = listState,
                 contentPadding = PaddingValues(top = 16.dp, bottom = BOTTOM_SCROLL_SPACER),
             ) {
-                items(state.notices, key = { it.id }) { notice ->
-                    val expanded = expandedIds.contains(notice.id)
+                items(noticeItems.itemCount) { idx ->
+                    val item = noticeItems[idx] ?: return@items
+
+                    val expanded = expandedIds.contains(item.userNoticeId)
                     NoticeMenuItem(
-                        title = notice.title,
-                        date = notice.date,
-                        content = notice.content,
+                        title = item.title,
+                        date = item.createdAt.toNoticeDateText(),
+                        content = item.content,
                         expanded = expanded,
                         onMenuClick = {
                             expandedIds =
                                 if (expanded) {
-                                    expandedIds - notice.id
+                                    expandedIds - item.userNoticeId
                                 } else {
-                                    expandedIds + notice.id
+                                    expandedIds + item.userNoticeId
                                 }
                         },
                     )

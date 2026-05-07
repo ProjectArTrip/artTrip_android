@@ -16,5 +16,7 @@ object ApiConstants {
 
     const val MAP_PATH = "/map"
 
+    const val USER_NOTICE_PATH = "/notifications"
+
     const val CURATION_PATH = "/curations"
 }
