@@ -77,6 +77,12 @@ sealed interface HomeIntent {
         val genre: ExhibitionGenre,
     ) : HomeIntent
 
+    data class LoadForeignCurationList(
+        val country: ForeignCountry,
+    ) : HomeIntent
+
+    object LoadDomesticCurationList : HomeIntent
+
     data class SelectForeignDate(
         val date: LocalDate,
     ) : HomeIntent
@@ -121,5 +127,9 @@ sealed interface HomeIntent {
 
     data class ToggleBookmark(
         val id: Int,
+    ) : HomeIntent
+
+    data class CurationMoreClicked(
+        val curationId: Long,
     ) : HomeIntent
 }

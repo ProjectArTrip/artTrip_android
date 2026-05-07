@@ -61,6 +61,10 @@ fun NavHostController.navigateToTaste() {
     navigate(MainRoute.TASTE_ANALYSIS)
 }
 
+fun NavHostController.navigateToCuration(curationId: Long) {
+    navigate(MainRoute.curation(curationId))
+}
+
 /**
  * 이전 backStackEntry에서 ReviewWritePrefill을 꺼내오고(consume) 즉시 삭제
  * - ReviewWriteRoute에서 remember로 1회만 읽도록 감싸서 쓰는 걸 권장

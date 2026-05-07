@@ -48,6 +48,11 @@ object MainRoute {
     private const val HOME_GENRE_ROUTE = "home_genre"
     const val HOME_GENRE = "$HOME_GENRE_ROUTE?country={country}&genre={genre}"
 
+    private const val HOME_CURATION_ROUTE = "home_curation"
+    const val HOME_CURATION = "$HOME_CURATION_ROUTE/{curationId}"
+
+    fun curation(curationId: Long) = "$HOME_CURATION_ROUTE/$curationId"
+
     fun genre(
         country: ForeignCountry? = null,
         genre: ExhibitionGenre,

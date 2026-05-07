@@ -3,6 +3,7 @@ package com.arttrip.app.presentation.home.contract
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
 import com.arttrip.app.core.model.enums.foreign.ForeignCountry
+import com.arttrip.app.domain.model.curation.Curation
 import com.arttrip.app.presentation.home.PlaceTab
 import com.arttrip.app.presentation.home.model.HomeSection
 import com.arttrip.app.presentation.home.model.SectionLoadState
@@ -17,9 +18,12 @@ data class HomeState(
         ForeignCountry.entries.associateWith { emptyCountryHomeData() },
     val foreignSelectedDate: List<LocalDate> = List(ForeignCountry.entries.size) { LocalDate.now() },
     val foreignSelectedGenre: List<ExhibitionGenre> = List(ForeignCountry.entries.size) { ExhibitionGenre.ContemporaryArt },
+    val foreignCurationData: Map<ForeignCountry, SectionLoadState<Curation>> =
+        ForeignCountry.entries.associateWith { SectionLoadState.Idle },
     val domesticExhibitionData: HomeSection = emptyCountryHomeData(),
     val domesticSelectedDate: LocalDate = LocalDate.now(),
     val domesticSelectedGenre: ExhibitionGenre = ExhibitionGenre.ContemporaryArt,
+    val domesticCurationData: SectionLoadState<Curation> = SectionLoadState.Idle,
     val isDateFilterSheetVisible: Boolean = false,
     val dateFilterStartDate: LocalDate? = null,
     val dateFilterEndDate: LocalDate? = null,
