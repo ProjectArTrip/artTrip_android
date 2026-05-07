@@ -121,7 +121,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideUserNoticeApi(retrofit: Retrofit): UserNoticeApi = retrofit.create(UserNoticeApi::class.java)
-    
+
     @Provides
     @Singleton
     fun provideCurationApi(retrofit: Retrofit): CurationApi = retrofit.create(CurationApi::class.java)

@@ -70,7 +70,7 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun noticeRepository(noticeRepositoryImpl: NoticeRepositoryImpl): NoticeRepository
-  
+
     @Singleton
     @Binds
     abstract fun curationRepository(curationRepositoryImpl: CurationRepositoryImpl): CurationRepository
