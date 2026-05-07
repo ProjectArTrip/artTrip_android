@@ -3,6 +3,7 @@ package com.arttrip.app.data.remote.paging.usernotice
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.arttrip.app.core.model.enums.notification.Action
 import com.arttrip.app.data.remote.datasource.UserNoticeDataSource
 import com.arttrip.app.data.remote.mapper.review.toDomain
 import com.arttrip.app.data.remote.mapper.usernotice.toDomain
@@ -21,6 +22,7 @@ class NoticePagingSource(
             Log.d("NoticePagingSource", "load() cursor=$cursor loadSize=$loadSize")
             val res =
                 dataSource.getNotices(
+                    action = Action.MOVE_NOTICE_DETAIL.name,
                     cursor = cursor,
                     size = loadSize,
                 )

@@ -8,6 +8,7 @@ import retrofit2.http.Query
 interface UserNoticeApi {
     @GET(USER_NOTICE_PATH)
     suspend fun getNotifications(
+        @Query("action") action: String? = null,
         @Query("cursor") cursor: Int? = null,
         @Query("size") size: Int = 20,
     ): NotificationPageResDto

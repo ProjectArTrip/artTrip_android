@@ -10,10 +10,12 @@ class UserNoticeDataSource
         private val api: UserNoticeApi,
     ) {
         suspend fun getNotices(
+            action: String?,
             cursor: Int?,
             size: Int,
         ): NotificationPageResDto =
             api.getNotifications(
+                action = action,
                 cursor = cursor,
                 size = size,
             )
