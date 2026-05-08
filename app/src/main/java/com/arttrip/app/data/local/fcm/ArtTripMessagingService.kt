@@ -37,8 +37,10 @@ class ArtTripMessagingService : FirebaseMessagingService() {
         )
         val title = message.notification?.title ?: return
         val body = message.notification?.body ?: ""
+        val action = message.data["action"]
+        val exhibitId = message.data["referenceId"]?.toIntOrNull()
         scope.launch {
-            fcmEventBus.emit(FcmMessage(title = title, body = body))
+            fcmEventBus.emit(FcmMessage(title = title, body = body, action = action, exhibitId = exhibitId))
         }
     }
 
