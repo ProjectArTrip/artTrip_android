@@ -2,6 +2,7 @@ package com.arttrip.app
 
 import ToastController
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -36,8 +37,22 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var fcmEventBus: FcmEventBus
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleFcmIntent(intent)
+    }
+
+    private fun handleFcmIntent(intent: Intent) {
+        val action = intent.getStringExtra("action") ?: return
+        if (action == "MOVE_EXHIBIT_DETAIL") {
+            val exhibitId = intent.getStringExtra("referenceId")?.toIntOrNull() ?: return
+            fcmEventBus.emitDeepLink(exhibitId)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        handleFcmIntent(intent)
         installSplashScreen()
 
         enableEdgeToEdge()
@@ -69,7 +84,10 @@ class MainActivity : ComponentActivity() {
                         AppNotificationHost(
                             message = fcmMessage,
                             onDismiss = { fcmMessage = null },
-                            onClick = { android.util.Log.d("MainActivity", "notification banner clicked") },
+                            onClick = {
+                                fcmMessage?.exhibitId?.let { fcmEventBus.emitDeepLink(it) }
+                                fcmMessage = null
+                            },
                         )
 
                         AppToastHost(hostState = toastController.hostState)
