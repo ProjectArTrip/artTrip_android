@@ -1,9 +1,15 @@
 package com.arttrip.app.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.arttrip.app.data.remote.datasource.UserDataSource
+import com.arttrip.app.data.remote.datasource.UserNoticeDataSource
 import com.arttrip.app.data.remote.mapper.base.toAppError
 import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
+import com.arttrip.app.data.remote.paging.usernotice.NotificationPagingSource
 import com.arttrip.app.domain.model.network.ApiResult
+import com.arttrip.app.domain.model.notification.Notification
 import com.arttrip.app.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,6 +20,7 @@ class NotificationRepositoryImpl
     @Inject
     constructor(
         private val userDataSource: UserDataSource,
+        private val userNoticeDataSource: UserNoticeDataSource,
     ) : NotificationRepository {
         override fun registerUserFcmToken(fcmToken: String): Flow<ApiResult<Unit>> =
             flow {
@@ -22,6 +29,37 @@ class NotificationRepositoryImpl
                     userDataSource.postUserFcmToken(
                         UserFcmTokenReqDto(token = fcmToken),
                     )
+                    emit(ApiResult.Success(Unit))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
+
+        override fun getNotifications(
+            pageSize: Int,
+            initialLoadSize: Int,
+        ): Flow<PagingData<Notification>> =
+            Pager(
+                config =
+                    PagingConfig(
+                        pageSize = pageSize,
+                        initialLoadSize = initialLoadSize,
+                        prefetchDistance = 1,
+                        enablePlaceholders = false,
+                    ),
+                pagingSourceFactory = {
+                    NotificationPagingSource(
+                        dataSource = userNoticeDataSource,
+                    )
+                },
+            ).flow
+
+        override fun readNotification(userNoticeId: Int): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+                try {
+                    userNoticeDataSource.readNotification(userNoticeId)
                     emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
