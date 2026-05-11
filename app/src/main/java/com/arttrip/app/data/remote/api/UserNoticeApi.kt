@@ -2,6 +2,7 @@ package com.arttrip.app.data.remote.api
 
 import com.arttrip.app.data.remote.api.ApiConstants.USER_NOTICE_PATH
 import com.arttrip.app.data.remote.model.usernotice.NotificationPageResDto
+import com.arttrip.app.data.remote.model.usernotice.NotificationReadStatusResDto
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -19,4 +20,7 @@ interface UserNoticeApi {
     suspend fun readNotification(
         @Path("userNoticeId") userNoticeId: Int,
     )
+
+    @GET("$USER_NOTICE_PATH/read-status")
+    suspend fun getReadStatus(): NotificationReadStatusResDto
 }

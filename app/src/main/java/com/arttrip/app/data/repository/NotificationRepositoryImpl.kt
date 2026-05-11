@@ -66,4 +66,16 @@ class NotificationRepositoryImpl
                     emit(ApiResult.Error(t.toAppError()))
                 }
             }
+
+        override fun getHasUnread(): Flow<ApiResult<Boolean>> =
+            flow {
+                emit(ApiResult.Loading)
+                try {
+                    val hasUnread = userNoticeDataSource.getReadStatus()
+                    emit(ApiResult.Success(hasUnread))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
     }

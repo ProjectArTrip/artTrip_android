@@ -14,4 +14,6 @@ interface NotificationRepository {
     ): Flow<PagingData<Notification>>
 
     fun readNotification(userNoticeId: Int): Flow<ApiResult<Unit>>
+
+    fun getHasUnread(): Flow<ApiResult<Boolean>>
 }
