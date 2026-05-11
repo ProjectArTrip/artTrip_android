@@ -41,6 +41,7 @@ import java.time.format.DateTimeFormatter
 fun ScheduleScreen(
     innerPadding: PaddingValues,
     state: ScheduleState,
+    hasUnread: Boolean = false,
     onIntent: (ScheduleIntent) -> Unit,
     date: LocalDate,
     exhibitionList: LazyPagingItems<Exhibition>,
@@ -67,7 +68,7 @@ fun ScheduleScreen(
                 },
                 actions = {
                     AppIconButton(
-                        iconResId = R.drawable.ic_alert_badge_24,
+                        iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
                         contentDescription = "Notification Button",
                         onIconClick = { onIntent(ScheduleIntent.NotificationIconClicked) },
                     )

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CurationRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     viewModel: CurationViewModel = hiltViewModel(),
     curationId: Long,
     onBack: () -> Unit,
@@ -41,6 +42,7 @@ fun CurationRoute(
     CurationScreen(
         innerPadding = innerPadding,
         state = state,
+        hasUnread = hasUnread,
         onIntent = viewModel::onIntent,
         exhibitionList = exhibitionList,
         bookmarked = bookmarked,

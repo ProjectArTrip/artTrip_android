@@ -50,7 +50,17 @@ fun MainNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
     startDestination: String,
+    hasUnread: Boolean = false,
+    onRefreshHasUnread: () -> Unit = {},
 ) {
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    LaunchedEffect(currentBackStackEntry) {
+        if (currentBackStackEntry?.destination?.route == MainRoute.HOME_NOTIFICATION) return@LaunchedEffect
+        if (navController.previousBackStackEntry?.destination?.route == MainRoute.HOME_NOTIFICATION) {
+            onRefreshHasUnread()
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -72,6 +82,7 @@ fun MainNavHost(
         composable(BottomNavItem.Home.route) {
             HomeRoute(
                 innerPadding,
+                hasUnread = hasUnread,
                 onNavigateNotification = navController::navigateToNotification,
                 onNavigateDateFilterResult = { isDomestic, location, startDate, endDate ->
                     navController.navigateToDateFilterResult(isDomestic, location, startDate, endDate)
@@ -106,19 +117,23 @@ fun MainNavHost(
         composable(BottomNavItem.Bookmark.route) {
             BookmarkRoute(
                 innerPadding,
+                hasUnread = hasUnread,
                 onNavigateExhibitionDetail = { exhibitId ->
                     navController.navigateToExhibitionDetail(exhibitId)
                 },
+                onNavigateNotification = navController::navigateToNotification,
             )
         }
         composable(BottomNavItem.MyPage.route) {
             MyPageRoute(
                 innerPadding = innerPadding,
+                hasUnread = hasUnread,
                 onNavigateEditProfile = { navController.navigate(MainRoute.MY_PAGE_EDIT_PROFILE) },
                 onNavigateRecentExhibitions = { navController.navigate(MainRoute.MY_PAGE_RECENT_EXHIBITIONS) },
                 onNavigateMyReviews = { navController.navigate(MainRoute.MY_PAGE_MY_REVIEWS) },
                 onNavigateTasteAnalysis = { navController.navigateToTaste() },
                 onNavigateSettings = { navController.navigate(MainRoute.MY_PAGE_SETTINGS) },
+                onNavigateNotification = navController::navigateToNotification,
             )
         }
 
@@ -274,6 +289,7 @@ fun MainNavHost(
 
             ScheduleRoute(
                 innerPadding = innerPadding,
+                hasUnread = hasUnread,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
                 onNavigateToExhibitionDetail = navController::navigateToExhibitionDetail,
@@ -306,6 +322,7 @@ fun MainNavHost(
 
             GenreRoute(
                 innerPadding = innerPadding,
+                hasUnread = hasUnread,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,
                 onNavigateExhibitionDetail = { id -> navController.navigateToExhibitionDetail(id) },
@@ -370,6 +387,7 @@ fun MainNavHost(
 
             CurationRoute(
                 innerPadding = innerPadding,
+                hasUnread = hasUnread,
                 curationId = curationId,
                 onBack = navController::popBackStack,
                 onNavigateNotification = navController::navigateToNotification,

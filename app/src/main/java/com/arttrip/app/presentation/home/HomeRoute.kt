@@ -15,6 +15,7 @@ import java.time.LocalDate
 @Composable
 fun HomeRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     onNavigateNotification: () -> Unit,
     onNavigateDateFilterResult: (Boolean, String, LocalDate, LocalDate) -> Unit,
     onNavigateSearch: () -> Unit,
@@ -72,6 +73,7 @@ fun HomeRoute(
         innerPadding = innerPadding,
         state = state,
         bookmarked = bookmarked,
+        hasUnread = hasUnread,
         onIntent = viewModel::onIntent,
     )
 }

@@ -16,6 +16,7 @@ import java.time.LocalDate
 @Composable
 fun ScheduleRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     viewModel: ScheduleViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onNavigateNotification: () -> Unit,
@@ -46,6 +47,7 @@ fun ScheduleRoute(
     ScheduleScreen(
         innerPadding = innerPadding,
         state = state,
+        hasUnread = hasUnread,
         onIntent = viewModel::onIntent,
         date = date,
         exhibitionList = exhibitionList,

@@ -46,8 +46,10 @@ private val BOTTOM_SCROLL_SPACER = 48.dp
 @Composable
 fun MyPageScreen(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     state: MyPageState,
     onIntent: (MyPageIntent) -> Unit,
+    onNavigateNotification: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -62,8 +64,8 @@ fun MyPageScreen(
             leading = null,
             actions = {
                 AppIconButton(
-                    iconResId = R.drawable.ic_alert_24,
-                    onIconClick = {},
+                    iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
+                    onIconClick = onNavigateNotification,
                 )
             },
         )

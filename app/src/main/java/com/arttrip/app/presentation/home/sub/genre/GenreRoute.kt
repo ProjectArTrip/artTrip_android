@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun GenreRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     viewModel: GenreViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onNavigateNotification: () -> Unit,
@@ -49,6 +50,7 @@ fun GenreRoute(
     GenreScreen(
         innerPadding = innerPadding,
         state = state,
+        hasUnread = hasUnread,
         onIntent = viewModel::onIntent,
         country = country,
         genre = genre,

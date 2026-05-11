@@ -22,6 +22,8 @@ import com.arttrip.app.core.ui.theme.ArtTripTheme
 fun MainScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    hasUnread: Boolean = false,
+    onRefreshHasUnread: () -> Unit = {},
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -67,6 +69,8 @@ fun MainScreen(
             navController = navController,
             innerPadding = innerPadding,
             startDestination = BottomNavItem.Home.route,
+            hasUnread = hasUnread,
+            onRefreshHasUnread = onRefreshHasUnread,
         )
     }
 }

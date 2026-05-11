@@ -29,6 +29,7 @@ import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 fun CurationScreen(
     innerPadding: PaddingValues,
     state: CurationState,
+    hasUnread: Boolean = false,
     onIntent: (CurationIntent) -> Unit,
     exhibitionList: LazyPagingItems<Exhibition>,
     bookmarked: Map<Int, Boolean>,
@@ -63,7 +64,7 @@ fun CurationScreen(
                 },
                 actions = {
                     AppIconButton(
-                        iconResId = R.drawable.ic_alert_badge_24,
+                        iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
                         contentDescription = "Notification Button",
                         onIconClick = { onIntent(CurationIntent.NotificationIconClicked) },
                     )
