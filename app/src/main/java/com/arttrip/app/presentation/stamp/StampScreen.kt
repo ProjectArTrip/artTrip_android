@@ -54,12 +54,13 @@ import com.arttrip.app.R
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.core.ui.theme.ArtTripTheme
+import com.arttrip.app.presentation.stamp.contract.StampState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StampScreen(
-    modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
+    state: StampState,
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
@@ -73,7 +74,7 @@ fun StampScreen(
 
     BottomSheetScaffold(
         modifier =
-            modifier
+            Modifier
                 .padding(bottom = innerPadding.calculateBottomPadding()),
         scaffoldState = scaffoldState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -82,15 +83,15 @@ fun StampScreen(
         sheetDragHandle = {},
         sheetPeekHeight = sheetHeight,
         sheetContent = {
-            StampSheetContent(sheetHeight)
+            StampSheetContent(sheetHeight = sheetHeight, nextGradeProgress = state.nextGradeProgress)
         },
     ) {
-        StampHeader()
+        StampHeader(currentGradeName = state.currentGradeName)
     }
 }
 
 @Composable
-private fun StampHeader() {
+private fun StampHeader(currentGradeName: String) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.img_stamp_bg),
@@ -136,7 +137,7 @@ private fun StampHeader() {
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                "여행의 시작",
+                currentGradeName,
                 style = AppTextStyle.Title01Bold,
                 color = AppColor.TextWhite,
             )
@@ -151,7 +152,10 @@ private fun StampHeader() {
 }
 
 @Composable
-private fun StampSheetContent(sheetHeight: Dp) {
+private fun StampSheetContent(
+    sheetHeight: Dp,
+    nextGradeProgress: Float,
+) {
     Column(
         modifier =
             Modifier
@@ -175,13 +179,13 @@ private fun StampSheetContent(sheetHeight: Dp) {
             )
             Spacer(Modifier.weight(1f))
             Text(
-                "0%",
+                "${(nextGradeProgress * 100).toInt()}%",
                 style = AppTextStyle.Title02Bold,
                 color = AppColor.TextPoint,
             )
         }
         Spacer(Modifier.height(8.dp))
-        StampProgressBar()
+        StampProgressBar(progress = nextGradeProgress)
         Spacer(Modifier.height(8.dp))
         Text(
             "스탬프 기능은 현재 준비 중입니다.",
@@ -194,9 +198,7 @@ private fun StampSheetContent(sheetHeight: Dp) {
 }
 
 @Composable
-private fun StampProgressBar() {
-    val progress by remember { mutableFloatStateOf(0f) } // 0f ~ 1f
-
+private fun StampProgressBar(progress: Float) {
     Box(
         modifier =
             Modifier
@@ -276,7 +278,13 @@ private fun StampMap(modifier: Modifier = Modifier) {
                                     width = 2.dp.toPx(),
                                     cap = StrokeCap.Round,
                                     // Round cap이 양끝 1dp씩 확장되므로 도트 8→6dp, 간격 4→6dp로 보정
-                                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 6.dp.toPx())),
+                                    pathEffect =
+                                        PathEffect.dashPathEffect(
+                                            floatArrayOf(
+                                                6.dp.toPx(),
+                                                6.dp.toPx(),
+                                            ),
+                                        ),
                                 ),
                         )
                     }
