@@ -2,5 +2,8 @@ package com.arttrip.app.presentation.home.sub.notification.contract
 
 sealed interface NotificationEffect {
     object NavigateBack : NotificationEffect
-    data class NavigateToNotice(val referenceId: Int) : NotificationEffect
+
+    data class NavigateToNotice(
+        val referenceId: Int,
+    ) : NotificationEffect
 }

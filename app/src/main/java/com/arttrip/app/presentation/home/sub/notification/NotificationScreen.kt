@@ -1,5 +1,6 @@
 package com.arttrip.app.presentation.home.sub.notification
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
@@ -78,14 +78,14 @@ fun NotificationScreen(
                         message = item.body,
                         relativeTime = item.createdAt.toRelativeDateText(),
                         onClick = {
-                                onIntent(
-                                    NotificationIntent.NotificationItemClicked(
-                                        userNoticeId = item.userNoticeId,
-                                        action = item.action,
-                                        referenceId = item.referenceId,
-                                    ),
-                                )
-                            },
+                            onIntent(
+                                NotificationIntent.NotificationItemClicked(
+                                    userNoticeId = item.userNoticeId,
+                                    action = item.action,
+                                    referenceId = item.referenceId,
+                                ),
+                            )
+                        },
                     )
                 }
             }
@@ -102,9 +102,10 @@ fun NotificationItem(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClick() },
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         Row {

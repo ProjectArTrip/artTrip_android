@@ -208,7 +208,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeAppBar(hasUnread: Boolean = false, onIntent: (HomeIntent) -> Unit) {
+fun HomeAppBar(
+    hasUnread: Boolean = false,
+    onIntent: (HomeIntent) -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
