@@ -215,6 +215,7 @@ fun MainNavHost(
             NotificationRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                onNavigateToNotice = { referenceId -> navController.navigateToNotice(referenceId) },
             )
         }
 

@@ -38,6 +38,7 @@ fun NotificationScreen(
     innerPadding: PaddingValues,
     onIntent: (NotificationIntent) -> Unit,
     notificationItems: LazyPagingItems<Notification>,
+    localReadIds: Set<Int> = emptySet(),
 ) {
     val listState = rememberLazyListState()
 
@@ -72,11 +73,19 @@ fun NotificationScreen(
                 items(notificationItems.itemCount) { idx ->
                     val item = notificationItems[idx] ?: return@items
                     NotificationItem(
-                        isRead = item.isRead,
+                        isRead = item.isRead || item.userNoticeId in localReadIds,
                         title = item.title,
                         message = item.body,
                         relativeTime = item.createdAt.toRelativeDateText(),
-                        onClick = { onIntent(NotificationIntent.NotificationItemClicked(item.userNoticeId)) },
+                        onClick = {
+                                onIntent(
+                                    NotificationIntent.NotificationItemClicked(
+                                        userNoticeId = item.userNoticeId,
+                                        action = item.action,
+                                        referenceId = item.referenceId,
+                                    ),
+                                )
+                            },
                     )
                 }
             }
