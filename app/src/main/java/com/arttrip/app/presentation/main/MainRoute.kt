@@ -9,8 +9,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.arttrip.app.core.model.enums.notification.Action
 import com.arttrip.app.core.navigation.app.AppRoute
-import com.arttrip.app.core.navigation.main.navigateToExhibitionDetail
+import com.arttrip.app.core.navigation.main.navigateToNotice
 
 @Composable
 fun MainRoute(
@@ -21,7 +22,7 @@ fun MainRoute(
     val mainNavController = rememberNavController()
 
     val signal = mainViewModel.logoutSignal.collectAsStateWithLifecycle().value
-    val pendingExhibitId by mainViewModel.pendingDeepLinkExhibitId.collectAsStateWithLifecycle()
+    val pendingDeepLink by mainViewModel.pendingDeepLink.collectAsStateWithLifecycle()
 
     LaunchedEffect(signal) {
         if (signal > 0) {
@@ -34,9 +35,12 @@ fun MainRoute(
         }
     }
 
-    LaunchedEffect(pendingExhibitId) {
-        pendingExhibitId?.let { exhibitId ->
-            mainNavController.navigateToExhibitionDetail(exhibitId)
+    LaunchedEffect(pendingDeepLink) {
+        pendingDeepLink?.let { (action, _) ->
+            when (action) {
+                Action.MOVE_NOTICE_DETAIL -> mainNavController.navigateToNotice()
+                else -> Unit
+            }
             mainViewModel.consumeDeepLink()
         }
     }

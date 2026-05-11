@@ -14,7 +14,7 @@ class MainViewModel
         private val fcmEventBus: FcmEventBus,
     ) : ViewModel() {
         val logoutSignal = sessionManager.logoutSignal
-        val pendingDeepLinkExhibitId = fcmEventBus.pendingDeepLinkExhibitId
+        val pendingDeepLink = fcmEventBus.pendingDeepLink
 
         fun consumeLogoutSignal() {
             sessionManager.consumeLogoutSignal()

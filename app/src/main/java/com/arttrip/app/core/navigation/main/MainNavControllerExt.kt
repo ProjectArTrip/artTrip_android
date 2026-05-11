@@ -65,6 +65,10 @@ fun NavHostController.navigateToCuration(curationId: Long) {
     navigate(MainRoute.curation(curationId))
 }
 
+fun NavHostController.navigateToNotice() {
+    navigate(MainRoute.MY_PAGE_NOTICE)
+}
+
 /**
  * 이전 backStackEntry에서 ReviewWritePrefill을 꺼내오고(consume) 즉시 삭제
  * - ReviewWriteRoute에서 remember로 1회만 읽도록 감싸서 쓰는 걸 권장

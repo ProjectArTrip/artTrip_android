@@ -1,6 +1,7 @@
 package com.arttrip.app.data.local.fcm
 
 import android.util.Log
+import com.arttrip.app.core.model.enums.notification.Action
 import com.arttrip.app.domain.usecase.notification.RegisterFcmTokenUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -37,10 +38,10 @@ class ArtTripMessagingService : FirebaseMessagingService() {
         )
         val title = message.notification?.title ?: return
         val body = message.notification?.body ?: ""
-        val action = message.data["action"]
-        val exhibitId = message.data["referenceId"]?.toIntOrNull()
+        val action = message.data["action"]?.let { name -> Action.entries.find { it.name == name } }
+        val referenceId = message.data["referenceId"]?.toIntOrNull()
         scope.launch {
-            fcmEventBus.emit(FcmMessage(title = title, body = body, action = action, exhibitId = exhibitId))
+            fcmEventBus.emit(FcmMessage(title = title, body = body, action = action, referenceId = referenceId))
         }
     }
 

@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import com.arttrip.app.core.model.enums.notification.Action
 import com.arttrip.app.core.navigation.app.AppNavHost
 import com.arttrip.app.core.ui.component.toast.AppNotificationHost
 import com.arttrip.app.core.ui.component.toast.AppToastHost
@@ -43,10 +44,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleFcmIntent(intent: Intent) {
-        val action = intent.getStringExtra("action") ?: return
-        if (action == "MOVE_EXHIBIT_DETAIL") {
-            val exhibitId = intent.getStringExtra("referenceId")?.toIntOrNull() ?: return
-            fcmEventBus.emitDeepLink(exhibitId)
+        val actionStr = intent.getStringExtra("action") ?: return
+        val action = Action.entries.find { it.name == actionStr } ?: return
+        val referenceId = intent.getStringExtra("referenceId")?.toIntOrNull()
+        when (action) {
+            Action.MOVE_NOTICE_DETAIL -> fcmEventBus.emitDeepLink(action, referenceId)
+            else -> Unit
         }
     }
 
@@ -85,7 +88,9 @@ class MainActivity : ComponentActivity() {
                             message = fcmMessage,
                             onDismiss = { fcmMessage = null },
                             onClick = {
-                                fcmMessage?.exhibitId?.let { fcmEventBus.emitDeepLink(it) }
+                                fcmMessage?.action?.let { action ->
+                                    fcmEventBus.emitDeepLink(action, fcmMessage?.referenceId)
+                                }
                                 fcmMessage = null
                             },
                         )
