@@ -3,10 +3,11 @@ package com.arttrip.app.core.di
 import com.arttrip.app.data.repository.AuthRepositoryImpl
 import com.arttrip.app.data.repository.BookmarkRepositoryImpl
 import com.arttrip.app.data.repository.CurationRepositoryImpl
-import com.arttrip.app.data.repository.ExhibitRepositoryImpl
+import com.arttrip.app.data.repository.ExhibitionRepositoryImpl
 import com.arttrip.app.data.repository.HomeRepositoryImpl
 import com.arttrip.app.data.repository.MapRepositoryImpl
 import com.arttrip.app.data.repository.NoticeRepositoryImpl
+import com.arttrip.app.data.repository.NotificationRepositoryImpl
 import com.arttrip.app.data.repository.ProfileRepositoryImpl
 import com.arttrip.app.data.repository.ReviewRepositoryImpl
 import com.arttrip.app.data.repository.SearchHistoryRepositoryImpl
@@ -14,10 +15,11 @@ import com.arttrip.app.data.repository.UserTasteRepositoryImpl
 import com.arttrip.app.domain.repository.AuthRepository
 import com.arttrip.app.domain.repository.BookmarkRepository
 import com.arttrip.app.domain.repository.CurationRepository
-import com.arttrip.app.domain.repository.ExhibitRepository
+import com.arttrip.app.domain.repository.ExhibitionRepository
 import com.arttrip.app.domain.repository.HomeRepository
 import com.arttrip.app.domain.repository.MapRepository
 import com.arttrip.app.domain.repository.NoticeRepository
+import com.arttrip.app.domain.repository.NotificationRepository
 import com.arttrip.app.domain.repository.ProfileRepository
 import com.arttrip.app.domain.repository.ReviewRepository
 import com.arttrip.app.domain.repository.SearchHistoryRepository
@@ -45,7 +47,7 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun exhibitRepository(exhibitRepositoryImpl: ExhibitRepositoryImpl): ExhibitRepository
+    abstract fun exhibitionRepository(exhibitionRepositoryImpl: ExhibitionRepositoryImpl): ExhibitionRepository
 
     @Singleton
     @Binds
@@ -74,4 +76,8 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun curationRepository(curationRepositoryImpl: CurationRepositoryImpl): CurationRepository
+
+    @Singleton
+    @Binds
+    abstract fun notificationRepository(notificationRepositoryImpl: NotificationRepositoryImpl): NotificationRepository
 }

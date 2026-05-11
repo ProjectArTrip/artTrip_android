@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun NoticeRoute(
     innerPadding: PaddingValues,
     onBack: () -> Unit,
+    initialExpandedId: Int? = null,
     viewModel: NoticeViewModel = hiltViewModel(),
 ) {
     val reviewsFlow = viewModel.noticesFlow
@@ -29,5 +30,6 @@ fun NoticeRoute(
         innerPadding = innerPadding,
         onIntent = viewModel::onIntent,
         noticeItems = noticeItems,
+        initialExpandedId = initialExpandedId,
     )
 }

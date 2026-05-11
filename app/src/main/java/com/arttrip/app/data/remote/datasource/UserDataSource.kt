@@ -2,6 +2,7 @@ package com.arttrip.app.data.remote.datasource
 
 import com.arttrip.app.core.model.image.ImageQueryParams
 import com.arttrip.app.data.remote.api.UserApi
+import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
 import com.arttrip.app.data.remote.model.user.UserNicknameReqDto
 import okhttp3.MultipartBody
 import javax.inject.Inject
@@ -30,4 +31,6 @@ class UserDataSource
                 h = image.heightPx,
                 f = image.format.value,
             )
+
+        suspend fun postUserFcmToken(userFcmTokenReqDto: UserFcmTokenReqDto) = api.postFcmToken(userFcmTokenReqDto)
     }

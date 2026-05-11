@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,10 +47,24 @@ fun NoticeScreen(
     innerPadding: PaddingValues,
     onIntent: (NoticeIntent) -> Unit,
     noticeItems: LazyPagingItems<Notice>,
+    initialExpandedId: Int? = null,
 ) {
     val listState = rememberLazyListState()
     var expandedIds by rememberSaveable { mutableStateOf(setOf<Int>()) }
     val isEmpty = noticeItems.itemCount == 0 && noticeItems.loadState.refresh is LoadState.NotLoading
+
+    LaunchedEffect(noticeItems.loadState.refresh) {
+        if (initialExpandedId == null) return@LaunchedEffect
+        if (noticeItems.loadState.refresh !is LoadState.NotLoading) return@LaunchedEffect
+        val index =
+            (0 until noticeItems.itemCount)
+                .firstOrNull { noticeItems.peek(it)?.referenceId == initialExpandedId }
+        index?.let {
+            val userNoticeId = noticeItems.peek(it)?.userNoticeId ?: return@let
+            expandedIds = setOf(userNoticeId)
+            listState.scrollToItem(it)
+        }
+    }
     Column(
         modifier =
             Modifier

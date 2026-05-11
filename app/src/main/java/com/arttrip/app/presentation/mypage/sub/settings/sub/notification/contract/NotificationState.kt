@@ -2,7 +2,5 @@ package com.arttrip.app.presentation.mypage.sub.settings.sub.notification.contra
 
 data class NotificationState(
     val exhibitionInfoEnabled: Boolean = true,
-    val savedExhibitionOpenEnabled: Boolean = true,
-    val stampIssuedEnabled: Boolean = true,
-    val marketingPushEnabled: Boolean = true,
+    val noticePushEnalbed: Boolean = true,
 )

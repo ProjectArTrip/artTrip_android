@@ -17,17 +17,17 @@ import com.arttrip.app.domain.model.exhibition.Exhibition
 import com.arttrip.app.domain.model.exhibition.ExhibitionDetail
 import com.arttrip.app.domain.model.exhibition.RecentExhibition
 import com.arttrip.app.domain.model.network.ApiResult
-import com.arttrip.app.domain.repository.ExhibitRepository
+import com.arttrip.app.domain.repository.ExhibitionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class ExhibitRepositoryImpl
+class ExhibitionRepositoryImpl
     @Inject
     constructor(
         private val exhibitDataSource: ExhibitDataSource,
         private val userDataSource: UserDataSource,
-    ) : ExhibitRepository {
+    ) : ExhibitionRepository {
         override fun getExhibitDetail(
             exhibitId: Int,
             imageQueryParams: ImageQueryParams,

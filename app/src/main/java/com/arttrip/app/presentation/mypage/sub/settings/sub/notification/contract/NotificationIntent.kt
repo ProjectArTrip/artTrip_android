@@ -7,15 +7,7 @@ sealed interface NotificationIntent {
         val enabled: Boolean,
     ) : NotificationIntent
 
-    data class SavedExhibitionOpenToggled(
-        val enabled: Boolean,
-    ) : NotificationIntent
-
-    data class StampIssuedToggled(
-        val enabled: Boolean,
-    ) : NotificationIntent
-
-    data class MarketingPushToggled(
+    data class NoticePushToggled(
         val enabled: Boolean,
     ) : NotificationIntent
 }

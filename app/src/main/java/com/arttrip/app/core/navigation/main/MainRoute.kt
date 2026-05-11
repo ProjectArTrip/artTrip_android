@@ -77,5 +77,12 @@ object MainRoute {
     const val MY_PAGE_MY_REVIEWS = "mypage/my_reviews"
     const val MY_PAGE_SETTINGS = "mypage/settings"
     const val MY_PAGE_NOTIFICATION = "mypage/settings/notification"
-    const val MY_PAGE_NOTICE = "mypage/settings/notice"
+    const val MY_PAGE_NOTICE = "mypage/settings/notice?referenceId={referenceId}"
+
+    fun notice(referenceId: Int? = null) =
+        if (referenceId != null) {
+            "mypage/settings/notice?referenceId=$referenceId"
+        } else {
+            "mypage/settings/notice"
+        }
 }

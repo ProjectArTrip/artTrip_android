@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter
 
 data class Notice(
     val userNoticeId: Int,
+    val referenceId: Int,
     val title: String,
     val content: String,
     val createdAt: LocalDateTime,
