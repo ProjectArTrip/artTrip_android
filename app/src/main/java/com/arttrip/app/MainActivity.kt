@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -38,6 +39,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var fcmEventBus: FcmEventBus
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleFcmIntent(intent)
@@ -45,7 +50,11 @@ class MainActivity : ComponentActivity() {
 
     private fun handleFcmIntent(intent: Intent) {
         val actionStr = intent.getStringExtra("action") ?: return
-        val action = Action.entries.find { it.name == actionStr } ?: return
+        val action = Action.entries.find { it.name == actionStr }
+        if (action == null) {
+            Log.w(TAG, "Unknown FCM action: $actionStr")
+            return
+        }
         val referenceId = intent.getStringExtra("referenceId")?.toIntOrNull()
         when (action) {
             Action.MOVE_NOTICE_DETAIL -> fcmEventBus.emitDeepLink(action, referenceId)
@@ -88,8 +97,12 @@ class MainActivity : ComponentActivity() {
                             message = fcmMessage,
                             onDismiss = { fcmMessage = null },
                             onClick = {
-                                fcmMessage?.action?.let { action ->
+                                val action = fcmMessage?.action
+                                if (action != null) {
                                     fcmEventBus.emitDeepLink(action, fcmMessage?.referenceId)
+                                } else {
+                                    Log.w(TAG, "FCM banner clicked but action is null or unknown")
+                                    // TODO: 알림화면이동
                                 }
                                 fcmMessage = null
                             },
