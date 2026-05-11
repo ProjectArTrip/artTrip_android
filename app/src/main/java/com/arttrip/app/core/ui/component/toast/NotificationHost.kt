@@ -7,15 +7,20 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,8 +28,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.arttrip.app.R
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.core.util.noRippleClickable
@@ -71,31 +78,23 @@ fun AppNotificationHost(
                 shape = RoundedCornerShape(12.dp),
                 color = AppColor.Primary100,
             ) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Row(
+                    modifier = Modifier.height(64.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    message?.title?.let { title ->
-                        Text(
-                            text = title,
-                            style = AppTextStyle.Body01Bold,
-                            color = AppColor.TextPoint,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                    message?.body?.let { body ->
-                        Text(
-                            text = body,
-                            style = AppTextStyle.Body01Bold,
-                            color = AppColor.TextPoint,
-                            maxLines = 2,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                    Text(
+                        text = "🚀 새로운 소식이 도착했어요",
+                        style = AppTextStyle.Body01Bold,
+                        color = AppColor.TextPoint,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.width(2.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_more_24),
+                        contentDescription = "more",
+                        tint = AppColor.Primary300,
+                    )
                 }
             }
         }
