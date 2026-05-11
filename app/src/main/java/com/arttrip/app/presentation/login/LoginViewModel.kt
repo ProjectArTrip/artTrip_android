@@ -158,13 +158,6 @@ class LoginViewModel
                                 }
                             }
 
-                            viewModelScope.launch {
-                                runCatching {
-                                    val fcmToken = fcmTokenProvider.getToken()
-                                    registerFcmTokenUseCase(fcmToken).collect()
-                                }
-                            }
-
                             val effect =
                                 when (data.onboardingStep) {
                                     OnboardingStep.NICKNAME -> LoginEffect.NavigateToNicknameStep
