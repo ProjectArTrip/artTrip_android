@@ -33,14 +33,8 @@ class NotificationViewModel
                 is NotificationIntent.ExhibitionInfoToggled -> {
                     _state.update { it.copy(exhibitionInfoEnabled = intent.enabled) }
                 }
-                is NotificationIntent.MarketingPushToggled -> {
-                    _state.update { it.copy(marketingPushEnabled = intent.enabled) }
-                }
-                is NotificationIntent.SavedExhibitionOpenToggled -> {
-                    _state.update { it.copy(savedExhibitionOpenEnabled = intent.enabled) }
-                }
-                is NotificationIntent.StampIssuedToggled -> {
-                    _state.update { it.copy(stampIssuedEnabled = intent.enabled) }
+                is NotificationIntent.NoticePushToggled -> {
+                    _state.update { it.copy(noticePushEnalbed = intent.enabled) }
                 }
             }
         }

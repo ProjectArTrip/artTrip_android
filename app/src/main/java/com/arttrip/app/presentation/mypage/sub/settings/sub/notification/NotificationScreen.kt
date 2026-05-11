@@ -65,8 +65,8 @@ fun NotificationScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             NotificationSection(
-                title = "활동 알림",
-                description = "전시 오픈, 스탬프 발급 등 주요 활동 소식을 푸시로 받아볼 수 있어요.",
+                title = "서비스 알림",
+                description = "서비스 이용에 필요한 내용을 알려드립니다.",
             ) {
                 ToggleItem(
                     title = "전시 정보",
@@ -74,27 +74,12 @@ fun NotificationScreen(
                     onCheckedChange = { onIntent(NotificationIntent.ExhibitionInfoToggled(it)) },
                 )
                 ToggleItem(
-                    title = "저장한 전시 오픈",
-                    checked = state.savedExhibitionOpenEnabled,
-                    onCheckedChange = { onIntent(NotificationIntent.SavedExhibitionOpenToggled(it)) },
-                )
-                ToggleItem(
-                    title = "스탬프 발급",
-                    checked = state.stampIssuedEnabled,
-                    onCheckedChange = { onIntent(NotificationIntent.StampIssuedToggled(it)) },
+                    title = "안내 알림",
+                    checked = state.noticePushEnalbed,
+                    onCheckedChange = { onIntent(NotificationIntent.NoticePushToggled(it)) },
                 )
             }
-            Spacer(modifier = Modifier.height(56.dp))
-            NotificationSection(
-                title = "광고성 정보 수신",
-                description = "이벤트 등 유용한 소식을 앱 푸시로 안내 받을 수 있어요.",
-            ) {
-                ToggleItem(
-                    title = "앱 푸시",
-                    checked = state.marketingPushEnabled,
-                    onCheckedChange = { onIntent(NotificationIntent.MarketingPushToggled(it)) },
-                )
-            }
+
             Spacer(modifier = Modifier.height(BOTTOM_SCROLL_SPACER))
         }
     }
