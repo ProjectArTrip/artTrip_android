@@ -170,10 +170,21 @@ fun MainNavHost(
                 onBack = navController::popBackStack,
             )
         }
-        composable(MainRoute.MY_PAGE_NOTICE) {
+        composable(
+            route = MainRoute.MY_PAGE_NOTICE,
+            arguments =
+                listOf(
+                    navArgument("referenceId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    },
+                ),
+        ) { backStackEntry ->
+            val referenceId = backStackEntry.arguments?.getInt("referenceId")?.takeIf { it != -1 }
             MyPageNoticeRoute(
                 innerPadding = innerPadding,
                 onBack = navController::popBackStack,
+                initialExpandedId = referenceId,
             )
         }
 

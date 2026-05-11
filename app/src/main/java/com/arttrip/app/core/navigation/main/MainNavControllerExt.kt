@@ -65,8 +65,8 @@ fun NavHostController.navigateToCuration(curationId: Long) {
     navigate(MainRoute.curation(curationId))
 }
 
-fun NavHostController.navigateToNotice() {
-    navigate(MainRoute.MY_PAGE_NOTICE)
+fun NavHostController.navigateToNotice(referenceId: Int? = null) {
+    navigate(MainRoute.notice(referenceId))
 }
 
 /**

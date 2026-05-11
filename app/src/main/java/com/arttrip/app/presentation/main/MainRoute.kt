@@ -36,9 +36,9 @@ fun MainRoute(
     }
 
     LaunchedEffect(pendingDeepLink) {
-        pendingDeepLink?.let { (action, _) ->
+        pendingDeepLink?.let { (action, referenceId) ->
             when (action) {
-                Action.MOVE_NOTICE_DETAIL -> mainNavController.navigateToNotice()
+                Action.MOVE_NOTICE_DETAIL -> mainNavController.navigateToNotice(referenceId)
                 else -> Unit
             }
             mainViewModel.consumeDeepLink()

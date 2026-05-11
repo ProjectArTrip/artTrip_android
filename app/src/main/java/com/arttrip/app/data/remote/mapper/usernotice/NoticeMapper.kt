@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 fun NotificationDto.toDomain(): Notice =
     Notice(
         userNoticeId = userNoticeId,
+        referenceId = referenceId,
         title = title,
         content = body,
         createdAt = LocalDateTime.parse(createdAt),
