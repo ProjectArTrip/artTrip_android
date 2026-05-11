@@ -104,6 +104,7 @@ fun HomeScreen(
     innerPadding: PaddingValues,
     state: HomeState,
     bookmarked: Map<Int, Boolean>,
+    hasUnread: Boolean = false,
     onIntent: (HomeIntent) -> Unit,
 ) {
     val foreignScrollState = rememberScrollState()
@@ -191,6 +192,7 @@ fun HomeScreen(
             exit = shrinkVertically(),
         ) {
             HomeAppBar(
+                hasUnread = hasUnread,
                 onIntent = onIntent,
             )
         }
@@ -206,7 +208,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
+fun HomeAppBar(
+    hasUnread: Boolean = false,
+    onIntent: (HomeIntent) -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -237,7 +242,7 @@ fun HomeAppBar(onIntent: (HomeIntent) -> Unit) {
             ) {
                 AppIconButton(
                     modifier = Modifier,
-                    iconResId = R.drawable.ic_alert_24,
+                    iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
                     contentDescription = "알림",
                 ) {
                     onIntent(HomeIntent.NotificationIconClicked)

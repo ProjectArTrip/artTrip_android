@@ -19,4 +19,8 @@ class UserNoticeDataSource
                 cursor = cursor,
                 size = size,
             )
+
+        suspend fun readNotification(userNoticeId: Int) = api.readNotification(userNoticeId)
+
+        suspend fun getReadStatus(): Boolean = api.getReadStatus().unread
     }

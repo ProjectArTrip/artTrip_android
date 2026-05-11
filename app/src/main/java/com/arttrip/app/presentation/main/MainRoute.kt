@@ -23,6 +23,7 @@ fun MainRoute(
 
     val signal = mainViewModel.logoutSignal.collectAsStateWithLifecycle().value
     val pendingDeepLink by mainViewModel.pendingDeepLink.collectAsStateWithLifecycle()
+    val hasUnread by mainViewModel.hasUnread.collectAsStateWithLifecycle()
 
     LaunchedEffect(signal) {
         if (signal > 0) {
@@ -48,5 +49,7 @@ fun MainRoute(
     MainScreen(
         modifier = Modifier.fillMaxSize(),
         navController = mainNavController,
+        hasUnread = hasUnread,
+        onRefreshHasUnread = mainViewModel::refreshHasUnread,
     )
 }

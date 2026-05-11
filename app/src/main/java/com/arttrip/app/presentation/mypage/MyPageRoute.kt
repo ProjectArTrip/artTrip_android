@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun MyPageRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     onNavigateEditProfile: () -> Unit,
     onNavigateRecentExhibitions: () -> Unit,
     onNavigateMyReviews: () -> Unit,
     onNavigateTasteAnalysis: () -> Unit,
     onNavigateSettings: () -> Unit,
+    onNavigateNotification: () -> Unit = {},
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -33,7 +35,9 @@ fun MyPageRoute(
     }
     MyPageScreen(
         innerPadding = innerPadding,
+        hasUnread = hasUnread,
         state = state,
         onIntent = viewModel::onIntent,
+        onNavigateNotification = onNavigateNotification,
     )
 }

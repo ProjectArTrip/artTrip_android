@@ -59,10 +59,12 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun BookmarkScreen(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     state: BookmarkState,
     bookmarks: LazyPagingItems<Bookmark>,
     onIntent: (BookmarkIntent) -> Unit,
     bookmarkedFlow: (exhibitId: Int) -> Flow<Boolean>,
+    onNavigateNotification: () -> Unit = {},
 ) {
     val listState = rememberLazyListState()
     val countVisible = rememberScrollUpVisible(listState).value
@@ -83,8 +85,8 @@ fun BookmarkScreen(
             leading = null,
             actions = {
                 AppIconButton(
-                    iconResId = R.drawable.ic_alert_24,
-                    onIconClick = {},
+                    iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
+                    onIconClick = onNavigateNotification,
                 )
             },
         )

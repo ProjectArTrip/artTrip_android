@@ -16,7 +16,9 @@ import com.arttrip.app.presentation.bookmark.contract.BookmarkEffect
 @Composable
 fun BookmarkRoute(
     innerPadding: PaddingValues,
+    hasUnread: Boolean = false,
     onNavigateExhibitionDetail: (Int) -> Unit,
+    onNavigateNotification: () -> Unit = {},
     viewModel: BookmarkViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -47,9 +49,11 @@ fun BookmarkRoute(
     }
     BookmarkScreen(
         innerPadding = innerPadding,
+        hasUnread = hasUnread,
         state = state,
         bookmarks = bookmarks,
         onIntent = viewModel::onIntent,
         bookmarkedFlow = viewModel::bookmarkedFlow,
+        onNavigateNotification = onNavigateNotification,
     )
 }

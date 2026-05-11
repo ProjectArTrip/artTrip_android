@@ -51,6 +51,7 @@ import com.arttrip.app.presentation.home.ui.feedback.NoExhibitionList
 fun GenreScreen(
     innerPadding: PaddingValues,
     state: GenreState,
+    hasUnread: Boolean = false,
     onIntent: (GenreIntent) -> Unit,
     country: ForeignCountry?,
     genre: ExhibitionGenre,
@@ -86,7 +87,7 @@ fun GenreScreen(
                 },
                 actions = {
                     AppIconButton(
-                        iconResId = R.drawable.ic_alert_badge_24,
+                        iconResId = if (hasUnread) R.drawable.ic_alert_badge_24 else R.drawable.ic_alert_24,
                         contentDescription = "Notification Button",
                         onIconClick = {
                             onIntent(GenreIntent.NotificationIconClicked)
