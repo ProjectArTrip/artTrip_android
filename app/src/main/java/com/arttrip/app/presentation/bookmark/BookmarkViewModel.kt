@@ -123,12 +123,7 @@ class BookmarkViewModel
 
                 is BookmarkIntent.ToggleForeignCountry ->
                     _state.update { s ->
-                        val next =
-                            toggleWithAllAllowEmpty(
-                                current = s.editingLocationFilter.foreignCountries,
-                                target = intent.country,
-                                allValue = ForeignCountry.Entire,
-                            )
+                        val next = toggleSingle(s.editingLocationFilter.foreignCountries, intent.country)
                         s.copy(
                             editingLocationFilter = s.editingLocationFilter.copy(foreignCountries = next),
                         )
@@ -136,12 +131,7 @@ class BookmarkViewModel
 
                 is BookmarkIntent.ToggleDomesticRegion ->
                     _state.update { s ->
-                        val next =
-                            toggleWithAllAllowEmpty(
-                                current = s.editingLocationFilter.domesticRegions,
-                                target = intent.region,
-                                allValue = DomesticRegion.Entire,
-                            )
+                        val next = toggleSingle(s.editingLocationFilter.domesticRegions, intent.region)
                         s.copy(
                             editingLocationFilter = s.editingLocationFilter.copy(domesticRegions = next),
                         )
@@ -184,18 +174,8 @@ class BookmarkViewModel
                 BookmarkSort.DEADLINE -> BookmarkSortType.ENDING_SOON
             }
 
-        private fun <T> toggleWithAllAllowEmpty(
+        private fun <T> toggleSingle(
             current: Set<T>,
             target: T,
-            allValue: T,
-        ): Set<T> {
-            if (target == allValue) {
-                return if (allValue in current) emptySet() else setOf(allValue)
-            }
-
-            val base = current - allValue
-            val next = if (target in base) base - target else base + target
-
-            return next
-        }
+        ): Set<T> = if (target in current) emptySet() else setOf(target)
     }
