@@ -63,8 +63,8 @@ class BookmarkRepositoryImpl
             pageSize: Int,
             initialLoadSize: Int,
             sortType: BookmarkSortType,
-            regions: List<String>?,
-            countries: List<String>?,
+            region: String?,
+            country: String?,
             cursor: Int?,
         ): Flow<PagingData<Bookmark>> =
             Pager(
@@ -79,8 +79,8 @@ class BookmarkRepositoryImpl
                     FavoritePagingSource(
                         dataSource = dataSource,
                         sortType = sortType,
-                        regions = regions,
-                        countries = countries,
+                        region = region,
+                        country = country,
                         onTotalCount = { count ->
                             _bookmarkTotalCount.value = count
                         },

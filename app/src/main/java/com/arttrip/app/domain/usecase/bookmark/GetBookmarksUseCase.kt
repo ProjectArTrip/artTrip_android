@@ -14,12 +14,12 @@ class GetBookmarksUseCase
     ) {
         operator fun invoke(
             sortType: BookmarkSortType,
-            regions: List<String>?,
-            countries: List<String>?,
+            region: String?,
+            country: String?,
         ): Flow<PagingData<Bookmark>> =
             bookmarkRepository.getBookmarks(
                 sortType = sortType,
-                regions = regions,
-                countries = countries,
+                region = region,
+                country = country,
             )
     }
