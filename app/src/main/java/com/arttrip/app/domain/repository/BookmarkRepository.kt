@@ -18,8 +18,8 @@ interface BookmarkRepository {
         pageSize: Int = 10,
         initialLoadSize: Int = 10,
         sortType: BookmarkSortType,
-        regions: List<String>? = null,
-        countries: List<String>? = null,
+        region: String? = null,
+        country: String? = null,
         cursor: Int? = null,
     ): Flow<PagingData<Bookmark>>
 

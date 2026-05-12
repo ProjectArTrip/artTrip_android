@@ -48,19 +48,19 @@ class BookmarkViewModel
         val effect: SharedFlow<BookmarkEffect> = _effect
 
         private val sortTypeFlow = MutableStateFlow(BookmarkSortType.LATEST)
-        private val filterParamsFlow: MutableStateFlow<Pair<List<String>?, List<String>?>> =
-            MutableStateFlow(listOf(ForeignCountry.Entire.label) to listOf(DomesticRegion.Entire.label))
+        private val filterParamsFlow: MutableStateFlow<Pair<String?, String?>> =
+            MutableStateFlow(ForeignCountry.Entire.label to DomesticRegion.Entire.label)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val bookmarksFlow: Flow<PagingData<Bookmark>> =
             combine(sortTypeFlow, filterParamsFlow) { sortType, filterParams ->
                 sortType to filterParams
             }.flatMapLatest { (sortType, filterParams) ->
-                val (countries, regions) = filterParams
+                val (country, region) = filterParams
                 getBookmarksUseCase(
                     sortType = sortType,
-                    countries = countries,
-                    regions = regions,
+                    country = country,
+                    region = region,
                 )
             }.cachedIn(viewModelScope)
 
@@ -163,15 +163,15 @@ class BookmarkViewModel
                     val cur = _state.value
                     if (!cur.isSearchEnabled) return
                     val filter = cur.editingLocationFilter
-                    val countries = filter.foreignCountries.map { it.label }
-                    val regions = filter.domesticRegions.map { it.label }
+                    val country = filter.foreignCountries.firstOrNull()?.label
+                    val region = filter.domesticRegions.firstOrNull()?.label
                     _state.update { s ->
                         s.copy(
                             isFilterSheetVisible = false,
                             appliedLocationFilter = s.editingLocationFilter,
                         )
                     }
-                    filterParamsFlow.value = countries to regions
+                    filterParamsFlow.value = country to region
                 }
             }
         }
