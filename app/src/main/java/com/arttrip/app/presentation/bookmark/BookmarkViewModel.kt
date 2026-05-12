@@ -48,19 +48,19 @@ class BookmarkViewModel
         val effect: SharedFlow<BookmarkEffect> = _effect
 
         private val sortTypeFlow = MutableStateFlow(BookmarkSortType.LATEST)
-        private val filterParamsFlow: MutableStateFlow<Pair<List<String>?, List<String>?>> =
-            MutableStateFlow(listOf(ForeignCountry.Entire.label) to listOf(DomesticRegion.Entire.label))
+        private val filterParamsFlow: MutableStateFlow<Pair<String?, String?>> =
+            MutableStateFlow(ForeignCountry.Entire.label to DomesticRegion.Entire.label)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         val bookmarksFlow: Flow<PagingData<Bookmark>> =
             combine(sortTypeFlow, filterParamsFlow) { sortType, filterParams ->
                 sortType to filterParams
             }.flatMapLatest { (sortType, filterParams) ->
-                val (countries, regions) = filterParams
+                val (country, region) = filterParams
                 getBookmarksUseCase(
                     sortType = sortType,
-                    countries = countries,
-                    regions = regions,
+                    country = country,
+                    region = region,
                 )
             }.cachedIn(viewModelScope)
 
@@ -123,12 +123,7 @@ class BookmarkViewModel
 
                 is BookmarkIntent.ToggleForeignCountry ->
                     _state.update { s ->
-                        val next =
-                            toggleWithAllAllowEmpty(
-                                current = s.editingLocationFilter.foreignCountries,
-                                target = intent.country,
-                                allValue = ForeignCountry.Entire,
-                            )
+                        val next = toggleSingle(s.editingLocationFilter.foreignCountries, intent.country)
                         s.copy(
                             editingLocationFilter = s.editingLocationFilter.copy(foreignCountries = next),
                         )
@@ -136,12 +131,7 @@ class BookmarkViewModel
 
                 is BookmarkIntent.ToggleDomesticRegion ->
                     _state.update { s ->
-                        val next =
-                            toggleWithAllAllowEmpty(
-                                current = s.editingLocationFilter.domesticRegions,
-                                target = intent.region,
-                                allValue = DomesticRegion.Entire,
-                            )
+                        val next = toggleSingle(s.editingLocationFilter.domesticRegions, intent.region)
                         s.copy(
                             editingLocationFilter = s.editingLocationFilter.copy(domesticRegions = next),
                         )
@@ -163,15 +153,15 @@ class BookmarkViewModel
                     val cur = _state.value
                     if (!cur.isSearchEnabled) return
                     val filter = cur.editingLocationFilter
-                    val countries = filter.foreignCountries.map { it.label }
-                    val regions = filter.domesticRegions.map { it.label }
+                    val country = filter.foreignCountries.firstOrNull()?.label
+                    val region = filter.domesticRegions.firstOrNull()?.label
                     _state.update { s ->
                         s.copy(
                             isFilterSheetVisible = false,
                             appliedLocationFilter = s.editingLocationFilter,
                         )
                     }
-                    filterParamsFlow.value = countries to regions
+                    filterParamsFlow.value = country to region
                 }
             }
         }
@@ -184,18 +174,8 @@ class BookmarkViewModel
                 BookmarkSort.DEADLINE -> BookmarkSortType.ENDING_SOON
             }
 
-        private fun <T> toggleWithAllAllowEmpty(
+        private fun <T> toggleSingle(
             current: Set<T>,
             target: T,
-            allValue: T,
-        ): Set<T> {
-            if (target == allValue) {
-                return if (allValue in current) emptySet() else setOf(allValue)
-            }
-
-            val base = current - allValue
-            val next = if (target in base) base - target else base + target
-
-            return next
-        }
+        ): Set<T> = if (target in current) emptySet() else setOf(target)
     }

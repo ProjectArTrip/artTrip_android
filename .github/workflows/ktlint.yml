@@ -3,6 +3,8 @@ name: CI / KtLint
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches-ignore:
+      - main
 
 jobs:
   ktlint:

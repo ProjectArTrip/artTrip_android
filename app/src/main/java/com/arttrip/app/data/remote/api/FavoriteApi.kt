@@ -23,8 +23,8 @@ interface FavoriteApi {
     @GET(FAVORITE_PATH)
     suspend fun getFavorites(
         @Query("sortType") sortType: String,
-        @Query("regions") regions: List<String>? = null,
-        @Query("countries") countries: List<String>? = null,
+        @Query("region") region: String? = null,
+        @Query("country") country: String? = null,
         @Query("cursor") cursor: Int? = null,
         @Query("size") size: Int,
     ): FavoritePageResDto<FavoriteResDto>
