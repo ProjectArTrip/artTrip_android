@@ -102,6 +102,9 @@ class BookmarkViewModel
                 is BookmarkIntent.ToggleBookmark -> {
                     bookmarkStore.toggle(intent.exhibitId)
                 }
+                is BookmarkIntent.SeedBookmark -> {
+                    bookmarkStore.setFromRemote(intent.exhibitId, true)
+                }
 
                 BookmarkIntent.FilterSheetOpened -> {
                     _state.update { s ->

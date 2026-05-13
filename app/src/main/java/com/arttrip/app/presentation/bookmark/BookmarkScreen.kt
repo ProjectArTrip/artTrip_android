@@ -116,6 +116,9 @@ fun BookmarkScreen(
                     key = bookmarks.itemKey { it.exhibitId },
                 ) { index ->
                     val item = bookmarks[index] ?: return@items
+                    LaunchedEffect(item.exhibitId) {
+                        onIntent(BookmarkIntent.SeedBookmark(item.exhibitId))
+                    }
                     val isLiked by bookmarkedFlow(item.exhibitId).collectAsStateWithLifecycle(true)
 
                     ExhibitionListItem(

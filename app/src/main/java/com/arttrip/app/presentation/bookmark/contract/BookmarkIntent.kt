@@ -16,6 +16,10 @@ sealed interface BookmarkIntent {
         val exhibitId: Int,
     ) : BookmarkIntent
 
+    data class SeedBookmark(
+        val exhibitId: Int,
+    ) : BookmarkIntent
+
     data object FilterSheetOpened : BookmarkIntent
 
     data object FilterSheetDismissed : BookmarkIntent
