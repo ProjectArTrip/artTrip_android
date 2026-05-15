@@ -129,12 +129,13 @@ fun AppTwoButtonDialog(
 @Composable
 fun AppSingleButtonDialog(
     visible: Boolean,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit = {},
     primaryText: String,
     onPrimaryClick: () -> Unit,
     primaryEnabled: Boolean = true,
     contentTopPadding: Dp = 32.dp,
     contentBottomPadding: Dp = 24.dp,
+    dismissible: Boolean = true,
     content: @Composable (ColumnScope.() -> Unit),
 ) {
     if (!visible) return
@@ -143,6 +144,8 @@ fun AppSingleButtonDialog(
         onDismissRequest = onDismissRequest,
         properties =
             DialogProperties(
+                dismissOnBackPress = dismissible,
+                dismissOnClickOutside = dismissible,
                 usePlatformDefaultWidth = false,
             ),
     ) {

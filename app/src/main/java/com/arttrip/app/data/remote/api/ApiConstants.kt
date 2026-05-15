@@ -19,4 +19,6 @@ object ApiConstants {
     const val USER_NOTICE_PATH = "/notifications"
 
     const val CURATION_PATH = "/curations"
+
+    const val MAINTENANCE_PATH = "/maintenance"
 }
