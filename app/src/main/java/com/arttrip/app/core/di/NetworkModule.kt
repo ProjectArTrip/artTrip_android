@@ -6,6 +6,7 @@ import com.arttrip.app.data.remote.api.ExhibitApi
 import com.arttrip.app.data.remote.api.FavoriteApi
 import com.arttrip.app.data.remote.api.HomeApi
 import com.arttrip.app.data.remote.api.KeywordApi
+import com.arttrip.app.data.remote.api.MaintenanceApi
 import com.arttrip.app.data.remote.api.MapApi
 import com.arttrip.app.data.remote.api.ReviewApi
 import com.arttrip.app.data.remote.api.SearchHistoryApi
@@ -125,4 +126,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideCurationApi(retrofit: Retrofit): CurationApi = retrofit.create(CurationApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMaintenanceApi(retrofit: Retrofit): MaintenanceApi = retrofit.create(MaintenanceApi::class.java)
 }
