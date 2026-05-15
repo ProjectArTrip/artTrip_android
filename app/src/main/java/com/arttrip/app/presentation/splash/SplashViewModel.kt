@@ -101,11 +101,8 @@ class SplashViewModel
                         }
                     }
 
-                _state.value =
-                    SplashState(
-                        isLoading = false,
-                        targetRoute = target,
-                    )
+                _state.update { it.copy(isLoading = false) }
+                _effect.emit(SplashEffect.Navigate(target))
             }
         }
     }

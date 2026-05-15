@@ -17,15 +17,11 @@ fun SplashRoute(
     val activity = LocalActivity.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(state.targetRoute) {
-        val route = state.targetRoute ?: return@LaunchedEffect
-        onNavigate(route)
-    }
-
     LaunchedEffect(viewModel) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SplashEffect.ExitApp -> activity?.finish()
+                is SplashEffect.Navigate -> onNavigate(effect.route)
             }
         }
     }
