@@ -7,6 +7,7 @@ import com.arttrip.app.data.remote.datasource.UserDataSource
 import com.arttrip.app.data.remote.datasource.UserNoticeDataSource
 import com.arttrip.app.data.remote.mapper.base.toAppError
 import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
+import com.arttrip.app.data.remote.model.user.UserPushEnabledReqDto
 import com.arttrip.app.data.remote.paging.usernotice.NotificationPagingSource
 import com.arttrip.app.domain.model.network.ApiResult
 import com.arttrip.app.domain.model.notification.Notification
@@ -73,6 +74,18 @@ class NotificationRepositoryImpl
                 try {
                     val hasUnread = userNoticeDataSource.getReadStatus()
                     emit(ApiResult.Success(hasUnread))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
+
+        override fun updatePushEnabled(isEnabled: Boolean): Flow<ApiResult<Unit>> =
+            flow {
+                emit(ApiResult.Loading)
+                try {
+                    userDataSource.patchPushEnabled(UserPushEnabledReqDto(enabled = isEnabled))
+                    emit(ApiResult.Success(Unit))
                 } catch (t: Throwable) {
                     if (t is CancellationException) throw t
                     emit(ApiResult.Error(t.toAppError()))
