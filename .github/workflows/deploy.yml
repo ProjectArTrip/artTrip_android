@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Version Name
+        run: |
+          VERSION_NAME=$(grep 'versionName = ' app/build.gradle.kts | grep -oP '"\K[^"]+')
+          echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_ENV
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -47,3 +54,34 @@ jobs:
           packageName: com.arttrip.app
           releaseFiles: app/build/outputs/bundle/release/*.aab
           track: internal
+
+      - name: Create and Push Git Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${VERSION_NAME}"
+          git push origin "v${VERSION_NAME}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ env.VERSION_NAME }}"
+          generate_release_notes: true
+
+      - name: Discord 성공 알림
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "content": "✅ **v${{ env.VERSION_NAME }}** 내부 테스트 트랙 배포 성공"
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Discord 실패 알림
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{
+              "content": "❌ **v${{ env.VERSION_NAME }}** 내부 테스트 트랙 배포 실패\n🔗 https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
