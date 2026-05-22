@@ -4,6 +4,7 @@ import com.arttrip.app.core.model.image.ImageQueryParams
 import com.arttrip.app.data.remote.api.UserApi
 import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
 import com.arttrip.app.data.remote.model.user.UserNicknameReqDto
+import com.arttrip.app.data.remote.model.user.UserPushEnabledReqDto
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -33,4 +34,8 @@ class UserDataSource
             )
 
         suspend fun postUserFcmToken(userFcmTokenReqDto: UserFcmTokenReqDto) = api.postFcmToken(userFcmTokenReqDto)
+
+        suspend fun getPushEnabled() = api.getPushEnabled()
+
+        suspend fun patchPushEnabled(userPushEnabledReqDto: UserPushEnabledReqDto) = api.patchPushEnabled(userPushEnabledReqDto)
     }

@@ -3,6 +3,8 @@ package com.arttrip.app.data.remote.api
 import com.arttrip.app.data.remote.api.ApiConstants.USER_PATH
 import com.arttrip.app.data.remote.model.user.UserFcmTokenReqDto
 import com.arttrip.app.data.remote.model.user.UserNicknameReqDto
+import com.arttrip.app.data.remote.model.user.UserPushEnabledReqDto
+import com.arttrip.app.data.remote.model.user.UserPushEnabledResDto
 import com.arttrip.app.data.remote.model.user.UserRecentExhibitsResDto
 import com.arttrip.app.data.remote.model.user.UserResDto
 import okhttp3.MultipartBody
@@ -47,5 +49,13 @@ interface UserApi {
     @POST("${USER_PATH}/fcm-token")
     suspend fun postFcmToken(
         @Body body: UserFcmTokenReqDto,
+    ): Unit
+
+    @GET("${USER_PATH}/push-enabled")
+    suspend fun getPushEnabled(): UserPushEnabledResDto
+
+    @PATCH("${USER_PATH}/push-enabled")
+    suspend fun patchPushEnabled(
+        @Body body: UserPushEnabledReqDto,
     ): Unit
 }

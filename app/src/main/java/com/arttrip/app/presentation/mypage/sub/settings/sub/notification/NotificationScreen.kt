@@ -68,14 +68,14 @@ fun NotificationScreen(
                 title = "서비스 알림",
                 description = "서비스 이용에 필요한 내용을 알려드립니다.",
             ) {
-                ToggleItem(
-                    title = "전시 정보",
-                    checked = state.exhibitionInfoEnabled,
-                    onCheckedChange = { onIntent(NotificationIntent.ExhibitionInfoToggled(it)) },
-                )
+//                ToggleItem(
+//                    title = "전시 정보",
+//                    checked = state.exhibitionInfoEnabled,
+//                    onCheckedChange = { onIntent(NotificationIntent.ExhibitionInfoToggled(it)) },
+//                )
                 ToggleItem(
                     title = "안내 알림",
-                    checked = state.noticePushEnalbed,
+                    checked = state.noticePushEnabled,
                     onCheckedChange = { onIntent(NotificationIntent.NoticePushToggled(it)) },
                 )
             }
