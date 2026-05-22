@@ -75,7 +75,7 @@ fun NotificationScreen(
 //                )
                 ToggleItem(
                     title = "안내 알림",
-                    checked = state.noticePushEnalbed,
+                    checked = state.noticePushEnabled,
                     onCheckedChange = { onIntent(NotificationIntent.NoticePushToggled(it)) },
                 )
             }
