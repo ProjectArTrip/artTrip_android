@@ -45,7 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.arttrip.app.R
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
@@ -57,6 +57,9 @@ import com.arttrip.app.core.ui.component.button.LikeButton
 import com.arttrip.app.core.ui.component.calendar.DayChipCase01
 import com.arttrip.app.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.app.core.ui.component.chip.CountryChip
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
+import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.component.tab.AppTabCase
 import com.arttrip.app.core.ui.component.tab.AppTabRow
 import com.arttrip.app.core.ui.component.tag.AppTag
@@ -1541,13 +1544,20 @@ fun ExhibitionImage(
             ExhibitionImageCase.CASE2, ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> Modifier
         }
 
+    val placeholderType =
+        when (case) {
+            ExhibitionImageCase.CASE1 -> AppImagePlaceholderType.P180
+            ExhibitionImageCase.CASE2 -> AppImagePlaceholderType.P120
+            ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> AppImagePlaceholderType.S100
+        }
+
     Box(
         modifier =
             modifier
                 .width(width)
                 .height(height),
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             modifier =
                 Modifier
                     .matchParentSize()
@@ -1556,6 +1566,15 @@ fun ExhibitionImage(
             model = url,
             contentDescription = "Exhibition Image",
             contentScale = ContentScale.Crop,
+            loading = {
+                StaticSkeleton(modifier = Modifier.fillMaxSize())
+            },
+            error = {
+                AppImagePlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    type = placeholderType,
+                )
+            },
         )
 
         content?.let { slot ->
