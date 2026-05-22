@@ -80,6 +80,18 @@ class NotificationRepositoryImpl
                 }
             }
 
+        override fun getPushEnabled(): Flow<ApiResult<Boolean>> =
+            flow {
+                emit(ApiResult.Loading)
+                try {
+                    val result = userDataSource.getPushEnabled()
+                    emit(ApiResult.Success(result.enabled))
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    emit(ApiResult.Error(t.toAppError()))
+                }
+            }
+
         override fun updatePushEnabled(isEnabled: Boolean): Flow<ApiResult<Unit>> =
             flow {
                 emit(ApiResult.Loading)

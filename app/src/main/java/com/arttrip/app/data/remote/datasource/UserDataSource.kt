@@ -35,5 +35,7 @@ class UserDataSource
 
         suspend fun postUserFcmToken(userFcmTokenReqDto: UserFcmTokenReqDto) = api.postFcmToken(userFcmTokenReqDto)
 
+        suspend fun getPushEnabled() = api.getPushEnabled()
+
         suspend fun patchPushEnabled(userPushEnabledReqDto: UserPushEnabledReqDto) = api.patchPushEnabled(userPushEnabledReqDto)
     }
