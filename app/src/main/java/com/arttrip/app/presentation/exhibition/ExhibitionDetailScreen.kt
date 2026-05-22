@@ -34,6 +34,8 @@ import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.button.HeartButton
 import com.arttrip.app.core.ui.component.dialog.AppTwoButtonDialog
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
 import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.component.tab.AppTabCase
 import com.arttrip.app.core.ui.component.tab.AppTabRow
@@ -243,47 +245,30 @@ private fun ExhibitHeroImage(
     isLoading: Boolean = true,
     chip: @Composable (() -> Unit),
 ) {
-    if (url.isNullOrEmpty() || isLoading) {
-        StaticSkeleton(
-            modifier =
-                Modifier
-                    .height(height),
-        )
+    if (isLoading) {
+        StaticSkeleton(modifier = Modifier.height(height))
         return
     }
     Box(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .height(height),
+        modifier = modifier.fillMaxWidth().height(height),
     ) {
         SubcomposeAsyncImage(
-            modifier =
-                modifier
-                    .matchParentSize(),
+            modifier = Modifier.matchParentSize(),
             model = url,
             contentDescription = "전시 상세 이미지",
             contentScale = ContentScale.Crop,
             loading = {
-                StaticSkeleton(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
-                )
+                StaticSkeleton(modifier = Modifier.fillMaxSize())
             },
             error = {
-                StaticSkeleton(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
+                AppImagePlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    type = AppImagePlaceholderType.Wide,
                 )
             },
         )
         Box(
-            modifier =
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 24.dp, top = 16.dp),
+            modifier = Modifier.align(Alignment.TopStart).padding(start = 24.dp, top = 16.dp),
         ) {
             chip()
         }
