@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,8 @@ import com.arttrip.app.R
 import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.empty.AppEmptyState
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
 import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
@@ -131,14 +134,6 @@ private fun ExhibitionThumb(
     val shape = RoundedCornerShape(8.dp)
     val size = 100.dp
 
-    if (url.isNullOrEmpty()) {
-        StaticSkeleton(
-            modifier = modifier.size(size),
-            shape = shape,
-        )
-
-        return
-    }
     SubcomposeAsyncImage(
         modifier =
             modifier
@@ -148,6 +143,11 @@ private fun ExhibitionThumb(
         contentDescription = "Exhibition thumbnail",
         contentScale = ContentScale.Crop,
         loading = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
-        error = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
+        error = {
+            AppImagePlaceholder(
+                modifier = Modifier.fillMaxSize(),
+                type = AppImagePlaceholderType.S100,
+            )
+        },
     )
 }
