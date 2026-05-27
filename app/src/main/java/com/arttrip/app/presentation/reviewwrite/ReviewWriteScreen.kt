@@ -42,6 +42,8 @@ import com.arttrip.app.core.ui.component.button.AppButtonDefaults
 import com.arttrip.app.core.ui.component.button.AppIconButton
 import com.arttrip.app.core.ui.component.dialog.AppSingleButtonDialog
 import com.arttrip.app.core.ui.component.dialog.AppTwoButtonDialog
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
 import com.arttrip.app.core.ui.component.input.AppSelectField
 import com.arttrip.app.core.ui.component.sheet.AppBottomSheetTopBar
 import com.arttrip.app.core.ui.component.sheet.AppModalBottomSheet
@@ -304,7 +306,7 @@ private fun ExhibitionPosterImage(
 ) {
     val shape = RoundedCornerShape(4.dp)
 
-    if (url.isNullOrEmpty() || isLoading) {
+    if (isLoading) {
         StaticSkeleton(
             modifier = modifier,
             shape = shape,
@@ -319,7 +321,12 @@ private fun ExhibitionPosterImage(
             contentDescription = "전시 포스터",
             contentScale = ContentScale.Crop,
             loading = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
-            error = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
+            error = {
+                AppImagePlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    type = AppImagePlaceholderType.S50,
+                )
+            },
         )
     }
 }

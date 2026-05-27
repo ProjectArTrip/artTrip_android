@@ -16,4 +16,8 @@ interface NotificationRepository {
     fun readNotification(userNoticeId: Int): Flow<ApiResult<Unit>>
 
     fun getHasUnread(): Flow<ApiResult<Boolean>>
+
+    fun getPushEnabled(): Flow<ApiResult<Boolean>>
+
+    fun updatePushEnabled(isEnabled: Boolean): Flow<ApiResult<Unit>>
 }

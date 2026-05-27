@@ -2,6 +2,7 @@ package com.arttrip.app.data.local.fcm
 
 import android.util.Log
 import com.arttrip.app.core.model.enums.notification.Action
+import com.arttrip.app.data.local.auth.TokenManager
 import com.arttrip.app.domain.usecase.notification.RegisterFcmTokenUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -20,12 +21,16 @@ class ArtTripMessagingService : FirebaseMessagingService() {
     lateinit var registerFcmTokenUseCase: RegisterFcmTokenUseCase
 
     @Inject
+    lateinit var tokenManager: TokenManager
+
+    @Inject
     lateinit var fcmEventBus: FcmEventBus
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "FCM token refreshed: $token")
+        if (!tokenManager.hasTokens()) return
         scope.launch {
             runCatching { registerFcmTokenUseCase(token).collect() }
         }

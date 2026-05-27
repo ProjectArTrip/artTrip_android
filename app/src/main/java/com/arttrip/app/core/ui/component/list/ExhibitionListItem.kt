@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.app.core.ui.component.button.LikeButton
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
 import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.component.tag.AppTag
 import com.arttrip.app.core.ui.theme.AppColor
@@ -84,7 +87,12 @@ private fun ExhibitionThumbnail(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             loading = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
-            error = { StaticSkeleton(modifier = Modifier.matchParentSize()) },
+            error = {
+                AppImagePlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    type = AppImagePlaceholderType.S100,
+                )
+            },
         )
         LikeButton(
             modifier =

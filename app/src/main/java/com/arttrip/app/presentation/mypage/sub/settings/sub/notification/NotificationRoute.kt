@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arttrip.app.core.util.LocalToastController
 import com.arttrip.app.presentation.mypage.sub.settings.sub.notification.contract.NotificationEffect
 import kotlinx.coroutines.flow.collectLatest
 
@@ -16,10 +17,12 @@ fun NotificationRoute(
     viewModel: NotificationViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val toast = LocalToastController.current
     LaunchedEffect(viewModel) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 NotificationEffect.NavigateBack -> onBack()
+                is NotificationEffect.ShowToast -> toast.show(effect.message)
             }
         }
     }

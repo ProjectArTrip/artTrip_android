@@ -45,7 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.arttrip.app.R
 import com.arttrip.app.core.model.enums.domestic.DomesticRegion
 import com.arttrip.app.core.model.enums.exhibition.ExhibitionGenre
@@ -57,6 +57,9 @@ import com.arttrip.app.core.ui.component.button.LikeButton
 import com.arttrip.app.core.ui.component.calendar.DayChipCase01
 import com.arttrip.app.core.ui.component.calendar.DayChipStateCase01
 import com.arttrip.app.core.ui.component.chip.CountryChip
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholder
+import com.arttrip.app.core.ui.component.image.AppImagePlaceholderType
+import com.arttrip.app.core.ui.component.skeleton.StaticSkeleton
 import com.arttrip.app.core.ui.component.tab.AppTabCase
 import com.arttrip.app.core.ui.component.tab.AppTabRow
 import com.arttrip.app.core.ui.component.tag.AppTag
@@ -485,6 +488,8 @@ fun ForeignExhibitionSection(
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -611,14 +616,7 @@ fun DomesticExhibitionSection(
             placeTab = state.placeTabs,
             foreignCountry = state.selectedCountry,
         )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(32.dp),
-        )
-        DomesticRegionSection(onRegionClick = { region ->
-            onIntent(HomeIntent.RegionClicked(region = region))
-        })
+
         Spacer(
             modifier =
                 Modifier
@@ -632,6 +630,8 @@ fun DomesticExhibitionSection(
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -656,6 +656,14 @@ fun DomesticExhibitionSection(
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(32.dp),
+        )
+        DomesticRegionSection(onRegionClick = { region ->
+            onIntent(HomeIntent.RegionClicked(region = region))
+        })
         Spacer(
             modifier =
                 Modifier
@@ -867,6 +875,8 @@ fun PersonalizedSection(
     bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry,
 ) {
     Column {
         Row {
@@ -923,6 +933,8 @@ fun PersonalizedSection(
                                 onLikeClick = { id ->
                                     onLikeClick(id)
                                 },
+                                placeTab = placeTab,
+                                foreignCountry = foreignCountry,
                             )
                         }
                         Spacer(
@@ -1261,6 +1273,14 @@ fun ExhibitionItemCase1(
                         .offset(x = 10.dp, y = 16.dp),
                 label = exhibition.country,
             )
+        } else if (placeTab == PlaceTab.Domestic) {
+            CountryChip(
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .offset(x = 10.dp, y = 16.dp),
+                label = exhibition.region,
+            )
         }
         LikeButton(
             modifier =
@@ -1321,6 +1341,8 @@ fun ExhibitionItemCase2(
     exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry,
 ) {
     Column(
         modifier =
@@ -1331,6 +1353,24 @@ fun ExhibitionItemCase2(
                 },
     ) {
         ExhibitionImage(url = exhibition.posterUrl, case = ExhibitionImageCase.CASE2) {
+            if (placeTab == PlaceTab.Foreign && foreignCountry == ForeignCountry.Entire) {
+                CountryChip(
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .offset(x = 8.dp, y = 9.dp),
+                    label = exhibition.country,
+                )
+            } else if (placeTab == PlaceTab.Domestic) {
+                CountryChip(
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .offset(x = 8.dp, y = 9.dp),
+                    label = exhibition.region,
+                )
+            }
+
             LikeButton(
                 modifier =
                     Modifier
@@ -1395,7 +1435,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = if (exhibition.country == "대한민국") exhibition.region else exhibition.country,
+                text = if (exhibition.country == "한국") exhibition.region else exhibition.country,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )
@@ -1541,13 +1581,20 @@ fun ExhibitionImage(
             ExhibitionImageCase.CASE2, ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> Modifier
         }
 
+    val placeholderType =
+        when (case) {
+            ExhibitionImageCase.CASE1 -> AppImagePlaceholderType.P180
+            ExhibitionImageCase.CASE2 -> AppImagePlaceholderType.P120
+            ExhibitionImageCase.CASE3, ExhibitionImageCase.CASE4 -> AppImagePlaceholderType.S100
+        }
+
     Box(
         modifier =
             modifier
                 .width(width)
                 .height(height),
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             modifier =
                 Modifier
                     .matchParentSize()
@@ -1556,6 +1603,15 @@ fun ExhibitionImage(
             model = url,
             contentDescription = "Exhibition Image",
             contentScale = ContentScale.Crop,
+            loading = {
+                StaticSkeleton(modifier = Modifier.fillMaxSize())
+            },
+            error = {
+                AppImagePlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    type = placeholderType,
+                )
+            },
         )
 
         content?.let { slot ->

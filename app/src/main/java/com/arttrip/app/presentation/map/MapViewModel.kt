@@ -72,6 +72,10 @@ class MapViewModel
                     skipNextCameraIdle = true
                     _state.update { it.copy(selectedClusterCount = intent.count, selectedIds = intent.ids) }
                 }
+                is MapIntent.OnMarkerClicked -> {
+                    skipNextCameraIdle = true
+                    _state.update { it.copy(selectedClusterCount = 1, selectedIds = listOf(intent.id)) }
+                }
                 is MapIntent.OnCameraIdle -> {
                     if (skipNextCameraIdle) {
                         skipNextCameraIdle = false
