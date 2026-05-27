@@ -10,6 +10,10 @@ sealed interface MapIntent {
         val ids: List<Int>,
     ) : MapIntent
 
+    data class OnMarkerClicked(
+        val id: Int,
+    ) : MapIntent
+
     data class OnCameraIdle(
         val visibleCount: Int,
         val ids: List<Int>,
