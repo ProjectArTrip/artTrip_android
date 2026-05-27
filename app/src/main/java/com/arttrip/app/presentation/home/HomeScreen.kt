@@ -934,7 +934,7 @@ fun PersonalizedSection(
                                     onLikeClick(id)
                                 },
                                 placeTab = placeTab,
-                                foreignCountry = foreignCountry
+                                foreignCountry = foreignCountry,
                             )
                         }
                         Spacer(
@@ -1342,7 +1342,7 @@ fun ExhibitionItemCase2(
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     placeTab: PlaceTab,
-    foreignCountry: ForeignCountry
+    foreignCountry: ForeignCountry,
 ) {
     Column(
         modifier =
