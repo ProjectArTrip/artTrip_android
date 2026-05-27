@@ -85,6 +85,7 @@ fun TasteScreen(
             ) {
                 TasteWelcomeSection(
                     modifier = Modifier.fillMaxWidth(),
+                    nickname = state.nickname,
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -129,13 +130,16 @@ fun TasteScreen(
 }
 
 @Composable
-private fun TasteWelcomeSection(modifier: Modifier = Modifier) {
+private fun TasteWelcomeSection(
+    modifier: Modifier = Modifier,
+    nickname: String,
+) {
     Column(
         modifier = modifier,
     ) {
         Text(
             text =
-                "이유지님의 관심있는 키워드를 골라주세요!",
+                "${nickname}님의 관심있는 키워드를 골라주세요!",
             style = AppTextStyle.Title02Bold,
             color = AppColor.TextPrimary,
         )
