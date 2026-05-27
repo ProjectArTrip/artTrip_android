@@ -614,14 +614,7 @@ fun DomesticExhibitionSection(
             placeTab = state.placeTabs,
             foreignCountry = state.selectedCountry,
         )
-        Spacer(
-            modifier =
-                Modifier
-                    .height(32.dp),
-        )
-        DomesticRegionSection(onRegionClick = { region ->
-            onIntent(HomeIntent.RegionClicked(region = region))
-        })
+
         Spacer(
             modifier =
                 Modifier
@@ -659,6 +652,14 @@ fun DomesticExhibitionSection(
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
         )
+        Spacer(
+            modifier =
+                Modifier
+                    .height(32.dp),
+        )
+        DomesticRegionSection(onRegionClick = { region ->
+            onIntent(HomeIntent.RegionClicked(region = region))
+        })
         Spacer(
             modifier =
                 Modifier
