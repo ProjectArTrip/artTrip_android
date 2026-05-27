@@ -65,7 +65,7 @@ fun AppDropdown(
 
     val isSelected = selectedIndex in items.indices
     val displayText = if (isSelected) items[selectedIndex] else placeholder
-    val textStyle = AppDropdownDefaults.TextStyle
+    val textStyle = AppTextStyle.Body01Regular
     val textColor = AppDropdownDefaults.TextColor
 
     var expanded by remember { mutableStateOf(false) }
@@ -142,7 +142,7 @@ private fun AppDropdownItem(
 ) {
     Text(
         text = text,
-        style = AppDropdownDefaults.TextStyle,
+        style = AppTextStyle.Body01Regular,
         color = AppDropdownDefaults.TextColor,
         modifier =
             modifier
@@ -155,8 +155,6 @@ private object AppDropdownDefaults {
     val Shape = RoundedCornerShape(8.dp)
     val BackgroundColor = AppColor.Gray0
     val BorderColor = AppColor.Gray100
-
-    val TextStyle = AppTextStyle.Body01Regular
     val TextColor = AppColor.TextPrimary
 }
 
