@@ -182,7 +182,7 @@ fun MapScreen(
                     cameraPositionState.animate(
                         update =
                             com.google.android.gms.maps.CameraUpdateFactory
-                                .newLatLng(cluster.position),
+                                .newLatLngZoom(cluster.position, cameraPositionState.position.zoom + 2f),
                     )
                     scaffoldState.bottomSheetState.expand()
                 }
