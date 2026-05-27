@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arttrip.app.core.ui.UiMessage
 import com.arttrip.app.domain.model.network.ApiResult
+import com.arttrip.app.domain.usecase.profile.ObserveProfileUseCase
 import com.arttrip.app.domain.usecase.userTaste.GetAllTasteGroupsUseCase
 import com.arttrip.app.domain.usecase.userTaste.GetUserTasteGroupsUseCase
 import com.arttrip.app.domain.usecase.userTaste.SaveUserTasteUseCase
@@ -25,6 +26,7 @@ class TasteViewModel
     @Inject
     constructor(
         private val getAllTasteGroupsUseCase: GetAllTasteGroupsUseCase,
+        private val observeProfile: ObserveProfileUseCase,
         private val getUserTasteGroupsUseCase: GetUserTasteGroupsUseCase,
         private val saveUserTasteUseCase: SaveUserTasteUseCase,
     ) : ViewModel() {
@@ -33,6 +35,20 @@ class TasteViewModel
 
         private val _effect = MutableSharedFlow<TasteEffect>()
         val effect: SharedFlow<TasteEffect> = _effect
+
+        init {
+            viewModelScope.launch {
+                observeProfile().collect { profile ->
+                    if (profile != null) {
+                        _state.update {
+                            it.copy(
+                                nickname = profile.nickname,
+                            )
+                        }
+                    }
+                }
+            }
+        }
 
         fun onIntent(intent: TasteIntent) {
             when (intent) {
