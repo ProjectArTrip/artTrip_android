@@ -1399,7 +1399,7 @@ fun ExhibitItemCase3(
         )
         Column {
             Text(
-                text = if (exhibition.country == "대한민국") exhibition.region else exhibition.country,
+                text = if (exhibition.country == "한국") exhibition.region else exhibition.country,
                 style = AppTextStyle.Body01Regular,
                 color = AppColor.TextPoint,
             )
