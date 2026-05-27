@@ -146,7 +146,6 @@ internal object DateFieldDefaults {
     val BorderDefault = AppColor.Gray100
     val BorderActive = AppColor.Primary300
 
-    val HintTextStyle = AppTextStyle.Body01Regular
     val FilledTextStyle =
         TextStyle(
             fontSize = 14.sp,
@@ -159,6 +158,7 @@ internal object DateFieldDefaults {
     val FilledTextColor = AppColor.TextPrimary
 }
 
+@Composable
 private fun resolveDateFieldStyle(
     state: DateSelectFieldState,
     showPlaceholder: Boolean,
@@ -173,7 +173,7 @@ private fun resolveDateFieldStyle(
 
     val (textStyle, textColor) =
         if (showPlaceholder || state != DateSelectFieldState.Filled) {
-            DateFieldDefaults.HintTextStyle to DateFieldDefaults.HintTextColor
+            AppTextStyle.Body01Regular to DateFieldDefaults.HintTextColor
         } else {
             DateFieldDefaults.FilledTextStyle to DateFieldDefaults.FilledTextColor
         }
