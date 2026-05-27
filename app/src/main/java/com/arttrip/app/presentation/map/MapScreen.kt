@@ -187,6 +187,17 @@ fun MapScreen(
                     scaffoldState.bottomSheetState.expand()
                 }
             },
+            onMarkerClick = { marker ->
+                onIntent(MapIntent.OnMarkerClicked(id = marker.id.toInt()))
+                scope.launch {
+                    cameraPositionState.animate(
+                        update =
+                            com.google.android.gms.maps.CameraUpdateFactory
+                                .newLatLng(marker.position),
+                    )
+                    scaffoldState.bottomSheetState.expand()
+                }
+            },
             onCameraIdle = { visibleCount, ids ->
                 onIntent(MapIntent.OnCameraIdle(visibleCount = visibleCount, ids = ids))
             },
@@ -202,6 +213,7 @@ private fun MapContent(
     selectedCountry: ForeignCountry?,
     onCountrySelected: (ForeignCountry?) -> Unit,
     onClusterClick: (Cluster<ExhibitionMarker>) -> Unit,
+    onMarkerClick: (ExhibitionMarker) -> Unit,
     onCameraIdle: (Int, List<Int>) -> Unit,
     onMyLocationClick: () -> Unit,
 ) {
@@ -234,6 +246,10 @@ private fun MapContent(
                 items = markers,
                 onClusterClick = { cluster ->
                     onClusterClick(cluster)
+                    true
+                },
+                onClusterItemClick = { marker ->
+                    onMarkerClick(marker)
                     true
                 },
                 clusterContent = { cluster ->
