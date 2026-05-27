@@ -488,6 +488,8 @@ fun ForeignExhibitionSection(
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -628,6 +630,8 @@ fun DomesticExhibitionSection(
                 onIntent(HomeIntent.ExhibitionClicked(id))
             },
             onLikeClick = { id -> onIntent(HomeIntent.ToggleBookmark(id)) },
+            placeTab = state.placeTabs,
+            foreignCountry = state.selectedCountry,
         )
         Spacer(
             modifier =
@@ -871,6 +875,8 @@ fun PersonalizedSection(
     bookmarked: Map<Int, Boolean>,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry,
 ) {
     Column {
         Row {
@@ -927,6 +933,8 @@ fun PersonalizedSection(
                                 onLikeClick = { id ->
                                     onLikeClick(id)
                                 },
+                                placeTab = placeTab,
+                                foreignCountry = foreignCountry
                             )
                         }
                         Spacer(
@@ -1265,6 +1273,14 @@ fun ExhibitionItemCase1(
                         .offset(x = 10.dp, y = 16.dp),
                 label = exhibition.country,
             )
+        } else if (placeTab == PlaceTab.Domestic) {
+            CountryChip(
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .offset(x = 10.dp, y = 16.dp),
+                label = exhibition.region,
+            )
         }
         LikeButton(
             modifier =
@@ -1325,6 +1341,8 @@ fun ExhibitionItemCase2(
     exhibition: Exhibition,
     onExhibitionClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
+    placeTab: PlaceTab,
+    foreignCountry: ForeignCountry
 ) {
     Column(
         modifier =
@@ -1335,6 +1353,24 @@ fun ExhibitionItemCase2(
                 },
     ) {
         ExhibitionImage(url = exhibition.posterUrl, case = ExhibitionImageCase.CASE2) {
+            if (placeTab == PlaceTab.Foreign && foreignCountry == ForeignCountry.Entire) {
+                CountryChip(
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .offset(x = 8.dp, y = 9.dp),
+                    label = exhibition.country,
+                )
+            } else if (placeTab == PlaceTab.Domestic) {
+                CountryChip(
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .offset(x = 8.dp, y = 9.dp),
+                    label = exhibition.region,
+                )
+            }
+
             LikeButton(
                 modifier =
                     Modifier
