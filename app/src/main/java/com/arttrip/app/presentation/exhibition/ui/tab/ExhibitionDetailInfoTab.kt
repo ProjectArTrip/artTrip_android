@@ -73,6 +73,14 @@ fun ExhibitionDetailInfoTab(detail: ExhibitionDetail) {
                             CopyActionText(textToCopy = address)
                         }
                     }
+                    if (address.isNotBlank()) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = "전시 장소는 변경될 수 있으므로 공식 홈페이지를 확인해주세요.",
+                            style = AppTextStyle.Body02Regular,
+                            color = AppColor.TextSecondary,
+                        )
+                    }
                 }
 
                 IconTextContentRow(
