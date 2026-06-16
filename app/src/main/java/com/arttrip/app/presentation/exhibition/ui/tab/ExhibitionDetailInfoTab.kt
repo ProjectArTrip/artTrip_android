@@ -24,9 +24,11 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arttrip.app.R
+import com.arttrip.app.core.model.enums.exhibition.ExhibitionStatus
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.core.util.noRippleClickable
@@ -225,4 +227,44 @@ private fun CopyActionText(
                 // 필요하면 토스트/스낵바는 상위에서 effect로 처리
             },
     )
+}
+
+private fun previewDetail(
+    address: String? = "서울특별시 종로구 삼청로 30",
+    openingHours: String? = "10:00 - 18:00 (입장 마감 17:30)",
+    phone: String? = "02-3701-9500",
+    description: String? = "본 전시는 한국 근현대 미술의 흐름을 조망합니다.",
+) = ExhibitionDetail(
+    exhibitId = 1,
+    title = "한국 근현대 미술전",
+    description = description,
+    posterUrl = null,
+    ticketUrl = null,
+    exhibitPeriod = "2025.06.01 - 2025.08.31",
+    status = ExhibitionStatus.ONGOING,
+    hallName = "국립현대미술관",
+    hallAddress = address,
+    hallOpeningHours = openingHours,
+    hallPhone = phone,
+    hallLatitude = 37.5796,
+    hallLongitude = 126.9770,
+    isBookmarked = false,
+)
+
+@Preview(showBackground = true, name = "주소 있음")
+@Composable
+private fun PreviewExhibitionDetailInfoTab() {
+    ExhibitionDetailInfoTab(detail = previewDetail())
+}
+
+@Preview(showBackground = true, name = "주소 없음")
+@Composable
+private fun PreviewExhibitionDetailInfoTabNoAddress() {
+    ExhibitionDetailInfoTab(detail = previewDetail(address = null))
+}
+
+@Preview(showBackground = true, name = "설명 없음")
+@Composable
+private fun PreviewExhibitionDetailInfoTabNoDesc() {
+    ExhibitionDetailInfoTab(detail = previewDetail(description = null))
 }
