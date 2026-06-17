@@ -27,8 +27,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.arttrip.app.R
 import com.arttrip.app.core.ui.component.appbar.AppTopBar
-import com.arttrip.app.core.ui.component.empty.AppEmptyState
 import com.arttrip.app.core.ui.component.button.AppIconButton
+import com.arttrip.app.core.ui.component.empty.AppEmptyState
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.notification.Notification
@@ -63,8 +63,9 @@ fun NotificationScreen(
                 },
             )
             Spacer(modifier = Modifier.height(12.dp))
-            val isEmpty = notificationItems.itemCount == 0 &&
-                notificationItems.loadState.refresh is LoadState.NotLoading
+            val isEmpty =
+                notificationItems.itemCount == 0 &&
+                    notificationItems.loadState.refresh is LoadState.NotLoading
             if (isEmpty) {
                 AppEmptyState(
                     modifier = Modifier.fillMaxWidth(),
