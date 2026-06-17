@@ -23,10 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.arttrip.app.R
 import com.arttrip.app.core.ui.component.appbar.AppTopBar
 import com.arttrip.app.core.ui.component.button.AppIconButton
+import com.arttrip.app.core.ui.component.empty.AppEmptyState
 import com.arttrip.app.core.ui.theme.AppColor
 import com.arttrip.app.core.ui.theme.AppTextStyle
 import com.arttrip.app.domain.model.notification.Notification
@@ -61,32 +63,43 @@ fun NotificationScreen(
                 },
             )
             Spacer(modifier = Modifier.height(12.dp))
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                state = listState,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = PaddingValues(bottom = 28.dp),
-            ) {
-                items(notificationItems.itemCount) { idx ->
-                    val item = notificationItems[idx] ?: return@items
-                    NotificationItem(
-                        isRead = item.isRead || item.userNoticeId in localReadIds,
-                        title = item.title,
-                        message = item.body,
-                        relativeTime = item.createdAt.toRelativeDateText(),
-                        onClick = {
-                            onIntent(
-                                NotificationIntent.NotificationItemClicked(
-                                    userNoticeId = item.userNoticeId,
-                                    action = item.action,
-                                    referenceId = item.referenceId,
-                                ),
-                            )
-                        },
-                    )
+            val isEmpty =
+                notificationItems.itemCount == 0 &&
+                    notificationItems.loadState.refresh is LoadState.NotLoading
+            if (isEmpty) {
+                AppEmptyState(
+                    modifier = Modifier.fillMaxWidth(),
+                    iconResId = R.drawable.ic_home_no_data_96,
+                    message = "알림이 없습니다.",
+                )
+            } else {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                    state = listState,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    contentPadding = PaddingValues(bottom = 28.dp),
+                ) {
+                    items(notificationItems.itemCount) { idx ->
+                        val item = notificationItems[idx] ?: return@items
+                        NotificationItem(
+                            isRead = item.isRead || item.userNoticeId in localReadIds,
+                            title = item.title,
+                            message = item.body,
+                            relativeTime = item.createdAt.toRelativeDateText(),
+                            onClick = {
+                                onIntent(
+                                    NotificationIntent.NotificationItemClicked(
+                                        userNoticeId = item.userNoticeId,
+                                        action = item.action,
+                                        referenceId = item.referenceId,
+                                    ),
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
