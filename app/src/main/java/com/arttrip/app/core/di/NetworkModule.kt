@@ -27,7 +27,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
-    private const val BASE_URL = "https://dev.08166.dev"
+//dev
+//    private const val BASE_URL = "https://dev.08166.dev"
+//Prod
+    private const val BASE_URL = "https://api.arttrip.kr"
 
     @Provides
     @Singleton
